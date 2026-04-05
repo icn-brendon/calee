@@ -1,0 +1,31 @@
+[project]
+name = "calee"
+version = "0.1.0"
+description = "A full-screen family planner for Home Assistant — calendars, shifts, tasks, and shopping in one place."
+readme = "README.md"
+license = {text = "AGPL-3.0"}
+requires-python = ">=3.13"
+authors = [
+    {name = "icn-brendon"},
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+target-version = "py313"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF"]
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["custom_components"]
+
+[tool.mypy]
+python_version = "3.13"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true

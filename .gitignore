@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+/dist/
+build/
+.eggs/
+*.egg
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node / Frontend build
+node_modules/
+frontend/dist/
+
+# Keep the dev-mode panel JS (HACS needs it in the repo)
+!custom_components/calee/frontend/dist/
+!custom_components/calee/frontend/dist/planner_panel.js
+
+# Home Assistant
+config/
+*.db
+*.log
+
+# Secrets — never commit
+.env
+*.pem
+credentials.json
+secrets.yaml
