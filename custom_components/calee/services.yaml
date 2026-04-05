@@ -1,0 +1,598 @@
+add_shift:
+  name: Add shift
+  description: Create a new shift event on a calendar.
+  fields:
+    calendar_id:
+      name: Calendar
+      description: The calendar to add the shift to.
+      required: true
+      selector:
+        text:
+    title:
+      name: Title
+      description: Shift title.
+      required: true
+      selector:
+        text:
+    start:
+      name: Start
+      description: Shift start time (ISO 8601).
+      required: true
+      selector:
+        text:
+    end:
+      name: End
+      description: Shift end time (ISO 8601).
+      required: true
+      selector:
+        text:
+    note:
+      name: Note
+      description: Optional note for the shift.
+      selector:
+        text:
+          multiline: true
+    template_id:
+      name: Template
+      description: Optional shift template ID used to create this shift.
+      selector:
+        text:
+    recurrence_rule:
+      name: Recurrence rule
+      description: >-
+        Optional recurrence pattern (e.g. "daily", "weekly", "biweekly",
+        "monthly"). Leave blank for a one-off event.
+      selector:
+        text:
+
+upsert_shift:
+  name: Upsert shift
+  description: >-
+    Create or update a shift by external ID. If a shift with the given
+    source + external_id already exists, it is updated. Otherwise a new
+    shift is created. Designed for future importers.
+  fields:
+    calendar_id:
+      name: Calendar
+      description: The calendar for this shift.
+      required: true
+      selector:
+        text:
+    external_id:
+      name: External ID
+      description: Unique identifier from the external source.
+      required: true
+      selector:
+        text:
+    source:
+      name: Source
+      description: Name of the import source (e.g. "roster", "csv").
+      required: true
+      selector:
+        text:
+    title:
+      name: Title
+      description: Shift title.
+      required: true
+      selector:
+        text:
+    start:
+      name: Start
+      description: Shift start time (ISO 8601).
+      required: true
+      selector:
+        text:
+    end:
+      name: End
+      description: Shift end time (ISO 8601).
+      required: true
+      selector:
+        text:
+    note:
+      name: Note
+      description: Optional note for the shift.
+      selector:
+        text:
+          multiline: true
+
+update_shift:
+  name: Update shift
+  description: Update an existing shift event.
+  fields:
+    event_id:
+      name: Event ID
+      description: The ID of the event to update.
+      required: true
+      selector:
+        text:
+    version:
+      name: Version
+      description: >-
+        Expected current version of the event (optimistic locking).
+        The update is rejected if this does not match.
+      required: true
+      selector:
+        number:
+          min: 1
+          mode: box
+    title:
+      name: Title
+      description: New title (leave blank to keep current).
+      selector:
+        text:
+    start:
+      name: Start
+      description: New start time (leave blank to keep current).
+      selector:
+        text:
+    end:
+      name: End
+      description: New end time (leave blank to keep current).
+      selector:
+        text:
+    note:
+      name: Note
+      description: New note (leave blank to keep current).
+      selector:
+        text:
+          multiline: true
+    recurrence_rule:
+      name: Recurrence rule
+      description: >-
+        New recurrence pattern (e.g. "daily", "weekly", "biweekly",
+        "monthly"). Pass empty string to clear. Leave blank to keep current.
+      selector:
+        text:
+
+delete_shift:
+  name: Delete shift
+  description: Soft-delete a shift event (recoverable for 30 days).
+  fields:
+    event_id:
+      name: Event ID
+      description: The ID of the event to delete.
+      required: true
+      selector:
+        text:
+
+restore_shift:
+  name: Restore shift
+  description: Restore a previously soft-deleted shift event (undo delete).
+  fields:
+    event_id:
+      name: Event ID
+      description: The ID of the soft-deleted event to restore.
+      required: true
+      selector:
+        text:
+
+add_task:
+  name: Add task
+  description: Create a new task in a to-do list.
+  fields:
+    list_id:
+      name: List
+      description: The to-do list to add the task to.
+      required: true
+      selector:
+        text:
+    title:
+      name: Title
+      description: Task title.
+      required: true
+      selector:
+        text:
+    note:
+      name: Note
+      description: Optional note for the task.
+      selector:
+        text:
+          multiline: true
+    due:
+      name: Due date
+      description: Optional due date (ISO 8601 date or datetime).
+      selector:
+        text:
+    related_event_id:
+      name: Related event
+      description: Optional calendar event ID to link this task to.
+      selector:
+        text:
+
+complete_task:
+  name: Complete task
+  description: Mark a task as completed.
+  fields:
+    task_id:
+      name: Task ID
+      description: The ID of the task to complete.
+      required: true
+      selector:
+        text:
+
+update_task:
+  name: Update task
+  description: Update an existing task.
+  fields:
+    task_id:
+      name: Task ID
+      description: The ID of the task to update.
+      required: true
+      selector:
+        text:
+    version:
+      name: Version
+      description: >-
+        Expected current version of the task (optimistic locking).
+        The update is rejected if this does not match.
+      required: true
+      selector:
+        number:
+          min: 1
+          mode: box
+    title:
+      name: Title
+      description: New title (leave blank to keep current).
+      selector:
+        text:
+    note:
+      name: Note
+      description: New note (leave blank to keep current).
+      selector:
+        text:
+          multiline: true
+    due:
+      name: Due date
+      description: New due date (leave blank to keep current).
+      selector:
+        text:
+    list_id:
+      name: List
+      description: Move to a different list (leave blank to keep current).
+      selector:
+        text:
+    completed:
+      name: Completed
+      description: Set completed status (leave blank to keep current).
+      selector:
+        boolean:
+
+delete_task:
+  name: Delete task
+  description: Soft-delete a task (recoverable for 30 days).
+  fields:
+    task_id:
+      name: Task ID
+      description: The ID of the task to delete.
+      required: true
+      selector:
+        text:
+
+restore_task:
+  name: Restore task
+  description: Restore a previously soft-deleted task (undo delete).
+  fields:
+    task_id:
+      name: Task ID
+      description: The ID of the soft-deleted task to restore.
+      required: true
+      selector:
+        text:
+
+snooze_reminder:
+  name: Snooze reminder
+  description: Snooze a shift reminder for the given number of minutes.
+  fields:
+    event_id:
+      name: Event ID
+      description: The shift event whose reminder is being snoozed.
+      required: true
+      selector:
+        text:
+    minutes:
+      name: Minutes
+      description: Number of minutes to snooze.
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 1440
+          mode: box
+
+create_template:
+  name: Create shift template
+  description: Create a reusable shift template for quick-adding shifts.
+  fields:
+    name:
+      name: Name
+      description: Template name (e.g. "Early", "Late", "Night").
+      required: true
+      selector:
+        text:
+    calendar_id:
+      name: Calendar
+      description: The calendar this template belongs to.
+      required: true
+      selector:
+        text:
+    start_time:
+      name: Start time
+      description: Shift start time in HH:MM format.
+      required: true
+      selector:
+        text:
+    end_time:
+      name: End time
+      description: Shift end time in HH:MM format. If earlier than start_time, the shift is treated as overnight.
+      required: true
+      selector:
+        text:
+    color:
+      name: Color
+      description: Optional color hex code for the template.
+      selector:
+        text:
+    note:
+      name: Note
+      description: Optional default note for shifts created from this template.
+      selector:
+        text:
+          multiline: true
+    emoji:
+      name: Emoji
+      description: Optional emoji displayed on the template card and on events created from it.
+      selector:
+        text:
+
+update_template:
+  name: Update shift template
+  description: Update an existing shift template. Only provided fields are changed; omitted fields keep their current values. The template ID is preserved.
+  fields:
+    template_id:
+      name: Template ID
+      description: The ID of the template to update.
+      required: true
+      selector:
+        text:
+    name:
+      name: Name
+      description: New template name (leave blank to keep current).
+      selector:
+        text:
+    calendar_id:
+      name: Calendar
+      description: New calendar (leave blank to keep current).
+      selector:
+        text:
+    start_time:
+      name: Start time
+      description: New start time in HH:MM format (leave blank to keep current).
+      selector:
+        text:
+    end_time:
+      name: End time
+      description: New end time in HH:MM format (leave blank to keep current).
+      selector:
+        text:
+    color:
+      name: Color
+      description: New color hex code (leave blank to keep current).
+      selector:
+        text:
+    note:
+      name: Note
+      description: New default note (leave blank to keep current).
+      selector:
+        text:
+          multiline: true
+    emoji:
+      name: Emoji
+      description: New emoji (leave blank to keep current).
+      selector:
+        text:
+
+delete_template:
+  name: Delete shift template
+  description: Delete a shift template.
+  fields:
+    template_id:
+      name: Template ID
+      description: The ID of the template to delete.
+      required: true
+      selector:
+        text:
+
+add_shift_from_template:
+  name: Add shift from template
+  description: Create a shift event from a template for a specific date. Overnight templates automatically set the end date to the following day.
+  fields:
+    template_id:
+      name: Template ID
+      description: The shift template to use.
+      required: true
+      selector:
+        text:
+    date:
+      name: Date
+      description: The date for the shift (ISO 8601 date, e.g. "2026-04-07").
+      required: true
+      selector:
+        text:
+    recurrence_rule:
+      name: Recurrence rule
+      description: >-
+        Optional recurrence pattern for the created shift (e.g. "daily",
+        "weekly", "biweekly", "monthly").
+      selector:
+        text:
+
+link_task_to_event:
+  name: Link task to event
+  description: Associate a task with a calendar event so they are visually and logically connected.
+  fields:
+    task_id:
+      name: Task ID
+      description: The ID of the task to link.
+      required: true
+      selector:
+        text:
+    event_id:
+      name: Event ID
+      description: The ID of the calendar event to link the task to.
+      required: true
+      selector:
+        text:
+
+unlink_task_from_event:
+  name: Unlink task from event
+  description: Remove the association between a task and its linked calendar event.
+  fields:
+    task_id:
+      name: Task ID
+      description: The ID of the task to unlink.
+      required: true
+      selector:
+        text:
+
+import_csv:
+  name: Import shifts from CSV
+  description: >-
+    Import shift data from CSV text (e.g. shift app export). Each row is
+    upserted by a deterministic external ID so re-imports are idempotent.
+  fields:
+    calendar_id:
+      name: Calendar
+      description: The calendar to import shifts into.
+      required: true
+      selector:
+        text:
+    data:
+      name: CSV data
+      description: The raw CSV text content including the header row.
+      required: true
+      selector:
+        text:
+          multiline: true
+    source:
+      name: Source
+      description: Import source label (default "csv").
+      selector:
+        text:
+
+import_ics:
+  name: Import shifts from ICS
+  description: >-
+    Import shift data from an ICS (iCalendar) file. Each VEVENT is upserted
+    using its UID as external ID so re-imports are idempotent.
+  fields:
+    calendar_id:
+      name: Calendar
+      description: The calendar to import shifts into.
+      required: true
+      selector:
+        text:
+    data:
+      name: ICS data
+      description: The raw ICS (iCalendar) text content.
+      required: true
+      selector:
+        text:
+          multiline: true
+    source:
+      name: Source
+      description: Import source label (default "ics").
+      selector:
+        text:
+
+create_preset:
+  name: Create task preset
+  description: Create a reusable quick-add preset for one-tap task creation.
+  fields:
+    title:
+      name: Title
+      description: Preset title (the name of the task it creates).
+      required: true
+      selector:
+        text:
+    list_id:
+      name: List
+      description: The to-do list the preset adds tasks to.
+      required: true
+      selector:
+        text:
+    category:
+      name: Category
+      description: Grouping category (e.g. "groceries", "household", "errand").
+      selector:
+        text:
+    icon:
+      name: Icon
+      description: MDI icon name (e.g. "mdi:egg").
+      selector:
+        text:
+    note:
+      name: Note
+      description: Optional default note for tasks created from this preset.
+      selector:
+        text:
+          multiline: true
+
+delete_preset:
+  name: Delete task preset
+  description: Delete a task preset.
+  fields:
+    preset_id:
+      name: Preset ID
+      description: The ID of the preset to delete.
+      required: true
+      selector:
+        text:
+
+add_from_preset:
+  name: Add task from preset
+  description: Create a task instantly from a preset (one-tap quick-add).
+  fields:
+    preset_id:
+      name: Preset ID
+      description: The preset to create a task from.
+      required: true
+      selector:
+        text:
+
+set_calendar_private:
+  name: Set calendar privacy
+  description: >-
+    Toggle the privacy flag on a calendar. When private, only users with
+    an explicit role (viewer, editor, or owner) can see or modify it.
+  fields:
+    calendar_id:
+      name: Calendar ID
+      description: The ID of the calendar to update.
+      required: true
+      selector:
+        text:
+    is_private:
+      name: Private
+      description: Set to true to make the calendar private, false to make it public.
+      required: true
+      selector:
+        boolean:
+
+set_list_private:
+  name: Set list privacy
+  description: >-
+    Toggle the privacy flag on a to-do list. When private, only users with
+    an explicit role (viewer, editor, or owner) can see or modify it.
+  fields:
+    list_id:
+      name: List ID
+      description: The ID of the to-do list to update.
+      required: true
+      selector:
+        text:
+    is_private:
+      name: Private
+      description: Set to true to make the list private, false to make it public.
+      required: true
+      selector:
+        boolean:

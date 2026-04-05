@@ -1,0 +1,56 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up Calee",
+        "description": "This will create your planner with default calendars and lists. Choose where to store your data.",
+        "data": {
+          "storage_backend": "Storage backend"
+        }
+      },
+      "database": {
+        "title": "Database Connection",
+        "description": "Enter your database connection details. For the MariaDB add-on, the default host is core-mariadb.",
+        "data": {
+          "db_host": "Host",
+          "db_port": "Port",
+          "db_name": "Database Name",
+          "db_username": "Username",
+          "db_password": "Password"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not connect to the database. Check your credentials and ensure the database exists."
+    },
+    "abort": {
+      "already_configured": "Calee is already set up."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Calee Options",
+        "data": {
+          "reminder_minutes": "Default reminder (minutes before shift)",
+          "max_event_age_days": "Keep events for (days)",
+          "storage_backend": "Storage backend"
+        }
+      },
+      "database": {
+        "title": "Database Connection",
+        "description": "Enter your database connection details. For the MariaDB add-on, the default host is core-mariadb.",
+        "data": {
+          "db_host": "Host",
+          "db_port": "Port",
+          "db_name": "Database Name",
+          "db_username": "Username",
+          "db_password": "Password"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not connect to the database. Check your credentials and ensure the database exists."
+    }
+  }
+}

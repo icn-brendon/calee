@@ -1,0 +1,48 @@
+name: Build Frontend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "frontend/**"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm install
+
+      - name: Build panel
+        working-directory: frontend
+        run: npm run build
+
+      - name: Check for changes
+        id: check
+        run: |
+          if git diff --quiet custom_components/calee/frontend/dist/planner_panel.js 2>/dev/null && ! git ls-files --others --exclude-standard | grep -q package-lock; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit compiled panel
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add custom_components/calee/frontend/dist/planner_panel.js
+          git add -f frontend/package-lock.json 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "Build: compile frontend panel"
+          git push
