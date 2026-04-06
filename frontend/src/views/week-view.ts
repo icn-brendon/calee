@@ -159,7 +159,7 @@ export class CaleeWeekView extends LitElement {
   @property({ attribute: false }) selectedDate: Date = new Date();
   @property({ attribute: false }) templates: ShiftTemplate[] = [];
   @property({ type: Boolean }) weekStartsMonday = true;
-  @property({ type: Boolean }) narrow = false;
+  @property({ type: Boolean, reflect: true }) narrow = false;
 
   @state() private _weekDays: Date[] = [];
   @state() private _allDayByDay: Map<string, PlannerEvent[]> = new Map();
