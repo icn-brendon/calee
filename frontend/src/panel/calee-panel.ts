@@ -1540,7 +1540,14 @@ export class CaleePanel extends LitElement {
   private _renderSidebar() {
     return html`
       <div class="sidebar ${this._drawerOpen ? "open" : ""} ${this._sidebarCollapsed ? "collapsed" : ""}">
-        <button class="sidebar-collapse-btn" @click=${() => { this._sidebarCollapsed = !this._sidebarCollapsed; }} title="${this._sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}">
+        <button
+          class="sidebar-collapse-btn"
+          @click=${() => { this._sidebarCollapsed = !this._sidebarCollapsed; }}
+          title="${this._sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}"
+          aria-label="${this._sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}"
+          aria-expanded="${(!this._sidebarCollapsed).toString()}"
+          aria-pressed="${this._sidebarCollapsed.toString()}"
+        >
           ${this._sidebarCollapsed ? "\u25B6" : "\u25C0"}
         </button>
         <!-- Add button -->
