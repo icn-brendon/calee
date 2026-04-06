@@ -719,7 +719,8 @@ export class CaleePanel extends LitElement {
     .sidebar.collapsed {
       width: 48px;
       min-width: 48px;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
     }
 
     .sidebar.collapsed .sidebar-add-btn,
