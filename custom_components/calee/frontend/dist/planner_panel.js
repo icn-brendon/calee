@@ -1687,7 +1687,7 @@ __decorateClass$e([
   n2({ type: Boolean })
 ], CaleeWeekView.prototype, "weekStartsMonday", 2);
 __decorateClass$e([
-  n2({ type: Boolean })
+  n2({ type: Boolean, reflect: true })
 ], CaleeWeekView.prototype, "narrow", 2);
 __decorateClass$e([
   r()
@@ -8772,6 +8772,7 @@ let CaleePanel = class extends i {
     this._currentView = "week";
     this._currentDate = todayISO();
     this._drawerOpen = false;
+    this._sidebarCollapsed = false;
     this._calendars = [];
     this._lists = [];
     this._loading = true;
@@ -9238,7 +9239,19 @@ let CaleePanel = class extends i {
   }
   _renderSidebar() {
     return b`
-      <div class="sidebar ${this._drawerOpen ? "open" : ""}">
+      <div class="sidebar ${this._drawerOpen ? "open" : ""} ${this._sidebarCollapsed ? "collapsed" : ""}">
+        <button
+          class="sidebar-collapse-btn"
+          @click=${() => {
+      this._sidebarCollapsed = !this._sidebarCollapsed;
+    }}
+          title="${this._sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}"
+          aria-label="${this._sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}"
+          aria-expanded="${(!this._sidebarCollapsed).toString()}"
+          aria-pressed="${this._sidebarCollapsed.toString()}"
+        >
+          ${this._sidebarCollapsed ? "▶" : "◀"}
+        </button>
         <!-- Add button -->
         <button class="sidebar-add-btn" @click=${this._onSidebarAdd}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -10137,9 +10150,61 @@ CaleePanel.styles = i$3`
       overflow-y: auto;
       padding: 8px 0;
       z-index: 3;
-      transition: transform 0.25s ease;
+      transition: width 0.2s ease, min-width 0.2s ease, transform 0.25s ease;
       display: flex;
       flex-direction: column;
+      position: relative;
+    }
+
+    .sidebar.collapsed {
+      width: 48px;
+      min-width: 48px;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    .sidebar.collapsed .sidebar-add-btn,
+    .sidebar.collapsed .nav-item span,
+    .sidebar.collapsed .nav-item-muted span,
+    .sidebar.collapsed .section-label,
+    .sidebar.collapsed .cal-toggle-name,
+    .sidebar.collapsed .sidebar-upcoming,
+    .sidebar.collapsed .sidebar-cards {
+      display: none;
+    }
+
+    .sidebar.collapsed .nav-item,
+    .sidebar.collapsed .nav-item-muted {
+      justify-content: center;
+      padding: 8px 0;
+    }
+
+    .sidebar-collapse-btn {
+      position: absolute;
+      top: 8px;
+      right: -12px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: var(--card-background-color, #fff);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: var(--secondary-text-color, #666);
+      z-index: 5;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: background 0.15s;
+    }
+
+    .sidebar-collapse-btn:hover {
+      background: var(--primary-background-color, #f5f5f5);
+    }
+
+    :host([narrow]) .sidebar-collapse-btn {
+      display: none;
     }
 
     :host([narrow]) .sidebar {
@@ -10707,7 +10772,7 @@ __decorateClass([
   n2({ attribute: false })
 ], CaleePanel.prototype, "hass", 2);
 __decorateClass([
-  n2({ type: Boolean })
+  n2({ type: Boolean, reflect: true })
 ], CaleePanel.prototype, "narrow", 2);
 __decorateClass([
   n2({ attribute: false })
@@ -10721,6 +10786,9 @@ __decorateClass([
 __decorateClass([
   r()
 ], CaleePanel.prototype, "_drawerOpen", 2);
+__decorateClass([
+  r()
+], CaleePanel.prototype, "_sidebarCollapsed", 2);
 __decorateClass([
   r()
 ], CaleePanel.prototype, "_calendars", 2);
