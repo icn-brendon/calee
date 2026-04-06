@@ -4,6 +4,7 @@ Calee is a family planner that runs as a custom integration inside Home Assistan
 
 [![HACS Validation](https://github.com/icn-brendon/calee/actions/workflows/hacs.yml/badge.svg)](https://github.com/icn-brendon/calee/actions/workflows/hacs.yml)
 [![Tests](https://github.com/icn-brendon/calee/actions/workflows/tests.yml/badge.svg)](https://github.com/icn-brendon/calee/actions/workflows/tests.yml)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow?logo=buy-me-a-coffee&logoColor=white)](https://buymeacoffee.com/brendons)
 
 ## Why Calee?
 

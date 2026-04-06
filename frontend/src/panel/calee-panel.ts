@@ -151,12 +151,13 @@ function stepMonth(dateStr: string, delta: number): string {
 @customElement("calee-panel")
 export class CaleePanel extends LitElement {
   @property({ attribute: false }) hass: any;
-  @property({ type: Boolean }) narrow = false;
+  @property({ type: Boolean, reflect: true }) narrow = false;
   @property({ attribute: false }) panel: any;
 
   @state() private _currentView: ViewType = "week";
   @state() private _currentDate: string = todayISO();
   @state() private _drawerOpen = false;
+  @state() private _sidebarCollapsed = false;
   @state() private _calendars: CalendarToggle[] = [];
   @state() private _lists: PlannerListEntry[] = [];
   @state() private _loading = true;
@@ -709,9 +710,61 @@ export class CaleePanel extends LitElement {
       overflow-y: auto;
       padding: 8px 0;
       z-index: 3;
-      transition: transform 0.25s ease;
+      transition: width 0.2s ease, min-width 0.2s ease, transform 0.25s ease;
       display: flex;
       flex-direction: column;
+      position: relative;
+    }
+
+    .sidebar.collapsed {
+      width: 48px;
+      min-width: 48px;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    .sidebar.collapsed .sidebar-add-btn,
+    .sidebar.collapsed .nav-item span,
+    .sidebar.collapsed .nav-item-muted span,
+    .sidebar.collapsed .section-label,
+    .sidebar.collapsed .cal-toggle-name,
+    .sidebar.collapsed .sidebar-upcoming,
+    .sidebar.collapsed .sidebar-cards {
+      display: none;
+    }
+
+    .sidebar.collapsed .nav-item,
+    .sidebar.collapsed .nav-item-muted {
+      justify-content: center;
+      padding: 8px 0;
+    }
+
+    .sidebar-collapse-btn {
+      position: absolute;
+      top: 8px;
+      right: -12px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: var(--card-background-color, #fff);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: var(--secondary-text-color, #666);
+      z-index: 5;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: background 0.15s;
+    }
+
+    .sidebar-collapse-btn:hover {
+      background: var(--primary-background-color, #f5f5f5);
+    }
+
+    :host([narrow]) .sidebar-collapse-btn {
+      display: none;
     }
 
     :host([narrow]) .sidebar {
@@ -1486,7 +1539,17 @@ export class CaleePanel extends LitElement {
 
   private _renderSidebar() {
     return html`
-      <div class="sidebar ${this._drawerOpen ? "open" : ""}">
+      <div class="sidebar ${this._drawerOpen ? "open" : ""} ${this._sidebarCollapsed ? "collapsed" : ""}">
+        <button
+          class="sidebar-collapse-btn"
+          @click=${() => { this._sidebarCollapsed = !this._sidebarCollapsed; }}
+          title="${this._sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}"
+          aria-label="${this._sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}"
+          aria-expanded="${(!this._sidebarCollapsed).toString()}"
+          aria-pressed="${this._sidebarCollapsed.toString()}"
+        >
+          ${this._sidebarCollapsed ? "\u25B6" : "\u25C0"}
+        </button>
         <!-- Add button -->
         <button class="sidebar-add-btn" @click=${this._onSidebarAdd}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
