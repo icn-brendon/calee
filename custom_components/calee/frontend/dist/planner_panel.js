@@ -10127,7 +10127,7 @@ CaleePanel.styles = i$3`
       position: relative;
     }
 
-    /* ── Sidebar — clean Todoist-style ──────────────────────── */
+    /* ── Sidebar — clean clean ──────────────────────── */
 
     .sidebar {
       width: var(--sidebar-width);
@@ -10172,7 +10172,7 @@ CaleePanel.styles = i$3`
       display: block;
     }
 
-    /* ── Sidebar: Add button (Todoist-style) ────────────────── */
+    /* ── Sidebar: Add button (clean) ────────────────── */
 
     .sidebar-add-btn {
       display: flex;
