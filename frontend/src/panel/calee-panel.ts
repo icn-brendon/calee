@@ -34,7 +34,6 @@ import "../views/year-view.js";
 import "../views/agenda-view.js";
 import "../views/tasks-view.js";
 import "../views/shopping-view.js";
-import "../cards/shift-progress.js";
 import "../cards/next-shift.js";
 import "../dialogs/event-dialog.js";
 import "../dialogs/template-picker.js";
@@ -1709,25 +1708,12 @@ export class CaleePanel extends LitElement {
     );
   }
 
-  /** Only work shifts — used for progress/next-shift sidebar cards. */
+  /** Only work shifts — used for next-shift sidebar card. */
   private get _workEvents(): PlannerEvent[] {
     return this._events.filter((e) => e.calendar_id === "work_shifts");
   }
 
-  /** The currently active shift (started but not yet ended). */
-  private get _currentShift(): PlannerEvent | null {
-    const now = Date.now();
-    return (
-      this._workEvents.find((e) => {
-        if (e.deleted_at || e.all_day) return false;
-        const start = new Date(e.start).getTime();
-        const end = new Date(e.end).getTime();
-        return start <= now && end > now;
-      }) ?? null
-    );
-  }
-
-  /** The next upcoming shift (starts in the future). */
+  /** The next upcoming work shift (starts in the future). */
   private get _nextShift(): PlannerEvent | null {
     const now = Date.now();
     const upcoming = this._workEvents
@@ -2137,9 +2123,6 @@ export class CaleePanel extends LitElement {
 
         <!-- Shift cards -->
         <div class="sidebar-cards">
-          <calee-shift-progress
-            .currentShift=${this._currentShift}
-          ></calee-shift-progress>
           <calee-next-shift
             .nextShift=${this._nextShift}
           ></calee-next-shift>
