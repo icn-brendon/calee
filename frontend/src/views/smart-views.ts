@@ -355,7 +355,7 @@ export class CaleeSmartViews extends LitElement {
     const dueTasks = this.tasks.filter((t) => {
       if (t.deleted_at || t.completed) return false;
       if (!t.due) return false;
-      return t.due <= shiftIso;
+      return t.due?.slice(0, 10) <= shiftIso;
     }).sort((a, b) => (a.due ?? "").localeCompare(b.due ?? ""));
 
     // Countdown
@@ -410,7 +410,7 @@ export class CaleeSmartViews extends LitElement {
 
     const weekendTasks = this.tasks.filter((t) => {
       if (t.deleted_at || t.completed) return false;
-      return t.due === satIso || t.due === sunIso;
+      return t.due?.slice(0, 10) === satIso || t.due?.slice(0, 10) === sunIso;
     });
 
     const weekendLabel = `${sat.toLocaleDateString(undefined, { month: "short", day: "numeric" })} - ${sun.toLocaleDateString(undefined, { month: "short", day: "numeric" })}`;
@@ -533,7 +533,7 @@ export class CaleeSmartViews extends LitElement {
   private _renderOverdue() {
     const todayIso = new Date().toISOString().slice(0, 10);
     const overdue = this.tasks
-      .filter((t) => !t.deleted_at && !t.completed && t.due && t.due < todayIso)
+      .filter((t) => !t.deleted_at && !t.completed && t.due && t.due.slice(0, 10) < todayIso)
       .sort((a, b) => (a.due ?? "").localeCompare(b.due ?? ""));
 
     return html`
@@ -542,7 +542,7 @@ export class CaleeSmartViews extends LitElement {
       ${overdue.length === 0
         ? html`<div class="empty">No overdue tasks -- you're all caught up.</div>`
         : overdue.map((t) => {
-            const dueDate = new Date(t.due + "T00:00:00");
+            const dueDate = new Date(t.due.slice(0, 10) + "T00:00:00");
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             const diffDays = Math.floor((today.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24));

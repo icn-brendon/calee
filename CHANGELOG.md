@@ -17,7 +17,7 @@ All notable changes to Calee are documented here.
 - Sidebar now includes a Smart Views section between Routines and More.
 - Data Center accessible from the More section in the sidebar.
 - `can_read` and `can_write` permission functions accept a `strict` parameter.
-- `async_require_write` enforces strict privacy rules for internal (`user_id=None`) calls when enabled.
+- Internal automation calls (`user_id=None`) bypass strict checks with a warning logged for audit visibility.
 - New calendars and lists default to `is_private=true` when strict privacy is active.
 - WebSocket `get_settings` and `update_settings` commands include `strict_privacy`.
 - Options flow includes `strict_privacy` toggle.

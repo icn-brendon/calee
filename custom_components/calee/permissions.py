@@ -49,10 +49,13 @@ def _roles_configured(store: AbstractPlannerStore) -> bool:
 
 def is_strict_privacy(hass: HomeAssistant) -> bool:
     """Return True if strict_privacy mode is enabled in the config entry."""
-    entries = hass.config_entries.async_entries(DOMAIN)
-    if not entries:
+    try:
+        entries = hass.config_entries.async_entries(DOMAIN)
+        if not entries:
+            return False
+        return entries[0].options.get("strict_privacy", False)
+    except (AttributeError, TypeError):
         return False
-    return entries[0].options.get("strict_privacy", False)
 
 
 def _is_resource_private(
