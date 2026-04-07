@@ -630,9 +630,33 @@ export class CaleeTasksView extends LitElement {
 
   /* ── Lifecycle ──────────────────────────────────────────────────── */
 
+  connectedCallback(): void {
+    super.connectedCallback();
+    this._checkHashForTaskId();
+  }
+
   updated(changed: PropertyValues): void {
     if (changed.has("activeView")) {
       this._resetQuickAdd();
+    }
+    // Check if the hash contains a task ID to auto-expand for editing
+    if (changed.has("tasks")) {
+      this._checkHashForTaskId();
+    }
+  }
+
+  /** If the URL hash is #/tasks/<taskId>, auto-expand that task for inline editing. */
+  private _checkHashForTaskId(): void {
+    const hash = window.location.hash.replace(/^#\/?/, "");
+    const parts = hash.split("/");
+    if (parts[0] === "tasks" && parts[1] && parts[1].length > 0) {
+      const taskId = parts[1];
+      const task = this.tasks.find((t) => t.id === taskId);
+      if (task) {
+        this._startEdit(task);
+        // Clear the task ID from the hash so it doesn't re-trigger
+        window.location.hash = "#/tasks";
+      }
     }
   }
 
@@ -812,6 +836,21 @@ export class CaleeTasksView extends LitElement {
 
   private _onCustomDateChange(e: Event): void {
     this._customDate = (e.target as HTMLInputElement).value;
+  }
+
+  /* ── Task row click — dispatch event for panel detail drawer ───── */
+
+  private _onTaskRowClick(task: PlannerTask): void {
+    // Dispatch task-click so the panel can open the detail drawer on desktop
+    this.dispatchEvent(
+      new CustomEvent("task-click", {
+        detail: { task },
+        bubbles: true,
+        composed: true,
+      }),
+    );
+    // Also start inline editing (mobile relies on this; desktop uses the drawer)
+    this._startEdit(task);
   }
 
   /* ── Inline editing ─────────────────────────────────────────────── */
@@ -1176,7 +1215,7 @@ export class CaleeTasksView extends LitElement {
         <div
           class="swipe-row-inner task-item ${isSwiping ? "dragging" : ""}"
           style="transform: translateX(${delta}px)"
-          @click=${() => this._startEdit(task)}
+          @click=${() => this._onTaskRowClick(task)}
           @touchstart=${(e: TouchEvent) => this._onTouchStart(e, task.id)}
           @touchmove=${(e: TouchEvent) => this._onTouchMove(e)}
           @touchend=${(e: TouchEvent) => this._onTouchEnd(e)}

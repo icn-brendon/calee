@@ -543,13 +543,26 @@ export class CaleePanel extends LitElement {
 
   // ── Keyboard shortcuts (desktop) ────────────────────────────────
 
+  private _isEditableKeyboardTarget(e: KeyboardEvent): boolean {
+    const isEditableElement = (value: EventTarget | null | undefined): boolean => {
+      if (!(value instanceof HTMLElement)) return false;
+      const tag = value.tagName.toLowerCase();
+      return tag === "input" || tag === "textarea" || tag === "select" || value.isContentEditable;
+    };
+    if (e.composedPath().some((target) => isEditableElement(target))) return true;
+    let active: Element | null = document.activeElement;
+    while (active && active.shadowRoot?.activeElement) {
+      active = active.shadowRoot.activeElement;
+    }
+    return isEditableElement(active);
+  }
+
   private _handleKeydown(e: KeyboardEvent): void {
     // Skip if on narrow/mobile — keyboard shortcuts are desktop only
     if (this.narrow) return;
 
-    // Skip if typing in an input, textarea, or select
-    const tag = (document.activeElement?.tagName || "").toLowerCase();
-    if (tag === "input" || tag === "textarea" || tag === "select") return;
+    // Skip if typing in an input, textarea, select, or contenteditable
+    if (this._isEditableKeyboardTarget(e)) return;
 
     // Skip if any dialog or overlay is open
     if (
@@ -616,10 +629,9 @@ export class CaleePanel extends LitElement {
         if (this._drawerOpen) {
           this._closeDrawer();
         }
-        break;
-      case "/":
-        // Future: focus search
-        e.preventDefault();
+        if (this._detailDrawerOpen) {
+          this._closeDetailDrawer();
+        }
         break;
     }
   }
@@ -1718,8 +1730,6 @@ export class CaleePanel extends LitElement {
           @preset-create=${this._onPresetCreate}
           @preset-delete=${this._onPresetDelete}
           @event-select=${this._onEventSelect}
-          @quick-add-task=${this._onQuickAddTask}
-          @quick-add-shopping=${this._onQuickAddShopping}
         >
           ${this._loading
             ? html`<div class="loading">Loading...</div>`
@@ -1745,6 +1755,8 @@ export class CaleePanel extends LitElement {
         ?open=${this._showTemplatePicker}
         @template-select=${this._onTemplateSelect}
         @custom-event=${this._onCustomEvent}
+        @quick-add-task=${this._onQuickAddTask}
+        @quick-add-shopping=${this._onQuickAddShopping}
         @manage-templates=${this._onManageTemplates}
         @dialog-close=${this._onDialogClose}
       ></calee-template-picker>
@@ -2226,7 +2238,7 @@ export class CaleePanel extends LitElement {
       ` : nothing}
 
       <div class="drawer-actions">
-        <button class="drawer-btn drawer-btn-edit" @click=${() => this._onDrawerEditTask(task)}>Edit</button>
+        <button class="drawer-btn drawer-btn-edit" @click=${() => this._onDrawerEditTask(task)}>Open in Tasks</button>
         <button class="drawer-btn drawer-btn-delete" @click=${() => this._onDrawerDeleteTask(task)}>Delete</button>
       </div>
     `;
@@ -2266,9 +2278,11 @@ export class CaleePanel extends LitElement {
   }
 
   private _onDrawerEditTask(task: PlannerTask): void {
-    // Close drawer and navigate to tasks view where inline editing is available
+    // Close drawer and navigate to tasks view, passing the task ID in the
+    // hash so tasks-view can auto-expand it for inline editing.
     this._closeDetailDrawer();
     this._navigate("tasks");
+    window.location.hash = `#/tasks/${task.id}`;
   }
 
   private async _onDrawerDeleteTask(task: PlannerTask): Promise<void> {
@@ -2514,7 +2528,7 @@ export class CaleePanel extends LitElement {
   }
 
   /** Handle task-quick-add from tasks/shopping views. */
-  private async _onTaskQuickAdd(e: CustomEvent<{ title: string; category?: string; due?: string; recurrence_rule?: string }>): Promise<void> {
+  private async _onTaskQuickAdd(e: CustomEvent<{ title: string; category?: string; due?: string; recurrence_rule?: string; note?: string }>): Promise<void> {
     const listId = this._currentView === "shopping"
       ? (this._lists.find((l) => l.list_type === "shopping")?.id ?? "shopping")
       : (this._lists.find((l) => l.list_type === "standard")?.id ?? "inbox");
@@ -2530,6 +2544,9 @@ export class CaleePanel extends LitElement {
     }
     if (e.detail.recurrence_rule) {
       wsMsg.recurrence_rule = e.detail.recurrence_rule;
+    }
+    if (e.detail.note) {
+      wsMsg.note = e.detail.note;
     }
 
     try {
