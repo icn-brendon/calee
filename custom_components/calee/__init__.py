@@ -122,6 +122,16 @@ async def _run_migration(
             await new_store.async_put_template(tpl)
             count += 1
 
+        # Copy presets.
+        for preset in old_store.get_presets().values():
+            await new_store.async_put_preset(preset)
+            count += 1
+
+        # Copy routines.
+        for routine in old_store.get_routines().values():
+            await new_store.async_put_routine(routine)
+            count += 1
+
         await new_store.async_save()
         await old_store.async_close()
 

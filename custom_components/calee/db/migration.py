@@ -27,6 +27,8 @@ class MigrationResult:
     templates: int = 0
     lists: int = 0
     tasks: int = 0
+    presets: int = 0
+    routines: int = 0
     roles: int = 0
     audit_entries: int = 0
     skipped: dict[str, int] = field(default_factory=dict)
@@ -41,6 +43,8 @@ class MigrationResult:
             + self.templates
             + self.lists
             + self.tasks
+            + self.presets
+            + self.routines
             + self.roles
             + self.audit_entries
         )
@@ -169,7 +173,41 @@ async def async_migrate_json_to_db(
             _LOGGER.error(msg)
             result.errors.append(msg)
 
-    # ── 7. Roles ────────────────────────────────────────────────────
+    # ── 7. Presets ───────────────────────────────────────────────────
+    _LOGGER.info(
+        "Migration: migrating %d presets", len(json_store.presets)
+    )
+    for preset in json_store.presets.values():
+        if preset.id in sql_store.presets:
+            result.skipped.setdefault("presets", 0)
+            result.skipped["presets"] += 1
+            continue
+        try:
+            await sql_store.async_put_preset(preset)
+            result.presets += 1
+        except Exception as exc:
+            msg = f"Failed to migrate preset {preset.id}: {exc}"
+            _LOGGER.error(msg)
+            result.errors.append(msg)
+
+    # ── 8. Routines ────────────────────────────────────────────────
+    _LOGGER.info(
+        "Migration: migrating %d routines", len(json_store.routines)
+    )
+    for routine in json_store.routines.values():
+        if routine.id in sql_store.routines:
+            result.skipped.setdefault("routines", 0)
+            result.skipped["routines"] += 1
+            continue
+        try:
+            await sql_store.async_put_routine(routine)
+            result.routines += 1
+        except Exception as exc:
+            msg = f"Failed to migrate routine {routine.id}: {exc}"
+            _LOGGER.error(msg)
+            result.errors.append(msg)
+
+    # ── 9. Roles ────────────────────────────────────────────────────
     _LOGGER.info(
         "Migration: migrating %d role assignments", len(json_store.roles)
     )
@@ -191,7 +229,7 @@ async def async_migrate_json_to_db(
             _LOGGER.error(msg)
             result.errors.append(msg)
 
-    # ── 8. Audit log ────────────────────────────────────────────────
+    # ── 10. Audit log ───────────────────────────────────────────────
     _LOGGER.info(
         "Migration: migrating %d audit entries", len(json_store.audit_log)
     )
@@ -291,6 +329,24 @@ async def async_migrate_db_to_json(
             continue
         json_store.tasks[task.id] = task
         result.tasks += 1
+
+    # ── Presets ─────────────────────────────────────────────────────
+    for preset in sql_store.presets.values():
+        if preset.id in json_store.presets:
+            result.skipped.setdefault("presets", 0)
+            result.skipped["presets"] += 1
+            continue
+        json_store.presets[preset.id] = preset
+        result.presets += 1
+
+    # ── Routines ───────────────────────────────────────────────────
+    for routine in sql_store.routines.values():
+        if routine.id in json_store.routines:
+            result.skipped.setdefault("routines", 0)
+            result.skipped["routines"] += 1
+            continue
+        json_store.routines[routine.id] = routine
+        result.routines += 1
 
     # ── Roles ───────────────────────────────────────────────────────
     existing_role_keys = {

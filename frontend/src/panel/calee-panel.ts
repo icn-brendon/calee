@@ -1706,10 +1706,135 @@ export class CaleePanel extends LitElement {
       background: var(--secondary-background-color, #f0f0f0);
       color: var(--secondary-text-color, #757575);
     }
+
+    /* ── Tablet summary strip ──────────────────────────────── */
+
+    .tablet-summary {
+      display: none;
+    }
+
+    /* ── Tablet landscape (768px - 1024px) ─────────────────── */
+
+    @media (min-width: 768px) and (max-width: 1024px) {
+      :host {
+        --sidebar-width: 200px;
+      }
+
+      .detail-drawer {
+        width: 300px;
+        min-width: 300px;
+      }
+
+      .tablet-summary {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 4px 16px;
+        height: 32px;
+        min-height: 32px;
+        background: var(--secondary-background-color, rgba(0, 0, 0, 0.03));
+        border-bottom: 1px solid var(--divider-color, #e0e0e0);
+        font-size: 12px;
+        color: var(--secondary-text-color, #666);
+        flex-shrink: 0;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      .tablet-summary[hidden] {
+        display: none;
+      }
+
+      .summary-date {
+        font-weight: 600;
+        color: var(--primary-text-color, #212121);
+      }
+
+      .summary-shift,
+      .summary-budget {
+        font-weight: 400;
+      }
+    }
+
+    /* ── Tablet portrait (600px - 768px) ───────────────────── */
+
+    @media (min-width: 600px) and (max-width: 768px) {
+      .sidebar {
+        width: 48px;
+        min-width: 48px;
+      }
+
+      .sidebar .nav-item span,
+      .sidebar .nav-item-muted span,
+      .sidebar .section-label,
+      .sidebar .cal-toggle-name,
+      .sidebar .calendar-name,
+      .sidebar .sidebar-upcoming,
+      .sidebar .sidebar-cards,
+      .sidebar .sidebar-add-btn,
+      .sidebar .sidebar-heading {
+        display: none;
+      }
+
+      .sidebar .nav-item,
+      .sidebar .nav-item-muted {
+        justify-content: center;
+        padding: 8px 0;
+      }
+
+      .sidebar .calendar-item {
+        justify-content: center;
+        padding: 6px 0;
+      }
+
+      .sidebar .sidebar-collapse-btn {
+        display: none;
+      }
+
+      .detail-drawer {
+        display: none;
+      }
+
+      .tablet-summary {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 4px 12px;
+        height: 32px;
+        min-height: 32px;
+        background: var(--secondary-background-color, rgba(0, 0, 0, 0.03));
+        border-bottom: 1px solid var(--divider-color, #e0e0e0);
+        font-size: 11px;
+        color: var(--secondary-text-color, #666);
+        flex-shrink: 0;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      .tablet-summary[hidden] {
+        display: none;
+      }
+
+      .summary-date {
+        font-weight: 600;
+        color: var(--primary-text-color, #212121);
+      }
+
+      .summary-shift,
+      .summary-budget {
+        font-weight: 400;
+      }
+    }
   `;
 
 
   // ── Computed helpers ──────────────────────────────────────────────
+
+  /** True when the viewport is in tablet range (600px - 1024px). */
+  private get _isTablet(): boolean {
+    const w = window.innerWidth;
+    return w >= 600 && w <= 1024;
+  }
 
   /** Map of calendar ID to PlannerCalendar for passing to view components. */
   private get _calendarMap(): Map<string, PlannerCalendar> {
@@ -1771,9 +1896,58 @@ export class CaleePanel extends LitElement {
     return this._tasks.filter((t) => !shoppingIds.has(t.list_id));
   }
 
+  private _renderTabletSummary() {
+    if (this.narrow || !this._isTablet) return nothing;
+
+    const today = new Date();
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const dateStr = `Today, ${days[today.getDay()]} ${today.getDate()} ${months[today.getMonth()]}`;
+
+    // Next shift: find the soonest future work shift.
+    const now = Date.now();
+    const workShifts = this._events
+      .filter((e) => e.calendar_id === "work_shifts" && !e.deleted_at)
+      .map((e) => ({ ...e, _start: new Date(e.start).getTime() }))
+      .filter((e) => e._start > now)
+      .sort((a, b) => a._start - b._start);
+
+    let shiftStr = "No upcoming shifts";
+    if (workShifts.length > 0) {
+      const next = workShifts[0];
+      const d = new Date(next.start);
+      const h = d.getHours();
+      const ampm = h >= 12 ? "pm" : "am";
+      const h12 = h % 12 || 12;
+      shiftStr = `Next: ${next.title} at ${h12}${ampm}`;
+    }
+
+    // Budget remaining.
+    const shoppingTasks = this._tasks.filter(
+      (t) => t.list_id === "shopping" && !t.completed && !t.deleted_at,
+    );
+    const totalPrice = shoppingTasks.reduce(
+      (sum, t) => sum + (t.price ?? 0), 0,
+    );
+    const budget = this._settingsBudget;
+    const budgetStr = budget > 0
+      ? `Budget: ${this._settingsCurrency}${Math.round(budget - totalPrice)} left`
+      : "";
+
+    return html`
+      <div class="tablet-summary">
+        <span class="summary-date">${dateStr}</span>
+        <span class="summary-shift">${shiftStr}</span>
+        ${budgetStr ? html`<span class="summary-budget">${budgetStr}</span>` : nothing}
+      </div>
+    `;
+  }
+
   render() {
     return html`
       ${this._renderHeader()}
+      ${this._renderTabletSummary()}
       <div class="body">
         ${this._renderSidebarBackdrop()}
         ${this._renderSidebar()}

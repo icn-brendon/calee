@@ -21,6 +21,7 @@ from sqlalchemy.orm import sessionmaker
 from ..const import (
     DEFAULT_CALENDARS,
     DEFAULT_LISTS,
+    DEFAULT_PRESETS,
     DEFAULT_ROUTINES,
     DEFAULT_TEMPLATES,
     SOFT_DELETE_RETENTION_DAYS,
@@ -35,6 +36,7 @@ from ..models import (
     RoleAssignment,
     Routine,
     ShiftTemplate,
+    TaskPreset,
 )
 from .base import AbstractPlannerStore
 from .schema import (
@@ -51,6 +53,9 @@ from .schema import (
 )
 from .schema import (
     metadata,
+)
+from .schema import (
+    presets as presets_table,
 )
 from .schema import (
     roles as roles_table,
@@ -111,6 +116,17 @@ def _parse_json_list(raw: str | None) -> list[dict]:
         return []
 
 
+def _parse_json_list_strings(raw: str | None) -> list[str]:
+    """Parse a JSON text column into a list of strings (e.g. exception dates)."""
+    if not raw:
+        return []
+    try:
+        parsed = json.loads(raw)
+        return parsed if isinstance(parsed, list) else []
+    except (json.JSONDecodeError, TypeError):
+        return []
+
+
 class SqlPlannerStore(AbstractPlannerStore):
     """Write-through cached store backed by MariaDB or PostgreSQL."""
 
@@ -125,6 +141,7 @@ class SqlPlannerStore(AbstractPlannerStore):
         self.templates: dict[str, ShiftTemplate] = {}
         self.lists: dict[str, PlannerList] = {}
         self.tasks: dict[str, PlannerTask] = {}
+        self.presets: dict[str, TaskPreset] = {}
         self.routines: dict[str, Routine] = {}
         self.roles: list[RoleAssignment] = []
         self.audit_log: list[AuditEntry] = []
@@ -160,6 +177,11 @@ class SqlPlannerStore(AbstractPlannerStore):
             _LOGGER.info("SQL store first run — seeding default calendars, lists, and templates")
             await self._seed_defaults()
 
+        # Seed default presets for existing installs that upgraded.
+        if not self.presets:
+            _LOGGER.info("No presets found — seeding defaults")
+            await self._seed_default_presets()
+
         # Seed default routines for existing installs that upgraded.
         if not self.routines:
             _LOGGER.info("No routines found — seeding defaults")
@@ -188,6 +210,10 @@ class SqlPlannerStore(AbstractPlannerStore):
 
         _new_columns: list[tuple[str, str, str]] = [
             # (table_name, column_name, column_sql_type_with_default)
+            # ── Events ──
+            ("calee_events", "snooze_until", datetime_type),
+            ("calee_events", "exceptions", "TEXT DEFAULT '[]'"),
+            # ── Tasks ──
             ("calee_tasks", "category", "VARCHAR(64) DEFAULT ''"),
             ("calee_tasks", "is_recurring", "BOOLEAN DEFAULT FALSE"),
             ("calee_tasks", "recur_reset_hour", "INTEGER DEFAULT 0"),
@@ -195,7 +221,11 @@ class SqlPlannerStore(AbstractPlannerStore):
             ("calee_tasks", "unit", "VARCHAR(16) DEFAULT ''"),
             ("calee_tasks", "price", "FLOAT"),
             ("calee_tasks", "position", "INTEGER DEFAULT 0"),
-            ("calee_events", "snooze_until", datetime_type),
+            # ── Calendars ──
+            ("calee_calendars", "is_private", "BOOLEAN DEFAULT FALSE"),
+            ("calee_calendars", "emoji", "VARCHAR(16) DEFAULT ''"),
+            # ── Lists ──
+            ("calee_lists", "is_private", "BOOLEAN DEFAULT FALSE"),
         ]
 
         async with self._engine.begin() as conn:
@@ -458,6 +488,22 @@ class SqlPlannerStore(AbstractPlannerStore):
         self.routines.pop(routine_id, None)
         await self._delete_by_pk(routines_table, routine_id)
 
+    # ── Presets ─────────────────────────────────────────────────────────
+
+    def get_presets(self) -> dict[str, TaskPreset]:
+        return dict(self.presets)
+
+    def get_preset(self, preset_id: str) -> TaskPreset | None:
+        return self.presets.get(preset_id)
+
+    async def async_put_preset(self, preset: TaskPreset) -> None:
+        self.presets[preset.id] = preset
+        await self._upsert(presets_table, preset.to_dict())
+
+    async def async_remove_preset(self, preset_id: str) -> None:
+        self.presets.pop(preset_id, None)
+        await self._delete_by_pk(presets_table, preset_id)
+
     # ── Roles ───────────────────────────────────────────────────────────
 
     def get_roles(self) -> list[RoleAssignment]:
@@ -618,6 +664,7 @@ class SqlPlannerStore(AbstractPlannerStore):
                     id=row.id,
                     name=row.name,
                     color=row.color or "#64b5f6",
+                    emoji=getattr(row, "emoji", "") or "",
                     timezone=row.timezone or "",
                     is_private=bool(getattr(row, "is_private", False)),
                     created_at=row.created_at or "",
@@ -640,6 +687,7 @@ class SqlPlannerStore(AbstractPlannerStore):
                     source=row.source or "manual",
                     external_id=row.external_id,
                     recurrence_rule=row.recurrence_rule,
+                    exceptions=_parse_json_list_strings(getattr(row, "exceptions", None)),
                     created_at=_dt_to_iso(row.created_at) or "",
                     updated_at=_dt_to_iso(row.updated_at) or "",
                     version=row.version or 1,
@@ -660,6 +708,7 @@ class SqlPlannerStore(AbstractPlannerStore):
                     end_time=row.end_time or "",
                     color=row.color or "#64b5f6",
                     note=row.note or "",
+                    emoji=row.emoji or "",
                 )
                 for row in result
             }
@@ -700,6 +749,20 @@ class SqlPlannerStore(AbstractPlannerStore):
                     updated_at=_dt_to_iso(row.updated_at) or "",
                     version=row.version or 1,
                     deleted_at=_dt_to_iso(row.deleted_at),
+                )
+                for row in result
+            }
+
+            # Presets
+            result = await session.execute(sa.select(presets_table))
+            self.presets = {
+                row.id: TaskPreset(
+                    id=row.id,
+                    title=row.title or "",
+                    list_id=row.list_id or "",
+                    note=row.note or "",
+                    category=row.category or "",
+                    icon=row.icon or "",
                 )
                 for row in result
             }
@@ -753,12 +816,13 @@ class SqlPlannerStore(AbstractPlannerStore):
 
         _LOGGER.debug(
             "Loaded from DB: %d calendars, %d events, %d templates, "
-            "%d lists, %d tasks, %d routines, %d roles, %d audit entries",
+            "%d lists, %d tasks, %d presets, %d routines, %d roles, %d audit entries",
             len(self.calendars),
             len(self.events),
             len(self.templates),
             len(self.lists),
             len(self.tasks),
+            len(self.presets),
             len(self.routines),
             len(self.roles),
             len(self.audit_log),
@@ -805,12 +869,26 @@ class SqlPlannerStore(AbstractPlannerStore):
             self.templates[tpl.id] = tpl
             await self._upsert(templates_table, tpl.to_dict())
 
+        for preset_def in DEFAULT_PRESETS:
+            preset = TaskPreset.from_dict(preset_def)
+            self.presets[preset.id] = preset
+            await self._upsert(presets_table, preset.to_dict())
+
         _LOGGER.info(
-            "Seeded %d calendars, %d lists, %d templates",
+            "Seeded %d calendars, %d lists, %d templates, %d presets",
             len(self.calendars),
             len(self.lists),
             len(self.templates),
+            len(self.presets),
         )
+
+    async def _seed_default_presets(self) -> None:
+        """Create default presets (used on first run or upgrade)."""
+        for preset_def in DEFAULT_PRESETS:
+            preset = TaskPreset.from_dict(preset_def)
+            self.presets[preset.id] = preset
+            await self._upsert(presets_table, preset.to_dict())
+        _LOGGER.info("Seeded %d default presets", len(self.presets))
 
     async def _seed_default_routines(self) -> None:
         """Create default routines (used on first run or upgrade)."""
@@ -835,6 +913,7 @@ def _event_to_sql(event: PlannerEvent) -> dict:
     d["updated_at"] = _iso_to_dt(d["updated_at"])
     d["deleted_at"] = _iso_to_dt(d.get("deleted_at"))
     d["snooze_until"] = _iso_to_dt(d.get("snooze_until"))
+    d["exceptions"] = json.dumps(d.get("exceptions", []))
     return d
 
 
