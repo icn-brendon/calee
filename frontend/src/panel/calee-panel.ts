@@ -1758,7 +1758,7 @@ export class CaleePanel extends LitElement {
 
     /* ── Tablet portrait (600px - 768px) ───────────────────── */
 
-    @media (min-width: 600px) and (max-width: 768px) {
+    @media (min-width: 600px) and (max-width: 767px) {
       .sidebar {
         width: 48px;
         min-width: 48px;

@@ -212,7 +212,7 @@ class SqlPlannerStore(AbstractPlannerStore):
             # (table_name, column_name, column_sql_type_with_default)
             # ── Events ──
             ("calee_events", "snooze_until", datetime_type),
-            ("calee_events", "exceptions", "TEXT DEFAULT '[]'"),
+            ("calee_events", "exceptions", "TEXT"),
             # ── Tasks ──
             ("calee_tasks", "category", "VARCHAR(64) DEFAULT ''"),
             ("calee_tasks", "is_recurring", "BOOLEAN DEFAULT FALSE"),

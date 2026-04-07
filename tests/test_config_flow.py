@@ -114,7 +114,7 @@ class TestConfigFlowDatabase:
         mock_engine.dispose = AsyncMock()
 
         with patch(
-            "custom_components.calee.config_flow.create_async_engine",
+            "sqlalchemy.ext.asyncio.create_async_engine",
             return_value=mock_engine,
         ):
             result = await flow.async_step_database(db_input)
@@ -138,7 +138,7 @@ class TestConfigFlowDatabase:
         }
 
         with patch(
-            "custom_components.calee.config_flow.create_async_engine",
+            "sqlalchemy.ext.asyncio.create_async_engine",
             side_effect=Exception("Connection refused"),
         ):
             result = await flow.async_step_database(db_input)
