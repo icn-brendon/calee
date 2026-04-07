@@ -4,7 +4,7 @@
  * collapsible completed section.
  */
 
-import { LitElement, html, css, nothing } from "lit";
+import { LitElement, html, css, nothing, PropertyValues } from "lit";
 import { customElement, property, state, query } from "lit/decorators.js";
 import type { PlannerTask, TaskPreset } from "../store/types.js";
 import {
@@ -58,6 +58,9 @@ export class CaleeShoppingView extends LitElement {
   /** The ID of the shopping list for creating presets. */
   @property({ type: String }) listId = "shopping";
 
+  /** Incoming toast message from the parent (e.g. for merge feedback). */
+  @property({ type: String }) toastMessage = "";
+
   /** Currency symbol from options. */
   @property({ type: String }) currency = "$";
 
@@ -78,6 +81,10 @@ export class CaleeShoppingView extends LitElement {
 
   /** Number of pending items to render; grows when user taps "Show more". */
   @state() private _pendingRenderLimit = 100;
+
+  /** Toast message for duplicate merge feedback. */
+  @state() private _toastMessage = "";
+  private _toastTimer: ReturnType<typeof setTimeout> | null = null;
 
   /* Swipe state (mobile) */
   private _swipe: SwipeState = createSwipeState();
@@ -322,6 +329,69 @@ export class CaleeShoppingView extends LitElement {
       white-space: nowrap;
     }
 
+    .item-qty-info {
+      font-size: 12px;
+      color: var(--shop-secondary);
+      font-weight: 500;
+      flex-shrink: 0;
+      margin-right: 2px;
+    }
+
+    .qty-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+
+    .qty-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      border: 1px solid var(--shop-border);
+      background: var(--shop-bg);
+      color: var(--shop-text);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: background 0.15s, border-color 0.15s;
+      line-height: 1;
+    }
+
+    .qty-btn:hover {
+      border-color: var(--shop-accent);
+      background: color-mix(in srgb, var(--shop-accent) 10%, transparent);
+    }
+
+    .qty-value {
+      min-width: 24px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--shop-text);
+    }
+
+    .unit-select {
+      font-size: 11px;
+      padding: 2px 4px;
+      border: 1px solid var(--shop-border);
+      border-radius: 4px;
+      background: var(--shop-bg);
+      color: var(--shop-secondary);
+      outline: none;
+      cursor: pointer;
+      max-width: 56px;
+      flex-shrink: 0;
+    }
+
+    .unit-select:focus {
+      border-color: var(--shop-accent);
+    }
+
     .recurring-badge {
       font-size: 14px;
       line-height: 1;
@@ -332,6 +402,32 @@ export class CaleeShoppingView extends LitElement {
     .item-price {
       flex-shrink: 0;
       width: 72px;
+    }
+
+    /* ── Toast notification ──────────────────────────────────── */
+
+    .toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary-text-color, #212121);
+      color: var(--card-background-color, #fff);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      z-index: 300;
+      pointer-events: none;
+      animation: toast-fade 2.5s ease forwards;
+    }
+
+    @keyframes toast-fade {
+      0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
     }
     .item-price input {
       width: 100%;
@@ -857,6 +953,18 @@ export class CaleeShoppingView extends LitElement {
     }
   `];
 
+  /* ── Lifecycle ───────────────────────────────────────────────────── */
+
+  updated(changedProps: PropertyValues): void {
+    if (changedProps.has("toastMessage") && this.toastMessage) {
+      this._showToast(this.toastMessage);
+      // Notify the parent to clear its prop so the same message can fire again.
+      this.dispatchEvent(
+        new CustomEvent("toast-shown", { bubbles: true, composed: true }),
+      );
+    }
+  }
+
   /* ── Computed ────────────────────────────────────────────────────── */
 
   /** All non-deleted, non-completed tasks. */
@@ -1108,6 +1216,47 @@ export class CaleeShoppingView extends LitElement {
       this._quickAddText = "";
       this._inputEl.value = "";
     }
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    if (this._toastTimer) {
+      clearTimeout(this._toastTimer);
+      this._toastTimer = null;
+    }
+  }
+
+  /** Show a toast notification that auto-dismisses. */
+  private _showToast(message: string): void {
+    if (this._toastTimer) clearTimeout(this._toastTimer);
+    this._toastMessage = message;
+    this._toastTimer = setTimeout(() => {
+      this._toastMessage = "";
+      this._toastTimer = null;
+    }, 2500);
+  }
+
+  private _onQuantityChange(task: PlannerTask, delta: number): void {
+    const current = task.quantity ?? 1;
+    const newQty = Math.max(0.1, current + delta);
+    this.dispatchEvent(
+      new CustomEvent("task-quantity-update", {
+        detail: { taskId: task.id, quantity: newQty, version: task.version },
+        bubbles: true,
+        composed: true,
+      }),
+    );
+  }
+
+  private _onUnitChange(task: PlannerTask, e: Event): void {
+    const unit = (e.target as HTMLSelectElement).value;
+    this.dispatchEvent(
+      new CustomEvent("task-unit-update", {
+        detail: { taskId: task.id, unit, version: task.version },
+        bubbles: true,
+        composed: true,
+      }),
+    );
   }
 
   private _onPriceChange(task: PlannerTask, e: Event): void {
@@ -1435,6 +1584,11 @@ export class CaleeShoppingView extends LitElement {
               : nothing}
           `
         : nothing}
+
+      <!-- Toast -->
+      ${this._toastMessage
+        ? html`<div class="toast">${this._toastMessage}</div>`
+        : nothing}
     `;
   }
 
@@ -1568,6 +1722,13 @@ export class CaleeShoppingView extends LitElement {
   private _renderItem(task: PlannerTask, done: boolean) {
     const delta = getSwipeDelta(this._swipe, task.id);
     const isSwiping = this._swipe.swipingId === task.id;
+    const qty = task.quantity ?? 1;
+    const unit = task.unit ?? "";
+    const UNIT_OPTIONS = ["", "pcs", "L", "kg", "pack", "box", "bag", "can", "bottle", "dozen"];
+
+    // Build display label: "2x Milk 1L"
+    const qtyLabel = qty > 1 ? `${qty % 1 === 0 ? qty.toFixed(0) : qty}x` : "";
+    const unitLabel = unit ? ` ${unit}` : "";
 
     return html`
       <li class="swipe-row-wrapper ${isSwiping ? "swiping" : ""}">
@@ -1593,9 +1754,25 @@ export class CaleeShoppingView extends LitElement {
           ${task.is_recurring && !done
             ? html`<span class="recurring-badge" title="Recurring item">\uD83D\uDD04</span>`
             : nothing}
-          <span class="item-title">${task.title}</span>
+          <span class="item-title">${qtyLabel ? html`<span class="item-qty-info">${qtyLabel}</span>` : nothing}${task.title}${unitLabel ? html`<span class="item-qty-info">${unitLabel}</span>` : nothing}</span>
           ${!done
             ? html`
+                <span class="qty-controls">
+                  <button class="qty-btn" @click=${() => this._onQuantityChange(task, -1)} title="Decrease" aria-label="Decrease quantity">-</button>
+                  <span class="qty-value">${qty % 1 === 0 ? qty.toFixed(0) : qty}</span>
+                  <button class="qty-btn" @click=${() => this._onQuantityChange(task, 1)} title="Increase" aria-label="Increase quantity">+</button>
+                </span>
+                <select
+                  class="unit-select"
+                  .value=${unit}
+                  @change=${(e: Event) => this._onUnitChange(task, e)}
+                  title="Unit"
+                  aria-label="Unit"
+                >
+                  ${UNIT_OPTIONS.map(
+                    (u) => html`<option value=${u} ?selected=${unit === u}>${u || "--"}</option>`,
+                  )}
+                </select>
                 <span class="item-price">
                   <input
                     type="text"

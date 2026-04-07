@@ -19,6 +19,7 @@ import type {
   PlannerEvent,
   PlannerCalendar,
   PlannerTask,
+  Routine,
   ShiftTemplate,
   TaskPreset,
   ViewType,
@@ -40,6 +41,7 @@ import "../dialogs/template-manager.js";
 import "../dialogs/settings-dialog.js";
 import "../dialogs/deleted-items.js";
 import "../dialogs/activity-feed.js";
+import "../dialogs/routine-manager.js";
 
 // ── Types ──────────────────────────────────────────────────────────
 
@@ -168,6 +170,7 @@ export class CaleePanel extends LitElement {
   @state() private _tasks: PlannerTask[] = [];
   @state() private _templates: ShiftTemplate[] = [];
   @state() private _presets: TaskPreset[] = [];
+  @state() private _routines: Routine[] = [];
   @state() private _rawCalendars: PlannerCalendar[] = [];
 
   // ── Settings (loaded from backend) ─────────────────────────────────
@@ -191,6 +194,8 @@ export class CaleePanel extends LitElement {
   @state() private _showSettings = false;
   @state() private _showDeletedItems = false;
   @state() private _showActivityFeed = false;
+  @state() private _showRoutineManager = false;
+  @state() private _shoppingToast = "";
 
   private _store?: PlannerStore;
   private _hashHandler = this._onHashChange.bind(this);
@@ -339,17 +344,19 @@ export class CaleePanel extends LitElement {
     this._tasks = store.tasks ?? [];
     this._templates = store.templates ?? [];
     this._presets = store.presets ?? [];
+    this._routines = store.routines ?? [];
     this._tasksLoaded = true;
   }
 
   private async _loadViaWebSocket(): Promise<void> {
     if (!this.hass) return;
     try {
-      const [calendars, lists, templates, presets] = await Promise.all([
+      const [calendars, lists, templates, presets, routines] = await Promise.all([
         this.hass.callWS({ type: "calee/calendars" }),
         this.hass.callWS({ type: "calee/lists" }),
         this.hass.callWS({ type: "calee/templates" }),
         this.hass.callWS({ type: "calee/presets" }).catch(() => []),
+        this.hass.callWS({ type: "calee/routines" }).catch(() => []),
       ]);
       this._rawCalendars = calendars ?? [];
       this._calendars = this._rawCalendars.map((c: any) => ({
@@ -361,6 +368,7 @@ export class CaleePanel extends LitElement {
       this._lists = lists ?? [];
       this._templates = templates ?? [];
       this._presets = presets ?? [];
+      this._routines = (routines as Routine[]) ?? [];
 
       // Load tasks lazily — only fetch now if the initial view needs them.
       if (this._currentView === "tasks" || this._currentView === "shopping") {
@@ -374,6 +382,7 @@ export class CaleePanel extends LitElement {
       this._tasks = [];
       this._templates = [];
       this._presets = [];
+      this._routines = [];
     }
 
     // Load events for the current date range
@@ -570,6 +579,7 @@ export class CaleePanel extends LitElement {
       this._showSettings ||
       this._showDeletedItems ||
       this._showActivityFeed ||
+      this._showRoutineManager ||
       this._showAddDialog
     ) {
       // Only handle Escape to close the dialog
@@ -1725,6 +1735,9 @@ export class CaleePanel extends LitElement {
           @task-quick-add=${this._onTaskQuickAdd}
           @task-update=${this._onTaskUpdate}
           @task-price-update=${this._onTaskPriceUpdate}
+          @task-quantity-update=${this._onTaskQuantityUpdate}
+          @task-unit-update=${this._onTaskUnitUpdate}
+          @routine-execute=${this._onRoutineExecute}
           @preset-add=${this._onPresetAdd}
           @preset-create=${this._onPresetCreate}
           @preset-delete=${this._onPresetDelete}
@@ -1786,6 +1799,14 @@ export class CaleePanel extends LitElement {
         ?open=${this._showActivityFeed}
         @dialog-close=${this._onActivityFeedClose}
       ></calee-activity-feed>
+      <calee-routine-manager
+        .hass=${this.hass}
+        .routines=${this._routines}
+        .templates=${this._templates}
+        ?open=${this._showRoutineManager}
+        @routine-changed=${this._onRoutineChanged}
+        @dialog-close=${this._onRoutineManagerClose}
+      ></calee-routine-manager>
     `;
   }
 
@@ -1971,6 +1992,33 @@ export class CaleePanel extends LitElement {
                   </div>
                 `
               )}
+        </div>
+
+        <!-- Routines -->
+        <div class="sidebar-section">
+          <h3 class="sidebar-heading">Routines</h3>
+          ${this._routines.map(
+            (r) => html`
+              <button
+                class="nav-item nav-item-muted"
+                @click=${() => this._executeRoutine(r.id)}
+                title="${r.description || `Run ${r.name}`}"
+              >
+                <span style="font-size:18px;width:20px;text-align:center;flex-shrink:0;">${r.emoji || "\u26A1"}</span>
+                <span>${r.name}</span>
+              </button>
+            `,
+          )}
+          <button
+            class="nav-item nav-item-muted"
+            @click=${() => { this._showRoutineManager = true; }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.32 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"></path>
+            </svg>
+            Manage routines
+          </button>
         </div>
 
         <!-- More: Year, Recently Deleted & Activity -->
@@ -2363,6 +2411,8 @@ export class CaleePanel extends LitElement {
           .listId=${shoppingList?.id ?? "shopping"}
           .currency=${this._settingsCurrency}
           .budget=${this._settingsBudget}
+          .toastMessage=${this._shoppingToast}
+          @toast-shown=${() => { this._shoppingToast = ""; }}
         ></calee-shopping-view>`;
       }
 
@@ -2522,6 +2572,50 @@ export class CaleePanel extends LitElement {
     }
   }
 
+  /** Handle task-quantity-update from shopping view. */
+  private async _onTaskQuantityUpdate(
+    e: CustomEvent<{ taskId: string; quantity: number; version: number }>,
+  ): Promise<void> {
+    const { taskId, quantity, version } = e.detail;
+    try {
+      const updated = await this.hass.callWS({
+        type: "calee/update_task",
+        task_id: taskId,
+        version,
+        quantity,
+      });
+      if (updated) {
+        this._tasks = this._tasks.map((t) =>
+          t.id === taskId ? (updated as PlannerTask) : t,
+        );
+      }
+    } catch (err) {
+      console.error("Failed to update task quantity:", err);
+    }
+  }
+
+  /** Handle task-unit-update from shopping view. */
+  private async _onTaskUnitUpdate(
+    e: CustomEvent<{ taskId: string; unit: string; version: number }>,
+  ): Promise<void> {
+    const { taskId, unit, version } = e.detail;
+    try {
+      const updated = await this.hass.callWS({
+        type: "calee/update_task",
+        task_id: taskId,
+        version,
+        unit,
+      });
+      if (updated) {
+        this._tasks = this._tasks.map((t) =>
+          t.id === taskId ? (updated as PlannerTask) : t,
+        );
+      }
+    } catch (err) {
+      console.error("Failed to update task unit:", err);
+    }
+  }
+
   /** Handle task-quick-add from tasks/shopping views. */
   private async _onTaskQuickAdd(e: CustomEvent<{ title: string; category?: string; due?: string; recurrence_rule?: string; note?: string }>): Promise<void> {
     const listId = this._currentView === "shopping"
@@ -2545,9 +2639,19 @@ export class CaleePanel extends LitElement {
     }
 
     try {
-      const newTask = await this.hass.callWS(wsMsg);
+      const newTask = (await this.hass.callWS(wsMsg)) as PlannerTask | null;
       if (newTask) {
-        this._tasks = [...this._tasks, newTask as PlannerTask];
+        if (newTask.merged) {
+          // Duplicate was merged - update existing task in state
+          this._tasks = this._tasks.map((t) =>
+            t.id === newTask.id ? newTask : t,
+          );
+          // Show toast on shopping view
+          const qty = newTask.quantity ?? 1;
+          this._shoppingToast = `${newTask.title} \u2014 quantity updated to ${qty % 1 === 0 ? qty.toFixed(0) : qty}`;
+        } else {
+          this._tasks = [...this._tasks, newTask];
+        }
       }
     } catch (err) {
       console.error("Failed to create task:", err);
@@ -2586,12 +2690,20 @@ export class CaleePanel extends LitElement {
   /** Handle preset-add from tasks/shopping views. */
   private async _onPresetAdd(e: CustomEvent<{ presetId: string }>): Promise<void> {
     try {
-      const result = await this.hass.callWS({
+      const result = (await this.hass.callWS({
         type: "calee/add_from_preset",
         preset_id: e.detail.presetId,
-      });
+      })) as PlannerTask | null;
       if (result) {
-        this._tasks = [...this._tasks, result as PlannerTask];
+        if (result.merged) {
+          this._tasks = this._tasks.map((t) =>
+            t.id === result.id ? result : t,
+          );
+          const qty = result.quantity ?? 1;
+          this._shoppingToast = `${result.title} \u2014 quantity updated to ${qty % 1 === 0 ? qty.toFixed(0) : qty}`;
+        } else {
+          this._tasks = [...this._tasks, result];
+        }
       }
     } catch (err) {
       console.error("Failed to add from preset:", err);
@@ -2862,6 +2974,42 @@ export class CaleePanel extends LitElement {
 
   private _onActivityFeedClose(): void {
     this._showActivityFeed = false;
+  }
+
+  // ── Routines ─────────────────────────────────────────────────────
+
+  private async _executeRoutine(routineId: string): Promise<void> {
+    if (!this.hass) return;
+    const today = new Date().toISOString().slice(0, 10);
+    try {
+      await this.hass.callWS({
+        type: "calee/execute_routine",
+        routine_id: routineId,
+        date: today,
+      });
+      // Refresh data to pick up newly created items
+      this._refreshAll();
+    } catch (err) {
+      console.error("Failed to execute routine:", err);
+    }
+  }
+
+  private async _onRoutineExecute(e: CustomEvent<{ routineId: string }>): Promise<void> {
+    await this._executeRoutine(e.detail.routineId);
+  }
+
+  private async _onRoutineChanged(): Promise<void> {
+    // Re-fetch routines
+    if (!this.hass) return;
+    try {
+      this._routines = (await this.hass.callWS({ type: "calee/routines" })) ?? [];
+    } catch {
+      // ignore
+    }
+  }
+
+  private _onRoutineManagerClose(): void {
+    this._showRoutineManager = false;
   }
 
   // ── Quick Add Dialog ──────────────────────────────────────────────

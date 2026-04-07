@@ -15,6 +15,7 @@ import type {
   PlannerList,
   ShiftTemplate,
   TaskPreset,
+  Routine,
   PlannerChangeEvent,
   ViewType,
 } from "./types.js";
@@ -30,6 +31,7 @@ export class PlannerStore {
   lists: PlannerList[] = [];
   templates: ShiftTemplate[] = [];
   presets: TaskPreset[] = [];
+  routines: Routine[] = [];
 
   selectedDate: string = new Date().toISOString().slice(0, 10);
   currentView: ViewType = "month";
@@ -225,14 +227,22 @@ export class PlannerStore {
     return this.presets;
   }
 
+  /**
+   * Return routines loaded by the store.
+   */
+  getRoutines(): Routine[] {
+    return this.routines;
+  }
+
   private async _fetchAll(): Promise<void> {
-    const [calendars, events, tasks, lists, templates, presets] = await Promise.all([
+    const [calendars, events, tasks, lists, templates, presets, routines] = await Promise.all([
       this._conn.getCalendars(),
       this._conn.getEvents(),
       this._conn.getTasks({}),
       this._conn.getLists(),
       this._conn.getTemplates(),
       this._conn.getPresets(),
+      this._conn.getRoutines(),
     ]);
 
     this.calendars = calendars;
@@ -241,6 +251,7 @@ export class PlannerStore {
     this.lists = lists;
     this.templates = templates;
     this.presets = presets;
+    this.routines = routines;
 
     // If no calendar filter has been set yet, enable all calendars.
     if (this.enabledCalendarIds.size === 0 && calendars.length > 0) {

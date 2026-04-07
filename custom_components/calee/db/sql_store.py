@@ -8,6 +8,7 @@ entirely from the in-memory cache.
 
 from __future__ import annotations
 
+import json
 import logging
 from datetime import UTC, datetime, timedelta
 
@@ -20,6 +21,7 @@ from sqlalchemy.orm import sessionmaker
 from ..const import (
     DEFAULT_CALENDARS,
     DEFAULT_LISTS,
+    DEFAULT_ROUTINES,
     DEFAULT_TEMPLATES,
     SOFT_DELETE_RETENTION_DAYS,
     AuditAction,
@@ -31,6 +33,7 @@ from ..models import (
     PlannerList,
     PlannerTask,
     RoleAssignment,
+    Routine,
     ShiftTemplate,
 )
 from .base import AbstractPlannerStore
@@ -51,6 +54,9 @@ from .schema import (
 )
 from .schema import (
     roles as roles_table,
+)
+from .schema import (
+    routines as routines_table,
 )
 from .schema import (
     tasks as tasks_table,
@@ -94,6 +100,17 @@ def _dt_to_iso(dt_val: datetime | None) -> str | None:
     return dt_val.isoformat()
 
 
+def _parse_json_list(raw: str | None) -> list[dict]:
+    """Parse a JSON text column into a list of dicts, with a safe fallback."""
+    if not raw:
+        return []
+    try:
+        parsed = json.loads(raw)
+        return parsed if isinstance(parsed, list) else []
+    except (json.JSONDecodeError, TypeError):
+        return []
+
+
 class SqlPlannerStore(AbstractPlannerStore):
     """Write-through cached store backed by MariaDB or PostgreSQL."""
 
@@ -108,6 +125,7 @@ class SqlPlannerStore(AbstractPlannerStore):
         self.templates: dict[str, ShiftTemplate] = {}
         self.lists: dict[str, PlannerList] = {}
         self.tasks: dict[str, PlannerTask] = {}
+        self.routines: dict[str, Routine] = {}
         self.roles: list[RoleAssignment] = []
         self.audit_log: list[AuditEntry] = []
 
@@ -128,6 +146,9 @@ class SqlPlannerStore(AbstractPlannerStore):
         async with self._engine.begin() as conn:
             await conn.run_sync(metadata.create_all)
 
+        # Ensure new columns exist on tables that may predate the latest schema.
+        await self._ensure_new_columns()
+
         # Load all rows into the in-memory cache.
         await self._load_all_from_db()
 
@@ -139,6 +160,11 @@ class SqlPlannerStore(AbstractPlannerStore):
             _LOGGER.info("SQL store first run — seeding default calendars, lists, and templates")
             await self._seed_defaults()
 
+        # Seed default routines for existing installs that upgraded.
+        if not self.routines:
+            _LOGGER.info("No routines found — seeding defaults")
+            await self._seed_default_routines()
+
     async def async_save(self) -> None:
         """No-op: all writes are persisted immediately in the write-through model."""
 
@@ -148,6 +174,40 @@ class SqlPlannerStore(AbstractPlannerStore):
             await self._engine.dispose()
             self._engine = None
             self._session_factory = None
+
+    # ── Schema migration helpers ─────────────────────────────────────────
+
+    async def _ensure_new_columns(self) -> None:
+        """Add columns that may be missing on databases created before the latest schema.
+
+        Each ALTER TABLE is wrapped in try/except so that columns that
+        already exist are silently skipped.
+        """
+        _new_columns: list[tuple[str, str, str]] = [
+            # (table_name, column_name, column_sql_type_with_default)
+            ("calee_tasks", "category", "VARCHAR(64) DEFAULT ''"),
+            ("calee_tasks", "is_recurring", "BOOLEAN DEFAULT FALSE"),
+            ("calee_tasks", "recur_reset_hour", "INTEGER DEFAULT 0"),
+            ("calee_tasks", "quantity", "FLOAT DEFAULT 1.0"),
+            ("calee_tasks", "unit", "VARCHAR(16) DEFAULT ''"),
+            ("calee_tasks", "price", "FLOAT"),
+            ("calee_tasks", "position", "INTEGER DEFAULT 0"),
+        ]
+
+        async with self._engine.begin() as conn:
+            for table_name, col_name, col_type in _new_columns:
+                try:
+                    await conn.execute(
+                        sa.text(
+                            f"ALTER TABLE {table_name} ADD COLUMN {col_name} {col_type}"
+                        )
+                    )
+                    _LOGGER.info(
+                        "Added missing column %s.%s", table_name, col_name
+                    )
+                except (sa.exc.OperationalError, sa.exc.ProgrammingError):
+                    # Column already exists — expected on up-to-date installs.
+                    pass
 
     # ── Pruning ────────────────────────────────────────────────────────
 
@@ -369,6 +429,22 @@ class SqlPlannerStore(AbstractPlannerStore):
     async def async_put_task(self, task: PlannerTask) -> None:
         self.tasks[task.id] = task
         await self._upsert(tasks_table, _task_to_sql(task))
+
+    # ── Routines ───────────────────────────────────────────────────────
+
+    def get_routines(self) -> dict[str, Routine]:
+        return dict(self.routines)
+
+    def get_routine(self, routine_id: str) -> Routine | None:
+        return self.routines.get(routine_id)
+
+    async def async_put_routine(self, routine: Routine) -> None:
+        self.routines[routine.id] = routine
+        await self._upsert(routines_table, _routine_to_sql(routine))
+
+    async def async_remove_routine(self, routine_id: str) -> None:
+        self.routines.pop(routine_id, None)
+        await self._delete_by_pk(routines_table, routine_id)
 
     # ── Roles ───────────────────────────────────────────────────────────
 
@@ -603,12 +679,30 @@ class SqlPlannerStore(AbstractPlannerStore):
                     category=getattr(row, "category", "") or "",
                     is_recurring=bool(getattr(row, "is_recurring", False)),
                     recur_reset_hour=getattr(row, "recur_reset_hour", 0) or 0,
+                    quantity=getattr(row, "quantity", 1.0) or 1.0,
+                    unit=getattr(row, "unit", "") or "",
                     price=getattr(row, "price", None),
                     position=getattr(row, "position", 0) or 0,
                     created_at=_dt_to_iso(row.created_at) or "",
                     updated_at=_dt_to_iso(row.updated_at) or "",
                     version=row.version or 1,
                     deleted_at=_dt_to_iso(row.deleted_at),
+                )
+                for row in result
+            }
+
+            # Routines
+            result = await session.execute(sa.select(routines_table))
+            self.routines = {
+                row.id: Routine(
+                    id=row.id,
+                    name=row.name or "",
+                    emoji=row.emoji or "",
+                    description=row.description or "",
+                    shift_template_id=row.shift_template_id,
+                    tasks=_parse_json_list(row.tasks),
+                    shopping_items=_parse_json_list(row.shopping_items),
+                    created_at=row.created_at or "",
                 )
                 for row in result
             }
@@ -646,12 +740,13 @@ class SqlPlannerStore(AbstractPlannerStore):
 
         _LOGGER.debug(
             "Loaded from DB: %d calendars, %d events, %d templates, "
-            "%d lists, %d tasks, %d roles, %d audit entries",
+            "%d lists, %d tasks, %d routines, %d roles, %d audit entries",
             len(self.calendars),
             len(self.events),
             len(self.templates),
             len(self.lists),
             len(self.tasks),
+            len(self.routines),
             len(self.roles),
             len(self.audit_log),
         )
@@ -704,6 +799,14 @@ class SqlPlannerStore(AbstractPlannerStore):
             len(self.templates),
         )
 
+    async def _seed_default_routines(self) -> None:
+        """Create default routines (used on first run or upgrade)."""
+        for routine_def in DEFAULT_ROUTINES:
+            routine = Routine.from_dict(routine_def)
+            self.routines[routine.id] = routine
+            await self._upsert(routines_table, _routine_to_sql(routine))
+        _LOGGER.info("Seeded %d default routines", len(self.routines))
+
 
 # ── Model-to-SQL row converters ────────────────────────────────────────
 # These convert ISO-string datetime fields to native datetime objects
@@ -728,4 +831,12 @@ def _task_to_sql(task: PlannerTask) -> dict:
     d["created_at"] = _iso_to_dt(d["created_at"])
     d["updated_at"] = _iso_to_dt(d["updated_at"])
     d["deleted_at"] = _iso_to_dt(d.get("deleted_at"))
+    return d
+
+
+def _routine_to_sql(routine: Routine) -> dict:
+    """Convert a Routine to a SQL-ready dict with JSON-encoded list fields."""
+    d = routine.to_dict()
+    d["tasks"] = json.dumps(d.get("tasks", []))
+    d["shopping_items"] = json.dumps(d.get("shopping_items", []))
     return d

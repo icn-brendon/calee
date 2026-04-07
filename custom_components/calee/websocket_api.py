@@ -33,14 +33,17 @@ from .const import (
     WS_TYPE_COMPLETE_TASK,
     WS_TYPE_CREATE_EVENT,
     WS_TYPE_CREATE_PRESET,
+    WS_TYPE_CREATE_ROUTINE,
     WS_TYPE_CREATE_TASK,
     WS_TYPE_CREATE_TEMPLATE,
     WS_TYPE_DELETE_EVENT,
     WS_TYPE_DELETE_PRESET,
+    WS_TYPE_DELETE_ROUTINE,
     WS_TYPE_DELETE_TASK,
     WS_TYPE_DELETE_TEMPLATE,
     WS_TYPE_DELETED_ITEMS,
     WS_TYPE_EVENTS,
+    WS_TYPE_EXECUTE_ROUTINE,
     WS_TYPE_EXPAND_RECURRING_EVENTS,
     WS_TYPE_GET_SETTINGS,
     WS_TYPE_IMPORT_CSV,
@@ -50,6 +53,7 @@ from .const import (
     WS_TYPE_PRESETS,
     WS_TYPE_RESTORE_EVENT,
     WS_TYPE_RESTORE_TASK,
+    WS_TYPE_ROUTINES,
     WS_TYPE_SET_CALENDAR_PRIVATE,
     WS_TYPE_SET_LIST_PRIVATE,
     WS_TYPE_SUBSCRIBE,
@@ -58,6 +62,7 @@ from .const import (
     WS_TYPE_UNCOMPLETE_TASK,
     WS_TYPE_UNLINK_TASK_FROM_EVENT,
     WS_TYPE_UPDATE_EVENT,
+    WS_TYPE_UPDATE_ROUTINE,
     WS_TYPE_UPDATE_SETTINGS,
     WS_TYPE_UPDATE_TASK,
     WS_TYPE_UPDATE_TEMPLATE,
@@ -110,6 +115,11 @@ def async_register_websocket_commands(hass: HomeAssistant) -> None:
     websocket_api.async_register_command(hass, ws_handle_set_calendar_private)
     websocket_api.async_register_command(hass, ws_handle_set_list_private)
     websocket_api.async_register_command(hass, ws_handle_expand_recurring_events)
+    websocket_api.async_register_command(hass, ws_handle_routines)
+    websocket_api.async_register_command(hass, ws_handle_create_routine)
+    websocket_api.async_register_command(hass, ws_handle_update_routine)
+    websocket_api.async_register_command(hass, ws_handle_delete_routine)
+    websocket_api.async_register_command(hass, ws_handle_execute_routine)
 
     hass.data[_REGISTERED] = True
     _LOGGER.debug("Calee WebSocket commands registered")
@@ -671,6 +681,10 @@ async def ws_handle_delete_event(
         vol.Optional("category", default=""): str,
         vol.Optional("is_recurring", default=False): bool,
         vol.Optional("recur_reset_hour", default=0): int,
+        vol.Optional("quantity", default=1.0): vol.All(
+            vol.Coerce(float), vol.Range(min=0.1)
+        ),
+        vol.Optional("unit", default=""): str,
         vol.Optional("price"): vol.Any(float, int, None),
     }
 )
@@ -680,7 +694,12 @@ async def ws_handle_create_task(
     connection: websocket_api.ActiveConnection,
     msg: dict[str, Any],
 ) -> None:
-    """Create a new task."""
+    """Create a new task.
+
+    For shopping lists, if an active task with the same title exists the
+    quantity is incremented instead of creating a duplicate.  The response
+    includes ``merged: true`` when this happens.
+    """
     api = _get_api(hass)
     if api is None:
         connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
@@ -689,6 +708,10 @@ async def ws_handle_create_task(
     price_val = msg.get("price")
     if isinstance(price_val, int):
         price_val = float(price_val)
+
+    quantity_val = msg.get("quantity", 1.0)
+    if isinstance(quantity_val, int):
+        quantity_val = float(quantity_val)
 
     try:
         task = await api.async_add_task(
@@ -700,6 +723,8 @@ async def ws_handle_create_task(
             category=msg.get("category", ""),
             is_recurring=msg.get("is_recurring", False),
             recur_reset_hour=msg.get("recur_reset_hour", 0),
+            quantity=quantity_val,
+            unit=msg.get("unit", ""),
             price=price_val,
             user_id=connection.user.id if connection.user else None,
         )
@@ -707,7 +732,10 @@ async def ws_handle_create_task(
         connection.send_error(msg["id"], "create_failed", str(err))
         return
 
-    connection.send_result(msg["id"], task.to_dict())
+    result = task.to_dict()
+    if getattr(task, "_merged", False):
+        result["merged"] = True
+    connection.send_result(msg["id"], result)
 
 
 @websocket_api.websocket_command(
@@ -723,6 +751,10 @@ async def ws_handle_create_task(
         vol.Optional("category"): str,
         vol.Optional("is_recurring"): bool,
         vol.Optional("recur_reset_hour"): int,
+        vol.Optional("quantity"): vol.All(
+            vol.Coerce(float), vol.Range(min=0.1)
+        ),
+        vol.Optional("unit"): str,
         vol.Optional("price"): vol.Any(float, int, None),
     }
 )
@@ -742,6 +774,10 @@ async def ws_handle_update_task(
     if isinstance(price_val, int):
         price_val = float(price_val)
 
+    quantity_val = msg.get("quantity")
+    if isinstance(quantity_val, int):
+        quantity_val = float(quantity_val)
+
     try:
         task = await api.async_update_task(
             task_id=msg["task_id"],
@@ -754,6 +790,8 @@ async def ws_handle_update_task(
             category=msg.get("category"),
             is_recurring=msg.get("is_recurring"),
             recur_reset_hour=msg.get("recur_reset_hour"),
+            quantity=quantity_val,
+            unit=msg.get("unit"),
             price=price_val,
             user_id=connection.user.id if connection.user else None,
         )
@@ -1063,7 +1101,10 @@ async def ws_handle_add_from_preset(
         connection.send_error(msg["id"], "add_from_preset_failed", str(err))
         return
 
-    connection.send_result(msg["id"], task.to_dict())
+    result = task.to_dict()
+    if getattr(task, "_merged", False):
+        result["merged"] = True
+    connection.send_result(msg["id"], result)
 
 
 # ── Preset mutations ──────────────────────────────────────────────────
@@ -1450,6 +1491,174 @@ async def ws_handle_set_list_private(
         return
 
     connection.send_result(msg["id"], {"success": True})
+
+
+# ── Routines ──────────────────────────────────────────────────────────
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_TYPE_ROUTINES,
+    }
+)
+@callback
+def ws_handle_routines(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Return all routines."""
+    store = _get_store(hass)
+    if store is None:
+        connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
+        return
+
+    result = [r.to_dict() for r in store.get_routines().values()]
+    connection.send_result(msg["id"], result)
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_TYPE_CREATE_ROUTINE,
+        vol.Required("name"): str,
+        vol.Optional("emoji", default=""): str,
+        vol.Optional("description", default=""): str,
+        vol.Optional("shift_template_id"): str,
+        vol.Optional("tasks", default=[]): list,
+        vol.Optional("shopping_items", default=[]): list,
+    }
+)
+@websocket_api.async_response
+async def ws_handle_create_routine(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Create a new routine."""
+    api = _get_api(hass)
+    if api is None:
+        connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
+        return
+
+    try:
+        routine = await api.async_create_routine(
+            name=msg["name"],
+            emoji=msg.get("emoji", ""),
+            description=msg.get("description", ""),
+            shift_template_id=msg.get("shift_template_id"),
+            tasks=msg.get("tasks", []),
+            shopping_items=msg.get("shopping_items", []),
+            user_id=connection.user.id if connection.user else None,
+        )
+    except HomeAssistantError as err:
+        connection.send_error(msg["id"], "create_failed", str(err))
+        return
+
+    connection.send_result(msg["id"], routine.to_dict())
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_TYPE_UPDATE_ROUTINE,
+        vol.Required("routine_id"): str,
+        vol.Optional("name"): str,
+        vol.Optional("emoji"): str,
+        vol.Optional("description"): str,
+        vol.Optional("shift_template_id"): vol.Any(str, None),
+        vol.Optional("tasks"): list,
+        vol.Optional("shopping_items"): list,
+    }
+)
+@websocket_api.async_response
+async def ws_handle_update_routine(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Update an existing routine."""
+    api = _get_api(hass)
+    if api is None:
+        connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
+        return
+
+    try:
+        routine = await api.async_update_routine(
+            routine_id=msg["routine_id"],
+            name=msg.get("name"),
+            emoji=msg.get("emoji"),
+            description=msg.get("description"),
+            shift_template_id=msg.get("shift_template_id", ...),
+            tasks=msg.get("tasks"),
+            shopping_items=msg.get("shopping_items"),
+            user_id=connection.user.id if connection.user else None,
+        )
+    except HomeAssistantError as err:
+        connection.send_error(msg["id"], "update_failed", str(err))
+        return
+
+    connection.send_result(msg["id"], routine.to_dict())
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_TYPE_DELETE_ROUTINE,
+        vol.Required("routine_id"): str,
+    }
+)
+@websocket_api.async_response
+async def ws_handle_delete_routine(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Delete a routine."""
+    api = _get_api(hass)
+    if api is None:
+        connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
+        return
+
+    try:
+        routine = await api.async_delete_routine(
+            routine_id=msg["routine_id"],
+            user_id=connection.user.id if connection.user else None,
+        )
+    except HomeAssistantError as err:
+        connection.send_error(msg["id"], "delete_failed", str(err))
+        return
+
+    connection.send_result(msg["id"], routine.to_dict())
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_TYPE_EXECUTE_ROUTINE,
+        vol.Required("routine_id"): str,
+        vol.Required("date"): str,
+    }
+)
+@websocket_api.async_response
+async def ws_handle_execute_routine(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Execute a routine for a given date."""
+    api = _get_api(hass)
+    if api is None:
+        connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
+        return
+
+    try:
+        result = await api.async_execute_routine(
+            routine_id=msg["routine_id"],
+            target_date=msg["date"],
+            user_id=connection.user.id if connection.user else None,
+        )
+    except HomeAssistantError as err:
+        connection.send_error(msg["id"], "execute_failed", str(err))
+        return
+
+    connection.send_result(msg["id"], result)
 
 
 # ── Recurring event expansion ─────────────────────────────────────────

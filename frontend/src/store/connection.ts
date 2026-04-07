@@ -13,6 +13,7 @@ import type {
   PlannerList,
   ShiftTemplate,
   TaskPreset,
+  Routine,
   PlannerChangeEvent,
 } from "./types.js";
 
@@ -218,6 +219,14 @@ export class PlannerConnection {
     return this._hass.callWS<PlannerTask>({
       type: "calee/add_from_preset",
       preset_id: presetId,
+    });
+  }
+
+  // ── Routine queries ────────────────────────────────────────────────
+
+  getRoutines(): Promise<Routine[]> {
+    return this._hass.callWS<Routine[]>({
+      type: "calee/routines",
     });
   }
 
