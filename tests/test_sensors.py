@@ -6,7 +6,7 @@ from datetime import UTC, datetime, timedelta
 from unittest.mock import MagicMock
 
 import pytest
-from conftest import FakeStore
+from .conftest import FakeStore
 
 from custom_components.calee.models import PlannerEvent, PlannerTask, ShiftTemplate
 from custom_components.calee.sensor import (
