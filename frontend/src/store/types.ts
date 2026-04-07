@@ -163,14 +163,17 @@ export interface Conflict {
 // ── View types ────────────────────────────────────────────────────────
 
 export type ViewType =
-  | "month"
-  | "week"
-  | "day"
-  | "agenda"
+  | "home"
+  | "calendar"
   | "tasks"
   | "shopping"
-  | "year"
-  | "smart";
+  | "more";
+
+/** Sub-views within the calendar page. */
+export type CalendarSubView = "day" | "week" | "month" | "agenda";
+
+/** Sub-views within the "more" section. */
+export type MoreSubView = "year" | "smart" | "data-center" | "activity" | "deleted";
 
 // ── Subscription event payload ────────────────────────────────────────
 
