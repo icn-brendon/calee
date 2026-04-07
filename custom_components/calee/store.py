@@ -109,6 +109,22 @@ class JsonPlannerStore(AbstractPlannerStore):
             AuditEntry.from_dict(a) for a in raw.get("audit_log", [])
         ]
 
+        # Seed default templates for existing installs that upgraded.
+        if not self.templates:
+            _LOGGER.info("No templates found — seeding defaults")
+            for tpl_def in DEFAULT_TEMPLATES:
+                tpl = ShiftTemplate.from_dict(tpl_def)
+                self.templates[tpl.id] = tpl
+            await self.async_save()
+
+        # Seed default presets for existing installs that upgraded.
+        if not self.presets:
+            _LOGGER.info("No presets found — seeding defaults")
+            for preset_def in DEFAULT_PRESETS:
+                preset = TaskPreset.from_dict(preset_def)
+                self.presets[preset.id] = preset
+            await self.async_save()
+
         # Seed default routines for existing installs that upgraded.
         if not self.routines:
             _LOGGER.info("No routines found — seeding defaults")
