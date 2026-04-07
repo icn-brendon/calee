@@ -2412,6 +2412,7 @@ export class CaleePanel extends LitElement {
           .currency=${this._settingsCurrency}
           .budget=${this._settingsBudget}
           .toastMessage=${this._shoppingToast}
+          @toast-shown=${() => { this._shoppingToast = ""; }}
         ></calee-shopping-view>`;
       }
 
@@ -2648,8 +2649,6 @@ export class CaleePanel extends LitElement {
           // Show toast on shopping view
           const qty = newTask.quantity ?? 1;
           this._shoppingToast = `${newTask.title} \u2014 quantity updated to ${qty % 1 === 0 ? qty.toFixed(0) : qty}`;
-          // Reset toast so it can fire again for the same item
-          requestAnimationFrame(() => { this._shoppingToast = ""; });
         } else {
           this._tasks = [...this._tasks, newTask];
         }
@@ -2702,7 +2701,6 @@ export class CaleePanel extends LitElement {
           );
           const qty = result.quantity ?? 1;
           this._shoppingToast = `${result.title} \u2014 quantity updated to ${qty % 1 === 0 ? qty.toFixed(0) : qty}`;
-          requestAnimationFrame(() => { this._shoppingToast = ""; });
         } else {
           this._tasks = [...this._tasks, result];
         }

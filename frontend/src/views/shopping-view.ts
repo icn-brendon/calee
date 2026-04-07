@@ -958,8 +958,10 @@ export class CaleeShoppingView extends LitElement {
   updated(changedProps: PropertyValues): void {
     if (changedProps.has("toastMessage") && this.toastMessage) {
       this._showToast(this.toastMessage);
-      // Clear the incoming prop so it can fire again for the same text
-      this.toastMessage = "";
+      // Notify the parent to clear its prop so the same message can fire again.
+      this.dispatchEvent(
+        new CustomEvent("toast-shown", { bubbles: true, composed: true }),
+      );
     }
   }
 

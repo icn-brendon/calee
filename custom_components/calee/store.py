@@ -109,6 +109,14 @@ class JsonPlannerStore(AbstractPlannerStore):
             AuditEntry.from_dict(a) for a in raw.get("audit_log", [])
         ]
 
+        # Seed default routines for existing installs that upgraded.
+        if not self.routines:
+            _LOGGER.info("No routines found — seeding defaults")
+            for routine_def in DEFAULT_ROUTINES:
+                routine = Routine.from_dict(routine_def)
+                self.routines[routine.id] = routine
+            await self.async_save()
+
     async def async_save(self) -> None:
         """Persist current state to disk, pruning expired soft-deletes."""
         self._prune_expired_soft_deletes()

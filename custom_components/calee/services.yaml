@@ -639,6 +639,22 @@ create_routine:
       description: Optional shift template ID to create a shift from.
       selector:
         text:
+    tasks:
+      name: Tasks
+      description: >-
+        JSON array of task definitions.
+        Each object: {"title": "...", "list_id": "inbox", "due_offset_days": 0}
+      selector:
+        text:
+          multiline: true
+    shopping_items:
+      name: Shopping items
+      description: >-
+        JSON array of shopping item definitions.
+        Each object: {"title": "...", "category": "food", "quantity": 1}
+      selector:
+        text:
+          multiline: true
 
 update_routine:
   name: Update routine
@@ -655,6 +671,22 @@ update_routine:
       description: New name (leave blank to keep current).
       selector:
         text:
+    tasks:
+      name: Tasks
+      description: >-
+        JSON array of task definitions (replaces existing).
+        Each object: {"title": "...", "list_id": "inbox", "due_offset_days": 0}
+      selector:
+        text:
+          multiline: true
+    shopping_items:
+      name: Shopping items
+      description: >-
+        JSON array of shopping item definitions (replaces existing).
+        Each object: {"title": "...", "category": "food", "quantity": 1}
+      selector:
+        text:
+          multiline: true
 
 delete_routine:
   name: Delete routine

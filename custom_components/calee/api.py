@@ -1319,7 +1319,12 @@ class PlannerAPI:
                 )
 
         # 2. Create tasks.
-        dt = date.fromisoformat(target_date)
+        try:
+            dt = date.fromisoformat(target_date)
+        except ValueError as exc:
+            raise HomeAssistantError(
+                f"Invalid date format '{target_date}': expected ISO 8601 date (YYYY-MM-DD)"
+            ) from exc
         for task_def in routine.tasks:
             offset = task_def.get("due_offset_days", 0)
             due_date = (dt + timedelta(days=offset)).isoformat()
