@@ -150,11 +150,11 @@ class SqlPlannerStore(AbstractPlannerStore):
 
     async def async_load(self) -> None:
         """Create the engine, ensure tables exist, and load data into memory."""
-        self._engine = create_async_engine(
-            self._url,
-            pool_size=5,
-            max_overflow=2,
-        )
+        engine_kwargs: dict = {}
+        if "sqlite" not in self._url:
+            engine_kwargs["pool_size"] = 5
+            engine_kwargs["max_overflow"] = 2
+        self._engine = create_async_engine(self._url, **engine_kwargs)
         self._session_factory = sessionmaker(
             self._engine, class_=AsyncSession, expire_on_commit=False
         )

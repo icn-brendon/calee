@@ -28,7 +28,7 @@ def _make_flow() -> CaleeConfigFlow:
     flow.hass = MagicMock()
 
     async def _set_unique_id(uid):
-        flow.unique_id = uid
+        flow._unique_id = uid
 
     flow.async_set_unique_id = _set_unique_id
     flow._abort_if_unique_id_configured = MagicMock()
