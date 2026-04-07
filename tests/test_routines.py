@@ -148,7 +148,7 @@ class TestRoutineExecute:
         routine = Routine(
             id="routine_shift_001",
             name="Morning Routine",
-            shift_template_id="early",
+            shift_template_id="tpl_early",
             tasks=[],
             shopping_items=[],
         )
