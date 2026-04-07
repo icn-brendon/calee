@@ -60,8 +60,8 @@ interface PlannerListEntry {
 const DATE_VIEWS: ViewType[] = ["month", "week", "day", "year"];
 const ALL_VIEWS: ViewType[] = ["month", "week", "day", "agenda", "tasks", "shopping", "year"];
 
-// Views shown in the header tab bar (year is secondary, accessed via sidebar)
-const TAB_VIEWS: ViewType[] = ["week", "month", "day", "agenda", "tasks", "shopping"];
+// Views shown in the header tab bar (day is drill-down only; year accessed via sidebar)
+const TAB_VIEWS: ViewType[] = ["week", "month", "agenda", "tasks", "shopping"];
 
 // ── Helpers ────────────────────────────────────────────────────────
 
@@ -176,6 +176,10 @@ export class CaleePanel extends LitElement {
   @state() private _settingsCurrency = "$";
   @state() private _settingsBudget = 0;
 
+  // ── Detail drawer state (desktop right panel) ───────────────────────
+  @state() private _detailDrawerOpen = false;
+  @state() private _detailItem: PlannerEvent | PlannerTask | null = null;
+  @state() private _detailItemType: "event" | "task" | null = null;
   // ── Dialog state ────────────────────────────────────────────────────
   @state() private _editEvent: PlannerEvent | null = null;
   @state() private _showEventDialog = false;
@@ -190,6 +194,7 @@ export class CaleePanel extends LitElement {
 
   private _store?: PlannerStore;
   private _hashHandler = this._onHashChange.bind(this);
+  private _keyHandler = this._handleKeydown.bind(this);
   private _unsubscribe?: () => void;
 
   /** Track whether tasks have been loaded for the current session. */
@@ -200,12 +205,14 @@ export class CaleePanel extends LitElement {
   connectedCallback(): void {
     super.connectedCallback();
     window.addEventListener("hashchange", this._hashHandler);
+    window.addEventListener("keydown", this._keyHandler);
     this._applyHash();
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
     window.removeEventListener("hashchange", this._hashHandler);
+    window.removeEventListener("keydown", this._keyHandler);
     if (this._unsubscribe) {
       this._unsubscribe();
       this._unsubscribe = undefined;
@@ -530,6 +537,101 @@ export class CaleePanel extends LitElement {
 
   private _closeDrawer(): void {
     this._drawerOpen = false;
+  }
+
+  // ── Keyboard shortcuts (desktop) ────────────────────────────────
+
+  private _isEditableKeyboardTarget(e: KeyboardEvent): boolean {
+    const isEditableElement = (value: EventTarget | null | undefined): boolean => {
+      if (!(value instanceof HTMLElement)) return false;
+      const tag = value.tagName.toLowerCase();
+      return tag === "input" || tag === "textarea" || tag === "select" || value.isContentEditable;
+    };
+    if (e.composedPath().some((target) => isEditableElement(target))) return true;
+    let active: Element | null = document.activeElement;
+    while (active && active.shadowRoot?.activeElement) {
+      active = active.shadowRoot.activeElement;
+    }
+    return isEditableElement(active);
+  }
+
+  private _handleKeydown(e: KeyboardEvent): void {
+    // Skip if on narrow/mobile — keyboard shortcuts are desktop only
+    if (this.narrow) return;
+
+    // Skip if typing in an input, textarea, select, or contenteditable
+    if (this._isEditableKeyboardTarget(e)) return;
+
+    // Skip if any dialog or overlay is open
+    if (
+      this._showEventDialog ||
+      this._showTemplatePicker ||
+      this._showTemplateManager ||
+      this._showSettings ||
+      this._showDeletedItems ||
+      this._showActivityFeed ||
+      this._showAddDialog
+    ) {
+      // Only handle Escape to close the dialog
+      if (e.key === "Escape") {
+        this._onDialogClose();
+        this._showDeletedItems = false;
+        this._showActivityFeed = false;
+        this._showAddDialog = false;
+      }
+      return;
+    }
+
+    // Skip if modifier keys are held (except Shift for arrow keys)
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+    switch (e.key) {
+      case "n":
+        e.preventDefault();
+        this._onSidebarAdd();
+        break;
+      case "t":
+        e.preventDefault();
+        this._onToday();
+        break;
+      case "w":
+        e.preventDefault();
+        this._navigate("week");
+        break;
+      case "m":
+        e.preventDefault();
+        this._navigate("month");
+        break;
+      case "a":
+        e.preventDefault();
+        this._navigate("agenda");
+        break;
+      case "1":
+        e.preventDefault();
+        this._navigate("tasks");
+        break;
+      case "2":
+        e.preventDefault();
+        this._navigate("shopping");
+        break;
+      case "ArrowLeft":
+        e.preventDefault();
+        this._onPrev();
+        break;
+      case "ArrowRight":
+        e.preventDefault();
+        this._onNext();
+        break;
+      case "Escape":
+        // Close drawer if open
+        if (this._drawerOpen) {
+          this._closeDrawer();
+        }
+        if (this._detailDrawerOpen) {
+          this._closeDetailDrawer();
+        }
+        break;
+    }
   }
 
   // ── Render ───────────────────────────────────────────────────────
@@ -1365,6 +1467,170 @@ export class CaleePanel extends LitElement {
     .btn-save:hover {
       opacity: 0.9;
     }
+
+    /* ── Detail Drawer (desktop right panel) ──────────────── */
+
+    .detail-drawer {
+      width: 360px;
+      min-width: 360px;
+      background: var(--card-background-color, #fff);
+      border-left: 1px solid var(--divider-color, #e0e0e0);
+      overflow-y: auto;
+      padding: 20px;
+      transition: width 0.2s ease, min-width 0.2s ease;
+      z-index: 3;
+    }
+
+    .detail-drawer.closed {
+      width: 0;
+      min-width: 0;
+      padding: 0;
+      overflow: hidden;
+      border-left-width: 0;
+    }
+
+    :host([narrow]) .detail-drawer {
+      display: none;
+    }
+
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .drawer-header h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--primary-text-color, #212121);
+    }
+
+    .drawer-close-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 6px;
+      font-size: 18px;
+      line-height: 1;
+      color: var(--secondary-text-color, #757575);
+      transition: background 0.15s, color 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .drawer-close-btn:hover {
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
+      color: var(--primary-text-color, #212121);
+    }
+
+    .drawer-field {
+      margin-bottom: 14px;
+    }
+
+    .drawer-field-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--secondary-text-color, #757575);
+      margin-bottom: 4px;
+    }
+
+    .drawer-field-value {
+      font-size: 14px;
+      color: var(--primary-text-color, #212121);
+      line-height: 1.4;
+    }
+
+    .drawer-field-value.muted {
+      color: var(--secondary-text-color, #757575);
+      font-style: italic;
+    }
+
+    .drawer-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--divider-color, #e0e0e0);
+    }
+
+    .drawer-btn {
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+      transition: background 0.15s, color 0.15s;
+      font-family: inherit;
+    }
+
+    .drawer-btn-edit {
+      background: var(--primary-color, #03a9f4);
+      color: #fff;
+    }
+    .drawer-btn-edit:hover {
+      filter: brightness(1.1);
+    }
+
+    .drawer-btn-delete {
+      background: transparent;
+      color: var(--error-color, #f44336);
+      border: 1px solid var(--error-color, #f44336);
+    }
+    .drawer-btn-delete:hover {
+      background: color-mix(in srgb, var(--error-color, #f44336) 10%, transparent);
+    }
+
+    .drawer-edit-input {
+      width: 100%;
+      font-size: 14px;
+      padding: 6px 10px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      border-radius: 6px;
+      background: var(--card-background-color, #fff);
+      color: var(--primary-text-color, #212121);
+      outline: none;
+      box-sizing: border-box;
+      font-family: inherit;
+      transition: border-color 0.15s;
+    }
+    .drawer-edit-input:focus {
+      border-color: var(--primary-color, #03a9f4);
+    }
+
+    .drawer-edit-textarea {
+      width: 100%;
+      font-size: 14px;
+      padding: 6px 10px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      border-radius: 6px;
+      background: var(--card-background-color, #fff);
+      color: var(--primary-text-color, #212121);
+      outline: none;
+      box-sizing: border-box;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 60px;
+      transition: border-color 0.15s;
+    }
+    .drawer-edit-textarea:focus {
+      border-color: var(--primary-color, #03a9f4);
+    }
+
+    .drawer-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--secondary-background-color, #f0f0f0);
+      color: var(--secondary-text-color, #757575);
+    }
   `;
 
 
@@ -1452,8 +1718,10 @@ export class CaleePanel extends LitElement {
         <div class="main"
           @event-click=${this._onEventClick}
           @cell-click=${this._onCellClick}
+          @task-click=${this._onTaskClick}
           @task-complete=${this._onTaskComplete}
           @task-uncomplete=${this._onTaskUncomplete}
+          @task-delete=${this._onTaskDelete}
           @task-quick-add=${this._onTaskQuickAdd}
           @task-update=${this._onTaskUpdate}
           @task-price-update=${this._onTaskPriceUpdate}
@@ -1466,6 +1734,7 @@ export class CaleePanel extends LitElement {
             ? html`<div class="loading">Loading...</div>`
             : this._renderView()}
         </div>
+        ${this._renderDetailDrawer()}
       </div>
       ${this._renderBottomNav()}
       ${this._showAddDialog ? this._renderAddDialog() : nothing}
@@ -1485,6 +1754,8 @@ export class CaleePanel extends LitElement {
         ?open=${this._showTemplatePicker}
         @template-select=${this._onTemplateSelect}
         @custom-event=${this._onCustomEvent}
+        @quick-add-task=${this._onQuickAddTask}
+        @quick-add-shopping=${this._onQuickAddShopping}
         @manage-templates=${this._onManageTemplates}
         @dialog-close=${this._onDialogClose}
       ></calee-template-picker>
@@ -1645,24 +1916,6 @@ export class CaleePanel extends LitElement {
           </button>
         </div>
 
-        <!-- Secondary navigation -->
-        <div class="sidebar-section">
-          <button
-            class="nav-item nav-item-muted"
-            ?active=${this._currentView === "year"}
-            @click=${() => this._navigate("year", todayISO())}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-              <line x1="3" y1="16" x2="21" y2="16"></line>
-              <line x1="9" y1="4" x2="9" y2="22"></line>
-              <line x1="15" y1="4" x2="15" y2="22"></line>
-            </svg>
-            Year
-          </button>
-        </div>
-
         <!-- Calendars -->
         <div class="sidebar-section">
           <h3 class="sidebar-heading">Calendars</h3>
@@ -1720,9 +1973,23 @@ export class CaleePanel extends LitElement {
               )}
         </div>
 
-        <!-- Recently Deleted & Activity -->
+        <!-- More: Year, Recently Deleted & Activity -->
         <div class="sidebar-section">
           <h3 class="sidebar-heading">More</h3>
+          <button
+            class="nav-item nav-item-muted"
+            ?active=${this._currentView === "year"}
+            @click=${() => this._navigate("year", todayISO())}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+              <line x1="3" y1="16" x2="21" y2="16"></line>
+              <line x1="9" y1="4" x2="9" y2="22"></line>
+              <line x1="15" y1="4" x2="15" y2="22"></line>
+            </svg>
+            Year
+          </button>
           <button
             class="nav-item nav-item-muted"
             @click=${this._openDeletedItems}
@@ -1796,6 +2063,235 @@ export class CaleePanel extends LitElement {
     `;
   }
 
+  // ── Detail Drawer (desktop) ──────────────────────────────────────
+
+  private _renderDetailDrawer() {
+    const open = this._detailDrawerOpen && this._detailItem && !this.narrow;
+    return html`
+      <div class="detail-drawer ${open ? "" : "closed"}">
+        ${open ? this._renderDetailDrawerContent() : nothing}
+      </div>
+    `;
+  }
+
+  private _renderDetailDrawerContent() {
+    if (!this._detailItem) return nothing;
+
+    if (this._detailItemType === "event") {
+      return this._renderEventDetail(this._detailItem as PlannerEvent);
+    }
+    return this._renderTaskDetail(this._detailItem as PlannerTask);
+  }
+
+  private _renderEventDetail(event: PlannerEvent) {
+    const cal = this._calendarMap.get(event.calendar_id);
+    const start = new Date(event.start);
+    const end = new Date(event.end);
+    const dateOpts: Intl.DateTimeFormatOptions = {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    };
+    const timeOpts: Intl.DateTimeFormatOptions = {
+      hour: "numeric",
+      minute: "2-digit",
+    };
+
+    // Find linked tasks for this event
+    const linkedTasks = this._tasks.filter(
+      (t) => t.related_event_id === event.id && !t.deleted_at,
+    );
+
+    return html`
+      <div class="drawer-header">
+        <h3>Event</h3>
+        <button class="drawer-close-btn" @click=${this._closeDetailDrawer} aria-label="Close">&times;</button>
+      </div>
+
+      <div class="drawer-field">
+        <div class="drawer-field-label">Title</div>
+        <div class="drawer-field-value">${event.title}</div>
+      </div>
+
+      <div class="drawer-field">
+        <div class="drawer-field-label">Calendar</div>
+        <div class="drawer-field-value">
+          ${cal ? html`<span style="display:inline-flex;align-items:center;gap:6px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:${cal.color};display:inline-block;"></span>
+            ${cal.name}
+          </span>` : html`<span class="muted">Unknown</span>`}
+        </div>
+      </div>
+
+      <div class="drawer-field">
+        <div class="drawer-field-label">Start</div>
+        <div class="drawer-field-value">
+          ${event.all_day
+            ? start.toLocaleDateString(undefined, dateOpts)
+            : html`${start.toLocaleDateString(undefined, dateOpts)} at ${start.toLocaleTimeString(undefined, timeOpts)}`}
+        </div>
+      </div>
+
+      <div class="drawer-field">
+        <div class="drawer-field-label">End</div>
+        <div class="drawer-field-value">
+          ${event.all_day
+            ? end.toLocaleDateString(undefined, dateOpts)
+            : html`${end.toLocaleDateString(undefined, dateOpts)} at ${end.toLocaleTimeString(undefined, timeOpts)}`}
+        </div>
+      </div>
+
+      ${event.recurrence_rule ? html`
+        <div class="drawer-field">
+          <div class="drawer-field-label">Recurrence</div>
+          <div class="drawer-field-value">
+            <span class="drawer-badge">${event.recurrence_rule}</span>
+          </div>
+        </div>
+      ` : nothing}
+
+      <div class="drawer-field">
+        <div class="drawer-field-label">Note</div>
+        <div class="drawer-field-value ${event.note ? "" : "muted"}">
+          ${event.note || "No note"}
+        </div>
+      </div>
+
+      ${linkedTasks.length > 0 ? html`
+        <div class="drawer-field">
+          <div class="drawer-field-label">Linked Tasks</div>
+          ${linkedTasks.map(
+            (t) => html`<div class="drawer-field-value" style="margin-bottom:4px;">
+              ${t.completed ? html`<s>${t.title}</s>` : t.title}
+            </div>`,
+          )}
+        </div>
+      ` : nothing}
+
+      <div class="drawer-actions">
+        <button class="drawer-btn drawer-btn-edit" @click=${() => this._onDrawerEditEvent(event)}>Edit</button>
+        <button class="drawer-btn drawer-btn-delete" @click=${() => this._onDrawerDeleteEvent(event)}>Delete</button>
+      </div>
+    `;
+  }
+
+  private _renderTaskDetail(task: PlannerTask) {
+    const list = this._lists.find((l) => l.id === task.list_id);
+    // Find linked event for this task
+    const linkedEvent = task.related_event_id
+      ? this._events.find((e) => e.id === task.related_event_id)
+      : null;
+
+    return html`
+      <div class="drawer-header">
+        <h3>Task</h3>
+        <button class="drawer-close-btn" @click=${this._closeDetailDrawer} aria-label="Close">&times;</button>
+      </div>
+
+      <div class="drawer-field">
+        <div class="drawer-field-label">Title</div>
+        <div class="drawer-field-value">${task.completed ? html`<s>${task.title}</s>` : task.title}</div>
+      </div>
+
+      <div class="drawer-field">
+        <div class="drawer-field-label">List</div>
+        <div class="drawer-field-value">${list?.name ?? task.list_id}</div>
+      </div>
+
+      ${task.due ? html`
+        <div class="drawer-field">
+          <div class="drawer-field-label">Due Date</div>
+          <div class="drawer-field-value">
+            ${new Date(task.due + "T00:00:00").toLocaleDateString(undefined, {
+              weekday: "short",
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </div>
+        </div>
+      ` : nothing}
+
+      ${task.recurrence_rule ? html`
+        <div class="drawer-field">
+          <div class="drawer-field-label">Recurrence</div>
+          <div class="drawer-field-value">
+            <span class="drawer-badge">${task.recurrence_rule}</span>
+          </div>
+        </div>
+      ` : nothing}
+
+      <div class="drawer-field">
+        <div class="drawer-field-label">Note</div>
+        <div class="drawer-field-value ${task.note ? "" : "muted"}">
+          ${task.note || "No note"}
+        </div>
+      </div>
+
+      ${linkedEvent ? html`
+        <div class="drawer-field">
+          <div class="drawer-field-label">Linked Event</div>
+          <div class="drawer-field-value">${linkedEvent.title}</div>
+        </div>
+      ` : nothing}
+
+      <div class="drawer-actions">
+        <button class="drawer-btn drawer-btn-edit" @click=${() => this._onDrawerEditTask(task)}>Open in Tasks</button>
+        <button class="drawer-btn drawer-btn-delete" @click=${() => this._onDrawerDeleteTask(task)}>Delete</button>
+      </div>
+    `;
+  }
+
+  private _openDetailDrawer(item: PlannerEvent | PlannerTask, type: "event" | "task"): void {
+    this._detailItem = item;
+    this._detailItemType = type;
+    this._detailDrawerOpen = true;
+  }
+
+  private _closeDetailDrawer(): void {
+    this._detailDrawerOpen = false;
+    this._detailItem = null;
+    this._detailItemType = null;
+  }
+
+  private _onDrawerEditEvent(event: PlannerEvent): void {
+    this._closeDetailDrawer();
+    this._editEvent = event;
+    this._showEventDialog = true;
+  }
+
+  private async _onDrawerDeleteEvent(event: PlannerEvent): Promise<void> {
+    try {
+      await this.hass.callWS({
+        type: "calee/delete_event",
+        event_id: event.id,
+      });
+      this._events = this._events.filter((ev) => ev.id !== event.id);
+      this._closeDetailDrawer();
+    } catch (err) {
+      console.error("Failed to delete event:", err);
+    }
+  }
+
+  private _onDrawerEditTask(task: PlannerTask): void {
+    this._closeDetailDrawer();
+    window.location.hash = `#/tasks/${task.id}`;
+  }
+
+  private async _onDrawerDeleteTask(task: PlannerTask): Promise<void> {
+    try {
+      await this.hass.callWS({
+        type: "calee/delete_task",
+        task_id: task.id,
+      });
+      this._tasks = this._tasks.filter((t) => t.id !== task.id);
+      this._closeDetailDrawer();
+    } catch (err) {
+      console.error("Failed to delete task:", err);
+    }
+  }
+
   // ── View Area ────────────────────────────────────────────────────
 
   private _renderView() {
@@ -1854,6 +2350,7 @@ export class CaleePanel extends LitElement {
           .tasks=${this._standardTasks}
           .lists=${this._lists.filter((l) => l.list_type !== "shopping")}
           .presets=${this._presets.filter((p) => p.list_id !== "shopping")}
+          ?narrow=${this.narrow}
         ></calee-tasks-view>`;
 
       case "shopping": {
@@ -1884,7 +2381,7 @@ export class CaleePanel extends LitElement {
     const views: { key: ViewType; label: string; icon: string }[] = [
       { key: "week", label: "Week", icon: "M3 4h18v18H3zM3 10h18M3 16h18M8 2v4M16 2v4" },
       { key: "month", label: "Month", icon: "M3 4h18v18H3zM3 10h18M9 4v18M15 4v18" },
-      { key: "day", label: "Day", icon: "M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8" },
+      { key: "agenda", label: "Agenda", icon: "M3 4h18v18H3zM3 10h18M8 2v4M16 2v4M8 14h8M8 18h4" },
       { key: "tasks", label: "Tasks", icon: "M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" },
       { key: "shopping", label: "Shop", icon: "M9 21a1 1 0 100-2 1 1 0 000 2zM20 21a1 1 0 100-2 1 1 0 000 2zM1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" },
     ];
@@ -1917,20 +2414,36 @@ export class CaleePanel extends LitElement {
 
   // ── View Event Handlers ──────────────────────────────────────────
 
-  /** Handle event-click from calendar views — open edit dialog. */
+  /** Handle event-click from calendar views — open detail drawer (desktop) or edit dialog (mobile). */
   private _onEventClick(e: CustomEvent<{ eventId: string }>): void {
     const { eventId } = e.detail;
     const event = this._events.find((ev) => ev.id === eventId);
     if (event) {
-      this._editEvent = event;
-      this._showEventDialog = true;
+      if (this.narrow) {
+        this._editEvent = event;
+        this._showEventDialog = true;
+      } else {
+        this._openDetailDrawer(event, "event");
+      }
     }
   }
 
-  /** Handle event-select from agenda view — open edit dialog. */
+  /** Handle event-select from agenda view — open detail drawer (desktop) or edit dialog (mobile). */
   private _onEventSelect(e: CustomEvent<{ event: PlannerEvent }>): void {
-    this._editEvent = e.detail.event;
-    this._showEventDialog = true;
+    if (this.narrow) {
+      this._editEvent = e.detail.event;
+      this._showEventDialog = true;
+    } else {
+      this._openDetailDrawer(e.detail.event, "event");
+    }
+  }
+
+  /** Handle task-click from tasks view — open detail drawer (desktop) or inline edit (mobile). */
+  private _onTaskClick(e: CustomEvent<{ task: PlannerTask }>): void {
+    if (!this.narrow) {
+      this._openDetailDrawer(e.detail.task, "task");
+    }
+    // On mobile, the tasks-view handles inline editing itself
   }
 
   /** Handle cell-click from calendar views — open the template picker for quick shift creation. */
@@ -1973,6 +2486,20 @@ export class CaleePanel extends LitElement {
     }
   }
 
+  /** Handle task-delete from swipe-to-delete on tasks/shopping views. */
+  private async _onTaskDelete(e: CustomEvent<{ taskId: string }>): Promise<void> {
+    try {
+      await this.hass.callWS({
+        type: "calee/delete_task",
+        task_id: e.detail.taskId,
+      });
+      // Optimistically remove it locally
+      this._tasks = this._tasks.filter((t) => t.id !== e.detail.taskId);
+    } catch (err) {
+      console.error("Failed to delete task:", err);
+    }
+  }
+
   /** Handle task-price-update from shopping view. */
   private async _onTaskPriceUpdate(
     e: CustomEvent<{ taskId: string; price: number | null; version: number }>,
@@ -1996,7 +2523,7 @@ export class CaleePanel extends LitElement {
   }
 
   /** Handle task-quick-add from tasks/shopping views. */
-  private async _onTaskQuickAdd(e: CustomEvent<{ title: string; category?: string; due?: string; recurrence_rule?: string }>): Promise<void> {
+  private async _onTaskQuickAdd(e: CustomEvent<{ title: string; category?: string; due?: string; recurrence_rule?: string; note?: string }>): Promise<void> {
     const listId = this._currentView === "shopping"
       ? (this._lists.find((l) => l.list_type === "shopping")?.id ?? "shopping")
       : (this._lists.find((l) => l.list_type === "standard")?.id ?? "inbox");
@@ -2012,6 +2539,9 @@ export class CaleePanel extends LitElement {
     }
     if (e.detail.recurrence_rule) {
       wsMsg.recurrence_rule = e.detail.recurrence_rule;
+    }
+    if (e.detail.note) {
+      wsMsg.note = e.detail.note;
     }
 
     try {
@@ -2098,6 +2628,57 @@ export class CaleePanel extends LitElement {
       this._presets = this._presets.filter((p) => p.id !== e.detail.presetId);
     } catch (err) {
       console.error("Failed to delete preset:", err);
+    }
+  }
+
+  /** Handle quick-add-task from the template picker — create a task with the given date as due date. */
+  private async _onQuickAddTask(e: CustomEvent<{ date: string }>): Promise<void> {
+    const { date } = e.detail;
+    // Ensure tasks are loaded
+    if (!this._tasksLoaded) {
+      await this._loadTasks();
+    }
+    const listId = this._lists.find((l) => l.list_type === "standard")?.id ?? "inbox";
+    try {
+      const newTask = await this.hass.callWS({
+        type: "calee/create_task",
+        list_id: listId,
+        title: "New task",
+        due: date,
+      });
+      if (newTask) {
+        this._tasks = [...this._tasks, newTask as PlannerTask];
+        // Navigate to tasks view and auto-open editing for the new task
+        window.location.hash = `#/tasks/${(newTask as PlannerTask).id}`;
+      } else {
+        this._navigate("tasks");
+      }
+    } catch (err) {
+      console.error("Failed to create task:", err);
+    }
+  }
+
+  /** Handle quick-add-shopping from the template picker — create a shopping item. */
+  private async _onQuickAddShopping(e: CustomEvent<{ date: string }>): Promise<void> {
+    // Ensure tasks are loaded
+    if (!this._tasksLoaded) {
+      await this._loadTasks();
+    }
+    const shoppingList = this._lists.find((l) => l.list_type === "shopping");
+    const listId = shoppingList?.id ?? "shopping";
+    try {
+      const newTask = await this.hass.callWS({
+        type: "calee/create_task",
+        list_id: listId,
+        title: "New item",
+      });
+      if (newTask) {
+        this._tasks = [...this._tasks, newTask as PlannerTask];
+      }
+      // Navigate to shopping view so user can edit the new item
+      this._navigate("shopping");
+    } catch (err) {
+      console.error("Failed to create shopping item:", err);
     }
   }
 

@@ -7,6 +7,15 @@
 import { LitElement, html, css, nothing, type PropertyValues } from "lit";
 import { customElement, property, state, query } from "lit/decorators.js";
 import type { PlannerTask, PlannerList, TaskPreset } from "../store/types.js";
+import {
+  swipeStyles,
+  createSwipeState,
+  handleTouchStart,
+  handleTouchMove,
+  handleTouchEnd,
+  getSwipeDelta,
+  type SwipeState,
+} from "../helpers/swipe-actions.js";
 
 /* ── Helpers ─────────────────────────────────────────────────────────── */
 
@@ -74,6 +83,7 @@ export class CaleeTasksView extends LitElement {
   @property({ type: Array }) lists: PlannerList[] = [];
   @property({ type: Array }) presets: TaskPreset[] = [];
   @property({ type: String }) activeView: TaskView = "inbox";
+  @property({ type: Boolean, reflect: true }) narrow = false;
 
   /* Quick-add state */
   @state() private _quickAddText = "";
@@ -92,9 +102,17 @@ export class CaleeTasksView extends LitElement {
   @state() private _editCustomDate = "";
   @state() private _editRecurrence: RecurrencePill = "none";
 
+  /* Progressive disclosure state */
+  @state() private _showMoreOptions = false;
+  @state() private _quickAddNote = "";
+
+  /* Swipe state (mobile) */
+  private _swipe: SwipeState = createSwipeState();
+  @state() private _confirmDeleteId: string | null = null;
+
   @query("#quick-add-input") private _inputEl!: HTMLInputElement;
 
-  static styles = css`
+  static styles = [swipeStyles, css`
     :host {
       display: block;
       padding: 16px;
@@ -224,16 +242,7 @@ export class CaleeTasksView extends LitElement {
       border-color: var(--task-accent);
     }
 
-    .pills-container {
-      overflow: hidden;
-      max-height: 0;
-      opacity: 0;
-      transition: max-height 0.2s ease, opacity 0.2s ease, margin 0.2s ease;
-    }
-    .pills-container.expanded {
-      max-height: 120px;
-      opacity: 1;
-    }
+    /* (progressive disclosure containers moved below) */
 
     /* ── Task list ───────────────────────────────────────────────── */
 
@@ -492,13 +501,164 @@ export class CaleeTasksView extends LitElement {
       width: 16px;
       height: 16px;
     }
-  `;
+
+    /* ── Progressive disclosure ─────────────────────────────── */
+
+    .pills-date-container {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.2s ease, opacity 0.2s ease;
+    }
+    .pills-date-container.visible {
+      max-height: 60px;
+      opacity: 1;
+    }
+
+    .pills-recurrence-container {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.2s ease, opacity 0.2s ease;
+    }
+    .pills-recurrence-container.visible {
+      max-height: 60px;
+      opacity: 1;
+    }
+
+    .more-options-toggle {
+      font-size: 12px;
+      color: var(--task-secondary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 0;
+      margin-top: 4px;
+      transition: color 0.15s;
+    }
+    .more-options-toggle:hover {
+      color: var(--task-accent);
+    }
+
+    .note-input {
+      width: 100%;
+      font-size: 13px;
+      padding: 6px 10px;
+      border: 1px solid var(--task-border);
+      border-radius: 6px;
+      background: var(--task-bg);
+      color: var(--task-text);
+      outline: none;
+      box-sizing: border-box;
+      resize: vertical;
+      min-height: 36px;
+      max-height: 120px;
+      font-family: inherit;
+      margin-top: 6px;
+      overflow: auto;
+    }
+    .note-input:focus {
+      border-color: var(--task-accent);
+    }
+
+    /* ── Swipe delete confirmation ─────────────────────────── */
+
+    .confirm-delete-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .confirm-delete-dialog {
+      background: var(--card-background-color, #fff);
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 320px;
+      width: 100%;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .confirm-delete-dialog p {
+      font-size: 14px;
+      color: var(--task-text);
+      margin: 0 0 16px;
+    }
+
+    .confirm-delete-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .confirm-delete-actions button {
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 20px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s;
+    }
+
+    .confirm-delete-actions button:hover {
+      opacity: 0.9;
+    }
+
+    .confirm-cancel {
+      background: var(--secondary-background-color, #f0f0f0);
+      color: var(--task-text);
+    }
+
+    .confirm-confirm {
+      background: var(--error-color, #f44336);
+      color: #fff;
+    }
+  `];
 
   /* ── Lifecycle ──────────────────────────────────────────────────── */
+
+  private _boundHashChange = this._checkHashForTaskId.bind(this);
+
+  connectedCallback(): void {
+    super.connectedCallback();
+    window.addEventListener("hashchange", this._boundHashChange);
+    this._checkHashForTaskId();
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    window.removeEventListener("hashchange", this._boundHashChange);
+  }
 
   updated(changed: PropertyValues): void {
     if (changed.has("activeView")) {
       this._resetQuickAdd();
+    }
+    // Check if the hash contains a task ID to auto-expand for editing
+    if (changed.has("tasks")) {
+      this._checkHashForTaskId();
+    }
+  }
+
+  /** If the URL hash is #/tasks/<taskId>, auto-expand that task for inline editing. */
+  private _checkHashForTaskId(): void {
+    const hash = window.location.hash.replace(/^#\/?/, "");
+    const parts = hash.split("/");
+    if (parts[0] === "tasks" && parts[1] && parts[1].length > 0) {
+      const taskId = parts[1];
+      const task = this.tasks.find((t) => t.id === taskId);
+      if (task) {
+        this._startEdit(task);
+        // Clear the task ID from the hash so it doesn't re-trigger
+        window.location.hash = "#/tasks";
+      }
     }
   }
 
@@ -520,6 +680,8 @@ export class CaleeTasksView extends LitElement {
     this._selectedDatePill = this._defaultDatePill;
     this._selectedRecurrence = "none";
     this._customDate = "";
+    this._quickAddNote = "";
+    this._showMoreOptions = false;
   }
 
   /* ── Resolve due date from pill ─────────────────────────────────── */
@@ -624,18 +786,25 @@ export class CaleeTasksView extends LitElement {
         ? this._selectedRecurrence
         : undefined;
 
+      const detail: Record<string, unknown> = {
+        title: this._quickAddText.trim(),
+        due,
+        recurrence_rule: recurrence,
+      };
+      if (this._quickAddNote.trim()) {
+        detail.note = this._quickAddNote.trim();
+      }
+
       this.dispatchEvent(
         new CustomEvent("task-quick-add", {
-          detail: {
-            title: this._quickAddText.trim(),
-            due,
-            recurrence_rule: recurrence,
-          },
+          detail,
           bubbles: true,
           composed: true,
         }),
       );
       this._quickAddText = "";
+      this._quickAddNote = "";
+      this._showMoreOptions = false;
       this._inputEl.value = "";
       this._resetQuickAdd();
     }
@@ -669,6 +838,24 @@ export class CaleeTasksView extends LitElement {
 
   private _onCustomDateChange(e: Event): void {
     this._customDate = (e.target as HTMLInputElement).value;
+  }
+
+  /* ── Task row click — dispatch event for panel detail drawer ───── */
+
+  private _onTaskRowClick(task: PlannerTask): void {
+    // Dispatch task-click so the panel can open the detail drawer on desktop
+    this.dispatchEvent(
+      new CustomEvent("task-click", {
+        detail: { task },
+        bubbles: true,
+        composed: true,
+      }),
+    );
+    // Only start inline editing on narrow (mobile) layouts;
+    // on desktop the panel handles it via the detail drawer.
+    if (this.narrow) {
+      this._startEdit(task);
+    }
   }
 
   /* ── Inline editing ─────────────────────────────────────────────── */
@@ -735,6 +922,61 @@ export class CaleeTasksView extends LitElement {
     }
   }
 
+  /* ── Swipe handlers (mobile) ───────────────────────────────────── */
+
+  private _onTouchStart(e: TouchEvent, itemId: string): void {
+    handleTouchStart(this._swipe, e, itemId);
+  }
+
+  private _onTouchMove(e: TouchEvent): void {
+    handleTouchMove(this._swipe, e);
+    this.requestUpdate();
+  }
+
+  private _onTouchEnd(_e: TouchEvent): void {
+    const result = handleTouchEnd(this._swipe);
+    this.requestUpdate();
+    if (!result.action) return;
+
+    if (result.action === "complete") {
+      this.dispatchEvent(
+        new CustomEvent("task-complete", {
+          detail: { taskId: result.itemId },
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    } else if (result.action === "delete") {
+      this._confirmDeleteId = result.itemId;
+    }
+  }
+
+  private _confirmSwipeDelete(): void {
+    if (!this._confirmDeleteId) return;
+    this.dispatchEvent(
+      new CustomEvent("task-delete", {
+        detail: { taskId: this._confirmDeleteId },
+        bubbles: true,
+        composed: true,
+      }),
+    );
+    this._confirmDeleteId = null;
+  }
+
+  private _cancelSwipeDelete(): void {
+    this._confirmDeleteId = null;
+  }
+
+  /* ── Progressive disclosure ────────────────────────────────────── */
+
+  private _toggleMoreOptions(): void {
+    this._showMoreOptions = !this._showMoreOptions;
+  }
+
+  private _onNoteInput(e: Event): void {
+    this._quickAddNote = (e.target as HTMLTextAreaElement).value;
+  }
+
   /* ── Render ─────────────────────────────────────────────────────── */
 
   render() {
@@ -745,7 +987,7 @@ export class CaleeTasksView extends LitElement {
     ];
 
     const filtered = this._filteredTasks;
-    const showPills = this._quickAddFocused || this._quickAddText.length > 0;
+    const showDatePills = this._quickAddFocused || this._quickAddText.length > 0;
     const hasDue = this._selectedDatePill !== "none";
 
     return html`
@@ -778,13 +1020,18 @@ export class CaleeTasksView extends LitElement {
           />
         </div>
 
-        <div class="pills-container ${showPills ? "expanded" : ""}">
+        <!-- Progressive disclosure: date pills shown on focus -->
+        <div class="pills-date-container ${showDatePills ? "visible" : ""}">
           ${this._renderDatePills(
             this._selectedDatePill,
             this._customDate,
             (p: DatePill) => this._selectDatePill(p),
             (e: Event) => this._onCustomDateChange(e),
           )}
+        </div>
+
+        <!-- Progressive disclosure: recurrence pills shown after date selected -->
+        <div class="pills-recurrence-container ${showDatePills && hasDue ? "visible" : ""}">
           ${hasDue
             ? this._renderRecurrencePills(
                 this._selectedRecurrence,
@@ -792,7 +1039,44 @@ export class CaleeTasksView extends LitElement {
               )
             : nothing}
         </div>
+
+        <!-- Progressive disclosure: "More options" toggle for note -->
+        ${showDatePills ? html`
+          <button class="more-options-toggle" @click=${this._toggleMoreOptions}>
+            ${this._showMoreOptions ? "Less options" : "More options"}
+          </button>
+          ${this._showMoreOptions ? html`
+            <textarea
+              class="note-input"
+              placeholder="Add a note..."
+              .value=${this._quickAddNote}
+              @input=${this._onNoteInput}
+            ></textarea>
+          ` : nothing}
+        ` : nothing}
       </div>
+
+      <!-- Swipe delete confirmation -->
+      ${this._confirmDeleteId
+        ? html`
+            <div
+              class="confirm-delete-overlay"
+              @click=${(e: Event) => {
+                if ((e.target as HTMLElement).classList.contains("confirm-delete-overlay")) {
+                  this._cancelSwipeDelete();
+                }
+              }}
+            >
+              <div class="confirm-delete-dialog">
+                <p>Delete this task?</p>
+                <div class="confirm-delete-actions">
+                  <button class="confirm-cancel" @click=${this._cancelSwipeDelete}>Cancel</button>
+                  <button class="confirm-confirm" @click=${this._confirmSwipeDelete}>Delete</button>
+                </div>
+              </div>
+            </div>
+          `
+        : nothing}
 
       ${this.activeView === "inbox" && this._inboxPresets.length > 0
         ? html`
@@ -924,43 +1208,58 @@ export class CaleeTasksView extends LitElement {
   private _renderTask(task: PlannerTask) {
     const overdue = task.due ? isPast(task.due) : false;
     const dueIsToday = task.due ? isToday(task.due) : false;
+    const delta = getSwipeDelta(this._swipe, task.id);
+    const isSwiping = this._swipe.swipingId === task.id;
 
     return html`
-      <li class="task-item" @click=${() => this._startEdit(task)}>
-        <button
-          class="task-check"
-          aria-label="Complete task"
-          @click=${(e: Event) => this._onComplete(task, e)}
-        >
-          <svg viewBox="0 0 16 16">
-            <polyline points="3.5,8 6.5,11 12.5,5" />
-          </svg>
-        </button>
+      <li class="swipe-row-wrapper ${isSwiping ? "swiping" : ""}">
+        <!-- Swipe reveal backgrounds -->
+        <div class="swipe-action-complete" aria-hidden="true">&#10003;</div>
+        <div class="swipe-action-delete" aria-hidden="true">&#128465;</div>
 
-        <div class="task-body">
-          <div class="task-title">${task.title}</div>
-          <div class="task-meta">
-            ${task.due
-              ? html`<span class="due-badge ${overdue ? "overdue" : ""} ${dueIsToday && !overdue ? "today" : ""}">
-                  ${formatDue(task.due)}
-                </span>`
-              : nothing}
-            ${task.due && task.recurrence_rule
-              ? html`<span class="meta-dot"></span>`
-              : nothing}
-            ${task.recurrence_rule
-              ? html`<span class="recurrence-badge">
-                  <span class="repeat-icon">&#x1f504;</span>
-                  ${formatRecurrence(task.recurrence_rule)}
-                </span>`
-              : nothing}
-            ${task.related_event_id
-              ? html`<svg class="linked-icon" viewBox="0 0 24 24">
-                  <path
-                    d="M17 7h-4v2h4c1.65 0 3 1.35 3 3s-1.35 3-3 3h-4v2h4c2.76 0 5-2.24 5-5s-2.24-5-5-5zm-6 8H7c-1.65 0-3-1.35-3-3s1.35-3 3-3h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-2zm-3-4h8v2H8z"
-                  />
-                </svg>`
-              : nothing}
+        <div
+          class="swipe-row-inner task-item ${isSwiping ? "dragging" : ""}"
+          style="transform: translateX(${delta}px)"
+          @click=${() => this._onTaskRowClick(task)}
+          @touchstart=${(e: TouchEvent) => this._onTouchStart(e, task.id)}
+          @touchmove=${(e: TouchEvent) => this._onTouchMove(e)}
+          @touchend=${(e: TouchEvent) => this._onTouchEnd(e)}
+        >
+          <button
+            class="task-check"
+            aria-label="Complete task"
+            @click=${(e: Event) => this._onComplete(task, e)}
+          >
+            <svg viewBox="0 0 16 16">
+              <polyline points="3.5,8 6.5,11 12.5,5" />
+            </svg>
+          </button>
+
+          <div class="task-body">
+            <div class="task-title">${task.title}</div>
+            <div class="task-meta">
+              ${task.due
+                ? html`<span class="due-badge ${overdue ? "overdue" : ""} ${dueIsToday && !overdue ? "today" : ""}">
+                    ${formatDue(task.due)}
+                  </span>`
+                : nothing}
+              ${task.due && task.recurrence_rule
+                ? html`<span class="meta-dot"></span>`
+                : nothing}
+              ${task.recurrence_rule
+                ? html`<span class="recurrence-badge">
+                    <span class="repeat-icon">&#x1f504;</span>
+                    ${formatRecurrence(task.recurrence_rule)}
+                  </span>`
+                : nothing}
+              ${task.related_event_id
+                ? html`<svg class="linked-icon" viewBox="0 0 24 24">
+                    <path
+                      d="M17 7h-4v2h4c1.65 0 3 1.35 3 3s-1.35 3-3 3h-4v2h4c2.76 0 5-2.24 5-5s-2.24-5-5-5zm-6 8H7c-1.65 0-3-1.35-3-3s1.35-3 3-3h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-2zm-3-4h8v2H8z"
+                    />
+                  </svg>`
+                : nothing}
+            </div>
           </div>
         </div>
       </li>

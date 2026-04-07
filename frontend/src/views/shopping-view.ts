@@ -7,6 +7,15 @@
 import { LitElement, html, css, nothing } from "lit";
 import { customElement, property, state, query } from "lit/decorators.js";
 import type { PlannerTask, TaskPreset } from "../store/types.js";
+import {
+  swipeStyles,
+  createSwipeState,
+  handleTouchStart,
+  handleTouchMove,
+  handleTouchEnd,
+  getSwipeDelta,
+  type SwipeState,
+} from "../helpers/swipe-actions.js";
 
 /* ── Category metadata ─────────────────────────────────────────────── */
 
@@ -70,9 +79,13 @@ export class CaleeShoppingView extends LitElement {
   /** Number of pending items to render; grows when user taps "Show more". */
   @state() private _pendingRenderLimit = 100;
 
+  /* Swipe state (mobile) */
+  private _swipe: SwipeState = createSwipeState();
+  @state() private _confirmSwipeDeleteId: string | null = null;
+
   @query("#quick-add-input") private _inputEl!: HTMLInputElement;
 
-  static styles = css`
+  static styles = [swipeStyles, css`
     :host {
       display: block;
       padding: 16px;
@@ -782,7 +795,67 @@ export class CaleeShoppingView extends LitElement {
       background: var(--error-color, #f44336);
       color: #fff;
     }
-  `;
+
+    /* ── Swipe delete confirmation (separate from preset delete) ── */
+
+    .swipe-confirm-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .swipe-confirm-dialog {
+      background: var(--card-background-color, #fff);
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 320px;
+      width: 100%;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .swipe-confirm-dialog p {
+      font-size: 14px;
+      color: var(--shop-text);
+      margin: 0 0 16px;
+    }
+
+    .swipe-confirm-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .swipe-confirm-actions button {
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 20px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s;
+    }
+
+    .swipe-confirm-actions button:hover {
+      opacity: 0.9;
+    }
+
+    .swipe-cancel-btn {
+      background: var(--secondary-background-color, #f0f0f0);
+      color: var(--shop-text);
+    }
+
+    .swipe-delete-btn {
+      background: var(--error-color, #f44336);
+      color: #fff;
+    }
+  `];
 
   /* ── Computed ────────────────────────────────────────────────────── */
 
@@ -1067,6 +1140,52 @@ export class CaleeShoppingView extends LitElement {
     this._pendingRenderLimit += 100;
   }
 
+  /* ── Swipe handlers (mobile) ───────────────────────────────────── */
+
+  private _onTouchStart(e: TouchEvent, itemId: string): void {
+    handleTouchStart(this._swipe, e, itemId);
+  }
+
+  private _onTouchMove(e: TouchEvent): void {
+    handleTouchMove(this._swipe, e);
+    this.requestUpdate();
+  }
+
+  private _onTouchEnd(_e: TouchEvent): void {
+    const result = handleTouchEnd(this._swipe);
+    this.requestUpdate();
+    if (!result.action) return;
+
+    if (result.action === "complete") {
+      const task = this.tasks.find((t) => t.id === result.itemId);
+      if (task) {
+        if (task.completed) {
+          this._uncompleteItem(task);
+        } else {
+          this._completeItem(task);
+        }
+      }
+    } else if (result.action === "delete") {
+      this._confirmSwipeDeleteId = result.itemId;
+    }
+  }
+
+  private _confirmSwipeDelete(): void {
+    if (!this._confirmSwipeDeleteId) return;
+    this.dispatchEvent(
+      new CustomEvent("task-delete", {
+        detail: { taskId: this._confirmSwipeDeleteId },
+        bubbles: true,
+        composed: true,
+      }),
+    );
+    this._confirmSwipeDeleteId = null;
+  }
+
+  private _cancelSwipeDelete(): void {
+    this._confirmSwipeDeleteId = null;
+  }
+
   /* ── Render ─────────────────────────────────────────────────────── */
 
   render() {
@@ -1186,6 +1305,28 @@ export class CaleeShoppingView extends LitElement {
 
       <!-- Preset add form -->
       ${this._showPresetForm ? this._renderPresetForm() : nothing}
+
+      <!-- Swipe delete confirmation -->
+      ${this._confirmSwipeDeleteId
+        ? html`
+            <div
+              class="swipe-confirm-overlay"
+              @click=${(e: Event) => {
+                if ((e.target as HTMLElement).classList.contains("swipe-confirm-overlay")) {
+                  this._cancelSwipeDelete();
+                }
+              }}
+            >
+              <div class="swipe-confirm-dialog">
+                <p>Delete this item?</p>
+                <div class="swipe-confirm-actions">
+                  <button class="swipe-cancel-btn" @click=${this._cancelSwipeDelete}>Cancel</button>
+                  <button class="swipe-delete-btn" @click=${this._confirmSwipeDelete}>Delete</button>
+                </div>
+              </div>
+            </div>
+          `
+        : nothing}
 
       <!-- Delete confirmation -->
       ${this._confirmDeletePresetId
@@ -1425,35 +1566,49 @@ export class CaleeShoppingView extends LitElement {
   }
 
   private _renderItem(task: PlannerTask, done: boolean) {
+    const delta = getSwipeDelta(this._swipe, task.id);
+    const isSwiping = this._swipe.swipingId === task.id;
+
     return html`
-      <li class="item">
-        <button
-          class="checkbox ${done ? "checked" : ""}"
-          aria-label="${done ? "Undo" : "Complete"} item"
-          @click=${() => (done ? this._uncompleteItem(task) : this._completeItem(task))}
+      <li class="swipe-row-wrapper ${isSwiping ? "swiping" : ""}">
+        <div class="swipe-action-complete" aria-hidden="true">&#10003;</div>
+        <div class="swipe-action-delete" aria-hidden="true">&#128465;</div>
+
+        <div
+          class="swipe-row-inner item ${isSwiping ? "dragging" : ""}"
+          style="transform: translateX(${delta}px)"
+          @touchstart=${(e: TouchEvent) => this._onTouchStart(e, task.id)}
+          @touchmove=${(e: TouchEvent) => this._onTouchMove(e)}
+          @touchend=${(e: TouchEvent) => this._onTouchEnd(e)}
         >
-          <svg viewBox="0 0 16 16">
-            <polyline points="3.5,8 6.5,11 12.5,5" />
-          </svg>
-        </button>
-        ${task.is_recurring && !done
-          ? html`<span class="recurring-badge" title="Recurring item">\uD83D\uDD04</span>`
-          : nothing}
-        <span class="item-title">${task.title}</span>
-        ${!done
-          ? html`
-              <span class="item-price">
-                <input
-                  type="text"
-                  inputmode="decimal"
-                  placeholder="${this.currency}"
-                  .value=${task.price != null ? task.price.toFixed(2) : ""}
-                  @change=${(e: Event) => this._onPriceChange(task, e)}
-                  aria-label="Price"
-                />
-              </span>
-            `
-          : nothing}
+          <button
+            class="checkbox ${done ? "checked" : ""}"
+            aria-label="${done ? "Undo" : "Complete"} item"
+            @click=${() => (done ? this._uncompleteItem(task) : this._completeItem(task))}
+          >
+            <svg viewBox="0 0 16 16">
+              <polyline points="3.5,8 6.5,11 12.5,5" />
+            </svg>
+          </button>
+          ${task.is_recurring && !done
+            ? html`<span class="recurring-badge" title="Recurring item">\uD83D\uDD04</span>`
+            : nothing}
+          <span class="item-title">${task.title}</span>
+          ${!done
+            ? html`
+                <span class="item-price">
+                  <input
+                    type="text"
+                    inputmode="decimal"
+                    placeholder="${this.currency}"
+                    .value=${task.price != null ? task.price.toFixed(2) : ""}
+                    @change=${(e: Event) => this._onPriceChange(task, e)}
+                    aria-label="Price"
+                  />
+                </span>
+              `
+            : nothing}
+        </div>
       </li>
     `;
   }
