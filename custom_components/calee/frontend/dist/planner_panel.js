@@ -587,14 +587,14 @@ function e(e2, r2) {
     } });
   };
 }
-var __defProp$i = Object.defineProperty;
-var __getOwnPropDesc$i = Object.getOwnPropertyDescriptor;
-var __decorateClass$i = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$i(target, key) : target;
+var __defProp$q = Object.defineProperty;
+var __getOwnPropDesc$q = Object.getOwnPropertyDescriptor;
+var __decorateClass$q = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$q(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$i(target, key, result);
+  if (kind && result) __defProp$q(target, key, result);
   return result;
 };
 function parseISO$3(iso) {
@@ -606,7 +606,7 @@ function dateKey$3(d2) {
   const day = String(d2.getDate()).padStart(2, "0");
   return `${y3}-${m2}-${day}`;
 }
-function sameDay$1(a2, b2) {
+function sameDay$2(a2, b2) {
   return a2.getFullYear() === b2.getFullYear() && a2.getMonth() === b2.getMonth() && a2.getDate() === b2.getDate();
 }
 function fmtTime$2(d2) {
@@ -795,7 +795,7 @@ let CaleeMonthView = class extends i {
   }
   _renderCell(day) {
     const isToday2 = day.key === this._today;
-    const isSelected = sameDay$1(day.date, this.selectedDate);
+    const isSelected = sameDay$2(day.date, this.selectedDate);
     const dayEvents = this._eventsByDay.get(day.key) ?? [];
     const overflow = dayEvents.length - MAX_VISIBLE_EVENTS;
     const taskCount = this._taskCountByDay.get(day.key) ?? 0;
@@ -1106,56 +1106,56 @@ CaleeMonthView.styles = i$3`
       }
     }
   `;
-__decorateClass$i([
+__decorateClass$q([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "events", 2);
-__decorateClass$i([
+__decorateClass$q([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "calendars", 2);
-__decorateClass$i([
+__decorateClass$q([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "enabledCalendarIds", 2);
-__decorateClass$i([
+__decorateClass$q([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "selectedDate", 2);
-__decorateClass$i([
+__decorateClass$q([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "templates", 2);
-__decorateClass$i([
+__decorateClass$q([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "tasks", 2);
-__decorateClass$i([
+__decorateClass$q([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "conflicts", 2);
-__decorateClass$i([
+__decorateClass$q([
   n2({ type: Boolean })
 ], CaleeMonthView.prototype, "weekStartsMonday", 2);
-__decorateClass$i([
+__decorateClass$q([
   n2({ type: Boolean, reflect: true })
 ], CaleeMonthView.prototype, "narrow", 2);
-__decorateClass$i([
+__decorateClass$q([
   r()
 ], CaleeMonthView.prototype, "_grid", 2);
-__decorateClass$i([
+__decorateClass$q([
   r()
 ], CaleeMonthView.prototype, "_eventsByDay", 2);
-__decorateClass$i([
+__decorateClass$q([
   r()
 ], CaleeMonthView.prototype, "_taskCountByDay", 2);
-__decorateClass$i([
+__decorateClass$q([
   r()
 ], CaleeMonthView.prototype, "_conflictDays", 2);
-CaleeMonthView = __decorateClass$i([
+CaleeMonthView = __decorateClass$q([
   t("calee-month-view")
 ], CaleeMonthView);
-var __defProp$h = Object.defineProperty;
-var __getOwnPropDesc$h = Object.getOwnPropertyDescriptor;
-var __decorateClass$h = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$h(target, key) : target;
+var __defProp$p = Object.defineProperty;
+var __getOwnPropDesc$p = Object.getOwnPropertyDescriptor;
+var __decorateClass$p = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$p(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$h(target, key, result);
+  if (kind && result) __defProp$p(target, key, result);
   return result;
 };
 function parseISO$2(iso) {
@@ -1167,7 +1167,7 @@ function dateKey$2(d2) {
   const day = String(d2.getDate()).padStart(2, "0");
   return `${y3}-${m2}-${day}`;
 }
-function sameDay(a2, b2) {
+function sameDay$1(a2, b2) {
   return a2.getFullYear() === b2.getFullYear() && a2.getMonth() === b2.getMonth() && a2.getDate() === b2.getDate();
 }
 function fmtTime$1(d2) {
@@ -1187,7 +1187,7 @@ function fmtDayHeader(d2) {
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   return `${days[d2.getDay()]} ${d2.getDate()}`;
 }
-function startOfDay$1(d2) {
+function startOfDay$2(d2) {
   return new Date(d2.getFullYear(), d2.getMonth(), d2.getDate());
 }
 function minutesInDay$1(d2) {
@@ -1214,7 +1214,7 @@ function getWeekDays(selectedDate, weekStartsMonday, maxDays = 7) {
   return days;
 }
 function layoutEvents$1(events, dayDate) {
-  const dayStart = startOfDay$1(dayDate).getTime();
+  const dayStart = startOfDay$2(dayDate).getTime();
   const dayEnd = dayStart + 24 * 60 * 60 * 1e3;
   const items = [];
   for (const ev of events) {
@@ -1418,7 +1418,7 @@ let CaleeWeekView = class extends i {
     return this._weekDays.map((d2) => {
       const key = dateKey$2(d2);
       const isToday2 = key === this._todayKey;
-      const isSelected = sameDay(d2, this.selectedDate);
+      const isSelected = sameDay$1(d2, this.selectedDate);
       const classes = ["day-header"];
       if (isToday2) classes.push("today");
       if (isSelected) classes.push("selected");
@@ -1799,59 +1799,59 @@ CaleeWeekView.styles = i$3`
       }
     }
   `;
-__decorateClass$h([
+__decorateClass$p([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "events", 2);
-__decorateClass$h([
+__decorateClass$p([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "calendars", 2);
-__decorateClass$h([
+__decorateClass$p([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "enabledCalendarIds", 2);
-__decorateClass$h([
+__decorateClass$p([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "selectedDate", 2);
-__decorateClass$h([
+__decorateClass$p([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "templates", 2);
-__decorateClass$h([
+__decorateClass$p([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "tasks", 2);
-__decorateClass$h([
+__decorateClass$p([
   n2({ type: Boolean })
 ], CaleeWeekView.prototype, "weekStartsMonday", 2);
-__decorateClass$h([
+__decorateClass$p([
   n2({ type: Boolean, reflect: true })
 ], CaleeWeekView.prototype, "narrow", 2);
-__decorateClass$h([
+__decorateClass$p([
   r()
 ], CaleeWeekView.prototype, "_weekDays", 2);
-__decorateClass$h([
+__decorateClass$p([
   r()
 ], CaleeWeekView.prototype, "_allDayByDay", 2);
-__decorateClass$h([
+__decorateClass$p([
   r()
 ], CaleeWeekView.prototype, "_timedByDay", 2);
-__decorateClass$h([
+__decorateClass$p([
   r()
 ], CaleeWeekView.prototype, "_taskCountByDay", 2);
-__decorateClass$h([
+__decorateClass$p([
   r()
 ], CaleeWeekView.prototype, "_now", 2);
-__decorateClass$h([
+__decorateClass$p([
   e(".time-grid-scroll")
 ], CaleeWeekView.prototype, "_scrollContainer", 2);
-CaleeWeekView = __decorateClass$h([
+CaleeWeekView = __decorateClass$p([
   t("calee-week-view")
 ], CaleeWeekView);
-var __defProp$g = Object.defineProperty;
-var __getOwnPropDesc$g = Object.getOwnPropertyDescriptor;
-var __decorateClass$g = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$g(target, key) : target;
+var __defProp$o = Object.defineProperty;
+var __getOwnPropDesc$o = Object.getOwnPropertyDescriptor;
+var __decorateClass$o = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$o(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$g(target, key, result);
+  if (kind && result) __defProp$o(target, key, result);
   return result;
 };
 function parseISO$1(iso) {
@@ -1902,14 +1902,14 @@ function fmtDayTitle(d2) {
   ];
   return `${days[d2.getDay()]}, ${months[d2.getMonth()]} ${d2.getDate()}`;
 }
-function startOfDay(d2) {
+function startOfDay$1(d2) {
   return new Date(d2.getFullYear(), d2.getMonth(), d2.getDate());
 }
 function minutesInDay(d2) {
   return d2.getHours() * 60 + d2.getMinutes();
 }
 function layoutEvents(events, dayDate) {
-  const dayStart = startOfDay(dayDate).getTime();
+  const dayStart = startOfDay$1(dayDate).getTime();
   const dayEnd = dayStart + 24 * 60 * 60 * 1e3;
   const items = [];
   for (const ev of events) {
@@ -2001,7 +2001,7 @@ let CaleeDayView = class extends i {
     const visible = this.events.filter(
       (e2) => !e2.deleted_at && this.enabledCalendarIds.has(e2.calendar_id)
     );
-    const dayStart = startOfDay(this.selectedDate);
+    const dayStart = startOfDay$1(this.selectedDate);
     const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1e3);
     const allDay = [];
     const timed = [];
@@ -2419,41 +2419,41 @@ CaleeDayView.styles = i$3`
       }
     }
   `;
-__decorateClass$g([
+__decorateClass$o([
   n2({ attribute: false })
 ], CaleeDayView.prototype, "events", 2);
-__decorateClass$g([
+__decorateClass$o([
   n2({ attribute: false })
 ], CaleeDayView.prototype, "calendars", 2);
-__decorateClass$g([
+__decorateClass$o([
   n2({ attribute: false })
 ], CaleeDayView.prototype, "enabledCalendarIds", 2);
-__decorateClass$g([
+__decorateClass$o([
   n2({ attribute: false })
 ], CaleeDayView.prototype, "selectedDate", 2);
-__decorateClass$g([
+__decorateClass$o([
   r()
 ], CaleeDayView.prototype, "_allDayEvents", 2);
-__decorateClass$g([
+__decorateClass$o([
   r()
 ], CaleeDayView.prototype, "_timedEvents", 2);
-__decorateClass$g([
+__decorateClass$o([
   r()
 ], CaleeDayView.prototype, "_now", 2);
-__decorateClass$g([
+__decorateClass$o([
   e(".time-grid-scroll")
 ], CaleeDayView.prototype, "_scrollContainer", 2);
-CaleeDayView = __decorateClass$g([
+CaleeDayView = __decorateClass$o([
   t("calee-day-view")
 ], CaleeDayView);
-var __defProp$f = Object.defineProperty;
-var __getOwnPropDesc$f = Object.getOwnPropertyDescriptor;
-var __decorateClass$f = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$f(target, key) : target;
+var __defProp$n = Object.defineProperty;
+var __getOwnPropDesc$n = Object.getOwnPropertyDescriptor;
+var __decorateClass$n = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$n(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$f(target, key, result);
+  if (kind && result) __defProp$n(target, key, result);
   return result;
 };
 function parseISO(iso) {
@@ -2737,32 +2737,32 @@ CaleeYearView.styles = i$3`
       }
     }
   `;
-__decorateClass$f([
+__decorateClass$n([
   n2({ attribute: false })
 ], CaleeYearView.prototype, "events", 2);
-__decorateClass$f([
+__decorateClass$n([
   n2({ attribute: false })
 ], CaleeYearView.prototype, "calendars", 2);
-__decorateClass$f([
+__decorateClass$n([
   n2({ attribute: false })
 ], CaleeYearView.prototype, "enabledCalendarIds", 2);
-__decorateClass$f([
+__decorateClass$n([
   n2({ attribute: false })
 ], CaleeYearView.prototype, "selectedDate", 2);
-__decorateClass$f([
+__decorateClass$n([
   r()
 ], CaleeYearView.prototype, "_eventsByDay", 2);
-CaleeYearView = __decorateClass$f([
+CaleeYearView = __decorateClass$n([
   t("calee-year-view")
 ], CaleeYearView);
-var __defProp$e = Object.defineProperty;
-var __getOwnPropDesc$e = Object.getOwnPropertyDescriptor;
-var __decorateClass$e = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$e(target, key) : target;
+var __defProp$m = Object.defineProperty;
+var __getOwnPropDesc$m = Object.getOwnPropertyDescriptor;
+var __decorateClass$m = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$m(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$e(target, key, result);
+  if (kind && result) __defProp$m(target, key, result);
   return result;
 };
 function toLocalDateKey(iso) {
@@ -2787,7 +2787,7 @@ function formatDateHeader(dateKey2, today) {
     day: "numeric"
   });
 }
-function formatTime(iso) {
+function formatTime$1(iso) {
   return new Date(iso).toLocaleTimeString(void 0, {
     hour: "numeric",
     minute: "2-digit"
@@ -2861,7 +2861,7 @@ let CaleeAgendaView = class extends i {
         <div class="event-info">
           <div class="event-title">${ev.title}</div>
           <div class="event-time">
-            ${ev.all_day ? b`<span class="all-day-badge">All day</span>` : b`${formatTime(ev.start)} &ndash; ${formatTime(ev.end)}`}
+            ${ev.all_day ? b`<span class="all-day-badge">All day</span>` : b`${formatTime$1(ev.start)} &ndash; ${formatTime$1(ev.end)}`}
           </div>
           ${ev.note ? b`<div class="event-note">${ev.note}</div>` : A}
         </div>
@@ -2961,16 +2961,16 @@ CaleeAgendaView.styles = i$3`
       border-radius: 4px;
     }
   `;
-__decorateClass$e([
+__decorateClass$m([
   n2({ type: Array })
 ], CaleeAgendaView.prototype, "events", 2);
-__decorateClass$e([
+__decorateClass$m([
   n2({ attribute: false })
 ], CaleeAgendaView.prototype, "calendars", 2);
-__decorateClass$e([
+__decorateClass$m([
   r()
 ], CaleeAgendaView.prototype, "_groups", 2);
-CaleeAgendaView = __decorateClass$e([
+CaleeAgendaView = __decorateClass$m([
   t("calee-agenda-view")
 ], CaleeAgendaView);
 const SWIPE_THRESHOLD = 80;
@@ -3084,17 +3084,17 @@ function getSwipeDelta(state, itemId) {
   if (state.swipingId !== itemId) return 0;
   return state.touchCurrentX - state.touchStartX;
 }
-var __defProp$d = Object.defineProperty;
-var __getOwnPropDesc$d = Object.getOwnPropertyDescriptor;
-var __decorateClass$d = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$d(target, key) : target;
+var __defProp$l = Object.defineProperty;
+var __getOwnPropDesc$l = Object.getOwnPropertyDescriptor;
+var __decorateClass$l = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$l(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$d(target, key, result);
+  if (kind && result) __defProp$l(target, key, result);
   return result;
 };
-function todayISO$1() {
+function todayISO$3() {
   return (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
 }
 function tomorrowISO() {
@@ -3108,17 +3108,17 @@ function nextWeekISO() {
   return d2.toISOString().slice(0, 10);
 }
 function isToday(iso) {
-  return iso.slice(0, 10) === todayISO$1();
+  return iso.slice(0, 10) === todayISO$3();
 }
 function isUpcoming(iso) {
-  return iso.slice(0, 10) > todayISO$1();
+  return iso.slice(0, 10) > todayISO$3();
 }
 function isPast(iso) {
-  return iso.slice(0, 10) < todayISO$1();
+  return iso.slice(0, 10) < todayISO$3();
 }
 function formatDue(iso) {
   const dateStr = iso.slice(0, 10);
-  if (dateStr === todayISO$1()) return "Today";
+  if (dateStr === todayISO$3()) return "Today";
   if (dateStr === tomorrowISO()) return "Tomorrow";
   const d2 = /* @__PURE__ */ new Date(dateStr + "T00:00:00");
   return d2.toLocaleDateString(void 0, { month: "short", day: "numeric" });
@@ -3211,7 +3211,7 @@ let CaleeTasksView = class extends i {
   _resolveDue(pill, customDate) {
     switch (pill) {
       case "today":
-        return todayISO$1();
+        return todayISO$3();
       case "tomorrow":
         return tomorrowISO();
       case "nextweek":
@@ -3226,7 +3226,7 @@ let CaleeTasksView = class extends i {
   _datePillFromDue(due) {
     if (!due) return { pill: "none", customDate: "" };
     const dateStr = due.slice(0, 10);
-    if (dateStr === todayISO$1()) return { pill: "today", customDate: "" };
+    if (dateStr === todayISO$3()) return { pill: "today", customDate: "" };
     if (dateStr === tomorrowISO()) return { pill: "tomorrow", customDate: "" };
     const nextWk = nextWeekISO();
     if (dateStr === nextWk) return { pill: "nextweek", customDate: "" };
@@ -4234,77 +4234,77 @@ CaleeTasksView.styles = [swipeStyles, i$3`
       color: #fff;
     }
   `];
-__decorateClass$d([
+__decorateClass$l([
   n2({ type: Array })
 ], CaleeTasksView.prototype, "tasks", 2);
-__decorateClass$d([
+__decorateClass$l([
   n2({ type: Array })
 ], CaleeTasksView.prototype, "lists", 2);
-__decorateClass$d([
+__decorateClass$l([
   n2({ type: Array })
 ], CaleeTasksView.prototype, "presets", 2);
-__decorateClass$d([
+__decorateClass$l([
   n2({ type: String })
 ], CaleeTasksView.prototype, "activeView", 2);
-__decorateClass$d([
+__decorateClass$l([
   n2({ type: Boolean, reflect: true })
 ], CaleeTasksView.prototype, "narrow", 2);
-__decorateClass$d([
+__decorateClass$l([
   r()
 ], CaleeTasksView.prototype, "_quickAddText", 2);
-__decorateClass$d([
+__decorateClass$l([
   r()
 ], CaleeTasksView.prototype, "_quickAddFocused", 2);
-__decorateClass$d([
+__decorateClass$l([
   r()
 ], CaleeTasksView.prototype, "_selectedDatePill", 2);
-__decorateClass$d([
+__decorateClass$l([
   r()
 ], CaleeTasksView.prototype, "_selectedRecurrence", 2);
-__decorateClass$d([
+__decorateClass$l([
   r()
 ], CaleeTasksView.prototype, "_customDate", 2);
-__decorateClass$d([
+__decorateClass$l([
   r()
 ], CaleeTasksView.prototype, "_renderLimit", 2);
-__decorateClass$d([
+__decorateClass$l([
   r()
 ], CaleeTasksView.prototype, "_editingTaskId", 2);
-__decorateClass$d([
+__decorateClass$l([
   r()
 ], CaleeTasksView.prototype, "_editTitle", 2);
-__decorateClass$d([
+__decorateClass$l([
   r()
 ], CaleeTasksView.prototype, "_editDatePill", 2);
-__decorateClass$d([
+__decorateClass$l([
   r()
 ], CaleeTasksView.prototype, "_editCustomDate", 2);
-__decorateClass$d([
+__decorateClass$l([
   r()
 ], CaleeTasksView.prototype, "_editRecurrence", 2);
-__decorateClass$d([
+__decorateClass$l([
   r()
 ], CaleeTasksView.prototype, "_showMoreOptions", 2);
-__decorateClass$d([
+__decorateClass$l([
   r()
 ], CaleeTasksView.prototype, "_quickAddNote", 2);
-__decorateClass$d([
+__decorateClass$l([
   r()
 ], CaleeTasksView.prototype, "_confirmDeleteId", 2);
-__decorateClass$d([
+__decorateClass$l([
   e("#quick-add-input")
 ], CaleeTasksView.prototype, "_inputEl", 2);
-CaleeTasksView = __decorateClass$d([
+CaleeTasksView = __decorateClass$l([
   t("calee-tasks-view")
 ], CaleeTasksView);
-var __defProp$c = Object.defineProperty;
-var __getOwnPropDesc$c = Object.getOwnPropertyDescriptor;
-var __decorateClass$c = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$c(target, key) : target;
+var __defProp$k = Object.defineProperty;
+var __getOwnPropDesc$k = Object.getOwnPropertyDescriptor;
+var __decorateClass$k = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$k(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$c(target, key, result);
+  if (kind && result) __defProp$k(target, key, result);
   return result;
 };
 const CATEGORY_META = {
@@ -5988,80 +5988,80 @@ CaleeShoppingView.styles = [swipeStyles, i$3`
       color: #fff;
     }
   `];
-__decorateClass$c([
+__decorateClass$k([
   n2({ type: Array })
 ], CaleeShoppingView.prototype, "tasks", 2);
-__decorateClass$c([
+__decorateClass$k([
   n2({ type: Array })
 ], CaleeShoppingView.prototype, "presets", 2);
-__decorateClass$c([
+__decorateClass$k([
   n2({ type: String })
 ], CaleeShoppingView.prototype, "listId", 2);
-__decorateClass$c([
+__decorateClass$k([
   n2({ type: String })
 ], CaleeShoppingView.prototype, "toastMessage", 2);
-__decorateClass$c([
+__decorateClass$k([
   n2({ type: String })
 ], CaleeShoppingView.prototype, "currency", 2);
-__decorateClass$c([
+__decorateClass$k([
   n2({ type: Number })
 ], CaleeShoppingView.prototype, "budget", 2);
-__decorateClass$c([
+__decorateClass$k([
   r()
 ], CaleeShoppingView.prototype, "_quickAddText", 2);
-__decorateClass$c([
+__decorateClass$k([
   r()
 ], CaleeShoppingView.prototype, "_selectedCategory", 2);
-__decorateClass$c([
+__decorateClass$k([
   r()
 ], CaleeShoppingView.prototype, "_completedOpen", 2);
-__decorateClass$c([
+__decorateClass$k([
   r()
 ], CaleeShoppingView.prototype, "_collapsedSections", 2);
-__decorateClass$c([
+__decorateClass$k([
   r()
 ], CaleeShoppingView.prototype, "_showCustomCategoryInput", 2);
-__decorateClass$c([
+__decorateClass$k([
   r()
 ], CaleeShoppingView.prototype, "_customCategoryText", 2);
-__decorateClass$c([
+__decorateClass$k([
   r()
 ], CaleeShoppingView.prototype, "_showPresetForm", 2);
-__decorateClass$c([
+__decorateClass$k([
   r()
 ], CaleeShoppingView.prototype, "_presetFormCategory", 2);
-__decorateClass$c([
+__decorateClass$k([
   r()
 ], CaleeShoppingView.prototype, "_presetFormTitle", 2);
-__decorateClass$c([
+__decorateClass$k([
   r()
 ], CaleeShoppingView.prototype, "_presetFormEmoji", 2);
-__decorateClass$c([
+__decorateClass$k([
   r()
 ], CaleeShoppingView.prototype, "_confirmDeletePresetId", 2);
-__decorateClass$c([
+__decorateClass$k([
   r()
 ], CaleeShoppingView.prototype, "_pendingRenderLimit", 2);
-__decorateClass$c([
+__decorateClass$k([
   r()
 ], CaleeShoppingView.prototype, "_toastMessage", 2);
-__decorateClass$c([
+__decorateClass$k([
   r()
 ], CaleeShoppingView.prototype, "_confirmSwipeDeleteId", 2);
-__decorateClass$c([
+__decorateClass$k([
   e("#quick-add-input")
 ], CaleeShoppingView.prototype, "_inputEl", 2);
-CaleeShoppingView = __decorateClass$c([
+CaleeShoppingView = __decorateClass$k([
   t("calee-shopping-view")
 ], CaleeShoppingView);
-var __defProp$b = Object.defineProperty;
-var __getOwnPropDesc$b = Object.getOwnPropertyDescriptor;
-var __decorateClass$b = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$b(target, key) : target;
+var __defProp$j = Object.defineProperty;
+var __getOwnPropDesc$j = Object.getOwnPropertyDescriptor;
+var __decorateClass$j = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$j(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$b(target, key, result);
+  if (kind && result) __defProp$j(target, key, result);
   return result;
 };
 let CaleeSmartViews = class extends i {
@@ -6635,50 +6635,50 @@ CaleeSmartViews.styles = i$3`
       padding: 2px 0;
     }
   `;
-__decorateClass$b([
+__decorateClass$j([
   n2({ type: Array })
 ], CaleeSmartViews.prototype, "events", 2);
-__decorateClass$b([
+__decorateClass$j([
   n2({ type: Array })
 ], CaleeSmartViews.prototype, "tasks", 2);
-__decorateClass$b([
+__decorateClass$j([
   n2({ type: Array })
 ], CaleeSmartViews.prototype, "lists", 2);
-__decorateClass$b([
+__decorateClass$j([
   n2({ type: Array })
 ], CaleeSmartViews.prototype, "conflicts", 2);
-__decorateClass$b([
+__decorateClass$j([
   n2({ attribute: false })
 ], CaleeSmartViews.prototype, "calendars", 2);
-__decorateClass$b([
+__decorateClass$j([
   n2({ type: String })
 ], CaleeSmartViews.prototype, "currency", 2);
-__decorateClass$b([
+__decorateClass$j([
   n2({ type: Number })
 ], CaleeSmartViews.prototype, "budget", 2);
-__decorateClass$b([
+__decorateClass$j([
   n2({ type: String })
 ], CaleeSmartViews.prototype, "initialTab", 2);
-__decorateClass$b([
+__decorateClass$j([
   n2({ type: Array })
 ], CaleeSmartViews.prototype, "reminderCalendars", 2);
-__decorateClass$b([
+__decorateClass$j([
   r()
 ], CaleeSmartViews.prototype, "activeTab", 2);
-__decorateClass$b([
+__decorateClass$j([
   n2({ type: Boolean, reflect: true })
 ], CaleeSmartViews.prototype, "narrow", 2);
-CaleeSmartViews = __decorateClass$b([
+CaleeSmartViews = __decorateClass$j([
   t("calee-smart-views")
 ], CaleeSmartViews);
-var __defProp$a = Object.defineProperty;
-var __getOwnPropDesc$a = Object.getOwnPropertyDescriptor;
-var __decorateClass$a = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$a(target, key) : target;
+var __defProp$i = Object.defineProperty;
+var __getOwnPropDesc$i = Object.getOwnPropertyDescriptor;
+var __decorateClass$i = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$i(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$a(target, key, result);
+  if (kind && result) __defProp$i(target, key, result);
   return result;
 };
 function formatStartTime(iso) {
@@ -6687,13 +6687,13 @@ function formatStartTime(iso) {
   const isToday2 = d2.getFullYear() === now.getFullYear() && d2.getMonth() === now.getMonth() && d2.getDate() === now.getDate();
   const tomorrow = new Date(now);
   tomorrow.setDate(tomorrow.getDate() + 1);
-  const isTomorrow = d2.getFullYear() === tomorrow.getFullYear() && d2.getMonth() === tomorrow.getMonth() && d2.getDate() === tomorrow.getDate();
+  const isTomorrow2 = d2.getFullYear() === tomorrow.getFullYear() && d2.getMonth() === tomorrow.getMonth() && d2.getDate() === tomorrow.getDate();
   const time = d2.toLocaleTimeString(void 0, {
     hour: "numeric",
     minute: "2-digit"
   });
   if (isToday2) return `Today at ${time}`;
-  if (isTomorrow) return `Tomorrow at ${time}`;
+  if (isTomorrow2) return `Tomorrow at ${time}`;
   return `${d2.toLocaleDateString(void 0, { weekday: "short", month: "short", day: "numeric" })} at ${time}`;
 }
 function formatCountdown(ms) {
@@ -6800,23 +6800,23 @@ CaleeNextShift.styles = i$3`
       letter-spacing: -0.3px;
     }
   `;
-__decorateClass$a([
+__decorateClass$i([
   n2({ type: Object })
 ], CaleeNextShift.prototype, "nextShift", 2);
-__decorateClass$a([
+__decorateClass$i([
   r()
 ], CaleeNextShift.prototype, "_countdown", 2);
-CaleeNextShift = __decorateClass$a([
+CaleeNextShift = __decorateClass$i([
   t("calee-next-shift")
 ], CaleeNextShift);
-var __defProp$9 = Object.defineProperty;
-var __getOwnPropDesc$9 = Object.getOwnPropertyDescriptor;
-var __decorateClass$9 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$9(target, key) : target;
+var __defProp$h = Object.defineProperty;
+var __getOwnPropDesc$h = Object.getOwnPropertyDescriptor;
+var __decorateClass$h = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$h(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$9(target, key, result);
+  if (kind && result) __defProp$h(target, key, result);
   return result;
 };
 const RECURRENCE_OPTIONS = [
@@ -7222,50 +7222,50 @@ CaleeEventDialog.styles = i$3`
       }
     }
   `;
-__decorateClass$9([
+__decorateClass$h([
   n2({ type: Object })
 ], CaleeEventDialog.prototype, "event", 2);
-__decorateClass$9([
+__decorateClass$h([
   n2({ type: Array })
 ], CaleeEventDialog.prototype, "calendars", 2);
-__decorateClass$9([
+__decorateClass$h([
   n2({ type: Boolean, reflect: true })
 ], CaleeEventDialog.prototype, "open", 2);
-__decorateClass$9([
+__decorateClass$h([
   n2({ type: Object })
 ], CaleeEventDialog.prototype, "defaults", 2);
-__decorateClass$9([
+__decorateClass$h([
   r()
 ], CaleeEventDialog.prototype, "_title", 2);
-__decorateClass$9([
+__decorateClass$h([
   r()
 ], CaleeEventDialog.prototype, "_calendarId", 2);
-__decorateClass$9([
+__decorateClass$h([
   r()
 ], CaleeEventDialog.prototype, "_start", 2);
-__decorateClass$9([
+__decorateClass$h([
   r()
 ], CaleeEventDialog.prototype, "_end", 2);
-__decorateClass$9([
+__decorateClass$h([
   r()
 ], CaleeEventDialog.prototype, "_note", 2);
-__decorateClass$9([
+__decorateClass$h([
   r()
 ], CaleeEventDialog.prototype, "_recurrenceRule", 2);
-__decorateClass$9([
+__decorateClass$h([
   r()
 ], CaleeEventDialog.prototype, "_templateId", 2);
-CaleeEventDialog = __decorateClass$9([
+CaleeEventDialog = __decorateClass$h([
   t("calee-event-dialog")
 ], CaleeEventDialog);
-var __defProp$8 = Object.defineProperty;
-var __getOwnPropDesc$8 = Object.getOwnPropertyDescriptor;
-var __decorateClass$8 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$8(target, key) : target;
+var __defProp$g = Object.defineProperty;
+var __getOwnPropDesc$g = Object.getOwnPropertyDescriptor;
+var __decorateClass$g = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$g(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$8(target, key, result);
+  if (kind && result) __defProp$g(target, key, result);
   return result;
 };
 function formatShiftTime(t2) {
@@ -8011,35 +8011,35 @@ CaleeTemplatePicker.styles = i$3`
       }
     }
   `;
-__decorateClass$8([
+__decorateClass$g([
   n2({ type: Array })
 ], CaleeTemplatePicker.prototype, "templates", 2);
-__decorateClass$8([
+__decorateClass$g([
   n2({ type: String })
 ], CaleeTemplatePicker.prototype, "selectedDate", 2);
-__decorateClass$8([
+__decorateClass$g([
   n2({ type: String })
 ], CaleeTemplatePicker.prototype, "selectedTime", 2);
-__decorateClass$8([
+__decorateClass$g([
   n2({ type: Boolean, reflect: true })
 ], CaleeTemplatePicker.prototype, "open", 2);
-__decorateClass$8([
+__decorateClass$g([
   r()
 ], CaleeTemplatePicker.prototype, "_step", 2);
-__decorateClass$8([
+__decorateClass$g([
   r()
 ], CaleeTemplatePicker.prototype, "_datePill", 2);
-CaleeTemplatePicker = __decorateClass$8([
+CaleeTemplatePicker = __decorateClass$g([
   t("calee-template-picker")
 ], CaleeTemplatePicker);
-var __defProp$7 = Object.defineProperty;
-var __getOwnPropDesc$7 = Object.getOwnPropertyDescriptor;
-var __decorateClass$7 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$7(target, key) : target;
+var __defProp$f = Object.defineProperty;
+var __getOwnPropDesc$f = Object.getOwnPropertyDescriptor;
+var __decorateClass$f = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$f(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$7(target, key, result);
+  if (kind && result) __defProp$f(target, key, result);
   return result;
 };
 const PRESET_COLORS = [
@@ -8774,41 +8774,41 @@ CaleeTemplateManager.styles = i$3`
       }
     }
   `;
-__decorateClass$7([
+__decorateClass$f([
   n2({ type: Array })
 ], CaleeTemplateManager.prototype, "templates", 2);
-__decorateClass$7([
+__decorateClass$f([
   n2({ type: Array })
 ], CaleeTemplateManager.prototype, "calendars", 2);
-__decorateClass$7([
+__decorateClass$f([
   n2({ attribute: false })
 ], CaleeTemplateManager.prototype, "hass", 2);
-__decorateClass$7([
+__decorateClass$f([
   n2({ type: Boolean, reflect: true })
 ], CaleeTemplateManager.prototype, "open", 2);
-__decorateClass$7([
+__decorateClass$f([
   r()
 ], CaleeTemplateManager.prototype, "_editingTemplate", 2);
-__decorateClass$7([
+__decorateClass$f([
   r()
 ], CaleeTemplateManager.prototype, "_isNew", 2);
-__decorateClass$7([
+__decorateClass$f([
   r()
 ], CaleeTemplateManager.prototype, "_confirmDeleteId", 2);
-__decorateClass$7([
+__decorateClass$f([
   r()
 ], CaleeTemplateManager.prototype, "_saving", 2);
-CaleeTemplateManager = __decorateClass$7([
+CaleeTemplateManager = __decorateClass$f([
   t("calee-template-manager")
 ], CaleeTemplateManager);
-var __defProp$6 = Object.defineProperty;
-var __getOwnPropDesc$6 = Object.getOwnPropertyDescriptor;
-var __decorateClass$6 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$6(target, key) : target;
+var __defProp$e = Object.defineProperty;
+var __getOwnPropDesc$e = Object.getOwnPropertyDescriptor;
+var __decorateClass$e = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$e(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$6(target, key, result);
+  if (kind && result) __defProp$e(target, key, result);
   return result;
 };
 let CaleeSettingsDialog = class extends i {
@@ -9407,53 +9407,53 @@ CaleeSettingsDialog.styles = i$3`
       cursor: not-allowed;
     }
   `;
-__decorateClass$6([
+__decorateClass$e([
   n2({ type: Boolean, reflect: true })
 ], CaleeSettingsDialog.prototype, "open", 2);
-__decorateClass$6([
+__decorateClass$e([
   n2({ attribute: false })
 ], CaleeSettingsDialog.prototype, "hass", 2);
-__decorateClass$6([
+__decorateClass$e([
   r()
 ], CaleeSettingsDialog.prototype, "_timeFormat", 2);
-__decorateClass$6([
+__decorateClass$e([
   r()
 ], CaleeSettingsDialog.prototype, "_weekStartsOn", 2);
-__decorateClass$6([
+__decorateClass$e([
   r()
 ], CaleeSettingsDialog.prototype, "_maxEventAgeDays", 2);
-__decorateClass$6([
+__decorateClass$e([
   r()
 ], CaleeSettingsDialog.prototype, "_currencySymbol", 2);
-__decorateClass$6([
+__decorateClass$e([
   r()
 ], CaleeSettingsDialog.prototype, "_budgetAmount", 2);
-__decorateClass$6([
+__decorateClass$e([
   r()
 ], CaleeSettingsDialog.prototype, "_customCategories", 2);
-__decorateClass$6([
+__decorateClass$e([
   r()
 ], CaleeSettingsDialog.prototype, "_newCategoryText", 2);
-__decorateClass$6([
+__decorateClass$e([
   r()
 ], CaleeSettingsDialog.prototype, "_strictPrivacy", 2);
-__decorateClass$6([
+__decorateClass$e([
   r()
 ], CaleeSettingsDialog.prototype, "_saving", 2);
-__decorateClass$6([
+__decorateClass$e([
   r()
 ], CaleeSettingsDialog.prototype, "_loadingSettings", 2);
-CaleeSettingsDialog = __decorateClass$6([
+CaleeSettingsDialog = __decorateClass$e([
   t("calee-settings-dialog")
 ], CaleeSettingsDialog);
-var __defProp$5 = Object.defineProperty;
-var __getOwnPropDesc$5 = Object.getOwnPropertyDescriptor;
-var __decorateClass$5 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$5(target, key) : target;
+var __defProp$d = Object.defineProperty;
+var __getOwnPropDesc$d = Object.getOwnPropertyDescriptor;
+var __decorateClass$d = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$d(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$5(target, key, result);
+  if (kind && result) __defProp$d(target, key, result);
   return result;
 };
 function relativeTime$1(isoStr) {
@@ -9778,41 +9778,41 @@ CaleeDeletedItems.styles = i$3`
       }
     }
   `;
-__decorateClass$5([
+__decorateClass$d([
   n2({ attribute: false })
 ], CaleeDeletedItems.prototype, "hass", 2);
-__decorateClass$5([
+__decorateClass$d([
   n2({ type: Boolean, reflect: true })
 ], CaleeDeletedItems.prototype, "open", 2);
-__decorateClass$5([
+__decorateClass$d([
   n2({ attribute: false })
 ], CaleeDeletedItems.prototype, "calendars", 2);
-__decorateClass$5([
+__decorateClass$d([
   n2({ attribute: false })
 ], CaleeDeletedItems.prototype, "lists", 2);
-__decorateClass$5([
+__decorateClass$d([
   r()
 ], CaleeDeletedItems.prototype, "_items", 2);
-__decorateClass$5([
+__decorateClass$d([
   r()
 ], CaleeDeletedItems.prototype, "_loading", 2);
-__decorateClass$5([
+__decorateClass$d([
   r()
 ], CaleeDeletedItems.prototype, "_restoringId", 2);
-__decorateClass$5([
+__decorateClass$d([
   r()
 ], CaleeDeletedItems.prototype, "_toastMessage", 2);
-CaleeDeletedItems = __decorateClass$5([
+CaleeDeletedItems = __decorateClass$d([
   t("calee-deleted-items")
 ], CaleeDeletedItems);
-var __defProp$4 = Object.defineProperty;
-var __getOwnPropDesc$4 = Object.getOwnPropertyDescriptor;
-var __decorateClass$4 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$4(target, key) : target;
+var __defProp$c = Object.defineProperty;
+var __getOwnPropDesc$c = Object.getOwnPropertyDescriptor;
+var __decorateClass$c = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$c(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$4(target, key, result);
+  if (kind && result) __defProp$c(target, key, result);
   return result;
 };
 function relativeTime(isoStr) {
@@ -10074,29 +10074,29 @@ CaleeActivityFeed.styles = i$3`
       }
     }
   `;
-__decorateClass$4([
+__decorateClass$c([
   n2({ attribute: false })
 ], CaleeActivityFeed.prototype, "hass", 2);
-__decorateClass$4([
+__decorateClass$c([
   n2({ type: Boolean, reflect: true })
 ], CaleeActivityFeed.prototype, "open", 2);
-__decorateClass$4([
+__decorateClass$c([
   r()
 ], CaleeActivityFeed.prototype, "_entries", 2);
-__decorateClass$4([
+__decorateClass$c([
   r()
 ], CaleeActivityFeed.prototype, "_loading", 2);
-CaleeActivityFeed = __decorateClass$4([
+CaleeActivityFeed = __decorateClass$c([
   t("calee-activity-feed")
 ], CaleeActivityFeed);
-var __defProp$3 = Object.defineProperty;
-var __getOwnPropDesc$3 = Object.getOwnPropertyDescriptor;
-var __decorateClass$3 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$3(target, key) : target;
+var __defProp$b = Object.defineProperty;
+var __getOwnPropDesc$b = Object.getOwnPropertyDescriptor;
+var __decorateClass$b = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$b(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$3(target, key, result);
+  if (kind && result) __defProp$b(target, key, result);
   return result;
 };
 let CaleeRoutineManager = class extends i {
@@ -10822,38 +10822,38 @@ CaleeRoutineManager.styles = i$3`
       font-size: 14px;
     }
   `;
-__decorateClass$3([
+__decorateClass$b([
   n2({ attribute: false })
 ], CaleeRoutineManager.prototype, "hass", 2);
-__decorateClass$3([
+__decorateClass$b([
   n2({ type: Array })
 ], CaleeRoutineManager.prototype, "routines", 2);
-__decorateClass$3([
+__decorateClass$b([
   n2({ type: Array })
 ], CaleeRoutineManager.prototype, "templates", 2);
-__decorateClass$3([
+__decorateClass$b([
   n2({ type: Boolean, reflect: true })
 ], CaleeRoutineManager.prototype, "open", 2);
-__decorateClass$3([
+__decorateClass$b([
   r()
 ], CaleeRoutineManager.prototype, "_editingRoutine", 2);
-__decorateClass$3([
+__decorateClass$b([
   r()
 ], CaleeRoutineManager.prototype, "_isNew", 2);
-__decorateClass$3([
+__decorateClass$b([
   r()
 ], CaleeRoutineManager.prototype, "_confirmDeleteId", 2);
-CaleeRoutineManager = __decorateClass$3([
+CaleeRoutineManager = __decorateClass$b([
   t("calee-routine-manager")
 ], CaleeRoutineManager);
-var __defProp$2 = Object.defineProperty;
-var __getOwnPropDesc$2 = Object.getOwnPropertyDescriptor;
-var __decorateClass$2 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$2(target, key) : target;
+var __defProp$a = Object.defineProperty;
+var __getOwnPropDesc$a = Object.getOwnPropertyDescriptor;
+var __decorateClass$a = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$a(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$2(target, key, result);
+  if (kind && result) __defProp$a(target, key, result);
   return result;
 };
 const COLOUR_OPTIONS = [
@@ -11330,74 +11330,74 @@ CaleeCalendarManager.styles = i$3`
       cursor: pointer; font-size: 13px; font-weight: 500;
     }
   `;
-__decorateClass$2([
+__decorateClass$a([
   n2({ attribute: false })
 ], CaleeCalendarManager.prototype, "hass", 2);
-__decorateClass$2([
+__decorateClass$a([
   n2({ type: Array })
 ], CaleeCalendarManager.prototype, "calendars", 2);
-__decorateClass$2([
+__decorateClass$a([
   n2({ type: Array })
 ], CaleeCalendarManager.prototype, "lists", 2);
-__decorateClass$2([
+__decorateClass$a([
   n2({ type: Boolean, reflect: true })
 ], CaleeCalendarManager.prototype, "open", 2);
-__decorateClass$2([
+__decorateClass$a([
   r()
 ], CaleeCalendarManager.prototype, "_editingCalendarId", 2);
-__decorateClass$2([
+__decorateClass$a([
   r()
 ], CaleeCalendarManager.prototype, "_editName", 2);
-__decorateClass$2([
+__decorateClass$a([
   r()
 ], CaleeCalendarManager.prototype, "_editColor", 2);
-__decorateClass$2([
+__decorateClass$a([
   r()
 ], CaleeCalendarManager.prototype, "_editEmoji", 2);
-__decorateClass$2([
+__decorateClass$a([
   r()
 ], CaleeCalendarManager.prototype, "_addingCalendar", 2);
-__decorateClass$2([
+__decorateClass$a([
   r()
 ], CaleeCalendarManager.prototype, "_newCalName", 2);
-__decorateClass$2([
+__decorateClass$a([
   r()
 ], CaleeCalendarManager.prototype, "_newCalColor", 2);
-__decorateClass$2([
+__decorateClass$a([
   r()
 ], CaleeCalendarManager.prototype, "_newCalEmoji", 2);
-__decorateClass$2([
+__decorateClass$a([
   r()
 ], CaleeCalendarManager.prototype, "_editingListId", 2);
-__decorateClass$2([
+__decorateClass$a([
   r()
 ], CaleeCalendarManager.prototype, "_editListName", 2);
-__decorateClass$2([
+__decorateClass$a([
   r()
 ], CaleeCalendarManager.prototype, "_addingList", 2);
-__decorateClass$2([
+__decorateClass$a([
   r()
 ], CaleeCalendarManager.prototype, "_newListName", 2);
-__decorateClass$2([
+__decorateClass$a([
   r()
 ], CaleeCalendarManager.prototype, "_newListType", 2);
-__decorateClass$2([
+__decorateClass$a([
   r()
 ], CaleeCalendarManager.prototype, "_confirmDeleteId", 2);
-__decorateClass$2([
+__decorateClass$a([
   r()
 ], CaleeCalendarManager.prototype, "_confirmDeleteType", 2);
-CaleeCalendarManager = __decorateClass$2([
+CaleeCalendarManager = __decorateClass$a([
   t("calee-calendar-manager")
 ], CaleeCalendarManager);
-var __defProp$1 = Object.defineProperty;
-var __getOwnPropDesc$1 = Object.getOwnPropertyDescriptor;
-var __decorateClass$1 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$1(target, key) : target;
+var __defProp$9 = Object.defineProperty;
+var __getOwnPropDesc$9 = Object.getOwnPropertyDescriptor;
+var __decorateClass$9 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$9(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$1(target, key, result);
+  if (kind && result) __defProp$9(target, key, result);
   return result;
 };
 let CaleeDataCenter = class extends i {
@@ -11823,82 +11823,1925 @@ CaleeDataCenter.styles = i$3`
     }
     .close-btn:hover { background: var(--divider-color, #e0e0e0); }
   `;
-__decorateClass$1([
+__decorateClass$9([
   n2({ type: Boolean, reflect: true })
 ], CaleeDataCenter.prototype, "open", 2);
-__decorateClass$1([
+__decorateClass$9([
   n2({ attribute: false })
 ], CaleeDataCenter.prototype, "hass", 2);
-__decorateClass$1([
+__decorateClass$9([
   n2({ type: Array })
 ], CaleeDataCenter.prototype, "events", 2);
-__decorateClass$1([
+__decorateClass$9([
   n2({ type: Array })
 ], CaleeDataCenter.prototype, "tasks", 2);
-__decorateClass$1([
+__decorateClass$9([
   n2({ type: Array })
 ], CaleeDataCenter.prototype, "calendars", 2);
-__decorateClass$1([
+__decorateClass$9([
   n2({ type: Array })
 ], CaleeDataCenter.prototype, "lists", 2);
-__decorateClass$1([
+__decorateClass$9([
   n2({ type: Array })
 ], CaleeDataCenter.prototype, "templates", 2);
-__decorateClass$1([
+__decorateClass$9([
   n2({ type: Array })
 ], CaleeDataCenter.prototype, "routines", 2);
-__decorateClass$1([
+__decorateClass$9([
   r()
 ], CaleeDataCenter.prototype, "_tab", 2);
-__decorateClass$1([
+__decorateClass$9([
   r()
 ], CaleeDataCenter.prototype, "_auditLog", 2);
-__decorateClass$1([
+__decorateClass$9([
   r()
 ], CaleeDataCenter.prototype, "_loadingAudit", 2);
-CaleeDataCenter = __decorateClass$1([
+CaleeDataCenter = __decorateClass$9([
   t("calee-data-center")
 ], CaleeDataCenter);
-var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __decorateClass = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
+var __defProp$8 = Object.defineProperty;
+var __getOwnPropDesc$8 = Object.getOwnPropertyDescriptor;
+var __decorateClass$8 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$8(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp(target, key, result);
+  if (kind && result) __defProp$8(target, key, result);
   return result;
 };
-const DATE_VIEWS = ["month", "week", "day", "year"];
-const ALL_VIEWS = ["month", "week", "day", "agenda", "tasks", "shopping", "year", "smart"];
-const TAB_VIEWS = ["week", "month", "agenda", "tasks", "shopping"];
-function todayISO() {
+let CaleeBottomNav = class extends i {
+  constructor() {
+    super(...arguments);
+    this.activeView = "home";
+  }
+  _navigate(view) {
+    this.dispatchEvent(
+      new CustomEvent("nav-change", {
+        detail: { view },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  _onAdd() {
+    this.dispatchEvent(
+      new CustomEvent("open-template-picker", {
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  render() {
+    return b`
+      <button ?active=${this.activeView === "home"} @click=${() => this._navigate("home")}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        Home
+      </button>
+
+      <button ?active=${this.activeView === "calendar"} @click=${() => this._navigate("calendar")}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        Calendar
+      </button>
+
+      <button class="add-btn" @click=${this._onAdd}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Add
+      </button>
+
+      <button ?active=${this.activeView === "tasks"} @click=${() => this._navigate("tasks")}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 11l3 3L22 4"></path>
+          <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path>
+        </svg>
+        Tasks
+      </button>
+
+      <button ?active=${this.activeView === "shopping"} @click=${() => this._navigate("shopping")}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"></path>
+        </svg>
+        Shop
+      </button>
+    `;
+  }
+};
+CaleeBottomNav.styles = i$3`
+    :host {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      height: 52px;
+      min-height: 52px;
+      background: var(--card-background-color, #fff);
+      border-top: 1px solid var(--divider-color, #e0e0e0);
+      z-index: 4;
+      padding: 0 4px;
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+
+    button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 4px 8px;
+      min-width: 44px;
+      min-height: 44px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--secondary-text-color, #727272);
+      font-size: 10px;
+      font-weight: 500;
+      font-family: inherit;
+      transition: color 0.15s;
+      border-radius: 8px;
+    }
+
+    button[active] {
+      color: var(--primary-color, #03a9f4);
+    }
+
+    button svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .add-btn {
+      color: var(--primary-color, #03a9f4);
+    }
+    .add-btn svg {
+      width: 28px;
+      height: 28px;
+    }
+  `;
+__decorateClass$8([
+  n2()
+], CaleeBottomNav.prototype, "activeView", 2);
+CaleeBottomNav = __decorateClass$8([
+  t("calee-bottom-nav")
+], CaleeBottomNav);
+var __defProp$7 = Object.defineProperty;
+var __getOwnPropDesc$7 = Object.getOwnPropertyDescriptor;
+var __decorateClass$7 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$7(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$7(target, key, result);
+  return result;
+};
+let CaleeLeftRail = class extends i {
+  constructor() {
+    super(...arguments);
+    this.activeView = "home";
+    this.calendars = [];
+    this.rawCalendars = [];
+    this.routines = [];
+    this.conflicts = [];
+    this._expanded = false;
+    this._calendarsOpen = true;
+    this._routinesOpen = false;
+    this._moreOpen = false;
+    this._onMouseEnter = () => {
+      this._expanded = true;
+      this.setAttribute("expanded", "");
+    };
+    this._onMouseLeave = () => {
+      this._expanded = false;
+      this.removeAttribute("expanded");
+    };
+  }
+  _navigate(view) {
+    this.dispatchEvent(
+      new CustomEvent("nav-change", {
+        detail: { view },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  _openMore(sub) {
+    this.dispatchEvent(
+      new CustomEvent("open-more", {
+        detail: { sub },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  _toggleCalendar(id) {
+    this.dispatchEvent(
+      new CustomEvent("toggle-calendar", {
+        detail: { id },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  _executeRoutine(id) {
+    this.dispatchEvent(
+      new CustomEvent("routine-execute", {
+        detail: { routineId: id },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  _openRoutineManager() {
+    this.dispatchEvent(
+      new CustomEvent("open-routine-manager", { bubbles: true, composed: true })
+    );
+  }
+  _openCalendarManager() {
+    this.dispatchEvent(
+      new CustomEvent("open-calendar-manager", { bubbles: true, composed: true })
+    );
+  }
+  _openSettings() {
+    this.dispatchEvent(
+      new CustomEvent("open-settings", { bubbles: true, composed: true })
+    );
+  }
+  render() {
+    return b`
+      <!-- Main navigation -->
+      <div class="section">
+        <button class="nav-item" ?active=${this.activeView === "home"}
+          @click=${() => this._navigate("home")}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span class="nav-label">Home</span>
+        </button>
+
+        <button class="nav-item" ?active=${this.activeView === "calendar"}
+          @click=${() => this._navigate("calendar")}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span class="nav-label">Calendar</span>
+        </button>
+
+        <button class="nav-item" ?active=${this.activeView === "tasks"}
+          @click=${() => this._navigate("tasks")}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 11l3 3L22 4"></path>
+            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path>
+          </svg>
+          <span class="nav-label">Tasks</span>
+        </button>
+
+        <button class="nav-item" ?active=${this.activeView === "shopping"}
+          @click=${() => this._navigate("shopping")}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"></path>
+          </svg>
+          <span class="nav-label">Shopping</span>
+        </button>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Calendar toggles -->
+      <div class="section">
+        <div class="section-heading" role="button" tabindex="0"
+          @click=${() => {
+      this._calendarsOpen = !this._calendarsOpen;
+    }}
+          @keydown=${(e2) => {
+      if (e2.key === "Enter" || e2.key === " ") {
+        e2.preventDefault();
+        this._calendarsOpen = !this._calendarsOpen;
+      }
+    }}>
+          Calendars
+          <span class="manage-link" role="button" tabindex="0"
+            @click=${(e2) => {
+      e2.stopPropagation();
+      this._openCalendarManager();
+    }}
+            @keydown=${(e2) => {
+      if (e2.key === "Enter" || e2.key === " ") {
+        e2.preventDefault();
+        e2.stopPropagation();
+        this._openCalendarManager();
+      }
+    }}>Manage</span>
+        </div>
+        ${this._calendarsOpen ? this.calendars.map(
+      (cal) => b`
+            <div class="calendar-item" @click=${() => this._toggleCalendar(cal.id)}>
+              <span class="calendar-dot ${cal.visible ? "" : "hidden"}" style="background: ${cal.color}"></span>
+              <span class="cal-toggle-name">${cal.name}</span>
+            </div>
+          `
+    ) : A}
+      </div>
+
+      <!-- Routines -->
+      <div class="section">
+        <div class="section-heading" role="button" tabindex="0"
+          @click=${() => {
+      this._routinesOpen = !this._routinesOpen;
+    }}
+          @keydown=${(e2) => {
+      if (e2.key === "Enter" || e2.key === " ") {
+        e2.preventDefault();
+        this._routinesOpen = !this._routinesOpen;
+      }
+    }}>
+          Routines
+          <span class="manage-link" role="button" tabindex="0"
+            @click=${(e2) => {
+      e2.stopPropagation();
+      this._openRoutineManager();
+    }}
+            @keydown=${(e2) => {
+      if (e2.key === "Enter" || e2.key === " ") {
+        e2.preventDefault();
+        e2.stopPropagation();
+        this._openRoutineManager();
+      }
+    }}>Manage</span>
+        </div>
+        ${this._routinesOpen ? this.routines.map(
+      (r2) => b`
+            <button class="nav-item nav-item-muted" @click=${() => this._executeRoutine(r2.id)} title="${r2.description || `Run ${r2.name}`}">
+              <span style="font-size:16px;width:20px;text-align:center;flex-shrink:0;">${r2.emoji || "⚡"}</span>
+              <span class="nav-label">${r2.name}</span>
+            </button>
+          `
+    ) : A}
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- More section -->
+      <div class="section">
+        <div class="section-heading" role="button" tabindex="0"
+          @click=${() => {
+      this._moreOpen = !this._moreOpen;
+    }}
+          @keydown=${(e2) => {
+      if (e2.key === "Enter" || e2.key === " ") {
+        e2.preventDefault();
+        this._moreOpen = !this._moreOpen;
+      }
+    }}>
+          More
+        </div>
+        ${this._moreOpen ? b`
+          <button class="nav-item nav-item-muted" @click=${() => this._openMore("year")}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+              <line x1="3" y1="16" x2="21" y2="16"></line>
+              <line x1="9" y1="4" x2="9" y2="22"></line>
+              <line x1="15" y1="4" x2="15" y2="22"></line>
+            </svg>
+            <span class="nav-label">Year</span>
+          </button>
+          <button class="nav-item nav-item-muted" @click=${() => this._openMore("smart")}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span class="nav-label">Smart Views</span>
+          </button>
+          <button class="nav-item nav-item-muted" @click=${() => this._openMore("data-center")}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+              <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+              <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+            </svg>
+            <span class="nav-label">Data Center</span>
+          </button>
+          <button class="nav-item nav-item-muted" @click=${() => this._openMore("activity")}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+            <span class="nav-label">Activity</span>
+          </button>
+          <button class="nav-item nav-item-muted" @click=${() => this._openMore("deleted")}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
+            </svg>
+            <span class="nav-label">Recently Deleted</span>
+          </button>
+          ${this.conflicts.length > 0 ? b`
+            <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--warning-color,#ff9800)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0;">
+                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+              <span class="nav-label" style="font-size:12px;color:var(--warning-color,#ff9800);font-weight:500;">${this.conflicts.length} conflict${this.conflicts.length === 1 ? "" : "s"}</span>
+            </div>
+          ` : A}
+        ` : A}
+
+        <button class="nav-item nav-item-muted" @click=${this._openSettings}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.32 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"></path>
+          </svg>
+          <span class="nav-label">Settings</span>
+        </button>
+      </div>
+    `;
+  }
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener("mouseenter", this._onMouseEnter);
+    this.addEventListener("mouseleave", this._onMouseLeave);
+  }
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener("mouseenter", this._onMouseEnter);
+    this.removeEventListener("mouseleave", this._onMouseLeave);
+  }
+};
+CaleeLeftRail.styles = i$3`
+    :host {
+      display: flex;
+      flex-direction: column;
+      width: 56px;
+      min-width: 56px;
+      background: var(--sidebar-background-color, var(--card-background-color, #fff));
+      border-right: 1px solid var(--divider-color, #e0e0e0);
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 3;
+      transition: width 0.2s ease, min-width 0.2s ease;
+      padding: 8px 0;
+    }
+
+    :host([expanded]) {
+      width: 220px;
+      min-width: 220px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--primary-text-color, #212121);
+      transition: background 0.15s;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    :host(:not([expanded])) .nav-item {
+      justify-content: center;
+      padding: 8px 0;
+    }
+
+    :host(:not([expanded])) .nav-label,
+    :host(:not([expanded])) .section-heading,
+    :host(:not([expanded])) .cal-toggle-name,
+    :host(:not([expanded])) .manage-link {
+      display: none;
+    }
+
+    .nav-item:hover {
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
+    }
+
+    .nav-item[active] {
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 10%, transparent);
+      color: var(--primary-color, #03a9f4);
+      font-weight: 500;
+    }
+
+    .nav-item svg,
+    .nav-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      color: var(--secondary-text-color, #727272);
+    }
+
+    .nav-item[active] svg,
+    .nav-item[active] .nav-icon {
+      color: var(--primary-color, #03a9f4);
+    }
+
+    .nav-item-muted {
+      font-size: 12px;
+      color: var(--secondary-text-color, #727272);
+    }
+
+    .nav-item-muted svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .section {
+      padding: 0 8px;
+      margin-bottom: 4px;
+    }
+
+    .section-heading {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--secondary-text-color, #727272);
+      padding: 14px 8px 4px;
+      margin: 0;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-heading .manage-link {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--primary-color, #03a9f4);
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .calendar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 8px;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background 0.15s;
+      font-size: 13px;
+    }
+
+    :host(:not([expanded])) .calendar-item {
+      justify-content: center;
+      padding: 5px 0;
+    }
+
+    .calendar-item:hover {
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
+    }
+
+    .calendar-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      transition: opacity 0.15s;
+    }
+
+    .calendar-dot.hidden { opacity: 0.25; }
+
+    .cal-toggle-name {
+      font-size: 13px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .divider {
+      height: 1px;
+      margin: 8px 12px;
+      background: var(--divider-color, #e0e0e0);
+    }
+
+    :host(:not([expanded])) .divider {
+      margin: 8px 6px;
+    }
+  `;
+__decorateClass$7([
+  n2()
+], CaleeLeftRail.prototype, "activeView", 2);
+__decorateClass$7([
+  n2({ type: Array })
+], CaleeLeftRail.prototype, "calendars", 2);
+__decorateClass$7([
+  n2({ type: Array })
+], CaleeLeftRail.prototype, "rawCalendars", 2);
+__decorateClass$7([
+  n2({ type: Array })
+], CaleeLeftRail.prototype, "routines", 2);
+__decorateClass$7([
+  n2({ type: Array })
+], CaleeLeftRail.prototype, "conflicts", 2);
+__decorateClass$7([
+  r()
+], CaleeLeftRail.prototype, "_expanded", 2);
+__decorateClass$7([
+  r()
+], CaleeLeftRail.prototype, "_calendarsOpen", 2);
+__decorateClass$7([
+  r()
+], CaleeLeftRail.prototype, "_routinesOpen", 2);
+__decorateClass$7([
+  r()
+], CaleeLeftRail.prototype, "_moreOpen", 2);
+CaleeLeftRail = __decorateClass$7([
+  t("calee-left-rail")
+], CaleeLeftRail);
+var __defProp$6 = Object.defineProperty;
+var __getOwnPropDesc$6 = Object.getOwnPropertyDescriptor;
+var __decorateClass$6 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$6(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$6(target, key, result);
+  return result;
+};
+let CaleeDetailDrawer = class extends i {
+  constructor() {
+    super(...arguments);
+    this.item = null;
+    this.itemType = null;
+    this.open = false;
+    this.calendars = [];
+    this.lists = [];
+    this.events = [];
+    this.tasks = [];
+    this.conflicts = [];
+  }
+  _close() {
+    this.dispatchEvent(new CustomEvent("drawer-close", { bubbles: true, composed: true }));
+  }
+  _edit() {
+    this.dispatchEvent(
+      new CustomEvent("drawer-edit", {
+        detail: { item: this.item, itemType: this.itemType },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  _delete() {
+    this.dispatchEvent(
+      new CustomEvent("drawer-delete", {
+        detail: { item: this.item, itemType: this.itemType },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  _editOccurrence(action) {
+    this.dispatchEvent(
+      new CustomEvent("drawer-recurring-action", {
+        detail: { event: this.item, action },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  render() {
+    if (!this.open || !this.item) {
+      this.setAttribute("hidden", "");
+      return A;
+    }
+    this.removeAttribute("hidden");
+    if (this.itemType === "event") {
+      return this._renderEventDetail(this.item);
+    }
+    return this._renderTaskDetail(this.item);
+  }
+  _getCalendarMap() {
+    const map = /* @__PURE__ */ new Map();
+    for (const c2 of this.calendars) map.set(c2.id, c2);
+    return map;
+  }
+  _renderEventDetail(event) {
+    const calMap = this._getCalendarMap();
+    const cal = calMap.get(event.calendar_id);
+    const start = new Date(event.start);
+    const end = new Date(event.end);
+    const eventConflicts = this.conflicts.filter(
+      (c2) => c2.eventA.id === event.id || c2.eventB.id === event.id
+    );
+    const conflictNames = eventConflicts.map((c2) => {
+      const other = c2.eventA.id === event.id ? c2.eventB : c2.eventA;
+      return other.title;
+    });
+    const dateOpts = { weekday: "short", month: "short", day: "numeric", year: "numeric" };
+    const timeOpts = { hour: "numeric", minute: "2-digit" };
+    const linkedTasks = this.tasks.filter(
+      (t2) => t2.related_event_id === event.id && !t2.deleted_at
+    );
+    return b`
+      <div class="drawer-header">
+        <h3>Event</h3>
+        <button class="close-btn" aria-label="Close details" @click=${this._close}>&times;</button>
+      </div>
+
+      ${conflictNames.length > 0 ? b`
+        <div class="conflict-banner">
+          <strong>Conflict:</strong> Overlaps with ${conflictNames.join(", ")}
+        </div>
+      ` : A}
+
+      <div class="field">
+        <div class="field-label">Title</div>
+        <div class="field-value">${event.title}</div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">Calendar</div>
+        <div class="field-value">
+          ${cal ? b`<span style="display:inline-flex;align-items:center;gap:6px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:${cal.color};display:inline-block;"></span>
+            ${cal.name}
+          </span>` : b`<span class="muted">Unknown</span>`}
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">Start</div>
+        <div class="field-value">
+          ${event.all_day ? start.toLocaleDateString(void 0, dateOpts) : b`${start.toLocaleDateString(void 0, dateOpts)} at ${start.toLocaleTimeString(void 0, timeOpts)}`}
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">End</div>
+        <div class="field-value">
+          ${event.all_day ? end.toLocaleDateString(void 0, dateOpts) : b`${end.toLocaleDateString(void 0, dateOpts)} at ${end.toLocaleTimeString(void 0, timeOpts)}`}
+        </div>
+      </div>
+
+      ${event.recurrence_rule ? b`
+        <div class="field">
+          <div class="field-label">Recurrence</div>
+          <div class="field-value"><span class="badge">${event.recurrence_rule}</span></div>
+        </div>
+      ` : A}
+
+      <div class="field">
+        <div class="field-label">Note</div>
+        <div class="field-value ${event.note ? "" : "muted"}">${event.note || "No note"}</div>
+      </div>
+
+      ${linkedTasks.length > 0 ? b`
+        <div class="field">
+          <div class="field-label">Linked Tasks</div>
+          ${linkedTasks.map(
+      (t2) => b`<div class="field-value" style="margin-bottom:4px;">
+              ${t2.completed ? b`<s>${t2.title}</s>` : t2.title}
+            </div>`
+    )}
+        </div>
+      ` : A}
+
+      ${event.is_recurring_instance ? b`
+        <div class="actions" style="flex-wrap:wrap;">
+          <button class="btn btn-edit" @click=${() => this._editOccurrence("edit-this")}>Edit this occurrence</button>
+          <button class="btn btn-edit" style="background:var(--secondary-text-color,#727272);" @click=${() => this._editOccurrence("edit-all")}>Edit all</button>
+          <button class="btn btn-delete" @click=${() => this._editOccurrence("delete-this")}>Delete this occurrence</button>
+          <button class="btn btn-delete" @click=${() => this._editOccurrence("delete-all")}>Delete all</button>
+        </div>
+      ` : b`
+        <div class="actions">
+          <button class="btn btn-edit" @click=${this._edit}>Edit</button>
+          <button class="btn btn-delete" @click=${this._delete}>Delete</button>
+        </div>
+      `}
+    `;
+  }
+  _renderTaskDetail(task) {
+    const list = this.lists.find((l2) => l2.id === task.list_id);
+    const linkedEvent = task.related_event_id ? this.events.find((e2) => e2.id === task.related_event_id) : null;
+    return b`
+      <div class="drawer-header">
+        <h3>Task</h3>
+        <button class="close-btn" aria-label="Close details" @click=${this._close}>&times;</button>
+      </div>
+
+      <div class="field">
+        <div class="field-label">Title</div>
+        <div class="field-value">${task.completed ? b`<s>${task.title}</s>` : task.title}</div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">List</div>
+        <div class="field-value">${list?.name ?? task.list_id}</div>
+      </div>
+
+      ${task.due ? b`
+        <div class="field">
+          <div class="field-label">Due Date</div>
+          <div class="field-value">
+            ${(/* @__PURE__ */ new Date(task.due + "T00:00:00")).toLocaleDateString(void 0, {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric"
+    })}
+          </div>
+        </div>
+      ` : A}
+
+      ${task.recurrence_rule ? b`
+        <div class="field">
+          <div class="field-label">Recurrence</div>
+          <div class="field-value"><span class="badge">${task.recurrence_rule}</span></div>
+        </div>
+      ` : A}
+
+      <div class="field">
+        <div class="field-label">Note</div>
+        <div class="field-value ${task.note ? "" : "muted"}">${task.note || "No note"}</div>
+      </div>
+
+      ${linkedEvent ? b`
+        <div class="field">
+          <div class="field-label">Linked Event</div>
+          <div class="field-value">${linkedEvent.title}</div>
+        </div>
+      ` : A}
+
+      <div class="actions">
+        <button class="btn btn-edit" @click=${this._edit}>Open in Tasks</button>
+        <button class="btn btn-delete" @click=${this._delete}>Delete</button>
+      </div>
+    `;
+  }
+};
+CaleeDetailDrawer.styles = i$3`
+    :host {
+      display: block;
+      width: 360px;
+      min-width: 360px;
+      background: var(--card-background-color, #fff);
+      border-left: 1px solid var(--divider-color, #e0e0e0);
+      overflow-y: auto;
+      padding: 20px;
+      transition: width 0.2s ease, min-width 0.2s ease;
+      z-index: 3;
+    }
+
+    :host([hidden]) {
+      width: 0;
+      min-width: 0;
+      padding: 0;
+      overflow: hidden;
+      border-left-width: 0;
+    }
+
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .drawer-header h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--primary-text-color, #212121);
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 6px;
+      font-size: 18px;
+      line-height: 1;
+      color: var(--secondary-text-color, #757575);
+      transition: background 0.15s, color 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .close-btn:hover {
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
+      color: var(--primary-text-color, #212121);
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--secondary-text-color, #757575);
+      margin-bottom: 4px;
+    }
+
+    .field-value {
+      font-size: 14px;
+      color: var(--primary-text-color, #212121);
+      line-height: 1.4;
+    }
+
+    .field-value.muted {
+      color: var(--secondary-text-color, #757575);
+      font-style: italic;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--divider-color, #e0e0e0);
+    }
+
+    .btn {
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+      transition: background 0.15s, color 0.15s;
+      font-family: inherit;
+    }
+
+    .btn-edit {
+      background: var(--primary-color, #03a9f4);
+      color: #fff;
+    }
+    .btn-edit:hover { filter: brightness(1.1); }
+
+    .btn-delete {
+      background: transparent;
+      color: var(--error-color, #f44336);
+      border: 1px solid var(--error-color, #f44336);
+    }
+    .btn-delete:hover {
+      background: color-mix(in srgb, var(--error-color, #f44336) 10%, transparent);
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--secondary-background-color, #f0f0f0);
+      color: var(--secondary-text-color, #757575);
+    }
+
+    .conflict-banner {
+      background: color-mix(in srgb, var(--warning-color, #ff9800) 12%, transparent);
+      border: 1px solid var(--warning-color, #ff9800);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: var(--primary-text-color, #212121);
+    }
+
+    .conflict-banner strong {
+      color: var(--warning-color, #ff9800);
+    }
+
+    @media (min-width: 768px) and (max-width: 1024px) {
+      :host {
+        width: 300px;
+        min-width: 300px;
+      }
+    }
+
+    @media (max-width: 767px) {
+      :host {
+        display: none;
+      }
+    }
+  `;
+__decorateClass$6([
+  n2({ attribute: false })
+], CaleeDetailDrawer.prototype, "item", 2);
+__decorateClass$6([
+  n2()
+], CaleeDetailDrawer.prototype, "itemType", 2);
+__decorateClass$6([
+  n2({ type: Boolean })
+], CaleeDetailDrawer.prototype, "open", 2);
+__decorateClass$6([
+  n2({ attribute: false })
+], CaleeDetailDrawer.prototype, "calendars", 2);
+__decorateClass$6([
+  n2({ attribute: false })
+], CaleeDetailDrawer.prototype, "lists", 2);
+__decorateClass$6([
+  n2({ attribute: false })
+], CaleeDetailDrawer.prototype, "events", 2);
+__decorateClass$6([
+  n2({ attribute: false })
+], CaleeDetailDrawer.prototype, "tasks", 2);
+__decorateClass$6([
+  n2({ attribute: false })
+], CaleeDetailDrawer.prototype, "conflicts", 2);
+CaleeDetailDrawer = __decorateClass$6([
+  t("calee-detail-drawer")
+], CaleeDetailDrawer);
+var __defProp$5 = Object.defineProperty;
+var __getOwnPropDesc$5 = Object.getOwnPropertyDescriptor;
+var __decorateClass$5 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$5(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$5(target, key, result);
+  return result;
+};
+function todayISO$2() {
   return (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
 }
-function parseHash() {
-  const hash = window.location.hash.replace(/^#\/?/, "");
-  const parts = hash.split("/");
-  const view = ALL_VIEWS.includes(parts[0]) ? parts[0] : "week";
-  const date = parts[1] && /^\d{4}-\d{2}-\d{2}$/.test(parts[1]) ? parts[1] : todayISO();
-  return { view, date };
+function startOfDay(iso) {
+  return (/* @__PURE__ */ new Date(`${iso}T00:00:00`)).getTime();
 }
-function buildHash(view, date) {
-  if (DATE_VIEWS.includes(view)) {
-    return `#/${view}/${date}`;
+function sameDay(a2, b2) {
+  return a2.slice(0, 10) === b2.slice(0, 10);
+}
+function isTomorrow(iso) {
+  const d2 = /* @__PURE__ */ new Date();
+  d2.setDate(d2.getDate() + 1);
+  return sameDay(iso, d2.toISOString());
+}
+function formatTime(iso) {
+  return new Date(iso).toLocaleTimeString(void 0, {
+    hour: "numeric",
+    minute: "2-digit"
+  });
+}
+function formatShortDate(iso) {
+  return (/* @__PURE__ */ new Date(`${iso}T00:00:00`)).toLocaleDateString(void 0, {
+    weekday: "short",
+    month: "short",
+    day: "numeric"
+  });
+}
+function formatLongDate(iso) {
+  return (/* @__PURE__ */ new Date(`${iso}T00:00:00`)).toLocaleDateString(void 0, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric"
+  });
+}
+function formatAmount(value, currency) {
+  const amount = Math.max(0, value);
+  const rounded = Math.round(amount * 100) / 100;
+  const text = Number.isInteger(rounded) ? rounded.toString() : rounded.toFixed(2).replace(/0+$/, "").replace(/\.$/, "");
+  return `${currency}${text}`;
+}
+function calendarColor(calendars, calendarId) {
+  return calendars.get(calendarId)?.color ?? "var(--primary-color, #03a9f4)";
+}
+function calendarName(calendars, calendarId) {
+  return calendars.get(calendarId)?.name ?? calendarId;
+}
+function taskDueBucket(task) {
+  if (!task.due) return "later";
+  const today = todayISO$2();
+  const due = task.due.slice(0, 10);
+  if (due < today) return "overdue";
+  if (due === today) return "today";
+  return due <= new Date(Date.now() + 7 * 24 * 60 * 60 * 1e3).toISOString().slice(0, 10) ? "upcoming" : "later";
+}
+function taskPriorityScore(task) {
+  const bucket = taskDueBucket(task);
+  if (bucket === "overdue") return 0;
+  if (bucket === "today") return 1;
+  if (bucket === "upcoming") return 2;
+  return 3;
+}
+let CaleeHomePage = class extends i {
+  constructor() {
+    super(...arguments);
+    this.events = [];
+    this.tasks = [];
+    this.calendars = /* @__PURE__ */ new Map();
+    this.lists = [];
+    this.routines = [];
+    this.presets = [];
+    this.enabledCalendarIds = /* @__PURE__ */ new Set();
+    this.currency = "$";
+    this.budget = 0;
+    this.currentDate = todayISO$2();
+    this.narrow = false;
+    this.weekStart = "monday";
   }
-  return `#/${view}`;
+  get _visibleCalendars() {
+    const ids = this.enabledCalendarIds;
+    const calendars = [...this.calendars.values()];
+    return ids.size > 0 ? calendars.filter((cal) => ids.has(cal.id)) : calendars;
+  }
+  get _shoppingListIds() {
+    return new Set(this.lists.filter((list) => list.list_type === "shopping").map((list) => list.id));
+  }
+  get _shoppingTasks() {
+    const shoppingIds = this._shoppingListIds;
+    return this.tasks.filter((task) => shoppingIds.has(task.list_id));
+  }
+  get _standardTasks() {
+    const shoppingIds = this._shoppingListIds;
+    return this.tasks.filter((task) => !shoppingIds.has(task.list_id) && !task.completed);
+  }
+  get _upcomingEvents() {
+    const now = Date.now();
+    return this.events.filter((event) => !event.deleted_at).filter((event) => {
+      if (this.enabledCalendarIds.size === 0) return true;
+      return this.enabledCalendarIds.has(event.calendar_id);
+    }).filter((event) => startOfDay(event.start.slice(0, 10)) >= startOfDay(this.currentDate) || new Date(event.start).getTime() >= now).sort((a2, b2) => new Date(a2.start).getTime() - new Date(b2.start).getTime()).slice(0, 8);
+  }
+  get _timelineDays() {
+    const grouped = /* @__PURE__ */ new Map();
+    for (const event of this._upcomingEvents) {
+      const date = event.start.slice(0, 10);
+      const bucket = grouped.get(date) ?? [];
+      bucket.push(event);
+      grouped.set(date, bucket);
+    }
+    return [...grouped.entries()].sort(([a2], [b2]) => a2.localeCompare(b2)).map(([date, items]) => ({
+      date,
+      dayLabel: this._dayLabel(date),
+      items
+    }));
+  }
+  get _nextShift() {
+    const shiftCalendars = [...this.calendars.values()].filter((calendar) => calendar.id === "work_shifts" || /shift/i.test(calendar.name)).map((calendar) => calendar.id);
+    const pool = this.events.filter((event) => !event.deleted_at).filter((event) => {
+      if (this.enabledCalendarIds.size === 0) return true;
+      return this.enabledCalendarIds.has(event.calendar_id);
+    }).filter((event) => shiftCalendars.length === 0 || shiftCalendars.includes(event.calendar_id)).filter((event) => new Date(event.start).getTime() >= Date.now()).sort((a2, b2) => new Date(a2.start).getTime() - new Date(b2.start).getTime());
+    return pool[0] ?? null;
+  }
+  get _dueTasks() {
+    return this._standardTasks.slice().sort((a2, b2) => taskPriorityScore(a2) - taskPriorityScore(b2) || (a2.due ?? "").localeCompare(b2.due ?? "") || a2.title.localeCompare(b2.title)).slice(0, 6);
+  }
+  get _shoppingSummary() {
+    const spent = this._shoppingTasks.reduce((sum, task) => sum + (task.price ?? 0), 0);
+    const remaining = Math.max(0, this.budget - spent);
+    return {
+      spent,
+      remaining,
+      count: this._shoppingTasks.filter((task) => !task.completed).length
+    };
+  }
+  get _shoppingShortcuts() {
+    if (this.presets.length > 0) {
+      const shoppingIds = this._shoppingListIds;
+      return this.presets.filter((preset) => shoppingIds.has(preset.list_id));
+    }
+    return this._shoppingTasks.filter((task) => !task.completed).sort((a2, b2) => (a2.category || "").localeCompare(b2.category || "") || a2.title.localeCompare(b2.title)).slice(0, 5);
+  }
+  get _routineCount() {
+    return this.routines.length;
+  }
+  _dayLabel(iso) {
+    const today = todayISO$2();
+    if (sameDay(iso, today)) return "Today";
+    if (isTomorrow(iso)) return "Tomorrow";
+    return formatShortDate(iso);
+  }
+  _dispatchEventSelect(event) {
+    this.dispatchEvent(
+      new CustomEvent("event-select", {
+        detail: { event },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  _dispatchTaskClick(task) {
+    this.dispatchEvent(
+      new CustomEvent("task-click", {
+        detail: { task },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  _dispatchRoutineExecute(routine) {
+    this.dispatchEvent(
+      new CustomEvent("routine-execute", {
+        detail: { routineId: routine.id, routine },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  _dispatchPresetAdd(preset) {
+    this.dispatchEvent(
+      new CustomEvent("preset-add", {
+        detail: { presetId: preset.id },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  render() {
+    const nextShift = this._nextShift;
+    const nextShiftText = nextShift ? `${nextShift.title} · ${formatTime(nextShift.start)}` : "No upcoming shifts";
+    const nextShiftDate = nextShift ? this._dayLabel(nextShift.start.slice(0, 10)) : "Nothing on deck";
+    const shopping = this._shoppingSummary;
+    return b`
+      <div class="shell">
+        <section class="hero" aria-label="Overview summary">
+          <div class="hero-main">
+            <div>
+              <div class="hero-kicker">Home</div>
+              <h1 class="hero-title">${formatLongDate(this.currentDate)}</h1>
+              <div class="hero-subtitle">
+                A quiet overview of what is next, what needs attention, and where to jump in without digging through the rest of the shell.
+              </div>
+            </div>
+
+            <div class="hero-pills">
+              <span class="pill"><strong>${this._visibleCalendars.length}</strong> calendars visible</span>
+              <span class="pill"><strong>${this._dueTasks.length}</strong> tasks in view</span>
+              <span class="pill"><strong>${shopping.count}</strong> shopping items</span>
+              <span class="pill"><strong>${this._routineCount}</strong> routines</span>
+            </div>
+          </div>
+
+          <div class="hero-side">
+            <div class="summary-card" clickable role="button" tabindex="0"
+              @click=${() => nextShift && this._dispatchEventSelect(nextShift)}
+              @keydown=${(e2) => {
+      if ((e2.key === "Enter" || e2.key === " ") && nextShift) {
+        e2.preventDefault();
+        this._dispatchEventSelect(nextShift);
+      }
+    }}>
+              <div class="summary-label">Next Shift</div>
+              <div class="summary-value">${nextShiftText}</div>
+              <div class="summary-sub">${nextShiftDate}</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-label">Due Tasks</div>
+              <div class="summary-value">${this._dueTasks.length} ready for attention</div>
+              <div class="summary-sub">${this._dueTasks[0]?.title ?? "No urgent tasks"}</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-label">Shopping</div>
+              <div class="summary-value">${formatAmount(shopping.remaining, this.currency)} left</div>
+              <div class="summary-sub">${formatAmount(shopping.spent, this.currency)} planned from budget</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="grid">
+          <article class="panel-card">
+            <div class="panel-head">
+              <h2 class="panel-title">Upcoming Timeline</h2>
+              <div class="panel-meta">${this._upcomingEvents.length} events</div>
+            </div>
+            ${this._timelineDays.length > 0 ? b`
+                  <div class="timeline">
+                    ${this._timelineDays.map(
+      (day) => b`
+                        <div class="timeline-day">
+                          <div class="timeline-day-label">
+                            <span>${day.dayLabel}</span>
+                            <span class="badge">${day.items.length}</span>
+                          </div>
+                          ${day.items.map(
+        (event) => b`
+                              <button class="timeline-item" @click=${() => this._dispatchEventSelect(event)}>
+                                <span class="event-dot" style="background:${calendarColor(this.calendars, event.calendar_id)}"></span>
+                                <div class="timeline-main">
+                                  <div class="timeline-title">${event.title}</div>
+                                  <div class="timeline-sub">
+                                    ${event.all_day ? "All day" : formatTime(event.start)}
+                                    ${calendarName(this.calendars, event.calendar_id) ? b`<span> · ${calendarName(this.calendars, event.calendar_id)}</span>` : A}
+                                  </div>
+                                </div>
+                                <span class="badge">${event.all_day ? "All day" : formatTime(event.start)}</span>
+                              </button>
+                            `
+      )}
+                        </div>
+                      `
+    )}
+                  </div>
+                ` : b`<div class="section-empty">No upcoming events right now.</div>`}
+          </article>
+
+          <article class="panel-card">
+            <div class="panel-head">
+              <h2 class="panel-title">Due Tasks</h2>
+              <div class="panel-meta">${this._dueTasks.length} shown</div>
+            </div>
+            ${this._dueTasks.length > 0 ? b`
+                  <div class="stack">
+                    ${this._dueTasks.map(
+      (task) => {
+        const bucket = taskDueBucket(task);
+        const listName = this.lists.find((list) => list.id === task.list_id)?.name ?? task.list_id;
+        return b`
+                          <button class="task-item" @click=${() => this._dispatchTaskClick(task)}>
+                            <span class="task-dot" style="background:${bucket === "overdue" ? "var(--error-color, #f44336)" : bucket === "today" ? "var(--warning-color, #ff9800)" : "var(--primary-color, #03a9f4)"}"></span>
+                            <div class="task-main">
+                              <div class="task-title">${task.title}</div>
+                              <div class="task-sub">${listName}${task.due ? b` · ${task.due.slice(0, 10) === todayISO$2() ? "Today" : formatShortDate(task.due)}` : A}</div>
+                            </div>
+                            <span class="badge" data-tone=${bucket === "overdue" ? "danger" : bucket === "today" ? "warn" : "good"}>
+                              ${bucket === "overdue" ? "Overdue" : bucket === "today" ? "Today" : bucket === "upcoming" ? "Soon" : "Later"}
+                            </span>
+                          </button>
+                        `;
+      }
+    )}
+                  </div>
+                ` : b`<div class="section-empty">No pending tasks in the current standard lists.</div>`}
+          </article>
+
+          <article class="panel-card">
+            <div class="panel-head">
+              <h2 class="panel-title">Shopping Shortcuts</h2>
+              <div class="panel-meta">${formatAmount(shopping.spent, this.currency)} planned</div>
+            </div>
+            ${this._shoppingShortcuts.length > 0 ? b`
+                  <div class="shopping-meta">
+                    <span class="badge">Budget ${formatAmount(this.budget, this.currency)}</span>
+                    <span class="badge">Remaining ${formatAmount(shopping.remaining, this.currency)}</span>
+                  </div>
+                  <div class="shopping-shortcuts" style="margin-top: 12px;">
+                    ${this._shoppingShortcuts.map((item) => {
+      if ("icon" in item) {
+        const preset = item;
+        return b`
+                          <button class="shortcut-chip" @click=${() => this._dispatchPresetAdd(preset)}>
+                            <span>${preset.title}</span>
+                            <span>${preset.category || "preset"}</span>
+                          </button>
+                        `;
+      }
+      const task = item;
+      if ("quantity" in task) {
+        const task2 = item;
+        return b`
+                          <button class="shortcut-chip" @click=${() => this._dispatchTaskClick(task2)}>
+                            <span>${task2.title}</span>
+                            <span>${task2.category || "shopping"}</span>
+                          </button>
+                        `;
+      }
+      return b`
+                        <button class="shortcut-chip" @click=${() => this._dispatchTaskClick(task)}>
+                          <span>${task.title}</span>
+                          <span>${task.category || "shopping"}</span>
+                        </button>
+                      `;
+    })}
+                  </div>
+                ` : b`<div class="section-empty">No shopping shortcuts yet.</div>`}
+          </article>
+
+          <article class="panel-card">
+            <div class="panel-head">
+              <h2 class="panel-title">Routines</h2>
+              <div class="panel-meta">${this._routineCount} available</div>
+            </div>
+            ${this.routines.length > 0 ? b`
+                  <div class="routine-grid">
+                    ${this.routines.map(
+      (routine) => b`
+                        <button class="routine-item" @click=${() => this._dispatchRoutineExecute(routine)}>
+                          <span class="routine-emoji">${routine.emoji || "⚡"}</span>
+                          <div class="routine-main">
+                            <div class="routine-title">${routine.name}</div>
+                            <div class="routine-sub">${routine.description || "Quick routine"}</div>
+                          </div>
+                          <span class="badge">${routine.tasks.length} tasks</span>
+                        </button>
+                      `
+    )}
+                  </div>
+                ` : b`<div class="section-empty">No routines configured yet.</div>`}
+          </article>
+        </section>
+
+        <div class="footer-note">
+          Week starts ${this.weekStart}. The page keeps interactions shallow: tap an event, task, or routine and let the parent decide how to open it.
+        </div>
+      </div>
+    `;
+  }
+};
+CaleeHomePage.styles = i$3`
+    :host {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+      color: var(--primary-text-color, #212121);
+      background:
+        radial-gradient(circle at top left, rgba(3, 169, 244, 0.08), transparent 28%),
+        radial-gradient(circle at top right, rgba(76, 175, 80, 0.07), transparent 24%),
+        var(--primary-background-color, #fafafa);
+    }
+
+    .shell {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 16px;
+      min-height: 0;
+      overflow: auto;
+    }
+
+    .hero {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1.5fr 1fr;
+      align-items: stretch;
+    }
+
+    .hero-main,
+    .hero-side,
+    .panel-card {
+      background: var(--card-background-color, #fff);
+      border: 1px solid var(--divider-color, #e0e0e0);
+      border-radius: 18px;
+      box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .hero-main {
+      padding: 20px;
+      min-height: 144px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background:
+        linear-gradient(135deg, rgba(3, 169, 244, 0.08), transparent 42%),
+        var(--card-background-color, #fff);
+    }
+
+    .hero-kicker {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--secondary-text-color, #757575);
+    }
+
+    .hero-title {
+      margin: 4px 0 8px;
+      font-size: 28px;
+      line-height: 1.05;
+      font-weight: 700;
+      letter-spacing: -0.6px;
+    }
+
+    .hero-subtitle {
+      font-size: 14px;
+      color: var(--secondary-text-color, #666);
+      max-width: 60ch;
+    }
+
+    .hero-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: rgba(255, 255, 255, 0.85);
+      color: var(--primary-text-color, #212121);
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .pill strong {
+      font-weight: 700;
+    }
+
+    .hero-side {
+      padding: 16px;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .summary-card {
+      padding: 12px;
+      border-radius: 14px;
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.03));
+      border: 1px solid color-mix(in srgb, var(--divider-color, #e0e0e0) 70%, transparent);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .summary-card[clickable] {
+      cursor: pointer;
+    }
+
+    .summary-card[clickable]:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    }
+
+    .summary-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--secondary-text-color, #757575);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .summary-value {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary-text-color, #212121);
+      line-height: 1.25;
+    }
+
+    .summary-sub {
+      margin-top: 3px;
+      font-size: 12px;
+      color: var(--secondary-text-color, #666);
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .panel-card {
+      padding: 16px;
+      min-height: 0;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .panel-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      margin: 0;
+    }
+
+    .panel-meta {
+      font-size: 12px;
+      color: var(--secondary-text-color, #757575);
+      white-space: nowrap;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 10px;
+    }
+
+    .timeline-day {
+      display: grid;
+      gap: 8px;
+    }
+
+    .timeline-day-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--secondary-text-color, #757575);
+      font-weight: 700;
+    }
+
+    .timeline-item,
+    .task-item,
+    .shopping-item,
+    .routine-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: var(--primary-background-color, #fff);
+      border-radius: 14px;
+      padding: 10px 12px;
+      text-align: left;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    .timeline-item:hover,
+    .task-item:hover,
+    .shopping-item:hover,
+    .routine-item:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+      border-color: color-mix(in srgb, var(--primary-color, #03a9f4) 26%, var(--divider-color, #e0e0e0));
+    }
+
+    .event-dot,
+    .task-dot,
+    .shopping-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      flex-shrink: 0;
+      background: var(--primary-color, #03a9f4);
+    }
+
+    .timeline-main,
+    .task-main,
+    .shopping-main,
+    .routine-main {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .timeline-title,
+    .task-title,
+    .shopping-title,
+    .routine-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary-text-color, #212121);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin: 0;
+    }
+
+    .timeline-sub,
+    .task-sub,
+    .shopping-sub,
+    .routine-sub {
+      font-size: 12px;
+      color: var(--secondary-text-color, #757575);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--secondary-background-color, #f4f4f4) 85%, transparent);
+      color: var(--secondary-text-color, #666);
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .badge[data-tone="warn"] {
+      background: color-mix(in srgb, var(--warning-color, #ff9800) 14%, transparent);
+      color: var(--warning-color, #ff9800);
+    }
+
+    .badge[data-tone="danger"] {
+      background: color-mix(in srgb, var(--error-color, #f44336) 14%, transparent);
+      color: var(--error-color, #f44336);
+    }
+
+    .badge[data-tone="good"] {
+      background: color-mix(in srgb, var(--success-color, #4caf50) 14%, transparent);
+      color: var(--success-color, #4caf50);
+    }
+
+    .stack {
+      display: grid;
+      gap: 8px;
+    }
+
+    .section-empty {
+      color: var(--secondary-text-color, #757575);
+      font-size: 13px;
+      padding: 12px 2px 4px;
+    }
+
+    .routine-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .routine-emoji {
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 10%, transparent);
+      color: var(--primary-color, #03a9f4);
+      flex-shrink: 0;
+      font-size: 16px;
+    }
+
+    .shopping-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .shopping-total {
+      font-weight: 700;
+      color: var(--primary-text-color, #212121);
+    }
+
+    .shopping-shortcuts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .shortcut-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.03));
+      color: var(--primary-text-color, #212121);
+      border-radius: 999px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .shortcut-chip:hover {
+      transform: translateY(-1px);
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 8%, transparent);
+    }
+
+    .shortcut-chip span:last-child {
+      color: var(--secondary-text-color, #666);
+      font-weight: 500;
+    }
+
+    .footer-note {
+      font-size: 12px;
+      color: var(--secondary-text-color, #757575);
+      padding: 0 4px 4px;
+    }
+
+    @media (max-width: 900px) {
+      .hero,
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .shell {
+        padding: 12px;
+        gap: 12px;
+      }
+
+      .hero-main {
+        padding: 16px;
+      }
+
+      .hero-title {
+        font-size: 24px;
+      }
+
+      .panel-card,
+      .hero-side {
+        padding: 14px;
+      }
+    }
+
+    @keyframes riseIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-main,
+    .hero-side,
+    .panel-card {
+      animation: riseIn 180ms ease-out both;
+    }
+  `;
+__decorateClass$5([
+  n2({ attribute: false })
+], CaleeHomePage.prototype, "events", 2);
+__decorateClass$5([
+  n2({ attribute: false })
+], CaleeHomePage.prototype, "tasks", 2);
+__decorateClass$5([
+  n2({ attribute: false })
+], CaleeHomePage.prototype, "calendars", 2);
+__decorateClass$5([
+  n2({ attribute: false })
+], CaleeHomePage.prototype, "lists", 2);
+__decorateClass$5([
+  n2({ attribute: false })
+], CaleeHomePage.prototype, "routines", 2);
+__decorateClass$5([
+  n2({ attribute: false })
+], CaleeHomePage.prototype, "presets", 2);
+__decorateClass$5([
+  n2({ attribute: false })
+], CaleeHomePage.prototype, "enabledCalendarIds", 2);
+__decorateClass$5([
+  n2({ type: String })
+], CaleeHomePage.prototype, "currency", 2);
+__decorateClass$5([
+  n2({ type: Number })
+], CaleeHomePage.prototype, "budget", 2);
+__decorateClass$5([
+  n2({ type: String })
+], CaleeHomePage.prototype, "currentDate", 2);
+__decorateClass$5([
+  n2({ type: Boolean, reflect: true })
+], CaleeHomePage.prototype, "narrow", 2);
+__decorateClass$5([
+  n2()
+], CaleeHomePage.prototype, "weekStart", 2);
+CaleeHomePage = __decorateClass$5([
+  t("calee-home-page")
+], CaleeHomePage);
+var __defProp$4 = Object.defineProperty;
+var __getOwnPropDesc$4 = Object.getOwnPropertyDescriptor;
+var __decorateClass$4 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$4(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$4(target, key, result);
+  return result;
+};
+function todayISO$1() {
+  return (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
 }
 function addDays(dateStr, days) {
-  const d2 = /* @__PURE__ */ new Date(dateStr + "T00:00:00");
+  const d2 = /* @__PURE__ */ new Date(`${dateStr}T00:00:00`);
   d2.setDate(d2.getDate() + days);
   return d2.toISOString().slice(0, 10);
 }
-function formatDateLabel(view, dateStr) {
-  const d2 = /* @__PURE__ */ new Date(dateStr + "T00:00:00");
-  const opts = { year: "numeric", month: "long" };
-  if (view === "year") {
-    return String(d2.getFullYear());
-  }
+function stepMonth(dateStr, delta) {
+  const d2 = /* @__PURE__ */ new Date(`${dateStr}T00:00:00`);
+  d2.setMonth(d2.getMonth() + delta);
+  return d2.toISOString().slice(0, 10);
+}
+function formatDateLabel(view, dateStr, weekStartsMonday = true) {
+  const d2 = /* @__PURE__ */ new Date(`${dateStr}T00:00:00`);
   if (view === "day") {
     return d2.toLocaleDateString(void 0, {
       weekday: "long",
@@ -11909,12 +13752,15 @@ function formatDateLabel(view, dateStr) {
   }
   if (view === "week") {
     const start = new Date(d2);
-    const day = start.getDay();
-    const diff = day === 0 ? -6 : 1 - day;
+    const dow = start.getDay();
+    const diff = weekStartsMonday ? dow === 0 ? -6 : 1 - dow : -dow;
     start.setDate(start.getDate() + diff);
     const end = new Date(start);
     end.setDate(end.getDate() + 6);
-    const startStr = start.toLocaleDateString(void 0, { month: "short", day: "numeric" });
+    const startStr = start.toLocaleDateString(void 0, {
+      month: "short",
+      day: "numeric"
+    });
     const endStr = end.toLocaleDateString(void 0, {
       month: "short",
       day: "numeric",
@@ -11922,35 +13768,991 @@ function formatDateLabel(view, dateStr) {
     });
     return `${startStr} - ${endStr}`;
   }
-  return d2.toLocaleDateString(void 0, opts);
+  return d2.toLocaleDateString(void 0, { year: "numeric", month: "long" });
 }
-function dateStep(view) {
-  if (view === "day") return 1;
-  if (view === "week") return 7;
-  return 0;
+let CaleeCalendarPage = class extends i {
+  constructor() {
+    super(...arguments);
+    this.events = [];
+    this.calendars = /* @__PURE__ */ new Map();
+    this.enabledCalendarIds = /* @__PURE__ */ new Set();
+    this.templates = [];
+    this.tasks = [];
+    this.conflicts = [];
+    this.narrow = false;
+    this.weekStartsMonday = true;
+    this.currentSubview = "week";
+    this.currentDate = todayISO$1();
+  }
+  get _selectedDate() {
+    return /* @__PURE__ */ new Date(`${this.currentDate}T00:00:00`);
+  }
+  _dispatchViewChange() {
+    this.dispatchEvent(
+      new CustomEvent("calendar-subview-change", {
+        detail: {
+          subView: this.currentSubview,
+          date: this.currentDate
+        },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  _dispatchDateChange() {
+    this.dispatchEvent(
+      new CustomEvent("calendar-date-change", {
+        detail: {
+          date: this.currentDate,
+          subView: this.currentSubview
+        },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  _setSubview(subView) {
+    if (this.currentSubview === subView) return;
+    this.currentSubview = subView;
+    this._dispatchViewChange();
+  }
+  _setDate(date) {
+    if (this.currentDate === date) return;
+    this.currentDate = date;
+    this._dispatchDateChange();
+  }
+  _onPrev() {
+    if (this.currentSubview === "agenda") return;
+    const step = this.currentSubview === "day" ? 1 : this.currentSubview === "week" ? 7 : 0;
+    const nextDate = step > 0 ? addDays(this.currentDate, -step) : stepMonth(this.currentDate, -1);
+    this._setDate(nextDate);
+  }
+  _onNext() {
+    if (this.currentSubview === "agenda") return;
+    const step = this.currentSubview === "day" ? 1 : this.currentSubview === "week" ? 7 : 0;
+    const nextDate = step > 0 ? addDays(this.currentDate, step) : stepMonth(this.currentDate, 1);
+    this._setDate(nextDate);
+  }
+  _onToday() {
+    if (this.currentSubview === "agenda") return;
+    this._setDate(todayISO$1());
+  }
+  _bridgeEvent(e2) {
+    e2.stopPropagation();
+    const custom = e2;
+    this.dispatchEvent(
+      new CustomEvent(custom.type, {
+        detail: custom.detail,
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  _renderToolbar() {
+    const showDateNav = this.currentSubview !== "agenda";
+    const dateLabel = this.currentSubview === "agenda" ? "Next 14 days" : formatDateLabel(this.currentSubview, this.currentDate, this.weekStartsMonday);
+    return b`
+      <div class="toolbar">
+        <span class="title">Calendar</span>
+        <div class="segment" role="tablist" aria-label="Calendar views">
+          ${["day", "week", "month", "agenda"].map(
+      (view) => b`
+              <button
+                class="seg-btn"
+                role="tab"
+                ?active=${this.currentSubview === view}
+                aria-selected=${String(this.currentSubview === view)}
+                @click=${() => this._setSubview(view)}
+              >${view}</button>
+            `
+    )}
+        </div>
+        <div class="spacer"></div>
+        ${showDateNav ? b`
+              <div class="date-nav">
+                <button class="nav-btn" @click=${this._onPrev} aria-label="Previous">
+                  &lsaquo;
+                </button>
+                <button class="today-btn" @click=${this._onToday}>Today</button>
+                <button class="nav-btn" @click=${this._onNext} aria-label="Next">
+                  &rsaquo;
+                </button>
+                <span class="date-label">${dateLabel}</span>
+              </div>
+            ` : b`<span class="date-label">${dateLabel}</span>`}
+      </div>
+    `;
+  }
+  _renderSubview() {
+    const selectedDate = this._selectedDate;
+    switch (this.currentSubview) {
+      case "month":
+        return b`<calee-month-view
+          .events=${this.events}
+          .calendars=${this.calendars}
+          .enabledCalendarIds=${this.enabledCalendarIds}
+          .selectedDate=${selectedDate}
+          .templates=${this.templates}
+          .tasks=${this.tasks}
+          .conflicts=${this.conflicts}
+          .weekStartsMonday=${this.weekStartsMonday}
+          ?narrow=${this.narrow}
+          @event-click=${this._bridgeEvent}
+          @cell-click=${this._bridgeEvent}
+        ></calee-month-view>`;
+      case "week":
+        return b`<calee-week-view
+          .events=${this.events}
+          .calendars=${this.calendars}
+          .enabledCalendarIds=${this.enabledCalendarIds}
+          .selectedDate=${selectedDate}
+          .templates=${this.templates}
+          .tasks=${this.tasks}
+          .weekStartsMonday=${this.weekStartsMonday}
+          ?narrow=${this.narrow}
+          @event-click=${this._bridgeEvent}
+          @cell-click=${this._bridgeEvent}
+        ></calee-week-view>`;
+      case "day":
+        return b`<calee-day-view
+          .events=${this.events}
+          .calendars=${this.calendars}
+          .enabledCalendarIds=${this.enabledCalendarIds}
+          .selectedDate=${selectedDate}
+          @event-click=${this._bridgeEvent}
+          @cell-click=${this._bridgeEvent}
+        ></calee-day-view>`;
+      case "agenda":
+        return b`<calee-agenda-view
+          .events=${this.events}
+          .calendars=${this.calendars}
+          @event-select=${this._bridgeEvent}
+        ></calee-agenda-view>`;
+      default:
+        return A;
+    }
+  }
+  render() {
+    return b`
+      <div class="shell">
+        ${this._renderToolbar()}
+        <div class="view-area">
+          ${this._renderSubview()}
+        </div>
+      </div>
+    `;
+  }
+};
+CaleeCalendarPage.styles = i$3`
+    :host {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+      background: var(--primary-background-color, #fafafa);
+    }
+
+    .shell {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 10px 12px;
+      min-height: 44px;
+      background: var(--card-background-color, #fff);
+      border-bottom: 1px solid var(--divider-color, #e0e0e0);
+    }
+
+    .title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary-text-color, #212121);
+      letter-spacing: 0.15px;
+      margin-right: 4px;
+    }
+
+    .segment {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      padding: 2px;
+      border-radius: 999px;
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
+      overflow-x: auto;
+      max-width: 100%;
+    }
+
+    .seg-btn {
+      border: none;
+      background: transparent;
+      color: var(--secondary-text-color, #727272);
+      cursor: pointer;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+      text-transform: capitalize;
+      white-space: nowrap;
+      font-family: inherit;
+      line-height: 1;
+      transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+    }
+
+    .seg-btn:hover {
+      color: var(--primary-text-color, #212121);
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    .seg-btn[active] {
+      color: var(--primary-text-color, #212121);
+      background: var(--card-background-color, #fff);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .spacer {
+      flex: 1;
+      min-width: 12px;
+    }
+
+    .date-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--secondary-text-color, #727272);
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 6px;
+      font-size: 16px;
+      line-height: 1;
+      transition: background 0.15s, color 0.15s;
+      min-width: 28px;
+      min-height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: inherit;
+    }
+
+    .nav-btn:hover {
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
+      color: var(--primary-text-color, #212121);
+    }
+
+    .today-btn {
+      background: transparent;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      color: var(--primary-text-color, #212121);
+      cursor: pointer;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      transition: background 0.15s, border-color 0.15s;
+      line-height: 1;
+      font-family: inherit;
+    }
+
+    .today-btn:hover {
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
+      border-color: var(--secondary-text-color, #727272);
+    }
+
+    .date-label {
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--primary-text-color, #212121);
+    }
+
+    .view-area {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .view-area > * {
+      flex: 1;
+      min-height: 0;
+    }
+
+    @media (max-width: 767px) {
+      .toolbar {
+        padding: 8px 10px;
+      }
+
+      .title {
+        display: none;
+      }
+
+      .date-label {
+        max-width: 120px;
+      }
+    }
+  `;
+__decorateClass$4([
+  n2({ attribute: false })
+], CaleeCalendarPage.prototype, "events", 2);
+__decorateClass$4([
+  n2({ attribute: false })
+], CaleeCalendarPage.prototype, "calendars", 2);
+__decorateClass$4([
+  n2({ attribute: false })
+], CaleeCalendarPage.prototype, "enabledCalendarIds", 2);
+__decorateClass$4([
+  n2({ attribute: false })
+], CaleeCalendarPage.prototype, "templates", 2);
+__decorateClass$4([
+  n2({ attribute: false })
+], CaleeCalendarPage.prototype, "tasks", 2);
+__decorateClass$4([
+  n2({ attribute: false })
+], CaleeCalendarPage.prototype, "conflicts", 2);
+__decorateClass$4([
+  n2({ type: Boolean, reflect: true })
+], CaleeCalendarPage.prototype, "narrow", 2);
+__decorateClass$4([
+  n2({ type: Boolean, reflect: true })
+], CaleeCalendarPage.prototype, "weekStartsMonday", 2);
+__decorateClass$4([
+  n2()
+], CaleeCalendarPage.prototype, "currentSubview", 2);
+__decorateClass$4([
+  n2()
+], CaleeCalendarPage.prototype, "currentDate", 2);
+CaleeCalendarPage = __decorateClass$4([
+  t("calee-calendar-page")
+], CaleeCalendarPage);
+var __defProp$3 = Object.defineProperty;
+var __getOwnPropDesc$3 = Object.getOwnPropertyDescriptor;
+var __decorateClass$3 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$3(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$3(target, key, result);
+  return result;
+};
+let CaleeTasksPage = class extends i {
+  constructor() {
+    super(...arguments);
+    this.tasks = [];
+    this.lists = [];
+    this.presets = [];
+    this.narrow = false;
+  }
+  render() {
+    const standardLists = this.lists.filter((l2) => l2.list_type !== "shopping");
+    const standardPresets = this.presets.filter((p2) => {
+      const shoppingIds = new Set(
+        this.lists.filter((l2) => l2.list_type === "shopping").map((l2) => l2.id)
+      );
+      return !shoppingIds.has(p2.list_id);
+    });
+    return b`
+      <div class="page-header">
+        <span class="page-title">Tasks</span>
+      </div>
+      <div class="content">
+        <calee-tasks-view
+          .tasks=${this.tasks}
+          .lists=${standardLists}
+          .presets=${standardPresets}
+          ?narrow=${this.narrow}
+        ></calee-tasks-view>
+      </div>
+    `;
+  }
+};
+CaleeTasksPage.styles = i$3`
+    :host {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      height: 36px;
+      min-height: 36px;
+      border-bottom: 1px solid var(--divider-color, #e0e0e0);
+      background: var(--card-background-color, #fff);
+    }
+
+    .page-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--primary-text-color, #212121);
+    }
+
+    .content {
+      flex: 1;
+      overflow: hidden;
+    }
+  `;
+__decorateClass$3([
+  n2({ attribute: false })
+], CaleeTasksPage.prototype, "tasks", 2);
+__decorateClass$3([
+  n2({ attribute: false })
+], CaleeTasksPage.prototype, "lists", 2);
+__decorateClass$3([
+  n2({ attribute: false })
+], CaleeTasksPage.prototype, "presets", 2);
+__decorateClass$3([
+  n2({ type: Boolean })
+], CaleeTasksPage.prototype, "narrow", 2);
+CaleeTasksPage = __decorateClass$3([
+  t("calee-tasks-page")
+], CaleeTasksPage);
+var __defProp$2 = Object.defineProperty;
+var __getOwnPropDesc$2 = Object.getOwnPropertyDescriptor;
+var __decorateClass$2 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$2(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$2(target, key, result);
+  return result;
+};
+let CaleeShoppingPage = class extends i {
+  constructor() {
+    super(...arguments);
+    this.tasks = [];
+    this.lists = [];
+    this.presets = [];
+    this.currency = "$";
+    this.budget = 0;
+    this.toastMessage = "";
+  }
+  render() {
+    const shoppingList = this.lists.find((l2) => l2.list_type === "shopping");
+    const shoppingTasks = shoppingList ? this.tasks.filter((t2) => t2.list_id === shoppingList.id) : this.tasks.filter((t2) => t2.list_id === "shopping");
+    const shoppingPresets = this.presets.filter((p2) => {
+      return shoppingList ? p2.list_id === shoppingList.id : p2.list_id === "shopping";
+    });
+    return b`
+      <div class="page-header">
+        <span class="page-title">Shopping</span>
+      </div>
+      <div class="content">
+        <calee-shopping-view
+          .tasks=${shoppingTasks}
+          .presets=${shoppingPresets}
+          .listId=${shoppingList?.id ?? "shopping"}
+          .currency=${this.currency}
+          .budget=${this.budget}
+          .toastMessage=${this.toastMessage}
+          @toast-shown=${this._onToastShown}
+        ></calee-shopping-view>
+      </div>
+    `;
+  }
+  _onToastShown() {
+    this.dispatchEvent(
+      new CustomEvent("toast-shown", { bubbles: true, composed: true })
+    );
+  }
+};
+CaleeShoppingPage.styles = i$3`
+    :host {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      height: 36px;
+      min-height: 36px;
+      border-bottom: 1px solid var(--divider-color, #e0e0e0);
+      background: var(--card-background-color, #fff);
+    }
+
+    .page-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--primary-text-color, #212121);
+    }
+
+    .content {
+      flex: 1;
+      overflow: hidden;
+    }
+  `;
+__decorateClass$2([
+  n2({ attribute: false })
+], CaleeShoppingPage.prototype, "tasks", 2);
+__decorateClass$2([
+  n2({ attribute: false })
+], CaleeShoppingPage.prototype, "lists", 2);
+__decorateClass$2([
+  n2({ attribute: false })
+], CaleeShoppingPage.prototype, "presets", 2);
+__decorateClass$2([
+  n2()
+], CaleeShoppingPage.prototype, "currency", 2);
+__decorateClass$2([
+  n2({ type: Number })
+], CaleeShoppingPage.prototype, "budget", 2);
+__decorateClass$2([
+  n2()
+], CaleeShoppingPage.prototype, "toastMessage", 2);
+CaleeShoppingPage = __decorateClass$2([
+  t("calee-shopping-page")
+], CaleeShoppingPage);
+var __defProp$1 = Object.defineProperty;
+var __getOwnPropDesc$1 = Object.getOwnPropertyDescriptor;
+var __decorateClass$1 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$1(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$1(target, key, result);
+  return result;
+};
+let CaleeMorePage = class extends i {
+  constructor() {
+    super(...arguments);
+    this.events = [];
+    this.tasks = [];
+    this.lists = [];
+    this.conflicts = [];
+    this.calendars = /* @__PURE__ */ new Map();
+    this.enabledCalendarIds = /* @__PURE__ */ new Set();
+    this.selectedDate = /* @__PURE__ */ new Date();
+    this.currency = "$";
+    this.budget = 0;
+    this.reminderCalendars = ["work_shifts"];
+    this.narrow = false;
+    this.initialSubView = "smart";
+    this._activeSubView = "smart";
+  }
+  connectedCallback() {
+    super.connectedCallback();
+    this._activeSubView = this.initialSubView;
+  }
+  updated(changedProps) {
+    if (changedProps.has("initialSubView") && this.initialSubView !== this._activeSubView) {
+      this._activeSubView = this.initialSubView;
+    }
+  }
+  _setSubView(view) {
+    this._activeSubView = view;
+    this.dispatchEvent(
+      new CustomEvent("more-subview-change", {
+        detail: { subView: view },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  _open(action) {
+    this.dispatchEvent(
+      new CustomEvent(action, {
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  _renderTools() {
+    return b`
+      <div class="stack">
+        <div class="info-card">
+          <div class="info-title">Utilities</div>
+          <div class="info-copy">
+            Move the less-frequent workflows out of your primary navigation while keeping them one tap away.
+          </div>
+        </div>
+      </div>
+      <div class="tools">
+        <button class="tool-card" @click=${() => this._open("calendar-manager")}>
+          <div class="tool-title">Calendar Controls</div>
+          <div class="tool-copy">Manage shared calendars, privacy, and list structure without keeping a heavy sidebar open.</div>
+        </button>
+        <button class="tool-card" @click=${() => this._open("deleted")}>
+          <div class="tool-title">Recently Deleted</div>
+          <div class="tool-copy">Restore soft-deleted events and tasks from one recovery surface.</div>
+        </button>
+        <button class="tool-card" @click=${() => this._open("activity")}>
+          <div class="tool-title">Activity</div>
+          <div class="tool-copy">Review the audit stream only when you need it, instead of leaving it in core navigation.</div>
+        </button>
+        <button class="tool-card" @click=${() => this._open("data-center")}>
+          <div class="tool-title">Data Center</div>
+          <div class="tool-copy">Imports, exports, and maintenance tools stay accessible but clearly secondary.</div>
+        </button>
+        <button class="tool-card" @click=${() => this._open("settings")}>
+          <div class="tool-title">Settings</div>
+          <div class="tool-copy">Notification routing, privacy, and planner defaults stay in one consistent place.</div>
+        </button>
+      </div>
+    `;
+  }
+  _renderActiveView() {
+    switch (this._activeSubView) {
+      case "year":
+        return b`
+          <calee-year-view
+            .events=${this.events}
+            .calendars=${this.calendars}
+            .enabledCalendarIds=${this.enabledCalendarIds}
+            .selectedDate=${this.selectedDate}
+          ></calee-year-view>
+        `;
+      case "smart":
+        return b`
+          <calee-smart-views
+            .events=${this.events}
+            .tasks=${this.tasks}
+            .lists=${this.lists}
+            .conflicts=${this.conflicts}
+            .calendars=${this.calendars}
+            .currency=${this.currency}
+            .budget=${this.budget}
+            .reminderCalendars=${this.reminderCalendars}
+            ?narrow=${this.narrow}
+          ></calee-smart-views>
+        `;
+      case "data-center":
+      case "activity":
+      case "deleted":
+        return b`
+          <div class="stack">
+            <div class="info-card">
+              <div class="info-title">Open Utility</div>
+              <div class="info-copy">
+                This section stays lightweight inside the page shell. Use the buttons below to open the existing dialog-based tools.
+              </div>
+            </div>
+            ${this._renderTools()}
+          </div>
+        `;
+      default:
+        return this._renderTools();
+    }
+  }
+  render() {
+    const tabs = [
+      { key: "smart", label: "Smart Views" },
+      { key: "year", label: "Year" },
+      { key: "data-center", label: "Tools" }
+    ];
+    return b`
+      <div class="chrome">
+        <div class="header">
+          <div class="eyebrow">More</div>
+          <h2 class="title">Secondary tools, not primary navigation.</h2>
+          <div class="sub">
+            Keep the daily planner calm. Reach for smart views, yearly planning, and maintenance tools only when you need them.
+          </div>
+        </div>
+
+        <div class="tabs">
+          ${tabs.map(
+      (tab) => b`
+              <button
+                class="tab"
+                ?active=${this._activeSubView === tab.key}
+                @click=${() => this._setSubView(tab.key)}
+              >
+                ${tab.label}
+              </button>
+            `
+    )}
+        </div>
+
+        <div class="content">
+          ${this._renderActiveView() ?? A}
+        </div>
+      </div>
+    `;
+  }
+};
+CaleeMorePage.styles = i$3`
+    :host {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+      background: var(--card-background-color, #fff);
+    }
+
+    .chrome {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      height: 100%;
+    }
+
+    .header {
+      padding: 16px 16px 12px;
+      border-bottom: 1px solid var(--divider-color, #e0e0e0);
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--primary-color, #03a9f4) 10%, transparent), transparent 72%),
+        var(--card-background-color, #fff);
+      flex-shrink: 0;
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--secondary-text-color, #727272);
+      margin-bottom: 6px;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--primary-text-color, #212121);
+      margin: 0;
+    }
+
+    .sub {
+      margin-top: 6px;
+      font-size: 14px;
+      color: var(--secondary-text-color, #727272);
+      max-width: 60ch;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 12px 16px 0;
+      flex-shrink: 0;
+    }
+
+    .tab {
+      appearance: none;
+      border: none;
+      border-radius: 999px;
+      padding: 9px 14px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      color: var(--secondary-text-color, #727272);
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
+      transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+    }
+
+    .tab:hover {
+      transform: translateY(-1px);
+      color: var(--primary-text-color, #212121);
+    }
+
+    .tab[active] {
+      color: var(--primary-color, #03a9f4);
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 12%, transparent);
+    }
+
+    .content {
+      min-height: 0;
+      flex: 1;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tools {
+      padding: 16px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .tool-card {
+      appearance: none;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--primary-color, #03a9f4) 5%, transparent), transparent 70%),
+        var(--card-background-color, #fff);
+      color: var(--primary-text-color, #212121);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+      font: inherit;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-1px);
+      border-color: color-mix(in srgb, var(--primary-color, #03a9f4) 30%, var(--divider-color, #e0e0e0));
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.06);
+    }
+
+    .tool-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .tool-copy {
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--secondary-text-color, #727272);
+    }
+
+    .stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .info-card {
+      border-radius: 16px;
+      padding: 16px;
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.03));
+      border: 1px solid var(--divider-color, #e8e8e8);
+    }
+
+    .info-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary-text-color, #212121);
+      margin-bottom: 6px;
+    }
+
+    .info-copy {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--secondary-text-color, #727272);
+    }
+
+    @media (max-width: 800px) {
+      .title {
+        font-size: 21px;
+      }
+
+      .tools {
+        grid-template-columns: 1fr;
+      }
+    }
+  `;
+__decorateClass$1([
+  n2({ type: Array })
+], CaleeMorePage.prototype, "events", 2);
+__decorateClass$1([
+  n2({ type: Array })
+], CaleeMorePage.prototype, "tasks", 2);
+__decorateClass$1([
+  n2({ type: Array })
+], CaleeMorePage.prototype, "lists", 2);
+__decorateClass$1([
+  n2({ type: Array })
+], CaleeMorePage.prototype, "conflicts", 2);
+__decorateClass$1([
+  n2({ attribute: false })
+], CaleeMorePage.prototype, "calendars", 2);
+__decorateClass$1([
+  n2({ attribute: false })
+], CaleeMorePage.prototype, "enabledCalendarIds", 2);
+__decorateClass$1([
+  n2({ attribute: false })
+], CaleeMorePage.prototype, "selectedDate", 2);
+__decorateClass$1([
+  n2({ type: String })
+], CaleeMorePage.prototype, "currency", 2);
+__decorateClass$1([
+  n2({ type: Number })
+], CaleeMorePage.prototype, "budget", 2);
+__decorateClass$1([
+  n2({ type: Array })
+], CaleeMorePage.prototype, "reminderCalendars", 2);
+__decorateClass$1([
+  n2({ type: Boolean, reflect: true })
+], CaleeMorePage.prototype, "narrow", 2);
+__decorateClass$1([
+  n2({ type: String })
+], CaleeMorePage.prototype, "initialSubView", 2);
+__decorateClass$1([
+  r()
+], CaleeMorePage.prototype, "_activeSubView", 2);
+CaleeMorePage = __decorateClass$1([
+  t("calee-more-page")
+], CaleeMorePage);
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __decorateClass = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp(target, key, result);
+  return result;
+};
+const ALL_VIEWS = ["home", "calendar", "tasks", "shopping", "more"];
+function todayISO() {
+  return (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
 }
-function stepYear(dateStr, delta) {
-  const d2 = /* @__PURE__ */ new Date(dateStr + "T00:00:00");
-  d2.setFullYear(d2.getFullYear() + delta);
-  return d2.toISOString().slice(0, 10);
+function parseHash() {
+  const hash = window.location.hash.replace(/^#\/?/, "");
+  const parts = hash.split("/");
+  const legacyMap = {
+    month: "calendar",
+    week: "calendar",
+    day: "calendar",
+    agenda: "calendar",
+    year: "more",
+    smart: "more"
+  };
+  let view;
+  const rawView = parts[0];
+  if (ALL_VIEWS.includes(rawView)) {
+    view = rawView;
+  } else if (legacyMap[rawView]) {
+    view = legacyMap[rawView];
+  } else {
+    view = "home";
+  }
+  const date = parts[1] && /^\d{4}-\d{2}-\d{2}$/.test(parts[1]) ? parts[1] : todayISO();
+  return { view, date, sub: rawView };
 }
-function stepMonth(dateStr, delta) {
-  const d2 = /* @__PURE__ */ new Date(dateStr + "T00:00:00");
-  d2.setMonth(d2.getMonth() + delta);
-  return d2.toISOString().slice(0, 10);
+function buildHash(view, _date) {
+  return `#/${view}`;
 }
 let CaleePanel = class extends i {
   constructor() {
     super(...arguments);
     this.narrow = false;
-    this._currentView = "week";
+    this._currentView = "home";
     this._currentDate = todayISO();
-    this._drawerOpen = false;
-    this._sidebarCollapsed = false;
     this._calendars = [];
     this._lists = [];
     this._loading = true;
-    this._showAddDialog = false;
     this._events = [];
     this._tasks = [];
     this._templates = [];
@@ -11961,13 +14763,11 @@ let CaleePanel = class extends i {
     this._settingsTimeFormat = "12h";
     this._settingsCurrency = "$";
     this._settingsBudget = 0;
+    this._settingsReminderCalendars = ["work_shifts"];
+    this._settingsStrictPrivacy = false;
     this._detailDrawerOpen = false;
     this._detailItem = null;
     this._detailItemType = null;
-    this._showRecurringActionDialog = false;
-    this._recurringActionEvent = null;
-    this._showCalendarManager = false;
-    this._conflicts = [];
     this._editEvent = null;
     this._showEventDialog = false;
     this._eventDialogDefaults = {};
@@ -11979,11 +14779,15 @@ let CaleePanel = class extends i {
     this._showDeletedItems = false;
     this._showActivityFeed = false;
     this._showRoutineManager = false;
+    this._showCalendarManager = false;
     this._showDataCenter = false;
+    this._showAddDialog = false;
+    this._showRecurringActionDialog = false;
+    this._recurringActionEvent = null;
     this._smartSubTab = "before-shift";
-    this._settingsReminderCalendars = ["work_shifts"];
-    this._settingsStrictPrivacy = false;
+    this._conflicts = [];
     this._shoppingToast = "";
+    this._moreSubView = "year";
     this._hashHandler = this._onHashChange.bind(this);
     this._keyHandler = this._handleKeydown.bind(this);
     this._tasksLoaded = false;
@@ -12047,51 +14851,23 @@ let CaleePanel = class extends i {
   }
   // ── Hash Routing ─────────────────────────────────────────────────
   _applyHash() {
+    const originalHash = window.location.hash;
     const { view, date } = parseHash();
     this._currentView = view;
     this._currentDate = date;
-    if (!window.location.hash) {
+    if (!originalHash || originalHash !== buildHash(this._currentView)) {
       window.location.hash = buildHash(this._currentView, this._currentDate);
     }
   }
   _onHashChange() {
     this._applyHash();
   }
-  _navigate(view, date) {
-    const d2 = date ?? this._currentDate;
-    window.location.hash = buildHash(view, d2);
-  }
-  // ── Date Navigation ──────────────────────────────────────────────
-  _onPrev() {
-    const view = this._currentView;
-    if (!DATE_VIEWS.includes(view)) return;
-    const step = dateStep(view);
-    let newDate;
-    if (view === "year") {
-      newDate = stepYear(this._currentDate, -1);
-    } else if (step > 0) {
-      newDate = addDays(this._currentDate, -step);
-    } else {
-      newDate = stepMonth(this._currentDate, -1);
+  _navigate(view) {
+    if (view === "home") {
+      this._currentDate = todayISO();
     }
-    this._navigate(view, newDate);
-  }
-  _onNext() {
-    const view = this._currentView;
-    if (!DATE_VIEWS.includes(view)) return;
-    const step = dateStep(view);
-    let newDate;
-    if (view === "year") {
-      newDate = stepYear(this._currentDate, 1);
-    } else if (step > 0) {
-      newDate = addDays(this._currentDate, step);
-    } else {
-      newDate = stepMonth(this._currentDate, 1);
-    }
-    this._navigate(view, newDate);
-  }
-  _onToday() {
-    this._navigate(this._currentView, todayISO());
+    this._currentView = view;
+    window.location.hash = buildHash(view);
   }
   // ── Data Loading ─────────────────────────────────────────────────
   _syncFromStore() {
@@ -12145,8 +14921,6 @@ let CaleePanel = class extends i {
     }
     await this._loadEvents();
   }
-  /** Load events for the visible date range based on the current view.
-   *  Uses the expand_recurring_events endpoint to include virtual recurring instances. */
   async _loadEvents() {
     if (!this.hass) return;
     const { start, end } = this._getViewRange();
@@ -12168,7 +14942,6 @@ let CaleePanel = class extends i {
     }
     this._conflicts = this._detectConflicts(this._events);
   }
-  /** Scan loaded events for overlapping timed events across different calendars. */
   _detectConflicts(events) {
     const timed = events.filter((e2) => !e2.deleted_at && !e2.all_day && e2.start && e2.end).sort((a2, b2) => a2.start.localeCompare(b2.start));
     const conflicts = [];
@@ -12184,88 +14957,48 @@ let CaleePanel = class extends i {
     }
     return conflicts;
   }
-  /** Recompute conflicts from the current in-memory events list. */
   _recomputeConflicts() {
     this._conflicts = this._detectConflicts(this._events);
   }
-  /**
-   * Lazy-load tasks via WebSocket.
-   * Called when switching to tasks or shopping view for the first time,
-   * or on refresh. Avoids loading all tasks on every startup.
-   */
   async _loadTasks() {
     if (!this.hass) return;
     try {
-      this._tasks = await this.hass.callWS({
-        type: "calee/tasks"
-      }) ?? [];
+      this._tasks = await this.hass.callWS({ type: "calee/tasks" }) ?? [];
       this._tasksLoaded = true;
     } catch {
     }
   }
-  /** Calculate the date range for the current view. */
   _getViewRange() {
     const d2 = /* @__PURE__ */ new Date(this._currentDate + "T00:00:00");
-    switch (this._currentView) {
-      case "day": {
-        return {
-          start: this._currentDate,
-          end: this._currentDate
-        };
-      }
-      case "month": {
-        const first = new Date(d2.getFullYear(), d2.getMonth(), 1);
-        const last = new Date(d2.getFullYear(), d2.getMonth() + 1, 0);
-        const start = new Date(first);
-        start.setDate(start.getDate() - 7);
-        const end = new Date(last);
-        end.setDate(end.getDate() + 7);
-        return {
-          start: start.toISOString().slice(0, 10),
-          end: end.toISOString().slice(0, 10)
-        };
-      }
-      case "week": {
-        const dow = d2.getDay();
-        const mondayOffset = dow === 0 ? -6 : 1 - dow;
-        const start = new Date(d2);
-        start.setDate(start.getDate() + mondayOffset);
-        const end = new Date(start);
-        end.setDate(end.getDate() + 6);
-        return {
-          start: start.toISOString().slice(0, 10),
-          end: end.toISOString().slice(0, 10)
-        };
-      }
-      case "year": {
-        const yearStart = new Date(d2.getFullYear(), 0, 1);
-        const yearEnd = new Date(d2.getFullYear(), 11, 31);
-        return {
-          start: yearStart.toISOString().slice(0, 10),
-          end: yearEnd.toISOString().slice(0, 10)
-        };
-      }
-      case "agenda": {
-        const end = new Date(d2);
-        end.setDate(end.getDate() + 14);
-        return {
-          start: this._currentDate,
-          end: end.toISOString().slice(0, 10)
-        };
-      }
-      default: {
-        const start = /* @__PURE__ */ new Date();
-        start.setDate(start.getDate() - 30);
-        const end = /* @__PURE__ */ new Date();
-        end.setDate(end.getDate() + 90);
-        return {
-          start: start.toISOString().slice(0, 10),
-          end: end.toISOString().slice(0, 10)
-        };
-      }
+    if (this._currentView === "calendar") {
+      const start2 = new Date(d2);
+      start2.setDate(start2.getDate() - 35);
+      const end2 = new Date(d2);
+      end2.setDate(end2.getDate() + 45);
+      return {
+        start: start2.toISOString().slice(0, 10),
+        end: end2.toISOString().slice(0, 10)
+      };
     }
+    if (this._currentView === "home") {
+      const start2 = new Date(d2);
+      start2.setDate(start2.getDate() - 1);
+      const end2 = new Date(d2);
+      end2.setDate(end2.getDate() + 30);
+      return {
+        start: start2.toISOString().slice(0, 10),
+        end: end2.toISOString().slice(0, 10)
+      };
+    }
+    const start = new Date(d2);
+    start.setDate(start.getDate() - 30);
+    const end = new Date(d2);
+    end.setDate(end.getDate() + 90);
+    return {
+      start: start.toISOString().slice(0, 10),
+      end: end.toISOString().slice(0, 10)
+    };
   }
-  /** Subscribe to real-time planner change notifications. */
   async _subscribeToChanges() {
     if (!this.hass?.connection) return;
     try {
@@ -12278,11 +15011,8 @@ let CaleePanel = class extends i {
     } catch {
     }
   }
-  /** Debounced full data refresh triggered by subscription events. */
   _refreshAll() {
-    if (this._refreshDebounce) {
-      clearTimeout(this._refreshDebounce);
-    }
+    if (this._refreshDebounce) clearTimeout(this._refreshDebounce);
     this._refreshDebounce = setTimeout(async () => {
       this._refreshDebounce = null;
       if (this._store) {
@@ -12302,26 +15032,39 @@ let CaleePanel = class extends i {
       (c2) => c2.id === id ? { ...c2, visible: !c2.visible } : c2
     );
   }
-  // ── Drawer ───────────────────────────────────────────────────────
-  _toggleDrawer() {
-    this._drawerOpen = !this._drawerOpen;
+  // ── Computed helpers ─────────────────────────────────────────────
+  get _calendarMap() {
+    const map = /* @__PURE__ */ new Map();
+    for (const c2 of this._rawCalendars) map.set(c2.id, c2);
+    return map;
   }
-  _closeDrawer() {
-    this._drawerOpen = false;
+  get _enabledIds() {
+    return new Set(this._calendars.filter((c2) => c2.visible).map((c2) => c2.id));
   }
-  // ── Keyboard shortcuts (desktop) ────────────────────────────────
+  get _shoppingTasks() {
+    const shoppingList = this._lists.find((l2) => l2.list_type === "shopping");
+    if (!shoppingList) return this._tasks.filter((t2) => t2.list_id === "shopping");
+    return this._tasks.filter((t2) => t2.list_id === shoppingList.id);
+  }
+  get _standardTasks() {
+    const shoppingIds = new Set(
+      this._lists.filter((l2) => l2.list_type === "shopping").map((l2) => l2.id)
+    );
+    return this._tasks.filter((t2) => !shoppingIds.has(t2.list_id));
+  }
+  // ── Keyboard shortcuts ──────────────────────────────────────────
   _isEditableKeyboardTarget(e2) {
-    const isEditableElement = (value) => {
+    const isEditable = (value) => {
       if (!(value instanceof HTMLElement)) return false;
       const tag = value.tagName.toLowerCase();
       return tag === "input" || tag === "textarea" || tag === "select" || value.isContentEditable;
     };
-    if (e2.composedPath().some((target) => isEditableElement(target))) return true;
+    if (e2.composedPath().some((target) => isEditable(target))) return true;
     let active = document.activeElement;
     while (active && active.shadowRoot?.activeElement) {
       active = active.shadowRoot.activeElement;
     }
-    return isEditableElement(active);
+    return isEditable(active);
   }
   _handleKeydown(e2) {
     if (this.narrow) return;
@@ -12346,19 +15089,15 @@ let CaleePanel = class extends i {
         break;
       case "t":
         e2.preventDefault();
-        this._onToday();
+        this._currentDate = todayISO();
         break;
-      case "w":
+      case "h":
         e2.preventDefault();
-        this._navigate("week");
+        this._navigate("home");
         break;
-      case "m":
+      case "c":
         e2.preventDefault();
-        this._navigate("month");
-        break;
-      case "a":
-        e2.preventDefault();
-        this._navigate("agenda");
+        this._navigate("calendar");
         break;
       case "1":
         e2.preventDefault();
@@ -12368,132 +15107,42 @@ let CaleePanel = class extends i {
         e2.preventDefault();
         this._navigate("shopping");
         break;
-      case "ArrowLeft":
-        e2.preventDefault();
-        this._onPrev();
-        break;
-      case "ArrowRight":
-        e2.preventDefault();
-        this._onNext();
-        break;
       case "Escape":
-        if (this._drawerOpen) {
-          this._closeDrawer();
-        }
-        if (this._detailDrawerOpen) {
-          this._closeDetailDrawer();
-        }
+        if (this._detailDrawerOpen) this._closeDetailDrawer();
         break;
     }
   }
-  // ── Computed helpers ──────────────────────────────────────────────
-  /** True when the viewport is in tablet range (600px - 1024px). */
-  get _isTablet() {
-    const w = window.innerWidth;
-    return w >= 600 && w <= 1024;
-  }
-  /** Map of calendar ID to PlannerCalendar for passing to view components. */
-  get _calendarMap() {
-    const map = /* @__PURE__ */ new Map();
-    for (const c2 of this._rawCalendars) {
-      map.set(c2.id, c2);
-    }
-    return map;
-  }
-  /** Set of enabled (visible) calendar IDs. */
-  get _enabledIds() {
-    return new Set(
-      this._calendars.filter((c2) => c2.visible).map((c2) => c2.id)
-    );
-  }
-  /** Only work shifts — used for next-shift sidebar card. */
-  get _workEvents() {
-    return this._events.filter((e2) => e2.calendar_id === "work_shifts");
-  }
-  /** The next upcoming work shift (starts in the future). */
-  get _nextShift() {
-    const now = Date.now();
-    const upcoming = this._workEvents.filter((e2) => {
-      if (e2.deleted_at || e2.all_day) return false;
-      return new Date(e2.start).getTime() > now;
-    }).sort((a2, b2) => new Date(a2.start).getTime() - new Date(b2.start).getTime());
-    return upcoming[0] ?? null;
-  }
-  /** Next 5 events across ALL calendars for the upcoming sidebar section. */
-  get _upcomingEvents() {
-    const now = Date.now();
-    return this._events.filter((e2) => {
-      if (e2.deleted_at) return false;
-      return new Date(e2.start).getTime() > now;
-    }).sort((a2, b2) => new Date(a2.start).getTime() - new Date(b2.start).getTime()).slice(0, 5);
-  }
-  /** Tasks for the shopping list. */
-  get _shoppingTasks() {
-    const shoppingList = this._lists.find((l2) => l2.list_type === "shopping");
-    if (!shoppingList) return this._tasks.filter((t2) => t2.list_id === "shopping");
-    return this._tasks.filter((t2) => t2.list_id === shoppingList.id);
-  }
-  /** Tasks for standard task lists. */
-  get _standardTasks() {
-    const shoppingIds = new Set(
-      this._lists.filter((l2) => l2.list_type === "shopping").map((l2) => l2.id)
-    );
-    return this._tasks.filter((t2) => !shoppingIds.has(t2.list_id));
-  }
-  _renderTabletSummary() {
-    if (this.narrow || !this._isTablet) return A;
-    const today = /* @__PURE__ */ new Date();
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec"
-    ];
-    const dateStr = `Today, ${days[today.getDay()]} ${today.getDate()} ${months[today.getMonth()]}`;
-    const now = Date.now();
-    const workShifts = this._events.filter((e2) => e2.calendar_id === "work_shifts" && !e2.deleted_at).map((e2) => ({ ...e2, _start: new Date(e2.start).getTime() })).filter((e2) => e2._start > now).sort((a2, b2) => a2._start - b2._start);
-    let shiftStr = "No upcoming shifts";
-    if (workShifts.length > 0) {
-      const next = workShifts[0];
-      const d2 = new Date(next.start);
-      const h2 = d2.getHours();
-      const ampm = h2 >= 12 ? "pm" : "am";
-      const h12 = h2 % 12 || 12;
-      shiftStr = `Next: ${next.title} at ${h12}${ampm}`;
-    }
-    const shoppingTasks = this._tasks.filter(
-      (t2) => t2.list_id === "shopping" && !t2.completed && !t2.deleted_at
-    );
-    const totalPrice = shoppingTasks.reduce(
-      (sum, t2) => sum + (t2.price ?? 0),
-      0
-    );
-    const budget = this._settingsBudget;
-    const budgetStr = budget > 0 ? `Budget: ${this._settingsCurrency}${Math.round(budget - totalPrice)} left` : "";
-    return b`
-      <div class="tablet-summary">
-        <span class="summary-date">${dateStr}</span>
-        <span class="summary-shift">${shiftStr}</span>
-        ${budgetStr ? b`<span class="summary-budget">${budgetStr}</span>` : A}
-      </div>
-    `;
-  }
+  // ── Render ──────────────────────────────────────────────────────
   render() {
     return b`
-      ${this._renderHeader()}
-      ${this._renderTabletSummary()}
+      <div class="header">
+        <span class="title">Calee</span>
+        <div class="spacer"></div>
+      </div>
+
       <div class="body">
-        ${this._renderSidebarBackdrop()}
-        ${this._renderSidebar()}
+        <calee-left-rail
+          .activeView=${this._currentView}
+          .calendars=${this._calendars}
+          .rawCalendars=${this._rawCalendars}
+          .routines=${this._routines}
+          .conflicts=${this._conflicts}
+          @nav-change=${this._onNavChange}
+          @toggle-calendar=${this._onToggleCalendar}
+          @open-more=${this._onOpenMore}
+          @routine-execute=${this._onRoutineExecute}
+          @open-routine-manager=${() => {
+      this._showRoutineManager = true;
+    }}
+          @open-calendar-manager=${() => {
+      this._showCalendarManager = true;
+    }}
+          @open-settings=${() => {
+      this._showSettings = true;
+    }}
+          @open-template-picker=${this._onSidebarAdd}
+        ></calee-left-rail>
+
         <div class="main"
           @event-click=${this._onEventClick}
           @cell-click=${this._onCellClick}
@@ -12511,13 +15160,37 @@ let CaleePanel = class extends i {
           @preset-create=${this._onPresetCreate}
           @preset-delete=${this._onPresetDelete}
           @event-select=${this._onEventSelect}
+          @nav-change=${this._onNavChange}
+          @calendar-date-change=${this._onCalendarDateChange}
+          @calendar-subview-change=${this._onCalendarSubviewChange}
         >
           ${this._loading ? b`<div class="loading">Loading...</div>` : this._renderView()}
         </div>
-        ${this._renderDetailDrawer()}
+
+        <calee-detail-drawer
+          .item=${this._detailItem}
+          .itemType=${this._detailItemType}
+          .calendars=${this._rawCalendars}
+          .lists=${this._lists}
+          .events=${this._events}
+          .tasks=${this._tasks}
+          .conflicts=${this._conflicts}
+          ?open=${this._detailDrawerOpen && !this.narrow}
+          @drawer-close=${this._closeDetailDrawer}
+          @drawer-edit=${this._onDrawerEdit}
+          @drawer-delete=${this._onDrawerDelete}
+          @drawer-recurring-action=${this._onDrawerRecurringAction}
+        ></calee-detail-drawer>
       </div>
-      ${this._renderBottomNav()}
+
+      <calee-bottom-nav
+        .activeView=${this._currentView}
+        @nav-change=${this._onNavChange}
+        @open-template-picker=${this._onSidebarAdd}
+      ></calee-bottom-nav>
+
       ${this._showAddDialog ? this._renderAddDialog() : A}
+
       <calee-event-dialog
         .event=${this._editEvent}
         .calendars=${this._rawCalendars}
@@ -12527,6 +15200,7 @@ let CaleePanel = class extends i {
         @event-delete=${this._onEventDelete}
         @dialog-close=${this._onDialogClose}
       ></calee-event-dialog>
+
       <calee-template-picker
         .templates=${this._templates}
         .selectedDate=${this._templatePickerDate || this._currentDate}
@@ -12539,6 +15213,7 @@ let CaleePanel = class extends i {
         @manage-templates=${this._onManageTemplates}
         @dialog-close=${this._onDialogClose}
       ></calee-template-picker>
+
       <calee-template-manager
         .templates=${this._templates}
         .calendars=${this._rawCalendars}
@@ -12548,12 +15223,14 @@ let CaleePanel = class extends i {
         @template-deleted=${this._onTemplateChanged}
         @dialog-close=${this._onManagerClose}
       ></calee-template-manager>
+
       <calee-settings-dialog
         .hass=${this.hass}
         ?open=${this._showSettings}
         @settings-changed=${this._onSettingsChanged}
         @dialog-close=${this._onSettingsClose}
       ></calee-settings-dialog>
+
       <calee-deleted-items
         .hass=${this.hass}
         .calendars=${this._rawCalendars}
@@ -12561,11 +15238,13 @@ let CaleePanel = class extends i {
         ?open=${this._showDeletedItems}
         @dialog-close=${this._onDeletedItemsClose}
       ></calee-deleted-items>
+
       <calee-activity-feed
         .hass=${this.hass}
         ?open=${this._showActivityFeed}
         @dialog-close=${this._onActivityFeedClose}
       ></calee-activity-feed>
+
       <calee-routine-manager
         .hass=${this.hass}
         .routines=${this._routines}
@@ -12574,6 +15253,7 @@ let CaleePanel = class extends i {
         @routine-changed=${this._onRoutineChanged}
         @dialog-close=${this._onRoutineManagerClose}
       ></calee-routine-manager>
+
       <calee-calendar-manager
         .hass=${this.hass}
         .calendars=${this._rawCalendars}
@@ -12582,6 +15262,7 @@ let CaleePanel = class extends i {
         @calendar-changed=${this._onCalendarManagerChanged}
         @dialog-close=${this._onCalendarManagerClose}
       ></calee-calendar-manager>
+
       <calee-data-center
         .hass=${this.hass}
         .events=${this._events}
@@ -12593,583 +15274,137 @@ let CaleePanel = class extends i {
         ?open=${this._showDataCenter}
         @dialog-close=${this._onDataCenterClose}
       ></calee-data-center>
+
       ${this._showRecurringActionDialog ? this._renderRecurringActionDialog() : A}
     `;
   }
-  // ── Header ───────────────────────────────────────────────────────
-  _renderHeader() {
-    const showDateNav = DATE_VIEWS.includes(this._currentView);
-    return b`
-      <div class="header">
-        <div class="header-left">
-          <button
-            class="hamburger"
-            @click=${this._toggleDrawer}
-            aria-label="Toggle sidebar"
-          >&#9776;</button>
-          <span class="title">Calee</span>
-        </div>
-
-        <div class="header-tabs">
-          ${TAB_VIEWS.map(
-      (v2) => b`
-              <button
-                class="view-tab"
-                ?active=${this._currentView === v2}
-                @click=${() => this._navigate(v2)}
-              >${v2}</button>
-            `
-    )}
-        </div>
-
-        ${showDateNav ? b`
-          <div class="header-date-nav">
-            <button class="date-nav-btn" @click=${this._onPrev} aria-label="Previous">&lsaquo;</button>
-            <button class="today-btn" @click=${this._onToday}>Today</button>
-            <button class="date-nav-btn" @click=${this._onNext} aria-label="Next">&rsaquo;</button>
-            <span class="date-label">${formatDateLabel(this._currentView, this._currentDate)}</span>
-          </div>
-        ` : b`<div class="header-date-nav"></div>`}
-
-        <button class="settings-cog" @click=${this._openSettings} aria-label="Settings">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"></circle>
-            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.32 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"></path>
-          </svg>
-        </button>
-      </div>
-    `;
-  }
-  // ── Sidebar ──────────────────────────────────────────────────────
-  _renderSidebarBackdrop() {
-    return b`
-      <div
-        class="sidebar-backdrop ${this._drawerOpen ? "visible" : ""}"
-        @click=${this._closeDrawer}
-      ></div>
-    `;
-  }
-  _renderSidebar() {
-    return b`
-      <div class="sidebar ${this._drawerOpen ? "open" : ""} ${this._sidebarCollapsed ? "collapsed" : ""}">
-        <button
-          class="sidebar-collapse-btn"
-          @click=${() => {
-      this._sidebarCollapsed = !this._sidebarCollapsed;
-    }}
-          title="${this._sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}"
-          aria-label="${this._sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}"
-          aria-expanded="${(!this._sidebarCollapsed).toString()}"
-          aria-pressed="${this._sidebarCollapsed.toString()}"
-        >
-          ${this._sidebarCollapsed ? "▶" : "◀"}
-        </button>
-        <!-- Add button -->
-        <button class="sidebar-add-btn" @click=${this._onSidebarAdd}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-          Add event
-        </button>
-
-        <!-- Navigation -->
-        <div class="sidebar-nav">
-          <button
-            class="nav-item"
-            ?active=${this._currentView === "tasks"}
-            @click=${() => this._navigate("tasks")}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline>
-              <path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"></path>
-            </svg>
-            Inbox
-          </button>
-
-          <button
-            class="nav-item"
-            ?active=${this._currentView === "day"}
-            @click=${() => this._navigate("day", todayISO())}
-          >
-            <div class="nav-calendar-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="16" y1="2" x2="16" y2="6"></line>
-                <line x1="8" y1="2" x2="8" y2="6"></line>
-                <line x1="3" y1="10" x2="21" y2="10"></line>
-              </svg>
-              <span class="date-num">${(/* @__PURE__ */ new Date()).getDate()}</span>
-            </div>
-            Today
-          </button>
-
-          <button
-            class="nav-item"
-            ?active=${this._currentView === "agenda"}
-            @click=${() => this._navigate("agenda")}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-              <line x1="8" y1="14" x2="16" y2="14"></line>
-              <line x1="8" y1="18" x2="12" y2="18"></line>
-            </svg>
-            Upcoming
-          </button>
-        </div>
-
-        <!-- Calendars -->
-        <div class="sidebar-section">
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 12px 6px;">
-            <h3 class="sidebar-heading" style="padding:0;margin:0;">Calendars</h3>
-            <button
-              style="all:unset;font-size:11px;color:var(--primary-color,#03a9f4);cursor:pointer;font-weight:500;"
-              @click=${() => {
-      this._showCalendarManager = true;
-    }}
-            >Manage</button>
-          </div>
-          ${this._calendars.length === 0 ? b`<div style="font-size:13px;color:var(--secondary-text-color,#999);padding:6px 12px;">No calendars loaded</div>` : this._calendars.map(
-      (cal) => b`
-                  <div
-                    class="calendar-item"
-                    @click=${() => this._toggleCalendar(cal.id)}
-                  >
-                    <div
-                      class="calendar-dot ${cal.visible ? "" : "hidden"}"
-                      style="--cal-color: ${cal.color}"
-                    ></div>
-                    <span class="calendar-name">${cal.name}</span>
-                    ${this._rawCalendars.find((rc) => rc.id === cal.id)?.is_private ? b`<svg viewBox="0 0 24 24" fill="none" stroke="var(--secondary-text-color,#999)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0;margin-left:auto;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0110 0v4"></path></svg>` : A}
-                  </div>
-                `
-    )}
-        </div>
-
-        <!-- Lists -->
-        <div class="sidebar-section">
-          <h3 class="sidebar-heading">Lists</h3>
-          ${this._lists.length === 0 ? b`<div style="font-size:13px;color:var(--secondary-text-color,#999);padding:6px 12px;">No lists loaded</div>` : this._lists.map(
-      (lst) => b`
-                  <div
-                    class="list-item"
-                    ?active=${this._currentView === "tasks" && lst.list_type === "standard" || this._currentView === "shopping" && lst.list_type === "shopping"}
-                    @click=${() => this._navigate(
-        lst.list_type === "shopping" ? "shopping" : "tasks"
-      )}
-                  >
-                    ${lst.list_type === "shopping" ? b`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <circle cx="9" cy="21" r="1"></circle>
-                          <circle cx="20" cy="21" r="1"></circle>
-                          <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"></path>
-                        </svg>` : b`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path>
-                          <polyline points="14 2 14 8 20 8"></polyline>
-                          <line x1="16" y1="13" x2="8" y2="13"></line>
-                          <line x1="16" y1="17" x2="8" y2="17"></line>
-                          <polyline points="10 9 9 9 8 9"></polyline>
-                        </svg>`}
-                    <span>${lst.name}</span>
-                    ${lst.is_private ? b`<svg viewBox="0 0 24 24" fill="none" stroke="var(--secondary-text-color,#999)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0;margin-left:auto;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0110 0v4"></path></svg>` : A}
-                  </div>
-                `
-    )}
-        </div>
-
-        <!-- Routines -->
-        <div class="sidebar-section">
-          <h3 class="sidebar-heading">Routines</h3>
-          ${this._routines.map(
-      (r2) => b`
-              <button
-                class="nav-item nav-item-muted"
-                @click=${() => this._executeRoutine(r2.id)}
-                title="${r2.description || `Run ${r2.name}`}"
-              >
-                <span style="font-size:18px;width:20px;text-align:center;flex-shrink:0;">${r2.emoji || "⚡"}</span>
-                <span>${r2.name}</span>
-              </button>
-            `
-    )}
-          <button
-            class="nav-item nav-item-muted"
-            @click=${() => {
-      this._showRoutineManager = true;
-    }}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
-              <circle cx="12" cy="12" r="3"></circle>
-              <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.32 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"></path>
-            </svg>
-            Manage routines
-          </button>
-        </div>
-
-        <!-- Smart Views -->
-        <div class="sidebar-section">
-          <h3 class="sidebar-heading">Smart Views</h3>
-          <button
-            class="nav-item nav-item-muted"
-            ?active=${this._currentView === "smart" && this._smartSubTab === "before-shift"}
-            @click=${() => {
-      this._smartSubTab = "before-shift";
-      this._navigate("smart");
-    }}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-            <span>Before next shift</span>
-          </button>
-          <button
-            class="nav-item nav-item-muted"
-            ?active=${this._currentView === "smart" && this._smartSubTab === "weekend"}
-            @click=${() => {
-      this._smartSubTab = "weekend";
-      this._navigate("smart");
-    }}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
-              <path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-            </svg>
-            <span>This weekend</span>
-          </button>
-          <button
-            class="nav-item nav-item-muted"
-            ?active=${this._currentView === "smart" && this._smartSubTab === "budget"}
-            @click=${() => {
-      this._smartSubTab = "budget";
-      this._navigate("smart");
-    }}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
-              <line x1="12" y1="1" x2="12" y2="23"></line>
-              <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"></path>
-            </svg>
-            <span>Budget watch</span>
-          </button>
-          <button
-            class="nav-item nav-item-muted"
-            ?active=${this._currentView === "smart" && this._smartSubTab === "overdue"}
-            @click=${() => {
-      this._smartSubTab = "overdue";
-      this._navigate("smart");
-    }}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
-              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path>
-              <line x1="12" y1="9" x2="12" y2="13"></line>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-            <span>Overdue</span>
-          </button>
-          <button
-            class="nav-item nav-item-muted"
-            ?active=${this._currentView === "smart" && this._smartSubTab === "conflicts"}
-            @click=${() => {
-      this._smartSubTab = "conflicts";
-      this._navigate("smart");
-    }}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-            </svg>
-            <span>Conflicts${this._conflicts.length > 0 ? ` (${this._conflicts.length})` : ""}</span>
-          </button>
-        </div>
-
-        <!-- More: Year, Recently Deleted, Activity & Data Center -->
-        <div class="sidebar-section">
-          <h3 class="sidebar-heading">More</h3>
-          <button
-            class="nav-item nav-item-muted"
-            ?active=${this._currentView === "year"}
-            @click=${() => this._navigate("year", todayISO())}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-              <line x1="3" y1="16" x2="21" y2="16"></line>
-              <line x1="9" y1="4" x2="9" y2="22"></line>
-              <line x1="15" y1="4" x2="15" y2="22"></line>
-            </svg>
-            Year
-          </button>
-          <button
-            class="nav-item nav-item-muted"
-            @click=${this._openDeletedItems}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="3 6 5 6 21 6"></polyline>
-              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
-            </svg>
-            Recently Deleted
-          </button>
-          <button
-            class="nav-item nav-item-muted"
-            @click=${this._openActivityFeed}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-            </svg>
-            Activity
-          </button>
-          <button
-            class="nav-item nav-item-muted"
-            @click=${() => {
-      this._showDataCenter = true;
-    }}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-              <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
-              <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
-            </svg>
-            Data Center
-          </button>
-        </div>
-
-        <!-- Conflicts -->
-        ${this._conflicts.length > 0 ? b`
-          <div class="sidebar-section">
-            <div style="display:flex;align-items:center;gap:8px;padding:6px 12px;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="var(--warning-color,#ff9800)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0;">
-                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path>
-                <line x1="12" y1="9" x2="12" y2="13"></line>
-                <line x1="12" y1="17" x2="12.01" y2="17"></line>
-              </svg>
-              <span style="font-size:13px;color:var(--warning-color,#ff9800);font-weight:500;">${this._conflicts.length} conflict${this._conflicts.length === 1 ? "" : "s"}</span>
-            </div>
-          </div>
-        ` : A}
-
-        <!-- Shift cards -->
-        <div class="sidebar-cards">
-          <calee-next-shift
-            .nextShift=${this._nextShift}
-          ></calee-next-shift>
-        </div>
-
-        <!-- Upcoming events (all calendars) -->
-        ${this._upcomingEvents.length > 0 ? b`
-          <div class="sidebar-upcoming">
-            <div class="section-label">Upcoming</div>
-            ${this._upcomingEvents.map((ev) => {
-      const cal = this._calendarMap.get(ev.calendar_id);
-      const calColor = cal?.color ?? "#64b5f6";
-      const t2 = new Date(ev.start);
-      const timeStr = t2.toLocaleTimeString(void 0, {
-        hour: "numeric",
-        minute: "2-digit"
-      });
-      const now = /* @__PURE__ */ new Date();
-      const isToday2 = t2.getFullYear() === now.getFullYear() && t2.getMonth() === now.getMonth() && t2.getDate() === now.getDate();
-      const tom = new Date(now);
-      tom.setDate(tom.getDate() + 1);
-      const isTomorrow = t2.getFullYear() === tom.getFullYear() && t2.getMonth() === tom.getMonth() && t2.getDate() === tom.getDate();
-      const dayLabel = isToday2 ? "" : isTomorrow ? "Tmrw " : `${t2.toLocaleDateString(void 0, { weekday: "short" })} `;
-      return b`
-                <div class="upcoming-item">
-                  <span class="dot" style="background: ${calColor}"></span>
-                  <span class="upcoming-title">${ev.title}</span>
-                  <span class="upcoming-time">${dayLabel}${timeStr}</span>
-                </div>
-              `;
-    })}
-          </div>
-        ` : A}
-      </div>
-    `;
-  }
-  // ── Detail Drawer (desktop) ──────────────────────────────────────
-  _renderDetailDrawer() {
-    const open = this._detailDrawerOpen && this._detailItem && !this.narrow;
-    return b`
-      <div class="detail-drawer ${open ? "" : "closed"}">
-        ${open ? this._renderDetailDrawerContent() : A}
-      </div>
-    `;
-  }
-  _renderDetailDrawerContent() {
-    if (!this._detailItem) return A;
-    if (this._detailItemType === "event") {
-      return this._renderEventDetail(this._detailItem);
+  // ── View Rendering ──────────────────────────────────────────────
+  _renderView() {
+    switch (this._currentView) {
+      case "home":
+        return b`<calee-home-page
+          .events=${this._events}
+          .tasks=${this._tasks}
+          .calendars=${this._calendarMap}
+          .lists=${this._lists}
+          .routines=${this._routines}
+          .presets=${this._presets}
+          .enabledCalendarIds=${this._enabledIds}
+          .currentDate=${this._currentDate}
+          ?narrow=${this.narrow}
+          .currency=${this._settingsCurrency}
+          .budget=${this._settingsBudget}
+          .weekStart=${this._settingsWeekStart}
+        ></calee-home-page>`;
+      case "calendar":
+        return b`<calee-calendar-page
+          .events=${this._events}
+          .calendars=${this._calendarMap}
+          .enabledCalendarIds=${this._enabledIds}
+          .templates=${this._templates}
+          .tasks=${this._tasks}
+          .conflicts=${this._conflicts}
+          ?narrow=${this.narrow}
+          ?weekStartsMonday=${this._settingsWeekStart === "monday"}
+          .currentDate=${this._currentDate}
+        ></calee-calendar-page>`;
+      case "tasks":
+        return b`<calee-tasks-page
+          .tasks=${this._standardTasks}
+          .lists=${this._lists}
+          .presets=${this._presets}
+          ?narrow=${this.narrow}
+        ></calee-tasks-page>`;
+      case "shopping":
+        return b`<calee-shopping-page
+          .tasks=${this._tasks}
+          .lists=${this._lists}
+          .presets=${this._presets}
+          .currency=${this._settingsCurrency}
+          .budget=${this._settingsBudget}
+          .toastMessage=${this._shoppingToast}
+          @toast-shown=${() => {
+          this._shoppingToast = "";
+        }}
+        ></calee-shopping-page>`;
+      case "more":
+        return b`<calee-more-page
+          .events=${this._events}
+          .tasks=${this._tasks}
+          .lists=${this._lists}
+          .conflicts=${this._conflicts}
+          .calendars=${this._calendarMap}
+          .enabledCalendarIds=${this._enabledIds}
+          .selectedDate=${/* @__PURE__ */ new Date(this._currentDate + "T00:00:00")}
+          .currency=${this._settingsCurrency}
+          .budget=${this._settingsBudget}
+          .reminderCalendars=${this._settingsReminderCalendars}
+          .initialSubView=${this._moreSubView}
+          ?narrow=${this.narrow}
+          @day-click=${this._onYearDayClick}
+          @more-subview-change=${this._onMoreSubviewChange}
+          @deleted=${() => {
+          this._showDeletedItems = true;
+        }}
+          @activity=${() => {
+          this._showActivityFeed = true;
+        }}
+          @data-center=${() => {
+          this._showDataCenter = true;
+        }}
+          @calendar-manager=${() => {
+          this._showCalendarManager = true;
+        }}
+          @settings=${() => {
+          this._showSettings = true;
+        }}
+        ></calee-more-page>`;
+      default:
+        return b`<div class="loading">Unknown view</div>`;
     }
-    return this._renderTaskDetail(this._detailItem);
   }
-  _renderEventDetail(event) {
-    const cal = this._calendarMap.get(event.calendar_id);
-    const start = new Date(event.start);
-    const end = new Date(event.end);
-    const eventConflicts = this._conflicts.filter(
-      (c2) => c2.eventA.id === event.id || c2.eventB.id === event.id
-    );
-    const conflictNames = eventConflicts.map((c2) => {
-      const other = c2.eventA.id === event.id ? c2.eventB : c2.eventA;
-      return other.title;
-    });
-    const dateOpts = {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-      year: "numeric"
-    };
-    const timeOpts = {
-      hour: "numeric",
-      minute: "2-digit"
-    };
-    const linkedTasks = this._tasks.filter(
-      (t2) => t2.related_event_id === event.id && !t2.deleted_at
-    );
-    return b`
-      <div class="drawer-header">
-        <h3>Event</h3>
-        <button class="drawer-close-btn" @click=${this._closeDetailDrawer} aria-label="Close">&times;</button>
-      </div>
-
-      ${conflictNames.length > 0 ? b`
-        <div style="background:color-mix(in srgb,var(--warning-color,#ff9800) 12%,transparent);border:1px solid var(--warning-color,#ff9800);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:var(--primary-text-color,#212121);">
-          <strong style="color:var(--warning-color,#ff9800);">Conflict:</strong> Overlaps with ${conflictNames.join(", ")}
-        </div>
-      ` : A}
-
-      <div class="drawer-field">
-        <div class="drawer-field-label">Title</div>
-        <div class="drawer-field-value">${event.title}</div>
-      </div>
-
-      <div class="drawer-field">
-        <div class="drawer-field-label">Calendar</div>
-        <div class="drawer-field-value">
-          ${cal ? b`<span style="display:inline-flex;align-items:center;gap:6px;">
-            <span style="width:8px;height:8px;border-radius:50%;background:${cal.color};display:inline-block;"></span>
-            ${cal.name}
-          </span>` : b`<span class="muted">Unknown</span>`}
-        </div>
-      </div>
-
-      <div class="drawer-field">
-        <div class="drawer-field-label">Start</div>
-        <div class="drawer-field-value">
-          ${event.all_day ? start.toLocaleDateString(void 0, dateOpts) : b`${start.toLocaleDateString(void 0, dateOpts)} at ${start.toLocaleTimeString(void 0, timeOpts)}`}
-        </div>
-      </div>
-
-      <div class="drawer-field">
-        <div class="drawer-field-label">End</div>
-        <div class="drawer-field-value">
-          ${event.all_day ? end.toLocaleDateString(void 0, dateOpts) : b`${end.toLocaleDateString(void 0, dateOpts)} at ${end.toLocaleTimeString(void 0, timeOpts)}`}
-        </div>
-      </div>
-
-      ${event.recurrence_rule ? b`
-        <div class="drawer-field">
-          <div class="drawer-field-label">Recurrence</div>
-          <div class="drawer-field-value">
-            <span class="drawer-badge">${event.recurrence_rule}</span>
-          </div>
-        </div>
-      ` : A}
-
-      <div class="drawer-field">
-        <div class="drawer-field-label">Note</div>
-        <div class="drawer-field-value ${event.note ? "" : "muted"}">
-          ${event.note || "No note"}
-        </div>
-      </div>
-
-      ${linkedTasks.length > 0 ? b`
-        <div class="drawer-field">
-          <div class="drawer-field-label">Linked Tasks</div>
-          ${linkedTasks.map(
-      (t2) => b`<div class="drawer-field-value" style="margin-bottom:4px;">
-              ${t2.completed ? b`<s>${t2.title}</s>` : t2.title}
-            </div>`
-    )}
-        </div>
-      ` : A}
-
-      ${event.is_recurring_instance ? b`
-        <div class="drawer-actions" style="flex-wrap:wrap;">
-          <button class="drawer-btn drawer-btn-edit" @click=${() => this._onEditThisOccurrence(event)}>Edit this occurrence</button>
-          <button class="drawer-btn drawer-btn-edit" style="background:var(--secondary-text-color,#727272);" @click=${() => this._onEditAllOccurrences(event)}>Edit all</button>
-          <button class="drawer-btn drawer-btn-delete" @click=${() => this._onDeleteThisOccurrence(event)}>Delete this occurrence</button>
-          <button class="drawer-btn drawer-btn-delete" @click=${() => this._onDeleteAllOccurrences(event)}>Delete all</button>
-        </div>
-      ` : b`
-        <div class="drawer-actions">
-          <button class="drawer-btn drawer-btn-edit" @click=${() => this._onDrawerEditEvent(event)}>Edit</button>
-          <button class="drawer-btn drawer-btn-delete" @click=${() => this._onDrawerDeleteEvent(event)}>Delete</button>
-        </div>
-      `}
-    `;
+  // ── Navigation Event Handlers ──────────────────────────────────
+  _onNavChange(e2) {
+    this._navigate(e2.detail.view);
   }
-  _renderTaskDetail(task) {
-    const list = this._lists.find((l2) => l2.id === task.list_id);
-    const linkedEvent = task.related_event_id ? this._events.find((e2) => e2.id === task.related_event_id) : null;
-    return b`
-      <div class="drawer-header">
-        <h3>Task</h3>
-        <button class="drawer-close-btn" @click=${this._closeDetailDrawer} aria-label="Close">&times;</button>
-      </div>
-
-      <div class="drawer-field">
-        <div class="drawer-field-label">Title</div>
-        <div class="drawer-field-value">${task.completed ? b`<s>${task.title}</s>` : task.title}</div>
-      </div>
-
-      <div class="drawer-field">
-        <div class="drawer-field-label">List</div>
-        <div class="drawer-field-value">${list?.name ?? task.list_id}</div>
-      </div>
-
-      ${task.due ? b`
-        <div class="drawer-field">
-          <div class="drawer-field-label">Due Date</div>
-          <div class="drawer-field-value">
-            ${(/* @__PURE__ */ new Date(task.due + "T00:00:00")).toLocaleDateString(void 0, {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-      year: "numeric"
-    })}
-          </div>
-        </div>
-      ` : A}
-
-      ${task.recurrence_rule ? b`
-        <div class="drawer-field">
-          <div class="drawer-field-label">Recurrence</div>
-          <div class="drawer-field-value">
-            <span class="drawer-badge">${task.recurrence_rule}</span>
-          </div>
-        </div>
-      ` : A}
-
-      <div class="drawer-field">
-        <div class="drawer-field-label">Note</div>
-        <div class="drawer-field-value ${task.note ? "" : "muted"}">
-          ${task.note || "No note"}
-        </div>
-      </div>
-
-      ${linkedEvent ? b`
-        <div class="drawer-field">
-          <div class="drawer-field-label">Linked Event</div>
-          <div class="drawer-field-value">${linkedEvent.title}</div>
-        </div>
-      ` : A}
-
-      <div class="drawer-actions">
-        <button class="drawer-btn drawer-btn-edit" @click=${() => this._onDrawerEditTask(task)}>Open in Tasks</button>
-        <button class="drawer-btn drawer-btn-delete" @click=${() => this._onDrawerDeleteTask(task)}>Delete</button>
-      </div>
-    `;
+  _onToggleCalendar(e2) {
+    this._toggleCalendar(e2.detail.id);
   }
+  _onOpenMore(e2) {
+    const sub = e2.detail.sub;
+    switch (sub) {
+      case "year":
+      case "smart":
+        this._moreSubView = sub;
+        this._navigate("more");
+        break;
+      case "data-center":
+        this._showDataCenter = true;
+        break;
+      case "activity":
+        this._showActivityFeed = true;
+        break;
+      case "deleted":
+        this._showDeletedItems = true;
+        break;
+    }
+  }
+  _onCalendarDateChange(e2) {
+    this._currentDate = e2.detail.date;
+  }
+  _onCalendarSubviewChange(e2) {
+    this._currentDate = e2.detail.date;
+  }
+  _onMoreSubviewChange(e2) {
+    this._moreSubView = e2.detail.subView;
+  }
+  // ── Sidebar Add ─────────────────────────────────────────────────
+  _onSidebarAdd() {
+    this._templatePickerDate = this._currentDate;
+    this._templatePickerTime = "";
+    this._showTemplatePicker = true;
+  }
+  // ── Detail Drawer ───────────────────────────────────────────────
   _openDetailDrawer(item, type) {
     this._detailItem = item;
     this._detailItemType = type;
@@ -13180,249 +15415,52 @@ let CaleePanel = class extends i {
     this._detailItem = null;
     this._detailItemType = null;
   }
-  _onDrawerEditEvent(event) {
+  _onDrawerEdit(e2) {
+    const { item, itemType } = e2.detail;
     this._closeDetailDrawer();
-    this._editEvent = event;
-    this._showEventDialog = true;
-  }
-  async _onDrawerDeleteEvent(event) {
-    try {
-      await this.hass.callWS({
-        type: "calee/delete_event",
-        event_id: event.id
-      });
-      this._events = this._events.filter((ev) => ev.id !== event.id);
-      this._closeDetailDrawer();
-    } catch (err) {
-      console.error("Failed to delete event:", err);
+    if (itemType === "event") {
+      this._editEvent = item;
+      this._showEventDialog = true;
+    } else {
+      window.location.hash = `#/tasks/${item.id}`;
     }
   }
-  _onDrawerEditTask(task) {
-    this._closeDetailDrawer();
-    window.location.hash = `#/tasks/${task.id}`;
-  }
-  async _onDrawerDeleteTask(task) {
+  async _onDrawerDelete(e2) {
+    const { item, itemType } = e2.detail;
     try {
-      await this.hass.callWS({
-        type: "calee/delete_task",
-        task_id: task.id
-      });
-      this._tasks = this._tasks.filter((t2) => t2.id !== task.id);
-      this._closeDetailDrawer();
-    } catch (err) {
-      console.error("Failed to delete task:", err);
-    }
-  }
-  // ── Recurring event actions ────────────────────────────────────────
-  /** Extract the occurrence date from a recurring instance ID like "{parentId}_{YYYY-MM-DD}". */
-  _getOccurrenceDate(event) {
-    const parentId = event.parent_event_id;
-    if (parentId && event.id.startsWith(parentId + "_")) {
-      return event.id.slice(parentId.length + 1);
-    }
-    return event.start.slice(0, 10);
-  }
-  /** Edit this occurrence: create standalone event and add exception to parent. */
-  async _onEditThisOccurrence(event) {
-    const parentId = event.parent_event_id || event.id.split("_").slice(0, -1).join("_");
-    const occDate = this._getOccurrenceDate(event);
-    this._closeDetailDrawer();
-    const standalone = {
-      ...event,
-      id: "",
-      // No ID yet — will be created
-      recurrence_rule: null,
-      exceptions: []
-    };
-    standalone._occurrenceParentId = parentId;
-    standalone._occurrenceDate = occDate;
-    this._editEvent = standalone;
-    this._showEventDialog = true;
-  }
-  /** Edit all occurrences: open the parent event for editing. */
-  _onEditAllOccurrences(event) {
-    const parentId = event.parent_event_id || event.id.split("_").slice(0, -1).join("_");
-    this._closeDetailDrawer();
-    this._loadParentAndEdit(parentId);
-  }
-  async _loadParentAndEdit(parentId) {
-    try {
-      const allEvents = await this.hass.callWS({
-        type: "calee/events"
-      });
-      const parent = allEvents.find((e2) => e2.id === parentId);
-      if (parent) {
-        this._editEvent = parent;
-        this._showEventDialog = true;
+      if (itemType === "event") {
+        await this.hass.callWS({ type: "calee/delete_event", event_id: item.id });
+        this._events = this._events.filter((ev) => ev.id !== item.id);
+      } else {
+        await this.hass.callWS({ type: "calee/delete_task", task_id: item.id });
+        this._tasks = this._tasks.filter((t2) => t2.id !== item.id);
       }
-    } catch {
-      console.error("Failed to load parent event");
-    }
-  }
-  /** Delete this occurrence: add exception to parent without creating replacement. */
-  async _onDeleteThisOccurrence(event) {
-    const parentId = event.parent_event_id || event.id.split("_").slice(0, -1).join("_");
-    const occDate = this._getOccurrenceDate(event);
-    try {
-      await this.hass.callWS({
-        type: "calee/add_event_exception",
-        event_id: parentId,
-        date: occDate
-      });
-      this._events = this._events.filter((ev) => ev.id !== event.id);
-      this._recomputeConflicts();
       this._closeDetailDrawer();
     } catch (err) {
-      console.error("Failed to delete occurrence:", err);
+      console.error("Failed to delete:", err);
     }
   }
-  /** Delete all occurrences: soft-delete the parent event. */
-  async _onDeleteAllOccurrences(event) {
-    const parentId = event.parent_event_id || event.id.split("_").slice(0, -1).join("_");
-    try {
-      await this.hass.callWS({
-        type: "calee/delete_event",
-        event_id: parentId
-      });
-      this._events = this._events.filter(
-        (ev) => ev.id !== parentId && !(ev.parent_event_id === parentId)
-      );
-      this._recomputeConflicts();
-      this._closeDetailDrawer();
-    } catch (err) {
-      console.error("Failed to delete all occurrences:", err);
+  _onDrawerRecurringAction(e2) {
+    const { event, action } = e2.detail;
+    this._closeDetailDrawer();
+    switch (action) {
+      case "edit-this":
+        this._onEditThisOccurrence(event);
+        break;
+      case "edit-all":
+        this._onEditAllOccurrences(event);
+        break;
+      case "delete-this":
+        this._onDeleteThisOccurrence(event);
+        break;
+      case "delete-all":
+        this._onDeleteAllOccurrences(event);
+        break;
     }
-  }
-  // ── View Area ────────────────────────────────────────────────────
-  _renderView() {
-    const selectedDate = /* @__PURE__ */ new Date(this._currentDate + "T00:00:00");
-    const calendarMap = this._calendarMap;
-    const enabledIds = this._enabledIds;
-    switch (this._currentView) {
-      case "month":
-        return b`<calee-month-view
-          .events=${this._events}
-          .calendars=${calendarMap}
-          .enabledCalendarIds=${enabledIds}
-          .selectedDate=${selectedDate}
-          .templates=${this._templates}
-          .tasks=${this._tasks}
-          .conflicts=${this._conflicts}
-          .weekStartsMonday=${this._settingsWeekStart === "monday"}
-          ?narrow=${this.narrow}
-        ></calee-month-view>`;
-      case "week":
-        return b`<calee-week-view
-          .events=${this._events}
-          .calendars=${calendarMap}
-          .enabledCalendarIds=${enabledIds}
-          .selectedDate=${selectedDate}
-          .templates=${this._templates}
-          .tasks=${this._tasks}
-          .weekStartsMonday=${this._settingsWeekStart === "monday"}
-          ?narrow=${this.narrow}
-        ></calee-week-view>`;
-      case "day":
-        return b`<calee-day-view
-          .events=${this._events}
-          .calendars=${calendarMap}
-          .enabledCalendarIds=${enabledIds}
-          .selectedDate=${selectedDate}
-        ></calee-day-view>`;
-      case "year":
-        return b`<calee-year-view
-          .events=${this._events}
-          .calendars=${calendarMap}
-          .enabledCalendarIds=${enabledIds}
-          .selectedDate=${selectedDate}
-          @day-click=${this._onYearDayClick}
-        ></calee-year-view>`;
-      case "agenda":
-        return b`<calee-agenda-view
-          .events=${this._events}
-          .calendars=${calendarMap}
-        ></calee-agenda-view>`;
-      case "tasks":
-        return b`<calee-tasks-view
-          .tasks=${this._standardTasks}
-          .lists=${this._lists.filter((l2) => l2.list_type !== "shopping")}
-          .presets=${this._presets.filter((p2) => p2.list_id !== "shopping")}
-          ?narrow=${this.narrow}
-        ></calee-tasks-view>`;
-      case "shopping": {
-        const shoppingList = this._lists.find((l2) => l2.list_type === "shopping");
-        return b`<calee-shopping-view
-          .tasks=${this._shoppingTasks}
-          .presets=${this._presets.filter((p2) => {
-          return shoppingList ? p2.list_id === shoppingList.id : p2.list_id === "shopping";
-        })}
-          .listId=${shoppingList?.id ?? "shopping"}
-          .currency=${this._settingsCurrency}
-          .budget=${this._settingsBudget}
-          .toastMessage=${this._shoppingToast}
-          @toast-shown=${() => {
-          this._shoppingToast = "";
-        }}
-        ></calee-shopping-view>`;
-      }
-      case "smart":
-        return b`<calee-smart-views
-          .events=${this._events}
-          .tasks=${this._tasks}
-          .lists=${this._lists}
-          .conflicts=${this._conflicts}
-          .calendars=${calendarMap}
-          .currency=${this._settingsCurrency}
-          .budget=${this._settingsBudget}
-          .reminderCalendars=${this._settingsReminderCalendars}
-          .initialTab=${this._smartSubTab}
-          ?narrow=${this.narrow}
-        ></calee-smart-views>`;
-      default:
-        return b`<div class="view-placeholder">
-          <div class="inner">
-            <div class="label">Unknown view</div>
-          </div>
-        </div>`;
-    }
-  }
-  // ── Bottom Nav (mobile) ──────────────────────────────────────────
-  _renderBottomNav() {
-    const views = [
-      { key: "week", label: "Week", icon: "M3 4h18v18H3zM3 10h18M3 16h18M8 2v4M16 2v4" },
-      { key: "month", label: "Month", icon: "M3 4h18v18H3zM3 10h18M9 4v18M15 4v18" },
-      { key: "agenda", label: "Agenda", icon: "M3 4h18v18H3zM3 10h18M8 2v4M16 2v4M8 14h8M8 18h4" },
-      { key: "tasks", label: "Tasks", icon: "M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" },
-      { key: "shopping", label: "Shop", icon: "M9 21a1 1 0 100-2 1 1 0 000 2zM20 21a1 1 0 100-2 1 1 0 000 2zM1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" }
-    ];
-    return b`
-      <nav class="bottom-nav">
-        ${views.map((v2) => b`
-          <button
-            class="bottom-nav-item"
-            ?active=${this._currentView === v2.key}
-            @click=${() => this._navigate(v2.key)}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="${v2.icon}"></path>
-            </svg>
-            ${v2.label}
-          </button>
-        `)}
-      </nav>
-    `;
-  }
-  // ── Sidebar Add ─────────────────────────────────────────────────
-  _onSidebarAdd() {
-    this._templatePickerDate = this._currentDate;
-    this._templatePickerTime = "";
-    this._showTemplatePicker = true;
   }
   // ── View Event Handlers ──────────────────────────────────────────
-  /** Handle event-click from calendar views — open detail drawer (desktop) or edit dialog (mobile). */
   _onEventClick(e2) {
-    const { eventId } = e2.detail;
-    const event = this._events.find((ev) => ev.id === eventId);
+    const event = this._events.find((ev) => ev.id === e2.detail.eventId);
     if (event) {
       if (this.narrow) {
         if (event.is_recurring_instance) {
@@ -13437,7 +15475,6 @@ let CaleePanel = class extends i {
       }
     }
   }
-  /** Handle event-select from agenda view — open detail drawer (desktop) or edit dialog (mobile). */
   _onEventSelect(e2) {
     if (this.narrow) {
       this._editEvent = e2.detail.event;
@@ -13446,26 +15483,19 @@ let CaleePanel = class extends i {
       this._openDetailDrawer(e2.detail.event, "event");
     }
   }
-  /** Handle task-click from tasks view — open detail drawer (desktop) or inline edit (mobile). */
   _onTaskClick(e2) {
     if (!this.narrow) {
       this._openDetailDrawer(e2.detail.task, "task");
     }
   }
-  /** Handle cell-click from calendar views — open the template picker for quick shift creation. */
   _onCellClick(e2) {
-    const { date, time } = e2.detail;
-    this._templatePickerDate = date;
-    this._templatePickerTime = time ?? "";
+    this._templatePickerDate = e2.detail.date;
+    this._templatePickerTime = e2.detail.time ?? "";
     this._showTemplatePicker = true;
   }
-  /** Handle task-complete from tasks/shopping views. */
   async _onTaskComplete(e2) {
     try {
-      await this.hass.callWS({
-        type: "calee/complete_task",
-        task_id: e2.detail.taskId
-      });
+      await this.hass.callWS({ type: "calee/complete_task", task_id: e2.detail.taskId });
       this._tasks = this._tasks.map(
         (t2) => t2.id === e2.detail.taskId ? { ...t2, completed: true } : t2
       );
@@ -13473,13 +15503,9 @@ let CaleePanel = class extends i {
       console.error("Failed to complete task:", err);
     }
   }
-  /** Handle task-uncomplete from shopping view — sets completed=false. */
   async _onTaskUncomplete(e2) {
     try {
-      await this.hass.callWS({
-        type: "calee/uncomplete_task",
-        task_id: e2.detail.taskId
-      });
+      await this.hass.callWS({ type: "calee/uncomplete_task", task_id: e2.detail.taskId });
       this._tasks = this._tasks.map(
         (t2) => t2.id === e2.detail.taskId ? { ...t2, completed: false } : t2
       );
@@ -13487,76 +15513,41 @@ let CaleePanel = class extends i {
       console.error("Failed to uncomplete task:", err);
     }
   }
-  /** Handle task-delete from swipe-to-delete on tasks/shopping views. */
   async _onTaskDelete(e2) {
     try {
-      await this.hass.callWS({
-        type: "calee/delete_task",
-        task_id: e2.detail.taskId
-      });
+      await this.hass.callWS({ type: "calee/delete_task", task_id: e2.detail.taskId });
       this._tasks = this._tasks.filter((t2) => t2.id !== e2.detail.taskId);
     } catch (err) {
       console.error("Failed to delete task:", err);
     }
   }
-  /** Handle task-price-update from shopping view. */
   async _onTaskPriceUpdate(e2) {
     const { taskId, price, version } = e2.detail;
     try {
-      const updated = await this.hass.callWS({
-        type: "calee/update_task",
-        task_id: taskId,
-        version,
-        price
-      });
-      if (updated) {
-        this._tasks = this._tasks.map(
-          (t2) => t2.id === taskId ? updated : t2
-        );
-      }
+      const updated = await this.hass.callWS({ type: "calee/update_task", task_id: taskId, version, price });
+      if (updated) this._tasks = this._tasks.map((t2) => t2.id === taskId ? updated : t2);
     } catch (err) {
       console.error("Failed to update task price:", err);
     }
   }
-  /** Handle task-quantity-update from shopping view. */
   async _onTaskQuantityUpdate(e2) {
     const { taskId, quantity, version } = e2.detail;
     try {
-      const updated = await this.hass.callWS({
-        type: "calee/update_task",
-        task_id: taskId,
-        version,
-        quantity
-      });
-      if (updated) {
-        this._tasks = this._tasks.map(
-          (t2) => t2.id === taskId ? updated : t2
-        );
-      }
+      const updated = await this.hass.callWS({ type: "calee/update_task", task_id: taskId, version, quantity });
+      if (updated) this._tasks = this._tasks.map((t2) => t2.id === taskId ? updated : t2);
     } catch (err) {
       console.error("Failed to update task quantity:", err);
     }
   }
-  /** Handle task-unit-update from shopping view. */
   async _onTaskUnitUpdate(e2) {
     const { taskId, unit, version } = e2.detail;
     try {
-      const updated = await this.hass.callWS({
-        type: "calee/update_task",
-        task_id: taskId,
-        version,
-        unit
-      });
-      if (updated) {
-        this._tasks = this._tasks.map(
-          (t2) => t2.id === taskId ? updated : t2
-        );
-      }
+      const updated = await this.hass.callWS({ type: "calee/update_task", task_id: taskId, version, unit });
+      if (updated) this._tasks = this._tasks.map((t2) => t2.id === taskId ? updated : t2);
     } catch (err) {
       console.error("Failed to update task unit:", err);
     }
   }
-  /** Handle task-quick-add from tasks/shopping views. */
   async _onTaskQuickAdd(e2) {
     const listId = this._currentView === "shopping" ? this._lists.find((l2) => l2.list_type === "shopping")?.id ?? "shopping" : this._lists.find((l2) => l2.list_type === "standard")?.id ?? "inbox";
     const wsMsg = {
@@ -13565,22 +15556,14 @@ let CaleePanel = class extends i {
       title: e2.detail.title,
       category: e2.detail.category ?? ""
     };
-    if (e2.detail.due) {
-      wsMsg.due = e2.detail.due;
-    }
-    if (e2.detail.recurrence_rule) {
-      wsMsg.recurrence_rule = e2.detail.recurrence_rule;
-    }
-    if (e2.detail.note) {
-      wsMsg.note = e2.detail.note;
-    }
+    if (e2.detail.due) wsMsg.due = e2.detail.due;
+    if (e2.detail.recurrence_rule) wsMsg.recurrence_rule = e2.detail.recurrence_rule;
+    if (e2.detail.note) wsMsg.note = e2.detail.note;
     try {
       const newTask = await this.hass.callWS(wsMsg);
       if (newTask) {
         if (newTask.merged) {
-          this._tasks = this._tasks.map(
-            (t2) => t2.id === newTask.id ? newTask : t2
-          );
+          this._tasks = this._tasks.map((t2) => t2.id === newTask.id ? newTask : t2);
           const qty = newTask.quantity ?? 1;
           this._shoppingToast = `${newTask.title} — quantity updated to ${qty % 1 === 0 ? qty.toFixed(0) : qty}`;
         } else {
@@ -13591,34 +15574,22 @@ let CaleePanel = class extends i {
       console.error("Failed to create task:", err);
     }
   }
-  /** Handle task-update from tasks view (inline edit). */
   async _onTaskUpdate(e2) {
     const wsMsg = {
       type: "calee/update_task",
       task_id: e2.detail.taskId,
       version: e2.detail.version
     };
-    if (e2.detail.title !== void 0) {
-      wsMsg.title = e2.detail.title;
-    }
-    if (e2.detail.due !== void 0) {
-      wsMsg.due = e2.detail.due;
-    }
-    if (e2.detail.recurrence_rule !== void 0) {
-      wsMsg.recurrence_rule = e2.detail.recurrence_rule;
-    }
+    if (e2.detail.title !== void 0) wsMsg.title = e2.detail.title;
+    if (e2.detail.due !== void 0) wsMsg.due = e2.detail.due;
+    if (e2.detail.recurrence_rule !== void 0) wsMsg.recurrence_rule = e2.detail.recurrence_rule;
     try {
       const updated = await this.hass.callWS(wsMsg);
-      if (updated) {
-        this._tasks = this._tasks.map(
-          (t2) => t2.id === e2.detail.taskId ? updated : t2
-        );
-      }
+      if (updated) this._tasks = this._tasks.map((t2) => t2.id === e2.detail.taskId ? updated : t2);
     } catch (err) {
       console.error("Failed to update task:", err);
     }
   }
-  /** Handle preset-add from tasks/shopping views. */
   async _onPresetAdd(e2) {
     try {
       const result = await this.hass.callWS({
@@ -13627,9 +15598,7 @@ let CaleePanel = class extends i {
       });
       if (result) {
         if (result.merged) {
-          this._tasks = this._tasks.map(
-            (t2) => t2.id === result.id ? result : t2
-          );
+          this._tasks = this._tasks.map((t2) => t2.id === result.id ? result : t2);
           const qty = result.quantity ?? 1;
           this._shoppingToast = `${result.title} — quantity updated to ${qty % 1 === 0 ? qty.toFixed(0) : qty}`;
         } else {
@@ -13640,7 +15609,6 @@ let CaleePanel = class extends i {
       console.error("Failed to add from preset:", err);
     }
   }
-  /** Handle preset-create from shopping view. */
   async _onPresetCreate(e2) {
     try {
       const result = await this.hass.callWS({
@@ -13650,39 +15618,25 @@ let CaleePanel = class extends i {
         category: e2.detail.category,
         icon: e2.detail.icon
       });
-      if (result) {
-        this._presets = [...this._presets, result];
-      }
+      if (result) this._presets = [...this._presets, result];
     } catch (err) {
       console.error("Failed to create preset:", err);
     }
   }
-  /** Handle preset-delete from shopping view. */
   async _onPresetDelete(e2) {
     try {
-      await this.hass.callWS({
-        type: "calee/delete_preset",
-        preset_id: e2.detail.presetId
-      });
+      await this.hass.callWS({ type: "calee/delete_preset", preset_id: e2.detail.presetId });
       this._presets = this._presets.filter((p2) => p2.id !== e2.detail.presetId);
     } catch (err) {
       console.error("Failed to delete preset:", err);
     }
   }
-  /** Handle quick-add-task from the template picker — create a task with the given date as due date. */
+  // ── Template / Event Dialog Handlers ──────────────────────────
   async _onQuickAddTask(e2) {
-    const { date } = e2.detail;
-    if (!this._tasksLoaded) {
-      await this._loadTasks();
-    }
+    if (!this._tasksLoaded) await this._loadTasks();
     const listId = this._lists.find((l2) => l2.list_type === "standard")?.id ?? "inbox";
     try {
-      const newTask = await this.hass.callWS({
-        type: "calee/create_task",
-        list_id: listId,
-        title: "New task",
-        due: date
-      });
+      const newTask = await this.hass.callWS({ type: "calee/create_task", list_id: listId, title: "New task", due: e2.detail.date });
       if (newTask) {
         this._tasks = [...this._tasks, newTask];
         window.location.hash = `#/tasks/${newTask.id}`;
@@ -13693,74 +15647,51 @@ let CaleePanel = class extends i {
       console.error("Failed to create task:", err);
     }
   }
-  /** Handle quick-add-shopping from the template picker — create a shopping item. */
-  async _onQuickAddShopping(e2) {
-    if (!this._tasksLoaded) {
-      await this._loadTasks();
-    }
+  async _onQuickAddShopping(_e) {
+    if (!this._tasksLoaded) await this._loadTasks();
     const shoppingList = this._lists.find((l2) => l2.list_type === "shopping");
     const listId = shoppingList?.id ?? "shopping";
     try {
-      const newTask = await this.hass.callWS({
-        type: "calee/create_task",
-        list_id: listId,
-        title: "New item"
-      });
-      if (newTask) {
-        this._tasks = [...this._tasks, newTask];
-      }
+      const newTask = await this.hass.callWS({ type: "calee/create_task", list_id: listId, title: "New item" });
+      if (newTask) this._tasks = [...this._tasks, newTask];
       this._navigate("shopping");
     } catch (err) {
       console.error("Failed to create shopping item:", err);
     }
   }
-  /** Handle template-select from the template picker. */
   async _onTemplateSelect(e2) {
-    const { templateId, date } = e2.detail;
     try {
       const newEvent = await this.hass.callWS({
         type: "calee/add_shift_from_template",
-        template_id: templateId,
-        date
+        template_id: e2.detail.templateId,
+        date: e2.detail.date
       });
-      if (newEvent) {
-        this._events = [...this._events, newEvent];
-      }
+      if (newEvent) this._events = [...this._events, newEvent];
     } catch (err) {
       console.error("Failed to add shift from template:", err);
     }
   }
-  /** Handle custom-event from the template picker — open the event dialog for manual entry. */
   _onCustomEvent(e2) {
-    const { date, time } = e2.detail;
     const nonWorkCal = this._rawCalendars.find((c2) => c2.id === "family_shared") ?? this._rawCalendars.find((c2) => c2.id === "personal") ?? this._rawCalendars.find((c2) => c2.id !== "work_shifts") ?? this._rawCalendars[0];
     this._editEvent = null;
-    this._eventDialogDefaults = {
-      date,
-      time,
-      calendar_id: nonWorkCal?.id
-    };
+    this._eventDialogDefaults = { date: e2.detail.date, time: e2.detail.time, calendar_id: nonWorkCal?.id };
     this._showTemplatePicker = false;
     this._showEventDialog = true;
   }
-  /** Handle manage-templates from the template picker — open the template manager. */
   _onManageTemplates() {
     this._showTemplatePicker = false;
     this._showTemplateManager = true;
   }
-  /** Handle template-created or template-deleted from the template manager — refresh templates. */
   async _onTemplateChanged() {
     try {
       this._templates = await this.hass.callWS({ type: "calee/templates" }) ?? [];
     } catch {
     }
   }
-  /** Handle dialog-close from the template manager — return to template picker. */
   _onManagerClose() {
     this._showTemplateManager = false;
     this._showTemplatePicker = true;
   }
-  /** Handle event-save from the event dialog (create or update). */
   async _onEventSave(e2) {
     const detail = e2.detail;
     try {
@@ -13778,9 +15709,7 @@ let CaleePanel = class extends i {
           calendar_id: detail.calendar_id
         });
         if (standalone) {
-          this._events = this._events.filter(
-            (ev) => ev.id !== `${occParentId}_${occDate}`
-          );
+          this._events = this._events.filter((ev) => ev.id !== `${occParentId}_${occDate}`);
           this._events = [...this._events, standalone];
         }
       } else if (detail.id) {
@@ -13794,11 +15723,7 @@ let CaleePanel = class extends i {
           note: detail.note,
           recurrence_rule: detail.recurrence_rule ?? void 0
         });
-        if (updated) {
-          this._events = this._events.map(
-            (ev) => ev.id === detail.id ? updated : ev
-          );
-        }
+        if (updated) this._events = this._events.map((ev) => ev.id === detail.id ? updated : ev);
       } else {
         const created = await this.hass.callWS({
           type: "calee/create_event",
@@ -13810,16 +15735,13 @@ let CaleePanel = class extends i {
           recurrence_rule: detail.recurrence_rule ?? void 0,
           template_id: detail.template_id ?? void 0
         });
-        if (created) {
-          this._events = [...this._events, created];
-        }
+        if (created) this._events = [...this._events, created];
       }
       this._recomputeConflicts();
     } catch (err) {
       console.error("Failed to save event:", err);
     }
   }
-  /** Handle event-delete from the event dialog. */
   async _onEventDelete(e2) {
     const eventId = e2.detail.eventId;
     const event = this._events.find((ev) => ev.id === eventId);
@@ -13829,17 +15751,13 @@ let CaleePanel = class extends i {
       return;
     }
     try {
-      await this.hass.callWS({
-        type: "calee/delete_event",
-        event_id: eventId
-      });
+      await this.hass.callWS({ type: "calee/delete_event", event_id: eventId });
       this._events = this._events.filter((ev) => ev.id !== eventId);
       this._recomputeConflicts();
     } catch (err) {
       console.error("Failed to delete event:", err);
     }
   }
-  /** Handle dialog-close from event dialog, template picker, or template manager. */
   _onDialogClose() {
     this._showEventDialog = false;
     this._showTemplatePicker = false;
@@ -13851,12 +15769,11 @@ let CaleePanel = class extends i {
     this._templatePickerTime = "";
   }
   // ── Year View ────────────────────────────────────────────────────
-  /** Handle day-click from year view — navigate to week view for that date. */
   _onYearDayClick(e2) {
-    this._navigate("week", e2.detail.date);
+    this._currentDate = e2.detail.date;
+    this._navigate("calendar");
   }
   // ── Settings ────────────────────────────────────────────────────
-  /** Load user settings from the backend via WS. */
   async _loadSettings() {
     if (!this.hass) return;
     try {
@@ -13870,9 +15787,6 @@ let CaleePanel = class extends i {
     } catch {
     }
   }
-  _openSettings() {
-    this._showSettings = true;
-  }
   _onSettingsClose() {
     this._showSettings = false;
   }
@@ -13881,16 +15795,10 @@ let CaleePanel = class extends i {
     this._loadSettings();
   }
   // ── Recently Deleted ──────────────────────────────────────────────
-  _openDeletedItems() {
-    this._showDeletedItems = true;
-  }
   _onDeletedItemsClose() {
     this._showDeletedItems = false;
   }
   // ── Activity Feed ─────────────────────────────────────────────────
-  _openActivityFeed() {
-    this._showActivityFeed = true;
-  }
   _onActivityFeedClose() {
     this._showActivityFeed = false;
   }
@@ -13899,11 +15807,7 @@ let CaleePanel = class extends i {
     if (!this.hass) return;
     const today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
     try {
-      await this.hass.callWS({
-        type: "calee/execute_routine",
-        routine_id: routineId,
-        date: today
-      });
+      await this.hass.callWS({ type: "calee/execute_routine", routine_id: routineId, date: today });
       this._refreshAll();
     } catch (err) {
       console.error("Failed to execute routine:", err);
@@ -13922,7 +15826,62 @@ let CaleePanel = class extends i {
   _onRoutineManagerClose() {
     this._showRoutineManager = false;
   }
-  // ── Recurring Action Dialog (mobile) ──────────────────────────────
+  // ── Recurring event actions ────────────────────────────────────────
+  _getOccurrenceDate(event) {
+    const parentId = event.parent_event_id;
+    if (parentId && event.id.startsWith(parentId + "_")) {
+      return event.id.slice(parentId.length + 1);
+    }
+    return event.start.slice(0, 10);
+  }
+  async _onEditThisOccurrence(event) {
+    const parentId = event.parent_event_id || event.id.split("_").slice(0, -1).join("_");
+    const occDate = this._getOccurrenceDate(event);
+    const standalone = { ...event, id: "", recurrence_rule: null, exceptions: [] };
+    standalone._occurrenceParentId = parentId;
+    standalone._occurrenceDate = occDate;
+    this._editEvent = standalone;
+    this._showEventDialog = true;
+  }
+  _onEditAllOccurrences(event) {
+    const parentId = event.parent_event_id || event.id.split("_").slice(0, -1).join("_");
+    this._loadParentAndEdit(parentId);
+  }
+  async _loadParentAndEdit(parentId) {
+    try {
+      const allEvents = await this.hass.callWS({ type: "calee/events" });
+      const parent = allEvents.find((e2) => e2.id === parentId);
+      if (parent) {
+        this._editEvent = parent;
+        this._showEventDialog = true;
+      }
+    } catch {
+      console.error("Failed to load parent event");
+    }
+  }
+  async _onDeleteThisOccurrence(event) {
+    const parentId = event.parent_event_id || event.id.split("_").slice(0, -1).join("_");
+    const occDate = this._getOccurrenceDate(event);
+    try {
+      await this.hass.callWS({ type: "calee/add_event_exception", event_id: parentId, date: occDate });
+      this._events = this._events.filter((ev) => ev.id !== event.id);
+      this._recomputeConflicts();
+    } catch (err) {
+      console.error("Failed to delete occurrence:", err);
+    }
+  }
+  async _onDeleteAllOccurrences(event) {
+    const parentId = event.parent_event_id || event.id.split("_").slice(0, -1).join("_");
+    try {
+      await this.hass.callWS({ type: "calee/delete_event", event_id: parentId });
+      this._events = this._events.filter(
+        (ev) => ev.id !== parentId && !(ev.parent_event_id === parentId)
+      );
+      this._recomputeConflicts();
+    } catch (err) {
+      console.error("Failed to delete all occurrences:", err);
+    }
+  }
   _renderRecurringActionDialog() {
     const event = this._recurringActionEvent;
     if (!event) return A;
@@ -14003,9 +15962,7 @@ let CaleePanel = class extends i {
             <label>
               Calendar
               <select name="calendar_id">
-                ${this._calendars.map(
-      (c2) => b`<option value=${c2.id}>${c2.name}</option>`
-    )}
+                ${this._calendars.map((c2) => b`<option value=${c2.id}>${c2.name}</option>`)}
               </select>
             </label>
             <div class="row">
@@ -14053,9 +16010,7 @@ let CaleePanel = class extends i {
         end: new Date(end).toISOString(),
         note: note || ""
       });
-      if (created) {
-        this._events = [...this._events, created];
-      }
+      if (created) this._events = [...this._events, created];
       this._showAddDialog = false;
     } catch (err) {
       console.error("Failed to create event:", err);
@@ -14063,8 +16018,6 @@ let CaleePanel = class extends i {
   }
 };
 CaleePanel.styles = i$3`
-    /* ── Host ───────────────────────────────────────────────── */
-
     :host {
       display: flex;
       flex-direction: column;
@@ -14075,10 +16028,7 @@ CaleePanel.styles = i$3`
       font-size: 14px;
       font-weight: 400;
       line-height: 1.5;
-      --sidebar-width: 260px;
     }
-
-    /* ── Header — compact 44px bar with tabs ────────────────── */
 
     .header {
       display: flex;
@@ -14093,40 +16043,6 @@ CaleePanel.styles = i$3`
       z-index: 4;
     }
 
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      min-width: 0;
-      flex-shrink: 0;
-    }
-
-    .hamburger {
-      display: none;
-      background: none;
-      border: none;
-      color: var(--secondary-text-color, #727272);
-      cursor: pointer;
-      padding: 6px;
-      border-radius: 6px;
-      font-size: 18px;
-      line-height: 1;
-      transition: background 0.15s, color 0.15s;
-      min-width: 32px;
-      min-height: 32px;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .hamburger:hover {
-      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
-      color: var(--primary-text-color, #212121);
-    }
-
-    :host([narrow]) .hamburger {
-      display: flex;
-    }
-
     .title {
       font-size: 15px;
       font-weight: 600;
@@ -14135,129 +16051,7 @@ CaleePanel.styles = i$3`
       letter-spacing: 0.2px;
     }
 
-    /* ── View tabs — inline in header ──────────────────────── */
-
-    .header-tabs {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      margin-left: 12px;
-    }
-
-    .view-tab {
-      background: none;
-      border: none;
-      color: var(--secondary-text-color, #727272);
-      cursor: pointer;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 500;
-      text-transform: capitalize;
-      letter-spacing: 0.1px;
-      transition: color 0.15s, background 0.15s;
-      white-space: nowrap;
-      line-height: 1;
-    }
-
-    .view-tab:hover {
-      color: var(--primary-text-color, #212121);
-      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
-    }
-
-    .view-tab[active] {
-      color: var(--primary-text-color, #212121);
-      background: var(--secondary-background-color, rgba(0, 0, 0, 0.06));
-      font-weight: 600;
-    }
-
-    /* ── Settings cog ──────────────────────────────────────── */
-
-    .settings-cog {
-      background: none;
-      border: none;
-      color: var(--secondary-text-color, #727272);
-      cursor: pointer;
-      padding: 6px;
-      border-radius: 6px;
-      transition: background 0.15s, color 0.15s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      margin-left: 4px;
-    }
-
-    .settings-cog:hover {
-      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
-      color: var(--primary-text-color, #212121);
-    }
-
-    .settings-cog svg {
-      width: 18px;
-      height: 18px;
-    }
-
-    /* ── Date nav — right side of header ───────────────────── */
-
-    .header-date-nav {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      margin-left: auto;
-      flex-shrink: 0;
-    }
-
-    .date-nav-btn {
-      background: none;
-      border: none;
-      color: var(--secondary-text-color, #727272);
-      cursor: pointer;
-      padding: 4px 6px;
-      border-radius: 6px;
-      font-size: 16px;
-      line-height: 1;
-      transition: background 0.15s, color 0.15s;
-      min-width: 28px;
-      min-height: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .date-nav-btn:hover {
-      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
-      color: var(--primary-text-color, #212121);
-    }
-
-    .today-btn {
-      background: transparent;
-      border: 1px solid var(--divider-color, #e0e0e0);
-      color: var(--primary-text-color, #212121);
-      cursor: pointer;
-      padding: 3px 10px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 500;
-      transition: background 0.15s, border-color 0.15s;
-      line-height: 1;
-    }
-
-    .today-btn:hover {
-      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
-      border-color: var(--secondary-text-color, #727272);
-    }
-
-    .date-label {
-      font-size: 13px;
-      font-weight: 500;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      color: var(--primary-text-color, #212121);
-    }
-
-    /* ── Body (sidebar + main) ──────────────────────────────── */
+    .spacer { flex: 1; }
 
     .body {
       display: flex;
@@ -14266,410 +16060,12 @@ CaleePanel.styles = i$3`
       position: relative;
     }
 
-    /* ── Sidebar — clean clean ──────────────────────── */
-
-    .sidebar {
-      width: var(--sidebar-width);
-      min-width: var(--sidebar-width);
-      background: var(--sidebar-background-color, var(--card-background-color, #fff));
-      border-right: 1px solid var(--divider-color, #e0e0e0);
-      overflow-y: auto;
-      padding: 8px 0;
-      z-index: 3;
-      transition: width 0.2s ease, min-width 0.2s ease, transform 0.25s ease;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-    }
-
-    .sidebar.collapsed {
-      width: 48px;
-      min-width: 48px;
-      overflow-x: hidden;
-      overflow-y: auto;
-    }
-
-    .sidebar.collapsed .sidebar-add-btn,
-    .sidebar.collapsed .nav-item span,
-    .sidebar.collapsed .nav-item-muted span,
-    .sidebar.collapsed .section-label,
-    .sidebar.collapsed .cal-toggle-name,
-    .sidebar.collapsed .sidebar-upcoming,
-    .sidebar.collapsed .sidebar-cards {
-      display: none;
-    }
-
-    .sidebar.collapsed .nav-item,
-    .sidebar.collapsed .nav-item-muted {
-      justify-content: center;
-      padding: 8px 0;
-    }
-
-    .sidebar-collapse-btn {
-      position: absolute;
-      top: 8px;
-      right: -12px;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      border: 1px solid var(--divider-color, #e0e0e0);
-      background: var(--card-background-color, #fff);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      color: var(--secondary-text-color, #666);
-      z-index: 5;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      transition: background 0.15s;
-    }
-
-    .sidebar-collapse-btn:hover {
-      background: var(--primary-background-color, #f5f5f5);
-    }
-
-    :host([narrow]) .sidebar-collapse-btn {
-      display: none;
-    }
-
-    :host([narrow]) .sidebar {
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      transform: translateX(-100%);
-      box-shadow: none;
-    }
-
-    :host([narrow]) .sidebar.open {
-      transform: translateX(0);
-      box-shadow: 2px 0 12px rgba(0, 0, 0, 0.12);
-    }
-
-    .sidebar-backdrop {
-      display: none;
-    }
-
-    :host([narrow]) .sidebar-backdrop {
-      display: none;
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.3);
-      z-index: 2;
-    }
-
-    :host([narrow]) .sidebar-backdrop.visible {
-      display: block;
-    }
-
-    /* ── Sidebar: Add button (clean) ────────────────── */
-
-    .sidebar-add-btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      margin: 4px 12px 8px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      border-radius: 6px;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--primary-color, #03a9f4);
-      transition: background 0.15s;
-      font-family: inherit;
-      line-height: 1;
-    }
-
-    .sidebar-add-btn:hover {
-      background: color-mix(in srgb, var(--primary-color, #03a9f4) 8%, transparent);
-    }
-
-    .sidebar-add-btn svg {
-      width: 18px;
-      height: 18px;
-      flex-shrink: 0;
-    }
-
-    /* ── Sidebar: Navigation items ──────────────────────────── */
-
-    .sidebar-nav {
-      padding: 0 8px;
-      margin-bottom: 4px;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 7px 12px;
-      cursor: pointer;
-      border-radius: 6px;
-      font-size: 14px;
-      font-weight: 400;
-      color: var(--primary-text-color, #212121);
-      transition: background 0.15s;
-      border: none;
-      background: none;
-      width: 100%;
-      text-align: left;
-      font-family: inherit;
-      line-height: 1.3;
-    }
-
-    .nav-item:hover {
-      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
-    }
-
-    .nav-item[active] {
-      background: color-mix(in srgb, var(--primary-color, #03a9f4) 10%, transparent);
-      color: var(--primary-color, #03a9f4);
-      font-weight: 500;
-    }
-
-    .nav-item svg {
-      width: 20px;
-      height: 20px;
-      flex-shrink: 0;
-      color: var(--secondary-text-color, #727272);
-    }
-
-    .nav-item[active] svg {
-      color: var(--primary-color, #03a9f4);
-    }
-
-    .nav-item-muted {
-      font-size: 13px;
-      color: var(--secondary-text-color, #727272);
-    }
-
-    .nav-item-muted svg {
-      width: 18px;
-      height: 18px;
-    }
-
-    /* Calendar icon with date number */
-    .nav-calendar-icon {
-      width: 20px;
-      height: 20px;
-      flex-shrink: 0;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .nav-calendar-icon svg {
-      width: 20px;
-      height: 20px;
-    }
-
-    .nav-calendar-icon .date-num {
-      position: absolute;
-      bottom: 1px;
-      left: 0;
-      right: 0;
-      font-size: 8px;
-      font-weight: 700;
-      text-align: center;
-      line-height: 1;
-      color: var(--secondary-text-color, #727272);
-    }
-
-    .nav-item[active] .nav-calendar-icon .date-num {
-      color: var(--primary-color, #03a9f4);
-    }
-
-    /* ── Sidebar: Section headers ──────────────────────────── */
-
-    .sidebar-section {
-      padding: 0 8px;
-      margin-bottom: 4px;
-    }
-
-    .sidebar-heading {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      color: var(--secondary-text-color, #727272);
-      padding: 16px 12px 6px;
-      margin: 0;
-    }
-
-    /* ── Sidebar: Calendar toggles ─────────────────────────── */
-
-    .calendar-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 6px 12px;
-      cursor: pointer;
-      border-radius: 6px;
-      transition: background 0.15s;
-      font-size: 14px;
-    }
-
-    .calendar-item:hover {
-      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
-    }
-
-    .calendar-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--cal-color, #64b5f6);
-      flex-shrink: 0;
-      transition: opacity 0.15s;
-    }
-
-    .calendar-dot.hidden {
-      opacity: 0.25;
-    }
-
-    .calendar-name {
-      font-size: 14px;
-      font-weight: 400;
-      color: var(--primary-text-color, #212121);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    /* ── Sidebar: List items ───────────────────────────────── */
-
-    .list-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 6px 12px;
-      cursor: pointer;
-      border-radius: 6px;
-      text-decoration: none;
-      color: var(--primary-text-color, #212121);
-      font-size: 14px;
-      font-weight: 400;
-      transition: background 0.15s;
-    }
-
-    .list-item:hover {
-      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
-    }
-
-    .list-item[active] {
-      background: color-mix(in srgb, var(--primary-color, #03a9f4) 10%, transparent);
-      color: var(--primary-color, #03a9f4);
-      font-weight: 500;
-    }
-
-    .list-item svg {
-      width: 18px;
-      height: 18px;
-      flex-shrink: 0;
-      color: var(--secondary-text-color, #727272);
-    }
-
-    .list-item[active] svg {
-      color: var(--primary-color, #03a9f4);
-    }
-
-    /* ── Sidebar: Shift cards ──────────────────────────────── */
-
-    .sidebar-cards {
-      padding: 4px 8px 0;
-      margin-top: auto;
-    }
-
-    /* ── Sidebar: Upcoming events ─────────────────────────── */
-
-    .sidebar-upcoming {
-      padding: 4px 8px 8px;
-    }
-
-    .sidebar-upcoming .section-label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      color: var(--secondary-text-color, #727272);
-      padding: 8px 8px 6px;
-    }
-
-    .upcoming-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 5px 8px;
-      border-radius: 6px;
-      font-size: 13px;
-    }
-
-    .upcoming-item .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .upcoming-item .upcoming-title {
-      flex: 1;
-      min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      color: var(--primary-text-color, #212121);
-      font-weight: 400;
-    }
-
-    .upcoming-item .upcoming-time {
-      font-size: 11px;
-      color: var(--secondary-text-color, #757575);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    /* ── Main View ──────────────────────────────────────────── */
-
     .main {
       flex: 1;
       overflow: hidden;
       position: relative;
       background: var(--card-background-color, #fff);
     }
-
-    .view-placeholder {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      font-size: 14px;
-      color: var(--secondary-text-color, #727272);
-      text-align: center;
-      padding: 32px;
-    }
-
-    .view-placeholder .inner {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .view-placeholder .label {
-      font-size: 18px;
-      font-weight: 500;
-      color: var(--primary-text-color, #212121);
-    }
-
-    .view-placeholder .sub {
-      font-size: 13px;
-      color: var(--secondary-text-color, #727272);
-      font-weight: 400;
-    }
-
-    /* ── Loading ─────────────────────────────────────────────── */
 
     .loading {
       display: flex;
@@ -14681,107 +16077,15 @@ CaleePanel.styles = i$3`
       font-weight: 400;
     }
 
-    /* ── Mobile bottom nav bar ──────────────────────────────── */
-
-    .bottom-nav {
+    :host([narrow]) calee-left-rail {
       display: none;
     }
 
-    :host([narrow]) .bottom-nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      height: 52px;
-      min-height: 52px;
-      background: var(--card-background-color, #fff);
-      border-top: 1px solid var(--divider-color, #e0e0e0);
-      z-index: 4;
-      padding: 0 4px;
-      padding-bottom: env(safe-area-inset-bottom, 0);
-    }
-
-    .bottom-nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2px;
-      padding: 4px 8px;
-      min-width: 44px;
-      min-height: 44px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--secondary-text-color, #727272);
-      font-size: 10px;
-      font-weight: 500;
-      font-family: inherit;
-      transition: color 0.15s;
-      border-radius: 8px;
-    }
-
-    .bottom-nav-item[active] {
-      color: var(--primary-color, #03a9f4);
-    }
-
-    .bottom-nav-item svg {
-      width: 22px;
-      height: 22px;
-    }
-
-    /* ── Narrow / responsive overrides ──────────────────────── */
-
-    :host([narrow]) .header-tabs {
+    :host(:not([narrow])) calee-bottom-nav {
       display: none;
     }
 
-    :host([narrow]) .header {
-      padding: 0 8px;
-      gap: 2px;
-    }
-
-    :host([narrow]) .date-label {
-      font-size: 11px;
-      max-width: 110px;
-    }
-
-    :host([narrow]) .title {
-      font-size: 14px;
-    }
-
-    :host([narrow]) .today-btn {
-      padding: 2px 8px;
-      font-size: 11px;
-    }
-
-    :host([narrow]) .date-nav-btn {
-      min-width: 24px;
-      min-height: 24px;
-      padding: 2px 4px;
-      font-size: 14px;
-    }
-
-    :host([narrow]) .settings-cog {
-      padding: 4px;
-    }
-
-    :host([narrow]) .settings-cog svg {
-      width: 16px;
-      height: 16px;
-    }
-
-    :host([narrow]) .header-date-nav {
-      gap: 2px;
-    }
-
-    @media (max-width: 480px) {
-      .header-date-nav .date-label {
-        max-width: 100px;
-      }
-    }
-
-    /* ── Dialog — lighter, softer ────────────────────────────── */
-
+    /* Dialog styles */
     .dialog-backdrop {
       position: fixed;
       inset: 0;
@@ -14840,20 +16144,12 @@ CaleePanel.styles = i$3`
       background: var(--card-background-color, #fff);
     }
 
-    .dialog-card input::placeholder,
-    .dialog-card textarea::placeholder {
-      color: var(--secondary-text-color, #727272);
-      opacity: 0.6;
-    }
-
     .dialog-card .row {
       display: flex;
       gap: 12px;
     }
 
-    .dialog-card .flex {
-      flex: 1;
-    }
+    .dialog-card .flex { flex: 1; }
 
     .dialog-actions {
       display: flex;
@@ -14890,292 +16186,7 @@ CaleePanel.styles = i$3`
       transition: opacity 0.15s;
     }
 
-    .btn-save:hover {
-      opacity: 0.9;
-    }
-
-    /* ── Detail Drawer (desktop right panel) ──────────────── */
-
-    .detail-drawer {
-      width: 360px;
-      min-width: 360px;
-      background: var(--card-background-color, #fff);
-      border-left: 1px solid var(--divider-color, #e0e0e0);
-      overflow-y: auto;
-      padding: 20px;
-      transition: width 0.2s ease, min-width 0.2s ease;
-      z-index: 3;
-    }
-
-    .detail-drawer.closed {
-      width: 0;
-      min-width: 0;
-      padding: 0;
-      overflow: hidden;
-      border-left-width: 0;
-    }
-
-    :host([narrow]) .detail-drawer {
-      display: none;
-    }
-
-    .drawer-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-
-    .drawer-header h3 {
-      margin: 0;
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--primary-text-color, #212121);
-    }
-
-    .drawer-close-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 4px 6px;
-      border-radius: 6px;
-      font-size: 18px;
-      line-height: 1;
-      color: var(--secondary-text-color, #757575);
-      transition: background 0.15s, color 0.15s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .drawer-close-btn:hover {
-      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
-      color: var(--primary-text-color, #212121);
-    }
-
-    .drawer-field {
-      margin-bottom: 14px;
-    }
-
-    .drawer-field-label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-      color: var(--secondary-text-color, #757575);
-      margin-bottom: 4px;
-    }
-
-    .drawer-field-value {
-      font-size: 14px;
-      color: var(--primary-text-color, #212121);
-      line-height: 1.4;
-    }
-
-    .drawer-field-value.muted {
-      color: var(--secondary-text-color, #757575);
-      font-style: italic;
-    }
-
-    .drawer-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid var(--divider-color, #e0e0e0);
-    }
-
-    .drawer-btn {
-      font-size: 13px;
-      font-weight: 500;
-      padding: 6px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      border: none;
-      transition: background 0.15s, color 0.15s;
-      font-family: inherit;
-    }
-
-    .drawer-btn-edit {
-      background: var(--primary-color, #03a9f4);
-      color: #fff;
-    }
-    .drawer-btn-edit:hover {
-      filter: brightness(1.1);
-    }
-
-    .drawer-btn-delete {
-      background: transparent;
-      color: var(--error-color, #f44336);
-      border: 1px solid var(--error-color, #f44336);
-    }
-    .drawer-btn-delete:hover {
-      background: color-mix(in srgb, var(--error-color, #f44336) 10%, transparent);
-    }
-
-    .drawer-edit-input {
-      width: 100%;
-      font-size: 14px;
-      padding: 6px 10px;
-      border: 1px solid var(--divider-color, #e0e0e0);
-      border-radius: 6px;
-      background: var(--card-background-color, #fff);
-      color: var(--primary-text-color, #212121);
-      outline: none;
-      box-sizing: border-box;
-      font-family: inherit;
-      transition: border-color 0.15s;
-    }
-    .drawer-edit-input:focus {
-      border-color: var(--primary-color, #03a9f4);
-    }
-
-    .drawer-edit-textarea {
-      width: 100%;
-      font-size: 14px;
-      padding: 6px 10px;
-      border: 1px solid var(--divider-color, #e0e0e0);
-      border-radius: 6px;
-      background: var(--card-background-color, #fff);
-      color: var(--primary-text-color, #212121);
-      outline: none;
-      box-sizing: border-box;
-      font-family: inherit;
-      resize: vertical;
-      min-height: 60px;
-      transition: border-color 0.15s;
-    }
-    .drawer-edit-textarea:focus {
-      border-color: var(--primary-color, #03a9f4);
-    }
-
-    .drawer-badge {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 500;
-      padding: 2px 8px;
-      border-radius: 4px;
-      background: var(--secondary-background-color, #f0f0f0);
-      color: var(--secondary-text-color, #757575);
-    }
-
-    /* ── Tablet summary strip ──────────────────────────────── */
-
-    .tablet-summary {
-      display: none;
-    }
-
-    /* ── Tablet landscape (768px - 1024px) ─────────────────── */
-
-    @media (min-width: 768px) and (max-width: 1024px) {
-      :host {
-        --sidebar-width: 200px;
-      }
-
-      .detail-drawer {
-        width: 300px;
-        min-width: 300px;
-      }
-
-      .tablet-summary {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        padding: 4px 16px;
-        height: 32px;
-        min-height: 32px;
-        background: var(--secondary-background-color, rgba(0, 0, 0, 0.03));
-        border-bottom: 1px solid var(--divider-color, #e0e0e0);
-        font-size: 12px;
-        color: var(--secondary-text-color, #666);
-        flex-shrink: 0;
-        overflow-x: auto;
-        white-space: nowrap;
-      }
-
-      .tablet-summary[hidden] {
-        display: none;
-      }
-
-      .summary-date {
-        font-weight: 600;
-        color: var(--primary-text-color, #212121);
-      }
-
-      .summary-shift,
-      .summary-budget {
-        font-weight: 400;
-      }
-    }
-
-    /* ── Tablet portrait (600px - 768px) ───────────────────── */
-
-    @media (min-width: 600px) and (max-width: 767px) {
-      .sidebar {
-        width: 48px;
-        min-width: 48px;
-      }
-
-      .sidebar .nav-item span,
-      .sidebar .nav-item-muted span,
-      .sidebar .section-label,
-      .sidebar .cal-toggle-name,
-      .sidebar .calendar-name,
-      .sidebar .sidebar-upcoming,
-      .sidebar .sidebar-cards,
-      .sidebar .sidebar-add-btn,
-      .sidebar .sidebar-heading {
-        display: none;
-      }
-
-      .sidebar .nav-item,
-      .sidebar .nav-item-muted {
-        justify-content: center;
-        padding: 8px 0;
-      }
-
-      .sidebar .calendar-item {
-        justify-content: center;
-        padding: 6px 0;
-      }
-
-      .sidebar .sidebar-collapse-btn {
-        display: none;
-      }
-
-      .detail-drawer {
-        display: none;
-      }
-
-      .tablet-summary {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 4px 12px;
-        height: 32px;
-        min-height: 32px;
-        background: var(--secondary-background-color, rgba(0, 0, 0, 0.03));
-        border-bottom: 1px solid var(--divider-color, #e0e0e0);
-        font-size: 11px;
-        color: var(--secondary-text-color, #666);
-        flex-shrink: 0;
-        overflow-x: auto;
-        white-space: nowrap;
-      }
-
-      .tablet-summary[hidden] {
-        display: none;
-      }
-
-      .summary-date {
-        font-weight: 600;
-        color: var(--primary-text-color, #212121);
-      }
-
-      .summary-shift,
-      .summary-budget {
-        font-weight: 400;
-      }
-    }
+    .btn-save:hover { opacity: 0.9; }
   `;
 __decorateClass([
   n2({ attribute: false })
@@ -15194,12 +16205,6 @@ __decorateClass([
 ], CaleePanel.prototype, "_currentDate", 2);
 __decorateClass([
   r()
-], CaleePanel.prototype, "_drawerOpen", 2);
-__decorateClass([
-  r()
-], CaleePanel.prototype, "_sidebarCollapsed", 2);
-__decorateClass([
-  r()
 ], CaleePanel.prototype, "_calendars", 2);
 __decorateClass([
   r()
@@ -15207,9 +16212,6 @@ __decorateClass([
 __decorateClass([
   r()
 ], CaleePanel.prototype, "_loading", 2);
-__decorateClass([
-  r()
-], CaleePanel.prototype, "_showAddDialog", 2);
 __decorateClass([
   r()
 ], CaleePanel.prototype, "_events", 2);
@@ -15242,6 +16244,12 @@ __decorateClass([
 ], CaleePanel.prototype, "_settingsBudget", 2);
 __decorateClass([
   r()
+], CaleePanel.prototype, "_settingsReminderCalendars", 2);
+__decorateClass([
+  r()
+], CaleePanel.prototype, "_settingsStrictPrivacy", 2);
+__decorateClass([
+  r()
 ], CaleePanel.prototype, "_detailDrawerOpen", 2);
 __decorateClass([
   r()
@@ -15249,18 +16257,6 @@ __decorateClass([
 __decorateClass([
   r()
 ], CaleePanel.prototype, "_detailItemType", 2);
-__decorateClass([
-  r()
-], CaleePanel.prototype, "_showRecurringActionDialog", 2);
-__decorateClass([
-  r()
-], CaleePanel.prototype, "_recurringActionEvent", 2);
-__decorateClass([
-  r()
-], CaleePanel.prototype, "_showCalendarManager", 2);
-__decorateClass([
-  r()
-], CaleePanel.prototype, "_conflicts", 2);
 __decorateClass([
   r()
 ], CaleePanel.prototype, "_editEvent", 2);
@@ -15296,19 +16292,31 @@ __decorateClass([
 ], CaleePanel.prototype, "_showRoutineManager", 2);
 __decorateClass([
   r()
+], CaleePanel.prototype, "_showCalendarManager", 2);
+__decorateClass([
+  r()
 ], CaleePanel.prototype, "_showDataCenter", 2);
+__decorateClass([
+  r()
+], CaleePanel.prototype, "_showAddDialog", 2);
+__decorateClass([
+  r()
+], CaleePanel.prototype, "_showRecurringActionDialog", 2);
+__decorateClass([
+  r()
+], CaleePanel.prototype, "_recurringActionEvent", 2);
 __decorateClass([
   r()
 ], CaleePanel.prototype, "_smartSubTab", 2);
 __decorateClass([
   r()
-], CaleePanel.prototype, "_settingsReminderCalendars", 2);
-__decorateClass([
-  r()
-], CaleePanel.prototype, "_settingsStrictPrivacy", 2);
+], CaleePanel.prototype, "_conflicts", 2);
 __decorateClass([
   r()
 ], CaleePanel.prototype, "_shoppingToast", 2);
+__decorateClass([
+  r()
+], CaleePanel.prototype, "_moreSubView", 2);
 CaleePanel = __decorateClass([
   t("calee-panel")
 ], CaleePanel);
