@@ -244,11 +244,12 @@ export class CaleePanel extends LitElement {
   // ── Hash Routing ─────────────────────────────────────────────────
 
   private _applyHash(): void {
+    const originalHash = window.location.hash;
     const { view, date } = parseHash();
     this._currentView = view;
     this._currentDate = date;
-    if (!window.location.hash) {
-      window.location.hash = buildHash("home");
+    if (!originalHash || originalHash !== buildHash(this._currentView)) {
+      window.location.hash = buildHash(this._currentView, this._currentDate);
     }
   }
 
@@ -257,6 +258,9 @@ export class CaleePanel extends LitElement {
   }
 
   private _navigate(view: ViewType): void {
+    if (view === "home") {
+      this._currentDate = todayISO();
+    }
     this._currentView = view;
     window.location.hash = buildHash(view);
   }
@@ -373,9 +377,9 @@ export class CaleePanel extends LitElement {
     }
     if (this._currentView === "home") {
       // Home shows 3 days + upcoming shifts
-      const start = new Date();
+      const start = new Date(d);
       start.setDate(start.getDate() - 1);
-      const end = new Date();
+      const end = new Date(d);
       end.setDate(end.getDate() + 30);
       return {
         start: start.toISOString().slice(0, 10),
@@ -383,9 +387,9 @@ export class CaleePanel extends LitElement {
       };
     }
     // Default broad range for tasks / shopping / more
-    const start = new Date();
+    const start = new Date(d);
     start.setDate(start.getDate() - 30);
-    const end = new Date();
+    const end = new Date(d);
     end.setDate(end.getDate() + 90);
     return {
       start: start.toISOString().slice(0, 10),
@@ -975,13 +979,10 @@ export class CaleePanel extends LitElement {
 
   private _onCalendarDateChange(e: CustomEvent<{ date: string; subView: CalendarSubView }>): void {
     this._currentDate = e.detail.date;
-    // Reload events for the new date range
-    this._loadEvents();
   }
 
   private _onCalendarSubviewChange(e: CustomEvent<{ subView: CalendarSubView; date: string }>): void {
     this._currentDate = e.detail.date;
-    this._loadEvents();
   }
 
   private _onMoreSubviewChange(e: CustomEvent<{ subView: MoreSubView }>): void {

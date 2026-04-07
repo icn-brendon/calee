@@ -685,7 +685,7 @@ export class CaleeHomePage extends LitElement {
   private _dispatchPresetAdd(preset: TaskPreset): void {
     this.dispatchEvent(
       new CustomEvent("preset-add", {
-        detail: { preset },
+        detail: { presetId: preset.id },
         bubbles: true,
         composed: true,
       }),
@@ -721,7 +721,9 @@ export class CaleeHomePage extends LitElement {
           </div>
 
           <div class="hero-side">
-            <div class="summary-card" clickable @click=${() => nextShift && this._dispatchEventSelect(nextShift)}>
+            <div class="summary-card" clickable role="button" tabindex="0"
+              @click=${() => nextShift && this._dispatchEventSelect(nextShift)}
+              @keydown=${(e: KeyboardEvent) => { if ((e.key === "Enter" || e.key === " ") && nextShift) { e.preventDefault(); this._dispatchEventSelect(nextShift); } }}>
               <div class="summary-label">Next Shift</div>
               <div class="summary-value">${nextShiftText}</div>
               <div class="summary-sub">${nextShiftDate}</div>

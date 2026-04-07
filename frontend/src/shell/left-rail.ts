@@ -298,9 +298,13 @@ export class CaleeLeftRail extends LitElement {
 
       <!-- Calendar toggles -->
       <div class="section">
-        <div class="section-heading" @click=${() => { this._calendarsOpen = !this._calendarsOpen; }}>
+        <div class="section-heading" role="button" tabindex="0"
+          @click=${() => { this._calendarsOpen = !this._calendarsOpen; }}
+          @keydown=${(e: KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); this._calendarsOpen = !this._calendarsOpen; } }}>
           Calendars
-          <span class="manage-link" @click=${(e: Event) => { e.stopPropagation(); this._openCalendarManager(); }}>Manage</span>
+          <span class="manage-link" role="button" tabindex="0"
+            @click=${(e: Event) => { e.stopPropagation(); this._openCalendarManager(); }}
+            @keydown=${(e: KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); this._openCalendarManager(); } }}>Manage</span>
         </div>
         ${this._calendarsOpen ? this.calendars.map(
           (cal) => html`
@@ -314,9 +318,13 @@ export class CaleeLeftRail extends LitElement {
 
       <!-- Routines -->
       <div class="section">
-        <div class="section-heading" @click=${() => { this._routinesOpen = !this._routinesOpen; }}>
+        <div class="section-heading" role="button" tabindex="0"
+          @click=${() => { this._routinesOpen = !this._routinesOpen; }}
+          @keydown=${(e: KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); this._routinesOpen = !this._routinesOpen; } }}>
           Routines
-          <span class="manage-link" @click=${(e: Event) => { e.stopPropagation(); this._openRoutineManager(); }}>Manage</span>
+          <span class="manage-link" role="button" tabindex="0"
+            @click=${(e: Event) => { e.stopPropagation(); this._openRoutineManager(); }}
+            @keydown=${(e: KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); this._openRoutineManager(); } }}>Manage</span>
         </div>
         ${this._routinesOpen ? this.routines.map(
           (r) => html`
@@ -332,7 +340,9 @@ export class CaleeLeftRail extends LitElement {
 
       <!-- More section -->
       <div class="section">
-        <div class="section-heading" @click=${() => { this._moreOpen = !this._moreOpen; }}>
+        <div class="section-heading" role="button" tabindex="0"
+          @click=${() => { this._moreOpen = !this._moreOpen; }}
+          @keydown=${(e: KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); this._moreOpen = !this._moreOpen; } }}>
           More
         </div>
         ${this._moreOpen ? html`

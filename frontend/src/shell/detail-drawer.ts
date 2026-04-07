@@ -253,7 +253,7 @@ export class CaleeDetailDrawer extends LitElement {
     return html`
       <div class="drawer-header">
         <h3>Event</h3>
-        <button class="close-btn" @click=${this._close}>&times;</button>
+        <button class="close-btn" aria-label="Close details" @click=${this._close}>&times;</button>
       </div>
 
       ${conflictNames.length > 0 ? html`
@@ -343,7 +343,7 @@ export class CaleeDetailDrawer extends LitElement {
     return html`
       <div class="drawer-header">
         <h3>Task</h3>
-        <button class="close-btn" @click=${this._close}>&times;</button>
+        <button class="close-btn" aria-label="Close details" @click=${this._close}>&times;</button>
       </div>
 
       <div class="field">

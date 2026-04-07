@@ -38,7 +38,7 @@ function stepMonth(dateStr: string, delta: number): string {
   return d.toISOString().slice(0, 10);
 }
 
-function formatDateLabel(view: CalendarSubView, dateStr: string): string {
+function formatDateLabel(view: CalendarSubView, dateStr: string, weekStartsMonday = true): string {
   const d = new Date(`${dateStr}T00:00:00`);
 
   if (view === "day") {
@@ -53,7 +53,9 @@ function formatDateLabel(view: CalendarSubView, dateStr: string): string {
   if (view === "week") {
     const start = new Date(d);
     const dow = start.getDay();
-    const diff = dow === 0 ? -6 : 1 - dow;
+    const diff = weekStartsMonday
+      ? (dow === 0 ? -6 : 1 - dow)
+      : -dow;
     start.setDate(start.getDate() + diff);
     const end = new Date(start);
     end.setDate(end.getDate() + 6);
@@ -328,7 +330,7 @@ export class CaleeCalendarPage extends LitElement {
     const showDateNav = this.currentSubview !== "agenda";
     const dateLabel = this.currentSubview === "agenda"
       ? "Next 14 days"
-      : formatDateLabel(this.currentSubview, this.currentDate);
+      : formatDateLabel(this.currentSubview, this.currentDate, this.weekStartsMonday);
 
     return html`
       <div class="toolbar">
