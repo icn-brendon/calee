@@ -225,6 +225,9 @@ export class CaleeCalendarManager extends LitElement {
       <div class="item-row">
         <div class="item-dot" style="background:${cal.color}"></div>
         <span class="item-name">${cal.emoji ? `${cal.emoji} ` : ""}${cal.name}</span>
+        <button class="icon-btn" @click=${() => this._toggleCalendarPrivacy(cal)} title="${cal.is_private ? 'Make public' : 'Make private'}" style="color:${cal.is_private ? 'var(--primary-color,#03a9f4)' : 'var(--secondary-text-color,#999)'};">
+          ${cal.is_private ? "\u{1F512}" : "\u{1F513}"}
+        </button>
         <button class="icon-btn" @click=${() => { this._editingCalendarId = cal.id; this._editName = cal.name; this._editColor = cal.color; this._editEmoji = cal.emoji || ""; }} title="Edit">&#9998;</button>
         <button class="icon-btn danger" @click=${() => { this._confirmDeleteId = cal.id; this._confirmDeleteType = "calendar"; }} title="Delete">&#128465;</button>
       </div>
@@ -279,6 +282,9 @@ export class CaleeCalendarManager extends LitElement {
       <div class="item-row">
         <span class="item-name">${lst.name}</span>
         <span style="font-size:11px;color:var(--secondary-text-color,#999);padding:2px 6px;border-radius:4px;background:var(--secondary-background-color,#f0f0f0);">${lst.list_type}</span>
+        <button class="icon-btn" @click=${() => this._toggleListPrivacy(lst)} title="${lst.is_private ? 'Make public' : 'Make private'}" style="color:${lst.is_private ? 'var(--primary-color,#03a9f4)' : 'var(--secondary-text-color,#999)'};">
+          ${lst.is_private ? "\u{1F512}" : "\u{1F513}"}
+        </button>
         <button class="icon-btn" @click=${() => { this._editingListId = lst.id; this._editListName = lst.name; }} title="Edit">&#9998;</button>
         <button class="icon-btn danger" @click=${() => { this._confirmDeleteId = lst.id; this._confirmDeleteType = "list"; }} title="Delete">&#128465;</button>
       </div>
@@ -391,6 +397,32 @@ export class CaleeCalendarManager extends LitElement {
       this._fireChanged();
     } catch (err) {
       console.error("Failed to delete list:", err);
+    }
+  }
+
+  private async _toggleCalendarPrivacy(cal: PlannerCalendar): Promise<void> {
+    try {
+      await this.hass.callWS({
+        type: "calee/set_calendar_private",
+        calendar_id: cal.id,
+        is_private: !cal.is_private,
+      });
+      this._fireChanged();
+    } catch (err) {
+      console.error("Failed to toggle calendar privacy:", err);
+    }
+  }
+
+  private async _toggleListPrivacy(lst: PlannerList): Promise<void> {
+    try {
+      await this.hass.callWS({
+        type: "calee/set_list_private",
+        list_id: lst.id,
+        is_private: !lst.is_private,
+      });
+      this._fireChanged();
+    } catch (err) {
+      console.error("Failed to toggle list privacy:", err);
     }
   }
 

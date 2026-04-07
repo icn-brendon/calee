@@ -41,6 +41,7 @@ export class CaleeSettingsDialog extends LitElement {
   @state() private _budgetAmount: number | null = null;
   @state() private _customCategories: string[] = [];
   @state() private _newCategoryText = "";
+  @state() private _strictPrivacy = false;
   @state() private _saving = false;
   @state() private _loadingSettings = false;
 
@@ -346,6 +347,7 @@ export class CaleeSettingsDialog extends LitElement {
         this._maxEventAgeDays = result.max_event_age_days ?? 365;
         this._currencySymbol = result.currency ?? "$";
         this._budgetAmount = result.budget > 0 ? result.budget : null;
+        this._strictPrivacy = result.strict_privacy ?? false;
       } catch {
         // Fallback defaults if WS fails
         this._timeFormat = "12h";
@@ -353,6 +355,7 @@ export class CaleeSettingsDialog extends LitElement {
         this._maxEventAgeDays = 365;
         this._currencySymbol = "$";
         this._budgetAmount = null;
+        this._strictPrivacy = false;
       } finally {
         this._loadingSettings = false;
       }
@@ -406,6 +409,7 @@ export class CaleeSettingsDialog extends LitElement {
           budget: this._budgetAmount ?? 0,
           week_start: this._weekStartsOn,
           time_format: this._timeFormat,
+          strict_privacy: this._strictPrivacy,
         });
       } catch (err) {
         // eslint-disable-next-line no-console
@@ -551,6 +555,30 @@ export class CaleeSettingsDialog extends LitElement {
                   this._budgetAmount = val ? Number(val) : null;
                 }}
               />
+            </div>
+          </div>
+
+          <!-- Privacy -->
+          <div class="section">
+            <div class="section-title">Privacy</div>
+
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Strict privacy mode</div>
+                <div class="setting-desc">New calendars/lists default to private. Unassigned resources are hidden from users without explicit roles.</div>
+              </div>
+              <div class="toggle-group">
+                <button
+                  class="toggle-opt"
+                  ?active=${!this._strictPrivacy}
+                  @click=${() => { this._strictPrivacy = false; }}
+                >Off</button>
+                <button
+                  class="toggle-opt"
+                  ?active=${this._strictPrivacy}
+                  @click=${() => { this._strictPrivacy = true; }}
+                >On</button>
+              </div>
             </div>
           </div>
 

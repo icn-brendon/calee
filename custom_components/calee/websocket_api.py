@@ -25,6 +25,7 @@ from .const import (
     DEFAULT_NOTIFICATION_TARGET,
     DEFAULT_NOTIFICATIONS_ENABLED,
     DEFAULT_REMINDER_MINUTES,
+    DEFAULT_STRICT_PRIVACY,
     DEFAULT_TIME_FORMAT,
     DEFAULT_WEEK_START,
     DOMAIN,
@@ -79,7 +80,7 @@ from .const import (
     WS_TYPE_UPDATE_TASK,
     WS_TYPE_UPDATE_TEMPLATE,
 )
-from .permissions import can_read
+from .permissions import can_read, is_strict_privacy
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -199,16 +200,17 @@ def ws_handle_calendars(
 
     user_id = connection.user.id if connection.user else None
     calendars = list(store.get_calendars().values())
+    strict = is_strict_privacy(hass)
 
-    # Filter by read permission when roles are configured OR when any
-    # calendar has is_private set.
+    # Filter by read permission when roles are configured, any
+    # calendar has is_private set, or strict privacy is active.
     if user_id:
         has_roles = bool(store.get_roles())
         has_private = any(c.is_private for c in calendars)
-        if has_roles or has_private:
+        if has_roles or has_private or strict:
             calendars = [
                 c for c in calendars
-                if can_read(store, user_id, "calendar", c.id)
+                if can_read(store, user_id, "calendar", c.id, strict=strict)
             ]
 
     result = [c.to_dict() for c in calendars]
@@ -392,16 +394,17 @@ def ws_handle_lists(
 
     user_id = connection.user.id if connection.user else None
     all_lists = list(store.get_lists().values())
+    strict = is_strict_privacy(hass)
 
-    # Filter by read permission when roles are configured OR when any
-    # list has is_private set.
+    # Filter by read permission when roles are configured, any
+    # list has is_private set, or strict privacy is active.
     if user_id:
         has_roles = bool(store.get_roles())
         has_private = any(lst.is_private for lst in all_lists)
-        if has_roles or has_private:
+        if has_roles or has_private or strict:
             all_lists = [
                 lst for lst in all_lists
-                if can_read(store, user_id, "list", lst.id)
+                if can_read(store, user_id, "list", lst.id, strict=strict)
             ]
 
     result = [lst.to_dict() for lst in all_lists]
@@ -1295,6 +1298,7 @@ def ws_handle_get_settings(
             "morning_summary_enabled": opts.get("morning_summary_enabled", DEFAULT_MORNING_SUMMARY_ENABLED),
             "morning_summary_hour": opts.get("morning_summary_hour", DEFAULT_MORNING_SUMMARY_HOUR),
             "notification_target": opts.get("notification_target", DEFAULT_NOTIFICATION_TARGET),
+            "strict_privacy": opts.get("strict_privacy", DEFAULT_STRICT_PRIVACY),
         },
     )
 
@@ -1312,6 +1316,7 @@ def ws_handle_get_settings(
         vol.Optional("morning_summary_enabled"): bool,
         vol.Optional("morning_summary_hour"): vol.All(vol.Coerce(int), vol.Range(min=0, max=23)),
         vol.Optional("notification_target"): str,
+        vol.Optional("strict_privacy"): bool,
     }
 )
 @websocket_api.async_response
@@ -1332,6 +1337,7 @@ async def ws_handle_update_settings(
         "reminder_minutes", "max_event_age_days", "currency", "budget",
         "week_start", "time_format", "notifications_enabled",
         "morning_summary_enabled", "morning_summary_hour", "notification_target",
+        "strict_privacy",
     )
     for key in _settings_keys:
         if key in msg:
@@ -1352,6 +1358,7 @@ async def ws_handle_update_settings(
             "morning_summary_enabled": new_opts.get("morning_summary_enabled", DEFAULT_MORNING_SUMMARY_ENABLED),
             "morning_summary_hour": new_opts.get("morning_summary_hour", DEFAULT_MORNING_SUMMARY_HOUR),
             "notification_target": new_opts.get("notification_target", DEFAULT_NOTIFICATION_TARGET),
+            "strict_privacy": new_opts.get("strict_privacy", DEFAULT_STRICT_PRIVACY),
         },
     )
 

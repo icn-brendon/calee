@@ -2166,8 +2166,10 @@ class PlannerAPI:
     ) -> PlannerCalendar:
         """Create a new calendar."""
         from .models import PlannerCalendar
+        from .permissions import is_strict_privacy
 
-        cal = PlannerCalendar(name=name, color=color, emoji=emoji)
+        is_private = is_strict_privacy(self._hass)
+        cal = PlannerCalendar(name=name, color=color, emoji=emoji, is_private=is_private)
         await self._store.async_put_calendar(cal)
         self._store.record_audit(
             user_id=user_id or "",
@@ -2258,8 +2260,10 @@ class PlannerAPI:
     ) -> PlannerList:
         """Create a new to-do list."""
         from .models import PlannerList
+        from .permissions import is_strict_privacy
 
-        lst = PlannerList(name=name, list_type=list_type)
+        is_private = is_strict_privacy(self._hass)
+        lst = PlannerList(name=name, list_type=list_type, is_private=is_private)
         await self._store.async_put_list(lst)
         self._store.record_audit(
             user_id=user_id or "",

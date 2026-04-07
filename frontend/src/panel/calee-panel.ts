@@ -34,6 +34,7 @@ import "../views/year-view.js";
 import "../views/agenda-view.js";
 import "../views/tasks-view.js";
 import "../views/shopping-view.js";
+import "../views/smart-views.js";
 import "../cards/next-shift.js";
 import "../dialogs/event-dialog.js";
 import "../dialogs/template-picker.js";
@@ -43,6 +44,7 @@ import "../dialogs/deleted-items.js";
 import "../dialogs/activity-feed.js";
 import "../dialogs/routine-manager.js";
 import "../dialogs/calendar-manager.js";
+import "../dialogs/data-center.js";
 
 // ── Types ──────────────────────────────────────────────────────────
 
@@ -57,11 +59,12 @@ interface PlannerListEntry {
   id: string;
   name: string;
   list_type: string;
+  is_private?: boolean;
 }
 
 // Views that carry a date parameter in the hash
 const DATE_VIEWS: ViewType[] = ["month", "week", "day", "year"];
-const ALL_VIEWS: ViewType[] = ["month", "week", "day", "agenda", "tasks", "shopping", "year"];
+const ALL_VIEWS: ViewType[] = ["month", "week", "day", "agenda", "tasks", "shopping", "year", "smart"];
 
 // Views shown in the header tab bar (day is drill-down only; year accessed via sidebar)
 const TAB_VIEWS: ViewType[] = ["week", "month", "agenda", "tasks", "shopping"];
@@ -155,6 +158,16 @@ function stepMonth(dateStr: string, delta: number): string {
 export class CaleePanel extends LitElement {
   @property({ attribute: false }) hass: any;
   @property({ type: Boolean, reflect: true }) narrow = false;
+
+  /** Guard against adoptedStyleSheets polyfill crashes in older browsers. */
+  override createRenderRoot(): HTMLElement | ShadowRoot {
+    try {
+      return super.createRenderRoot();
+    } catch {
+      if (!this.shadowRoot) this.attachShadow({ mode: "open" });
+      return this.shadowRoot!;
+    }
+  }
   @property({ attribute: false }) panel: any;
 
   @state() private _currentView: ViewType = "week";
@@ -203,6 +216,9 @@ export class CaleePanel extends LitElement {
   @state() private _showDeletedItems = false;
   @state() private _showActivityFeed = false;
   @state() private _showRoutineManager = false;
+  @state() private _showDataCenter = false;
+  @state() private _smartSubTab: "before-shift" | "weekend" | "budget" | "overdue" | "conflicts" = "before-shift";
+  @state() private _settingsStrictPrivacy = false;
   @state() private _shoppingToast = "";
 
   private _store?: PlannerStore;
@@ -624,7 +640,8 @@ export class CaleePanel extends LitElement {
       this._showRoutineManager ||
       this._showAddDialog ||
       this._showRecurringActionDialog ||
-      this._showCalendarManager
+      this._showCalendarManager ||
+      this._showDataCenter
     ) {
       // Only handle Escape to close the dialog
       if (e.key === "Escape") {
@@ -634,6 +651,7 @@ export class CaleePanel extends LitElement {
         this._showAddDialog = false;
         this._showRecurringActionDialog = false;
         this._showCalendarManager = false;
+        this._showDataCenter = false;
       }
       return;
     }
@@ -1848,6 +1866,17 @@ export class CaleePanel extends LitElement {
         @calendar-changed=${this._onCalendarManagerChanged}
         @dialog-close=${this._onCalendarManagerClose}
       ></calee-calendar-manager>
+      <calee-data-center
+        .hass=${this.hass}
+        .events=${this._events}
+        .tasks=${this._tasks}
+        .calendars=${this._rawCalendars}
+        .lists=${this._lists}
+        .templates=${this._templates}
+        .routines=${this._routines}
+        ?open=${this._showDataCenter}
+        @dialog-close=${this._onDataCenterClose}
+      ></calee-data-center>
       ${this._showRecurringActionDialog ? this._renderRecurringActionDialog() : nothing}
     `;
   }
@@ -2001,6 +2030,9 @@ export class CaleePanel extends LitElement {
                       style="--cal-color: ${cal.color}"
                     ></div>
                     <span class="calendar-name">${cal.name}</span>
+                    ${this._rawCalendars.find((rc) => rc.id === cal.id)?.is_private
+                      ? html`<svg viewBox="0 0 24 24" fill="none" stroke="var(--secondary-text-color,#999)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0;margin-left:auto;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0110 0v4"></path></svg>`
+                      : nothing}
                   </div>
                 `
               )}
@@ -2037,6 +2069,9 @@ export class CaleePanel extends LitElement {
                         </svg>`
                     }
                     <span>${lst.name}</span>
+                    ${lst.is_private
+                      ? html`<svg viewBox="0 0 24 24" fill="none" stroke="var(--secondary-text-color,#999)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0;margin-left:auto;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0110 0v4"></path></svg>`
+                      : nothing}
                   </div>
                 `
               )}
@@ -2069,7 +2104,66 @@ export class CaleePanel extends LitElement {
           </button>
         </div>
 
-        <!-- More: Year, Recently Deleted & Activity -->
+        <!-- Smart Views -->
+        <div class="sidebar-section">
+          <h3 class="sidebar-heading">Smart Views</h3>
+          <button
+            class="nav-item nav-item-muted"
+            ?active=${this._currentView === "smart" && this._smartSubTab === "before-shift"}
+            @click=${() => { this._smartSubTab = "before-shift"; this._navigate("smart"); }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>Before next shift</span>
+          </button>
+          <button
+            class="nav-item nav-item-muted"
+            ?active=${this._currentView === "smart" && this._smartSubTab === "weekend"}
+            @click=${() => { this._smartSubTab = "weekend"; this._navigate("smart"); }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
+              <path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+            </svg>
+            <span>This weekend</span>
+          </button>
+          <button
+            class="nav-item nav-item-muted"
+            ?active=${this._currentView === "smart" && this._smartSubTab === "budget"}
+            @click=${() => { this._smartSubTab = "budget"; this._navigate("smart"); }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"></path>
+            </svg>
+            <span>Budget watch</span>
+          </button>
+          <button
+            class="nav-item nav-item-muted"
+            ?active=${this._currentView === "smart" && this._smartSubTab === "overdue"}
+            @click=${() => { this._smartSubTab = "overdue"; this._navigate("smart"); }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <span>Overdue</span>
+          </button>
+          <button
+            class="nav-item nav-item-muted"
+            ?active=${this._currentView === "smart" && this._smartSubTab === "conflicts"}
+            @click=${() => { this._smartSubTab = "conflicts"; this._navigate("smart"); }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+            <span>Conflicts${this._conflicts.length > 0 ? ` (${this._conflicts.length})` : ""}</span>
+          </button>
+        </div>
+
+        <!-- More: Year, Recently Deleted, Activity & Data Center -->
         <div class="sidebar-section">
           <h3 class="sidebar-heading">More</h3>
           <button
@@ -2104,6 +2198,17 @@ export class CaleePanel extends LitElement {
               <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
             </svg>
             Activity
+          </button>
+          <button
+            class="nav-item nav-item-muted"
+            @click=${() => { this._showDataCenter = true; }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+              <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+              <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+            </svg>
+            Data Center
           </button>
         </div>
 
@@ -2598,6 +2703,19 @@ export class CaleePanel extends LitElement {
           @toast-shown=${() => { this._shoppingToast = ""; }}
         ></calee-shopping-view>`;
       }
+
+      case "smart":
+        return html`<calee-smart-views
+          .events=${this._events}
+          .tasks=${this._tasks}
+          .lists=${this._lists}
+          .conflicts=${this._conflicts}
+          .calendars=${calendarMap}
+          .currency=${this._settingsCurrency}
+          .budget=${this._settingsBudget}
+          .activeTab=${this._smartSubTab}
+          ?narrow=${this.narrow}
+        ></calee-smart-views>`;
 
       default:
         return html`<div class="view-placeholder">
@@ -3160,6 +3278,7 @@ export class CaleePanel extends LitElement {
       this._settingsTimeFormat = result.time_format ?? "12h";
       this._settingsCurrency = result.currency ?? "$";
       this._settingsBudget = result.budget ?? 0;
+      this._settingsStrictPrivacy = result.strict_privacy ?? false;
     } catch {
       // Defaults are already set
     }
@@ -3287,6 +3406,12 @@ export class CaleePanel extends LitElement {
 
   private _onCalendarManagerClose(): void {
     this._showCalendarManager = false;
+  }
+
+  // ── Data Center ──────────────────────────────────────────────────
+
+  private _onDataCenterClose(): void {
+    this._showDataCenter = false;
   }
 
   // ── Quick Add Dialog ──────────────────────────────────────────────
