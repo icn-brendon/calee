@@ -587,14 +587,14 @@ function e(e2, r2) {
     } });
   };
 }
-var __defProp$h = Object.defineProperty;
-var __getOwnPropDesc$h = Object.getOwnPropertyDescriptor;
-var __decorateClass$h = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$h(target, key) : target;
+var __defProp$i = Object.defineProperty;
+var __getOwnPropDesc$i = Object.getOwnPropertyDescriptor;
+var __decorateClass$i = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$i(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$h(target, key, result);
+  if (kind && result) __defProp$i(target, key, result);
   return result;
 };
 function parseISO$3(iso) {
@@ -1106,56 +1106,56 @@ CaleeMonthView.styles = i$3`
       }
     }
   `;
-__decorateClass$h([
+__decorateClass$i([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "events", 2);
-__decorateClass$h([
+__decorateClass$i([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "calendars", 2);
-__decorateClass$h([
+__decorateClass$i([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "enabledCalendarIds", 2);
-__decorateClass$h([
+__decorateClass$i([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "selectedDate", 2);
-__decorateClass$h([
+__decorateClass$i([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "templates", 2);
-__decorateClass$h([
+__decorateClass$i([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "tasks", 2);
-__decorateClass$h([
+__decorateClass$i([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "conflicts", 2);
-__decorateClass$h([
+__decorateClass$i([
   n2({ type: Boolean })
 ], CaleeMonthView.prototype, "weekStartsMonday", 2);
-__decorateClass$h([
+__decorateClass$i([
   n2({ type: Boolean, reflect: true })
 ], CaleeMonthView.prototype, "narrow", 2);
-__decorateClass$h([
+__decorateClass$i([
   r()
 ], CaleeMonthView.prototype, "_grid", 2);
-__decorateClass$h([
+__decorateClass$i([
   r()
 ], CaleeMonthView.prototype, "_eventsByDay", 2);
-__decorateClass$h([
+__decorateClass$i([
   r()
 ], CaleeMonthView.prototype, "_taskCountByDay", 2);
-__decorateClass$h([
+__decorateClass$i([
   r()
 ], CaleeMonthView.prototype, "_conflictDays", 2);
-CaleeMonthView = __decorateClass$h([
+CaleeMonthView = __decorateClass$i([
   t("calee-month-view")
 ], CaleeMonthView);
-var __defProp$g = Object.defineProperty;
-var __getOwnPropDesc$g = Object.getOwnPropertyDescriptor;
-var __decorateClass$g = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$g(target, key) : target;
+var __defProp$h = Object.defineProperty;
+var __getOwnPropDesc$h = Object.getOwnPropertyDescriptor;
+var __decorateClass$h = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$h(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$g(target, key, result);
+  if (kind && result) __defProp$h(target, key, result);
   return result;
 };
 function parseISO$2(iso) {
@@ -1799,59 +1799,59 @@ CaleeWeekView.styles = i$3`
       }
     }
   `;
-__decorateClass$g([
+__decorateClass$h([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "events", 2);
-__decorateClass$g([
+__decorateClass$h([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "calendars", 2);
-__decorateClass$g([
+__decorateClass$h([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "enabledCalendarIds", 2);
-__decorateClass$g([
+__decorateClass$h([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "selectedDate", 2);
-__decorateClass$g([
+__decorateClass$h([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "templates", 2);
-__decorateClass$g([
+__decorateClass$h([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "tasks", 2);
-__decorateClass$g([
+__decorateClass$h([
   n2({ type: Boolean })
 ], CaleeWeekView.prototype, "weekStartsMonday", 2);
-__decorateClass$g([
+__decorateClass$h([
   n2({ type: Boolean, reflect: true })
 ], CaleeWeekView.prototype, "narrow", 2);
-__decorateClass$g([
+__decorateClass$h([
   r()
 ], CaleeWeekView.prototype, "_weekDays", 2);
-__decorateClass$g([
+__decorateClass$h([
   r()
 ], CaleeWeekView.prototype, "_allDayByDay", 2);
-__decorateClass$g([
+__decorateClass$h([
   r()
 ], CaleeWeekView.prototype, "_timedByDay", 2);
-__decorateClass$g([
+__decorateClass$h([
   r()
 ], CaleeWeekView.prototype, "_taskCountByDay", 2);
-__decorateClass$g([
+__decorateClass$h([
   r()
 ], CaleeWeekView.prototype, "_now", 2);
-__decorateClass$g([
+__decorateClass$h([
   e(".time-grid-scroll")
 ], CaleeWeekView.prototype, "_scrollContainer", 2);
-CaleeWeekView = __decorateClass$g([
+CaleeWeekView = __decorateClass$h([
   t("calee-week-view")
 ], CaleeWeekView);
-var __defProp$f = Object.defineProperty;
-var __getOwnPropDesc$f = Object.getOwnPropertyDescriptor;
-var __decorateClass$f = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$f(target, key) : target;
+var __defProp$g = Object.defineProperty;
+var __getOwnPropDesc$g = Object.getOwnPropertyDescriptor;
+var __decorateClass$g = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$g(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$f(target, key, result);
+  if (kind && result) __defProp$g(target, key, result);
   return result;
 };
 function parseISO$1(iso) {
@@ -2419,41 +2419,41 @@ CaleeDayView.styles = i$3`
       }
     }
   `;
-__decorateClass$f([
+__decorateClass$g([
   n2({ attribute: false })
 ], CaleeDayView.prototype, "events", 2);
-__decorateClass$f([
+__decorateClass$g([
   n2({ attribute: false })
 ], CaleeDayView.prototype, "calendars", 2);
-__decorateClass$f([
+__decorateClass$g([
   n2({ attribute: false })
 ], CaleeDayView.prototype, "enabledCalendarIds", 2);
-__decorateClass$f([
+__decorateClass$g([
   n2({ attribute: false })
 ], CaleeDayView.prototype, "selectedDate", 2);
-__decorateClass$f([
+__decorateClass$g([
   r()
 ], CaleeDayView.prototype, "_allDayEvents", 2);
-__decorateClass$f([
+__decorateClass$g([
   r()
 ], CaleeDayView.prototype, "_timedEvents", 2);
-__decorateClass$f([
+__decorateClass$g([
   r()
 ], CaleeDayView.prototype, "_now", 2);
-__decorateClass$f([
+__decorateClass$g([
   e(".time-grid-scroll")
 ], CaleeDayView.prototype, "_scrollContainer", 2);
-CaleeDayView = __decorateClass$f([
+CaleeDayView = __decorateClass$g([
   t("calee-day-view")
 ], CaleeDayView);
-var __defProp$e = Object.defineProperty;
-var __getOwnPropDesc$e = Object.getOwnPropertyDescriptor;
-var __decorateClass$e = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$e(target, key) : target;
+var __defProp$f = Object.defineProperty;
+var __getOwnPropDesc$f = Object.getOwnPropertyDescriptor;
+var __decorateClass$f = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$f(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$e(target, key, result);
+  if (kind && result) __defProp$f(target, key, result);
   return result;
 };
 function parseISO(iso) {
@@ -2737,32 +2737,32 @@ CaleeYearView.styles = i$3`
       }
     }
   `;
-__decorateClass$e([
+__decorateClass$f([
   n2({ attribute: false })
 ], CaleeYearView.prototype, "events", 2);
-__decorateClass$e([
+__decorateClass$f([
   n2({ attribute: false })
 ], CaleeYearView.prototype, "calendars", 2);
-__decorateClass$e([
+__decorateClass$f([
   n2({ attribute: false })
 ], CaleeYearView.prototype, "enabledCalendarIds", 2);
-__decorateClass$e([
+__decorateClass$f([
   n2({ attribute: false })
 ], CaleeYearView.prototype, "selectedDate", 2);
-__decorateClass$e([
+__decorateClass$f([
   r()
 ], CaleeYearView.prototype, "_eventsByDay", 2);
-CaleeYearView = __decorateClass$e([
+CaleeYearView = __decorateClass$f([
   t("calee-year-view")
 ], CaleeYearView);
-var __defProp$d = Object.defineProperty;
-var __getOwnPropDesc$d = Object.getOwnPropertyDescriptor;
-var __decorateClass$d = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$d(target, key) : target;
+var __defProp$e = Object.defineProperty;
+var __getOwnPropDesc$e = Object.getOwnPropertyDescriptor;
+var __decorateClass$e = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$e(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$d(target, key, result);
+  if (kind && result) __defProp$e(target, key, result);
   return result;
 };
 function toLocalDateKey(iso) {
@@ -2787,7 +2787,7 @@ function formatDateHeader(dateKey2, today) {
     day: "numeric"
   });
 }
-function formatTime$1(iso) {
+function formatTime(iso) {
   return new Date(iso).toLocaleTimeString(void 0, {
     hour: "numeric",
     minute: "2-digit"
@@ -2861,7 +2861,7 @@ let CaleeAgendaView = class extends i {
         <div class="event-info">
           <div class="event-title">${ev.title}</div>
           <div class="event-time">
-            ${ev.all_day ? b`<span class="all-day-badge">All day</span>` : b`${formatTime$1(ev.start)} &ndash; ${formatTime$1(ev.end)}`}
+            ${ev.all_day ? b`<span class="all-day-badge">All day</span>` : b`${formatTime(ev.start)} &ndash; ${formatTime(ev.end)}`}
           </div>
           ${ev.note ? b`<div class="event-note">${ev.note}</div>` : A}
         </div>
@@ -2961,16 +2961,16 @@ CaleeAgendaView.styles = i$3`
       border-radius: 4px;
     }
   `;
-__decorateClass$d([
+__decorateClass$e([
   n2({ type: Array })
 ], CaleeAgendaView.prototype, "events", 2);
-__decorateClass$d([
+__decorateClass$e([
   n2({ attribute: false })
 ], CaleeAgendaView.prototype, "calendars", 2);
-__decorateClass$d([
+__decorateClass$e([
   r()
 ], CaleeAgendaView.prototype, "_groups", 2);
-CaleeAgendaView = __decorateClass$d([
+CaleeAgendaView = __decorateClass$e([
   t("calee-agenda-view")
 ], CaleeAgendaView);
 const SWIPE_THRESHOLD = 80;
@@ -3084,14 +3084,14 @@ function getSwipeDelta(state, itemId) {
   if (state.swipingId !== itemId) return 0;
   return state.touchCurrentX - state.touchStartX;
 }
-var __defProp$c = Object.defineProperty;
-var __getOwnPropDesc$c = Object.getOwnPropertyDescriptor;
-var __decorateClass$c = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$c(target, key) : target;
+var __defProp$d = Object.defineProperty;
+var __getOwnPropDesc$d = Object.getOwnPropertyDescriptor;
+var __decorateClass$d = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$d(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$c(target, key, result);
+  if (kind && result) __defProp$d(target, key, result);
   return result;
 };
 function todayISO$1() {
@@ -4234,77 +4234,77 @@ CaleeTasksView.styles = [swipeStyles, i$3`
       color: #fff;
     }
   `];
-__decorateClass$c([
+__decorateClass$d([
   n2({ type: Array })
 ], CaleeTasksView.prototype, "tasks", 2);
-__decorateClass$c([
+__decorateClass$d([
   n2({ type: Array })
 ], CaleeTasksView.prototype, "lists", 2);
-__decorateClass$c([
+__decorateClass$d([
   n2({ type: Array })
 ], CaleeTasksView.prototype, "presets", 2);
-__decorateClass$c([
+__decorateClass$d([
   n2({ type: String })
 ], CaleeTasksView.prototype, "activeView", 2);
-__decorateClass$c([
+__decorateClass$d([
   n2({ type: Boolean, reflect: true })
 ], CaleeTasksView.prototype, "narrow", 2);
-__decorateClass$c([
+__decorateClass$d([
   r()
 ], CaleeTasksView.prototype, "_quickAddText", 2);
-__decorateClass$c([
+__decorateClass$d([
   r()
 ], CaleeTasksView.prototype, "_quickAddFocused", 2);
-__decorateClass$c([
+__decorateClass$d([
   r()
 ], CaleeTasksView.prototype, "_selectedDatePill", 2);
-__decorateClass$c([
+__decorateClass$d([
   r()
 ], CaleeTasksView.prototype, "_selectedRecurrence", 2);
-__decorateClass$c([
+__decorateClass$d([
   r()
 ], CaleeTasksView.prototype, "_customDate", 2);
-__decorateClass$c([
+__decorateClass$d([
   r()
 ], CaleeTasksView.prototype, "_renderLimit", 2);
-__decorateClass$c([
+__decorateClass$d([
   r()
 ], CaleeTasksView.prototype, "_editingTaskId", 2);
-__decorateClass$c([
+__decorateClass$d([
   r()
 ], CaleeTasksView.prototype, "_editTitle", 2);
-__decorateClass$c([
+__decorateClass$d([
   r()
 ], CaleeTasksView.prototype, "_editDatePill", 2);
-__decorateClass$c([
+__decorateClass$d([
   r()
 ], CaleeTasksView.prototype, "_editCustomDate", 2);
-__decorateClass$c([
+__decorateClass$d([
   r()
 ], CaleeTasksView.prototype, "_editRecurrence", 2);
-__decorateClass$c([
+__decorateClass$d([
   r()
 ], CaleeTasksView.prototype, "_showMoreOptions", 2);
-__decorateClass$c([
+__decorateClass$d([
   r()
 ], CaleeTasksView.prototype, "_quickAddNote", 2);
-__decorateClass$c([
+__decorateClass$d([
   r()
 ], CaleeTasksView.prototype, "_confirmDeleteId", 2);
-__decorateClass$c([
+__decorateClass$d([
   e("#quick-add-input")
 ], CaleeTasksView.prototype, "_inputEl", 2);
-CaleeTasksView = __decorateClass$c([
+CaleeTasksView = __decorateClass$d([
   t("calee-tasks-view")
 ], CaleeTasksView);
-var __defProp$b = Object.defineProperty;
-var __getOwnPropDesc$b = Object.getOwnPropertyDescriptor;
-var __decorateClass$b = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$b(target, key) : target;
+var __defProp$c = Object.defineProperty;
+var __getOwnPropDesc$c = Object.getOwnPropertyDescriptor;
+var __decorateClass$c = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$c(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$b(target, key, result);
+  if (kind && result) __defProp$c(target, key, result);
   return result;
 };
 const CATEGORY_META = {
@@ -5988,72 +5988,689 @@ CaleeShoppingView.styles = [swipeStyles, i$3`
       color: #fff;
     }
   `];
-__decorateClass$b([
+__decorateClass$c([
   n2({ type: Array })
 ], CaleeShoppingView.prototype, "tasks", 2);
-__decorateClass$b([
+__decorateClass$c([
   n2({ type: Array })
 ], CaleeShoppingView.prototype, "presets", 2);
-__decorateClass$b([
+__decorateClass$c([
   n2({ type: String })
 ], CaleeShoppingView.prototype, "listId", 2);
-__decorateClass$b([
+__decorateClass$c([
   n2({ type: String })
 ], CaleeShoppingView.prototype, "toastMessage", 2);
-__decorateClass$b([
+__decorateClass$c([
   n2({ type: String })
 ], CaleeShoppingView.prototype, "currency", 2);
-__decorateClass$b([
+__decorateClass$c([
   n2({ type: Number })
 ], CaleeShoppingView.prototype, "budget", 2);
-__decorateClass$b([
+__decorateClass$c([
   r()
 ], CaleeShoppingView.prototype, "_quickAddText", 2);
-__decorateClass$b([
+__decorateClass$c([
   r()
 ], CaleeShoppingView.prototype, "_selectedCategory", 2);
-__decorateClass$b([
+__decorateClass$c([
   r()
 ], CaleeShoppingView.prototype, "_completedOpen", 2);
-__decorateClass$b([
+__decorateClass$c([
   r()
 ], CaleeShoppingView.prototype, "_collapsedSections", 2);
-__decorateClass$b([
+__decorateClass$c([
   r()
 ], CaleeShoppingView.prototype, "_showCustomCategoryInput", 2);
-__decorateClass$b([
+__decorateClass$c([
   r()
 ], CaleeShoppingView.prototype, "_customCategoryText", 2);
-__decorateClass$b([
+__decorateClass$c([
   r()
 ], CaleeShoppingView.prototype, "_showPresetForm", 2);
-__decorateClass$b([
+__decorateClass$c([
   r()
 ], CaleeShoppingView.prototype, "_presetFormCategory", 2);
-__decorateClass$b([
+__decorateClass$c([
   r()
 ], CaleeShoppingView.prototype, "_presetFormTitle", 2);
-__decorateClass$b([
+__decorateClass$c([
   r()
 ], CaleeShoppingView.prototype, "_presetFormEmoji", 2);
-__decorateClass$b([
+__decorateClass$c([
   r()
 ], CaleeShoppingView.prototype, "_confirmDeletePresetId", 2);
-__decorateClass$b([
+__decorateClass$c([
   r()
 ], CaleeShoppingView.prototype, "_pendingRenderLimit", 2);
-__decorateClass$b([
+__decorateClass$c([
   r()
 ], CaleeShoppingView.prototype, "_toastMessage", 2);
-__decorateClass$b([
+__decorateClass$c([
   r()
 ], CaleeShoppingView.prototype, "_confirmSwipeDeleteId", 2);
-__decorateClass$b([
+__decorateClass$c([
   e("#quick-add-input")
 ], CaleeShoppingView.prototype, "_inputEl", 2);
-CaleeShoppingView = __decorateClass$b([
+CaleeShoppingView = __decorateClass$c([
   t("calee-shopping-view")
 ], CaleeShoppingView);
+var __defProp$b = Object.defineProperty;
+var __getOwnPropDesc$b = Object.getOwnPropertyDescriptor;
+var __decorateClass$b = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$b(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$b(target, key, result);
+  return result;
+};
+let CaleeSmartViews = class extends i {
+  constructor() {
+    super(...arguments);
+    this.events = [];
+    this.tasks = [];
+    this.lists = [];
+    this.conflicts = [];
+    this.calendars = /* @__PURE__ */ new Map();
+    this.currency = "$";
+    this.budget = 0;
+    this.initialTab = "before-shift";
+    this.reminderCalendars = ["work_shifts"];
+    this.activeTab = "before-shift";
+    this.narrow = false;
+  }
+  firstUpdated() {
+    if (this.initialTab) {
+      this.activeTab = this.initialTab;
+    }
+  }
+  render() {
+    return b`
+      <div class="tabs">
+        ${this._renderTab("before-shift", "Before next shift")}
+        ${this._renderTab("weekend", "This weekend")}
+        ${this._renderTab("budget", "Budget watch")}
+        ${this._renderTab("overdue", "Overdue")}
+        ${this._renderTab("conflicts", `Conflicts (${this.conflicts.length})`)}
+      </div>
+      <div class="content">
+        ${this._renderActiveTab()}
+      </div>
+    `;
+  }
+  _renderTab(id, label) {
+    return b`
+      <button
+        class="tab"
+        ?active=${this.activeTab === id}
+        @click=${() => {
+      this.activeTab = id;
+    }}
+      >${label}</button>
+    `;
+  }
+  _renderActiveTab() {
+    switch (this.activeTab) {
+      case "before-shift":
+        return this._renderBeforeShift();
+      case "weekend":
+        return this._renderWeekend();
+      case "budget":
+        return this._renderBudget();
+      case "overdue":
+        return this._renderOverdue();
+      case "conflicts":
+        return this._renderConflicts();
+      default:
+        return A;
+    }
+  }
+  // ── Before next shift ────────────────────────────────────────────
+  _renderBeforeShift() {
+    const now = Date.now();
+    const shiftCalendars = this.reminderCalendars.length > 0 ? this.reminderCalendars : ["work_shifts"];
+    const nextShift = this.events.filter((e2) => !e2.deleted_at && !e2.all_day && shiftCalendars.includes(e2.calendar_id) && new Date(e2.start).getTime() > now).sort((a2, b2) => new Date(a2.start).getTime() - new Date(b2.start).getTime())[0];
+    if (!nextShift) {
+      return b`<div class="empty">No upcoming work shifts found.</div>`;
+    }
+    const shiftStart = new Date(nextShift.start);
+    const shiftIso = shiftStart.toISOString().slice(0, 10);
+    const dueTasks = this.tasks.filter((t2) => {
+      if (t2.deleted_at || t2.completed) return false;
+      if (!t2.due) return false;
+      return t2.due?.slice(0, 10) <= shiftIso;
+    }).sort((a2, b2) => (a2.due ?? "").localeCompare(b2.due ?? ""));
+    const diffMs = shiftStart.getTime() - now;
+    const diffH = Math.floor(diffMs / (1e3 * 60 * 60));
+    const diffM = Math.floor(diffMs % (1e3 * 60 * 60) / (1e3 * 60));
+    const countdownStr = diffH > 0 ? `${diffH}h ${diffM}m` : `${diffM}m`;
+    return b`
+      <div class="countdown">
+        <span class="countdown-label">Next shift starts in</span>
+        <span class="countdown-value">${countdownStr}</span>
+        <span style="margin-left:auto;font-size:13px;color:var(--secondary-text-color,#757575);">
+          ${nextShift.title} - ${shiftStart.toLocaleDateString(void 0, { weekday: "short", month: "short", day: "numeric" })}
+          ${shiftStart.toLocaleTimeString(void 0, { hour: "numeric", minute: "2-digit" })}
+        </span>
+      </div>
+
+      <h3 class="section-title">Tasks due before shift (${dueTasks.length})</h3>
+
+      ${dueTasks.length === 0 ? b`<div class="empty">All clear -- nothing due before your shift.</div>` : dueTasks.map((t2) => this._renderTaskItem(t2))}
+    `;
+  }
+  // ── This weekend ─────────────────────────────────────────────────
+  _renderWeekend() {
+    const now = /* @__PURE__ */ new Date();
+    const day = now.getDay();
+    const daysToSat = day === 6 ? 0 : 6 - day;
+    const sat = new Date(now);
+    sat.setDate(sat.getDate() + daysToSat);
+    sat.setHours(0, 0, 0, 0);
+    const sun = new Date(sat);
+    sun.setDate(sun.getDate() + 1);
+    const monAfter = new Date(sun);
+    monAfter.setDate(monAfter.getDate() + 1);
+    const satIso = sat.toISOString().slice(0, 10);
+    const sunIso = sun.toISOString().slice(0, 10);
+    const monIso = monAfter.toISOString().slice(0, 10);
+    const weekendEvents = this.events.filter((e2) => {
+      if (e2.deleted_at) return false;
+      const eStart = e2.start.slice(0, 10);
+      const eEnd = e2.end.slice(0, 10);
+      return eStart >= satIso && eStart < monIso || eEnd > satIso && eStart < monIso;
+    }).sort((a2, b2) => a2.start.localeCompare(b2.start));
+    const weekendTasks = this.tasks.filter((t2) => {
+      if (t2.deleted_at || t2.completed) return false;
+      return t2.due?.slice(0, 10) === satIso || t2.due?.slice(0, 10) === sunIso;
+    });
+    const weekendLabel = `${sat.toLocaleDateString(void 0, { month: "short", day: "numeric" })} - ${sun.toLocaleDateString(void 0, { month: "short", day: "numeric" })}`;
+    return b`
+      <h3 class="section-title">This weekend (${weekendLabel})</h3>
+
+      ${weekendEvents.length > 0 ? b`
+        <div style="margin-bottom:16px;">
+          <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--secondary-text-color,#757575);margin-bottom:8px;">Events</div>
+          ${weekendEvents.map((ev) => {
+      const cal = this.calendars.get(ev.calendar_id);
+      const color = cal?.color ?? "#64b5f6";
+      const start = new Date(ev.start);
+      const timeStr = ev.all_day ? "All day" : start.toLocaleTimeString(void 0, { hour: "numeric", minute: "2-digit" });
+      const dayStr = start.toLocaleDateString(void 0, { weekday: "short" });
+      return b`
+              <div class="item" @click=${() => this._selectEvent(ev)}>
+                <span class="dot" style="background:${color}"></span>
+                <span class="item-title">${ev.title}</span>
+                <span class="item-meta">${dayStr} ${timeStr}</span>
+              </div>
+            `;
+    })}
+        </div>
+      ` : A}
+
+      ${weekendTasks.length > 0 ? b`
+        <div>
+          <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--secondary-text-color,#757575);margin-bottom:8px;">Tasks</div>
+          ${weekendTasks.map((t2) => this._renderTaskItem(t2))}
+        </div>
+      ` : A}
+
+      ${weekendEvents.length === 0 && weekendTasks.length === 0 ? b`<div class="empty">Nothing scheduled for this weekend.</div>` : A}
+    `;
+  }
+  // ── Budget watch ─────────────────────────────────────────────────
+  _renderBudget() {
+    const shoppingLists = new Set(
+      this.lists.filter((l2) => l2.list_type === "shopping").map((l2) => l2.id)
+    );
+    const shoppingTasks = this.tasks.filter(
+      (t2) => !t2.deleted_at && shoppingLists.has(t2.list_id)
+    );
+    const completedWithPrice = shoppingTasks.filter((t2) => t2.completed && t2.price != null && t2.price > 0);
+    const totalSpent = completedWithPrice.reduce((sum, t2) => sum + (t2.price ?? 0) * t2.quantity, 0);
+    const byCat = /* @__PURE__ */ new Map();
+    for (const t2 of completedWithPrice) {
+      const cat = t2.category || "other";
+      byCat.set(cat, (byCat.get(cat) ?? 0) + (t2.price ?? 0) * t2.quantity);
+    }
+    const categories = [...byCat.entries()].sort((a2, b2) => b2[1] - a2[1]);
+    const pendingWithPrice = shoppingTasks.filter((t2) => !t2.completed && t2.price != null && t2.price > 0);
+    const totalPending = pendingWithPrice.reduce((sum, t2) => sum + (t2.price ?? 0) * t2.quantity, 0);
+    const budgetAmount = this.budget || 0;
+    const remaining = budgetAmount > 0 ? budgetAmount - totalSpent : 0;
+    const pct = budgetAmount > 0 ? Math.min(totalSpent / budgetAmount * 100, 100) : 0;
+    const barColor = pct > 90 ? "var(--error-color, #f44336)" : pct > 70 ? "var(--warning-color, #ff9800)" : "var(--primary-color, #03a9f4)";
+    return b`
+      <h3 class="section-title">Budget Watch</h3>
+
+      <div class="budget-card">
+        <div class="budget-header">
+          <div>
+            <div class="budget-total">${this.currency}${totalSpent.toFixed(2)}</div>
+            <div style="font-size:12px;color:var(--secondary-text-color,#757575);">spent</div>
+          </div>
+          ${budgetAmount > 0 ? b`
+            <div style="text-align:right;">
+              <div class="budget-remaining" style="color:${remaining >= 0 ? "var(--primary-text-color,#212121)" : "var(--error-color,#f44336)"};">
+                ${remaining >= 0 ? `${this.currency}${remaining.toFixed(2)} remaining` : `${this.currency}${Math.abs(remaining).toFixed(2)} over budget`}
+              </div>
+              <div style="font-size:12px;color:var(--secondary-text-color,#757575);">of ${this.currency}${budgetAmount.toFixed(2)} budget</div>
+            </div>
+          ` : A}
+        </div>
+
+        ${budgetAmount > 0 ? b`
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:${pct}%;background:${barColor};"></div>
+          </div>
+        ` : A}
+      </div>
+
+      ${totalPending > 0 ? b`
+        <div style="font-size:13px;color:var(--secondary-text-color,#757575);margin-bottom:16px;">
+          Pending items total: ${this.currency}${totalPending.toFixed(2)}
+        </div>
+      ` : A}
+
+      ${categories.length > 0 ? b`
+        <div style="margin-bottom:16px;">
+          <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--secondary-text-color,#757575);margin-bottom:8px;">By Category</div>
+          ${categories.map(([cat, amount]) => b`
+            <div class="category-row">
+              <span class="category-name">${cat}</span>
+              <span class="category-amount">${this.currency}${amount.toFixed(2)}</span>
+            </div>
+          `)}
+        </div>
+      ` : b`<div class="empty">No shopping items with prices yet.</div>`}
+    `;
+  }
+  // ── Overdue ──────────────────────────────────────────────────────
+  _renderOverdue() {
+    const todayIso = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+    const overdue = this.tasks.filter((t2) => !t2.deleted_at && !t2.completed && t2.due && t2.due.slice(0, 10) < todayIso).sort((a2, b2) => (a2.due ?? "").localeCompare(b2.due ?? ""));
+    return b`
+      <h3 class="section-title">Overdue Tasks (${overdue.length})</h3>
+
+      ${overdue.length === 0 ? b`<div class="empty">No overdue tasks -- you're all caught up.</div>` : overdue.map((t2) => {
+      const dueDate = /* @__PURE__ */ new Date(t2.due.slice(0, 10) + "T00:00:00");
+      const today = /* @__PURE__ */ new Date();
+      today.setHours(0, 0, 0, 0);
+      const diffDays = Math.floor((today.getTime() - dueDate.getTime()) / (1e3 * 60 * 60 * 24));
+      return b`
+              <div class="item">
+                <button
+                  class="item-check"
+                  @click=${() => this._completeTask(t2.id)}
+                  title="Complete task"
+                ></button>
+                <span class="item-title">${t2.title}</span>
+                <span class="item-meta overdue">
+                  ${diffDays === 1 ? "1 day overdue" : `${diffDays} days overdue`}
+                </span>
+              </div>
+            `;
+    })}
+    `;
+  }
+  // ── Conflicts ────────────────────────────────────────────────────
+  _renderConflicts() {
+    return b`
+      <h3 class="section-title">Scheduling Conflicts (${this.conflicts.length})</h3>
+
+      ${this.conflicts.length === 0 ? b`<div class="empty">No conflicts detected.</div>` : this.conflicts.map((c2) => {
+      const calA = this.calendars.get(c2.eventA.calendar_id);
+      const calB = this.calendars.get(c2.eventB.calendar_id);
+      const startA = new Date(c2.eventA.start);
+      const endA = new Date(c2.eventA.end);
+      const startB = new Date(c2.eventB.start);
+      const endB = new Date(c2.eventB.end);
+      const fmt = (d2) => d2.toLocaleTimeString(void 0, { hour: "numeric", minute: "2-digit" });
+      return b`
+              <div class="conflict-pair">
+                <div class="conflict-event" @click=${() => this._selectEvent(c2.eventA)} style="cursor:pointer;">
+                  <span class="dot" style="background:${calA?.color ?? "#64b5f6"}"></span>
+                  <span style="font-weight:500;">${c2.eventA.title}</span>
+                  <span style="margin-left:auto;font-size:12px;color:var(--secondary-text-color,#757575);">${fmt(startA)} - ${fmt(endA)}</span>
+                </div>
+                <div class="conflict-vs">overlaps with</div>
+                <div class="conflict-event" @click=${() => this._selectEvent(c2.eventB)} style="cursor:pointer;">
+                  <span class="dot" style="background:${calB?.color ?? "#64b5f6"}"></span>
+                  <span style="font-weight:500;">${c2.eventB.title}</span>
+                  <span style="margin-left:auto;font-size:12px;color:var(--secondary-text-color,#757575);">${fmt(startB)} - ${fmt(endB)}</span>
+                </div>
+              </div>
+            `;
+    })}
+    `;
+  }
+  // ── Shared item renderer ─────────────────────────────────────────
+  _renderTaskItem(t2) {
+    const list = this.lists.find((l2) => l2.id === t2.list_id);
+    return b`
+      <div class="item">
+        <button
+          class="item-check ${t2.completed ? "done" : ""}"
+          @click=${() => t2.completed ? this._uncompleteTask(t2.id) : this._completeTask(t2.id)}
+          title="${t2.completed ? "Uncomplete" : "Complete"}"
+        >
+          ${t2.completed ? b`<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>` : A}
+        </button>
+        <span class="item-title ${t2.completed ? "completed" : ""}">${t2.title}</span>
+        <span class="item-meta">${list?.name ?? ""} ${t2.due ? `| ${t2.due}` : ""}</span>
+      </div>
+    `;
+  }
+  // ── Actions ──────────────────────────────────────────────────────
+  _completeTask(taskId) {
+    this.dispatchEvent(
+      new CustomEvent("task-complete", {
+        detail: { taskId },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  _uncompleteTask(taskId) {
+    this.dispatchEvent(
+      new CustomEvent("task-uncomplete", {
+        detail: { taskId },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  _selectEvent(event) {
+    this.dispatchEvent(
+      new CustomEvent("event-select", {
+        detail: { event },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+};
+CaleeSmartViews.styles = i$3`
+    :host {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 2px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--divider-color, #e0e0e0);
+      overflow-x: auto;
+      flex-shrink: 0;
+    }
+
+    .tab {
+      background: none;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      color: var(--secondary-text-color, #727272);
+      transition: background 0.15s, color 0.15s;
+      font-family: inherit;
+    }
+
+    .tab:hover {
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
+    }
+
+    .tab[active] {
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 10%, transparent);
+      color: var(--primary-color, #03a9f4);
+      font-weight: 600;
+    }
+
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 12px;
+      color: var(--primary-text-color, #212121);
+    }
+
+    .empty {
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--secondary-text-color, #757575);
+      font-size: 14px;
+    }
+
+    /* Task/event items */
+    .item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      transition: background 0.15s;
+      cursor: default;
+    }
+
+    .item:hover {
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.03));
+    }
+
+    .item-check {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--divider-color, #ccc);
+      border-radius: 50%;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s, background 0.15s;
+      background: none;
+      padding: 0;
+    }
+
+    .item-check:hover {
+      border-color: var(--primary-color, #03a9f4);
+    }
+
+    .item-check.done {
+      background: var(--primary-color, #03a9f4);
+      border-color: var(--primary-color, #03a9f4);
+    }
+
+    .item-title {
+      flex: 1;
+      font-size: 14px;
+      color: var(--primary-text-color, #212121);
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .item-title.completed {
+      text-decoration: line-through;
+      color: var(--secondary-text-color, #999);
+    }
+
+    .item-meta {
+      font-size: 12px;
+      color: var(--secondary-text-color, #757575);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .item-meta.overdue {
+      color: var(--error-color, #f44336);
+      font-weight: 500;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Countdown */
+    .countdown {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 8%, transparent);
+      border-radius: 10px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      color: var(--primary-text-color, #212121);
+    }
+
+    .countdown-label {
+      font-weight: 500;
+    }
+
+    .countdown-value {
+      font-weight: 600;
+      color: var(--primary-color, #03a9f4);
+    }
+
+    /* Budget */
+    .budget-card {
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.03));
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .budget-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .budget-total {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--primary-text-color, #212121);
+    }
+
+    .budget-remaining {
+      font-size: 14px;
+      color: var(--secondary-text-color, #757575);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--divider-color, #e0e0e0);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    .category-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      font-size: 13px;
+      border-bottom: 1px solid var(--divider-color, #f0f0f0);
+    }
+
+    .category-row:last-child {
+      border-bottom: none;
+    }
+
+    .category-name {
+      font-weight: 500;
+      color: var(--primary-text-color, #212121);
+      text-transform: capitalize;
+    }
+
+    .category-amount {
+      color: var(--secondary-text-color, #757575);
+    }
+
+    /* Conflict */
+    .conflict-pair {
+      background: color-mix(in srgb, var(--warning-color, #ff9800) 8%, transparent);
+      border: 1px solid color-mix(in srgb, var(--warning-color, #ff9800) 25%, transparent);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+    }
+
+    .conflict-event {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      padding: 4px 0;
+    }
+
+    .conflict-vs {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--warning-color, #ff9800);
+      padding: 2px 0;
+    }
+  `;
+__decorateClass$b([
+  n2({ type: Array })
+], CaleeSmartViews.prototype, "events", 2);
+__decorateClass$b([
+  n2({ type: Array })
+], CaleeSmartViews.prototype, "tasks", 2);
+__decorateClass$b([
+  n2({ type: Array })
+], CaleeSmartViews.prototype, "lists", 2);
+__decorateClass$b([
+  n2({ type: Array })
+], CaleeSmartViews.prototype, "conflicts", 2);
+__decorateClass$b([
+  n2({ attribute: false })
+], CaleeSmartViews.prototype, "calendars", 2);
+__decorateClass$b([
+  n2({ type: String })
+], CaleeSmartViews.prototype, "currency", 2);
+__decorateClass$b([
+  n2({ type: Number })
+], CaleeSmartViews.prototype, "budget", 2);
+__decorateClass$b([
+  n2({ type: String })
+], CaleeSmartViews.prototype, "initialTab", 2);
+__decorateClass$b([
+  n2({ type: Array })
+], CaleeSmartViews.prototype, "reminderCalendars", 2);
+__decorateClass$b([
+  r()
+], CaleeSmartViews.prototype, "activeTab", 2);
+__decorateClass$b([
+  n2({ type: Boolean, reflect: true })
+], CaleeSmartViews.prototype, "narrow", 2);
+CaleeSmartViews = __decorateClass$b([
+  t("calee-smart-views")
+], CaleeSmartViews);
 var __defProp$a = Object.defineProperty;
 var __getOwnPropDesc$a = Object.getOwnPropertyDescriptor;
 var __decorateClass$a = (decorators, target, key, kind) => {
@@ -6062,190 +6679,6 @@ var __decorateClass$a = (decorators, target, key, kind) => {
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
   if (kind && result) __defProp$a(target, key, result);
-  return result;
-};
-function formatTime(iso) {
-  return new Date(iso).toLocaleTimeString(void 0, {
-    hour: "numeric",
-    minute: "2-digit"
-  });
-}
-function formatDuration(ms) {
-  if (ms <= 0) return "0m";
-  const totalMin = Math.round(ms / 6e4);
-  const h2 = Math.floor(totalMin / 60);
-  const m2 = totalMin % 60;
-  if (h2 === 0) return `${m2}m`;
-  if (m2 === 0) return `${h2}h`;
-  return `${h2}h ${m2}m`;
-}
-let CaleeShiftProgress = class extends i {
-  constructor() {
-    super(...arguments);
-    this.currentShift = null;
-    this._pct = 0;
-    this._elapsed = "";
-    this._remaining = "";
-    this._timer = null;
-  }
-  /* ── Lifecycle ──────────────────────────────────────────────────── */
-  connectedCallback() {
-    super.connectedCallback();
-    this._tick();
-    this._timer = setInterval(() => this._tick(), 15e3);
-  }
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    if (this._timer) clearInterval(this._timer);
-  }
-  willUpdate(changed) {
-    if (changed.has("currentShift")) {
-      this._tick();
-    }
-  }
-  _tick() {
-    const shift = this.currentShift;
-    if (!shift) {
-      this._pct = 0;
-      this._elapsed = "";
-      this._remaining = "";
-      return;
-    }
-    const now = Date.now();
-    const start = new Date(shift.start).getTime();
-    const end = new Date(shift.end).getTime();
-    const total = end - start;
-    if (total <= 0) {
-      this._pct = 100;
-      this._elapsed = formatDuration(0);
-      this._remaining = formatDuration(0);
-      return;
-    }
-    const elapsed = Math.max(0, Math.min(now - start, total));
-    this._pct = Math.round(elapsed / total * 100);
-    this._elapsed = formatDuration(elapsed);
-    this._remaining = formatDuration(Math.max(0, total - elapsed));
-  }
-  /* ── Render ─────────────────────────────────────────────────────── */
-  render() {
-    if (!this.currentShift) {
-      return b`<div class="empty">No active shift</div>`;
-    }
-    const shift = this.currentShift;
-    return b`
-      <div class="header">
-        <span class="title">${shift.title}</span>
-        <span class="time-range">
-          ${formatTime(shift.start)} &ndash; ${formatTime(shift.end)}
-        </span>
-      </div>
-
-      <div class="bar-bg">
-        <div class="bar-fill" style="width:${this._pct}%"></div>
-      </div>
-
-      <div class="stats">
-        <span>${this._elapsed} elapsed</span>
-        <span class="pct">${this._pct}%</span>
-        <span>${this._remaining} remaining</span>
-      </div>
-    `;
-  }
-};
-CaleeShiftProgress.styles = i$3`
-    :host {
-      display: block;
-      padding: 16px;
-      background: var(--card-background-color, #fff);
-      border-radius: 12px;
-      box-shadow: var(--ha-card-box-shadow, 0 2px 6px rgba(0, 0, 0, 0.1));
-    }
-
-    .empty {
-      text-align: center;
-      padding: 24px 16px;
-      color: var(--secondary-text-color, #757575);
-      font-size: 14px;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 12px;
-    }
-
-    .title {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--primary-text-color, #212121);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-right: 8px;
-    }
-
-    .time-range {
-      font-size: 12px;
-      color: var(--secondary-text-color, #757575);
-      white-space: nowrap;
-    }
-
-    /* ── Progress bar ────────────────────────────────────────────── */
-
-    .bar-bg {
-      width: 100%;
-      height: 8px;
-      border-radius: 4px;
-      background: var(--divider-color, #e0e0e0);
-      overflow: hidden;
-    }
-
-    .bar-fill {
-      height: 100%;
-      border-radius: 4px;
-      background: var(--primary-color, #03a9f4);
-      transition: width 0.5s ease;
-    }
-
-    /* ── Stats ───────────────────────────────────────────────────── */
-
-    .stats {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 8px;
-      font-size: 12px;
-      color: var(--secondary-text-color, #757575);
-    }
-
-    .pct {
-      font-weight: 600;
-      color: var(--primary-color, #03a9f4);
-    }
-  `;
-__decorateClass$a([
-  n2({ type: Object })
-], CaleeShiftProgress.prototype, "currentShift", 2);
-__decorateClass$a([
-  r()
-], CaleeShiftProgress.prototype, "_pct", 2);
-__decorateClass$a([
-  r()
-], CaleeShiftProgress.prototype, "_elapsed", 2);
-__decorateClass$a([
-  r()
-], CaleeShiftProgress.prototype, "_remaining", 2);
-CaleeShiftProgress = __decorateClass$a([
-  t("calee-shift-progress")
-], CaleeShiftProgress);
-var __defProp$9 = Object.defineProperty;
-var __getOwnPropDesc$9 = Object.getOwnPropertyDescriptor;
-var __decorateClass$9 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$9(target, key) : target;
-  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
-    if (decorator = decorators[i2])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$9(target, key, result);
   return result;
 };
 function formatStartTime(iso) {
@@ -6322,68 +6755,68 @@ let CaleeNextShift = class extends i {
 CaleeNextShift.styles = i$3`
     :host {
       display: block;
-      padding: 16px;
+      padding: 10px 12px;
       background: var(--card-background-color, #fff);
-      border-radius: 12px;
-      box-shadow: var(--ha-card-box-shadow, 0 2px 6px rgba(0, 0, 0, 0.1));
+      border-radius: 10px;
+      box-shadow: var(--ha-card-box-shadow, 0 1px 4px rgba(0, 0, 0, 0.08));
     }
 
     .empty {
       text-align: center;
-      padding: 24px 16px;
+      padding: 8px;
       color: var(--secondary-text-color, #757575);
-      font-size: 14px;
+      font-size: 12px;
     }
 
     .label {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: var(--secondary-text-color, #757575);
-      margin: 0 0 8px;
+      margin: 0 0 4px;
     }
 
     .title {
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 600;
       color: var(--primary-text-color, #212121);
-      margin: 0 0 4px;
+      margin: 0 0 2px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     .start-time {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--secondary-text-color, #757575);
-      margin: 0 0 12px;
+      margin: 0 0 6px;
     }
 
     .countdown {
-      font-size: 22px;
+      font-size: 16px;
       font-weight: 700;
       color: var(--primary-color, #03a9f4);
-      letter-spacing: -0.5px;
+      letter-spacing: -0.3px;
     }
   `;
-__decorateClass$9([
+__decorateClass$a([
   n2({ type: Object })
 ], CaleeNextShift.prototype, "nextShift", 2);
-__decorateClass$9([
+__decorateClass$a([
   r()
 ], CaleeNextShift.prototype, "_countdown", 2);
-CaleeNextShift = __decorateClass$9([
+CaleeNextShift = __decorateClass$a([
   t("calee-next-shift")
 ], CaleeNextShift);
-var __defProp$8 = Object.defineProperty;
-var __getOwnPropDesc$8 = Object.getOwnPropertyDescriptor;
-var __decorateClass$8 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$8(target, key) : target;
+var __defProp$9 = Object.defineProperty;
+var __getOwnPropDesc$9 = Object.getOwnPropertyDescriptor;
+var __decorateClass$9 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$9(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$8(target, key, result);
+  if (kind && result) __defProp$9(target, key, result);
   return result;
 };
 const RECURRENCE_OPTIONS = [
@@ -6789,50 +7222,50 @@ CaleeEventDialog.styles = i$3`
       }
     }
   `;
-__decorateClass$8([
+__decorateClass$9([
   n2({ type: Object })
 ], CaleeEventDialog.prototype, "event", 2);
-__decorateClass$8([
+__decorateClass$9([
   n2({ type: Array })
 ], CaleeEventDialog.prototype, "calendars", 2);
-__decorateClass$8([
+__decorateClass$9([
   n2({ type: Boolean, reflect: true })
 ], CaleeEventDialog.prototype, "open", 2);
-__decorateClass$8([
+__decorateClass$9([
   n2({ type: Object })
 ], CaleeEventDialog.prototype, "defaults", 2);
-__decorateClass$8([
+__decorateClass$9([
   r()
 ], CaleeEventDialog.prototype, "_title", 2);
-__decorateClass$8([
+__decorateClass$9([
   r()
 ], CaleeEventDialog.prototype, "_calendarId", 2);
-__decorateClass$8([
+__decorateClass$9([
   r()
 ], CaleeEventDialog.prototype, "_start", 2);
-__decorateClass$8([
+__decorateClass$9([
   r()
 ], CaleeEventDialog.prototype, "_end", 2);
-__decorateClass$8([
+__decorateClass$9([
   r()
 ], CaleeEventDialog.prototype, "_note", 2);
-__decorateClass$8([
+__decorateClass$9([
   r()
 ], CaleeEventDialog.prototype, "_recurrenceRule", 2);
-__decorateClass$8([
+__decorateClass$9([
   r()
 ], CaleeEventDialog.prototype, "_templateId", 2);
-CaleeEventDialog = __decorateClass$8([
+CaleeEventDialog = __decorateClass$9([
   t("calee-event-dialog")
 ], CaleeEventDialog);
-var __defProp$7 = Object.defineProperty;
-var __getOwnPropDesc$7 = Object.getOwnPropertyDescriptor;
-var __decorateClass$7 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$7(target, key) : target;
+var __defProp$8 = Object.defineProperty;
+var __getOwnPropDesc$8 = Object.getOwnPropertyDescriptor;
+var __decorateClass$8 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$8(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$7(target, key, result);
+  if (kind && result) __defProp$8(target, key, result);
   return result;
 };
 function formatShiftTime(t2) {
@@ -7578,35 +8011,35 @@ CaleeTemplatePicker.styles = i$3`
       }
     }
   `;
-__decorateClass$7([
+__decorateClass$8([
   n2({ type: Array })
 ], CaleeTemplatePicker.prototype, "templates", 2);
-__decorateClass$7([
+__decorateClass$8([
   n2({ type: String })
 ], CaleeTemplatePicker.prototype, "selectedDate", 2);
-__decorateClass$7([
+__decorateClass$8([
   n2({ type: String })
 ], CaleeTemplatePicker.prototype, "selectedTime", 2);
-__decorateClass$7([
+__decorateClass$8([
   n2({ type: Boolean, reflect: true })
 ], CaleeTemplatePicker.prototype, "open", 2);
-__decorateClass$7([
+__decorateClass$8([
   r()
 ], CaleeTemplatePicker.prototype, "_step", 2);
-__decorateClass$7([
+__decorateClass$8([
   r()
 ], CaleeTemplatePicker.prototype, "_datePill", 2);
-CaleeTemplatePicker = __decorateClass$7([
+CaleeTemplatePicker = __decorateClass$8([
   t("calee-template-picker")
 ], CaleeTemplatePicker);
-var __defProp$6 = Object.defineProperty;
-var __getOwnPropDesc$6 = Object.getOwnPropertyDescriptor;
-var __decorateClass$6 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$6(target, key) : target;
+var __defProp$7 = Object.defineProperty;
+var __getOwnPropDesc$7 = Object.getOwnPropertyDescriptor;
+var __decorateClass$7 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$7(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$6(target, key, result);
+  if (kind && result) __defProp$7(target, key, result);
   return result;
 };
 const PRESET_COLORS = [
@@ -8341,41 +8774,41 @@ CaleeTemplateManager.styles = i$3`
       }
     }
   `;
-__decorateClass$6([
+__decorateClass$7([
   n2({ type: Array })
 ], CaleeTemplateManager.prototype, "templates", 2);
-__decorateClass$6([
+__decorateClass$7([
   n2({ type: Array })
 ], CaleeTemplateManager.prototype, "calendars", 2);
-__decorateClass$6([
+__decorateClass$7([
   n2({ attribute: false })
 ], CaleeTemplateManager.prototype, "hass", 2);
-__decorateClass$6([
+__decorateClass$7([
   n2({ type: Boolean, reflect: true })
 ], CaleeTemplateManager.prototype, "open", 2);
-__decorateClass$6([
+__decorateClass$7([
   r()
 ], CaleeTemplateManager.prototype, "_editingTemplate", 2);
-__decorateClass$6([
+__decorateClass$7([
   r()
 ], CaleeTemplateManager.prototype, "_isNew", 2);
-__decorateClass$6([
+__decorateClass$7([
   r()
 ], CaleeTemplateManager.prototype, "_confirmDeleteId", 2);
-__decorateClass$6([
+__decorateClass$7([
   r()
 ], CaleeTemplateManager.prototype, "_saving", 2);
-CaleeTemplateManager = __decorateClass$6([
+CaleeTemplateManager = __decorateClass$7([
   t("calee-template-manager")
 ], CaleeTemplateManager);
-var __defProp$5 = Object.defineProperty;
-var __getOwnPropDesc$5 = Object.getOwnPropertyDescriptor;
-var __decorateClass$5 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$5(target, key) : target;
+var __defProp$6 = Object.defineProperty;
+var __getOwnPropDesc$6 = Object.getOwnPropertyDescriptor;
+var __decorateClass$6 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$6(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$5(target, key, result);
+  if (kind && result) __defProp$6(target, key, result);
   return result;
 };
 let CaleeSettingsDialog = class extends i {
@@ -8389,6 +8822,7 @@ let CaleeSettingsDialog = class extends i {
     this._budgetAmount = null;
     this._customCategories = [];
     this._newCategoryText = "";
+    this._strictPrivacy = false;
     this._saving = false;
     this._loadingSettings = false;
   }
@@ -8414,12 +8848,14 @@ let CaleeSettingsDialog = class extends i {
         this._maxEventAgeDays = result.max_event_age_days ?? 365;
         this._currencySymbol = result.currency ?? "$";
         this._budgetAmount = result.budget > 0 ? result.budget : null;
+        this._strictPrivacy = result.strict_privacy ?? false;
       } catch {
         this._timeFormat = "12h";
         this._weekStartsOn = "monday";
         this._maxEventAgeDays = 365;
         this._currencySymbol = "$";
         this._budgetAmount = null;
+        this._strictPrivacy = false;
       } finally {
         this._loadingSettings = false;
       }
@@ -8462,7 +8898,8 @@ let CaleeSettingsDialog = class extends i {
           currency: this._currencySymbol,
           budget: this._budgetAmount ?? 0,
           week_start: this._weekStartsOn,
-          time_format: this._timeFormat
+          time_format: this._timeFormat,
+          strict_privacy: this._strictPrivacy
         });
       } catch (err) {
         console.error("[Calee] Failed to save settings:", err);
@@ -8610,6 +9047,34 @@ let CaleeSettingsDialog = class extends i {
       this._budgetAmount = val ? Number(val) : null;
     }}
               />
+            </div>
+          </div>
+
+          <!-- Privacy -->
+          <div class="section">
+            <div class="section-title">Privacy</div>
+
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Strict privacy mode</div>
+                <div class="setting-desc">New calendars/lists default to private. Unassigned resources are hidden from users without explicit roles.</div>
+              </div>
+              <div class="toggle-group">
+                <button
+                  class="toggle-opt"
+                  ?active=${!this._strictPrivacy}
+                  @click=${() => {
+      this._strictPrivacy = false;
+    }}
+                >Off</button>
+                <button
+                  class="toggle-opt"
+                  ?active=${this._strictPrivacy}
+                  @click=${() => {
+      this._strictPrivacy = true;
+    }}
+                >On</button>
+              </div>
             </div>
           </div>
 
@@ -8942,50 +9407,53 @@ CaleeSettingsDialog.styles = i$3`
       cursor: not-allowed;
     }
   `;
-__decorateClass$5([
+__decorateClass$6([
   n2({ type: Boolean, reflect: true })
 ], CaleeSettingsDialog.prototype, "open", 2);
-__decorateClass$5([
+__decorateClass$6([
   n2({ attribute: false })
 ], CaleeSettingsDialog.prototype, "hass", 2);
-__decorateClass$5([
+__decorateClass$6([
   r()
 ], CaleeSettingsDialog.prototype, "_timeFormat", 2);
-__decorateClass$5([
+__decorateClass$6([
   r()
 ], CaleeSettingsDialog.prototype, "_weekStartsOn", 2);
-__decorateClass$5([
+__decorateClass$6([
   r()
 ], CaleeSettingsDialog.prototype, "_maxEventAgeDays", 2);
-__decorateClass$5([
+__decorateClass$6([
   r()
 ], CaleeSettingsDialog.prototype, "_currencySymbol", 2);
-__decorateClass$5([
+__decorateClass$6([
   r()
 ], CaleeSettingsDialog.prototype, "_budgetAmount", 2);
-__decorateClass$5([
+__decorateClass$6([
   r()
 ], CaleeSettingsDialog.prototype, "_customCategories", 2);
-__decorateClass$5([
+__decorateClass$6([
   r()
 ], CaleeSettingsDialog.prototype, "_newCategoryText", 2);
-__decorateClass$5([
+__decorateClass$6([
+  r()
+], CaleeSettingsDialog.prototype, "_strictPrivacy", 2);
+__decorateClass$6([
   r()
 ], CaleeSettingsDialog.prototype, "_saving", 2);
-__decorateClass$5([
+__decorateClass$6([
   r()
 ], CaleeSettingsDialog.prototype, "_loadingSettings", 2);
-CaleeSettingsDialog = __decorateClass$5([
+CaleeSettingsDialog = __decorateClass$6([
   t("calee-settings-dialog")
 ], CaleeSettingsDialog);
-var __defProp$4 = Object.defineProperty;
-var __getOwnPropDesc$4 = Object.getOwnPropertyDescriptor;
-var __decorateClass$4 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$4(target, key) : target;
+var __defProp$5 = Object.defineProperty;
+var __getOwnPropDesc$5 = Object.getOwnPropertyDescriptor;
+var __decorateClass$5 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$5(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$4(target, key, result);
+  if (kind && result) __defProp$5(target, key, result);
   return result;
 };
 function relativeTime$1(isoStr) {
@@ -9310,41 +9778,41 @@ CaleeDeletedItems.styles = i$3`
       }
     }
   `;
-__decorateClass$4([
+__decorateClass$5([
   n2({ attribute: false })
 ], CaleeDeletedItems.prototype, "hass", 2);
-__decorateClass$4([
+__decorateClass$5([
   n2({ type: Boolean, reflect: true })
 ], CaleeDeletedItems.prototype, "open", 2);
-__decorateClass$4([
+__decorateClass$5([
   n2({ attribute: false })
 ], CaleeDeletedItems.prototype, "calendars", 2);
-__decorateClass$4([
+__decorateClass$5([
   n2({ attribute: false })
 ], CaleeDeletedItems.prototype, "lists", 2);
-__decorateClass$4([
+__decorateClass$5([
   r()
 ], CaleeDeletedItems.prototype, "_items", 2);
-__decorateClass$4([
+__decorateClass$5([
   r()
 ], CaleeDeletedItems.prototype, "_loading", 2);
-__decorateClass$4([
+__decorateClass$5([
   r()
 ], CaleeDeletedItems.prototype, "_restoringId", 2);
-__decorateClass$4([
+__decorateClass$5([
   r()
 ], CaleeDeletedItems.prototype, "_toastMessage", 2);
-CaleeDeletedItems = __decorateClass$4([
+CaleeDeletedItems = __decorateClass$5([
   t("calee-deleted-items")
 ], CaleeDeletedItems);
-var __defProp$3 = Object.defineProperty;
-var __getOwnPropDesc$3 = Object.getOwnPropertyDescriptor;
-var __decorateClass$3 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$3(target, key) : target;
+var __defProp$4 = Object.defineProperty;
+var __getOwnPropDesc$4 = Object.getOwnPropertyDescriptor;
+var __decorateClass$4 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$4(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$3(target, key, result);
+  if (kind && result) __defProp$4(target, key, result);
   return result;
 };
 function relativeTime(isoStr) {
@@ -9606,29 +10074,29 @@ CaleeActivityFeed.styles = i$3`
       }
     }
   `;
-__decorateClass$3([
+__decorateClass$4([
   n2({ attribute: false })
 ], CaleeActivityFeed.prototype, "hass", 2);
-__decorateClass$3([
+__decorateClass$4([
   n2({ type: Boolean, reflect: true })
 ], CaleeActivityFeed.prototype, "open", 2);
-__decorateClass$3([
+__decorateClass$4([
   r()
 ], CaleeActivityFeed.prototype, "_entries", 2);
-__decorateClass$3([
+__decorateClass$4([
   r()
 ], CaleeActivityFeed.prototype, "_loading", 2);
-CaleeActivityFeed = __decorateClass$3([
+CaleeActivityFeed = __decorateClass$4([
   t("calee-activity-feed")
 ], CaleeActivityFeed);
-var __defProp$2 = Object.defineProperty;
-var __getOwnPropDesc$2 = Object.getOwnPropertyDescriptor;
-var __decorateClass$2 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$2(target, key) : target;
+var __defProp$3 = Object.defineProperty;
+var __getOwnPropDesc$3 = Object.getOwnPropertyDescriptor;
+var __decorateClass$3 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$3(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$2(target, key, result);
+  if (kind && result) __defProp$3(target, key, result);
   return result;
 };
 let CaleeRoutineManager = class extends i {
@@ -10354,38 +10822,38 @@ CaleeRoutineManager.styles = i$3`
       font-size: 14px;
     }
   `;
-__decorateClass$2([
+__decorateClass$3([
   n2({ attribute: false })
 ], CaleeRoutineManager.prototype, "hass", 2);
-__decorateClass$2([
+__decorateClass$3([
   n2({ type: Array })
 ], CaleeRoutineManager.prototype, "routines", 2);
-__decorateClass$2([
+__decorateClass$3([
   n2({ type: Array })
 ], CaleeRoutineManager.prototype, "templates", 2);
-__decorateClass$2([
+__decorateClass$3([
   n2({ type: Boolean, reflect: true })
 ], CaleeRoutineManager.prototype, "open", 2);
-__decorateClass$2([
+__decorateClass$3([
   r()
 ], CaleeRoutineManager.prototype, "_editingRoutine", 2);
-__decorateClass$2([
+__decorateClass$3([
   r()
 ], CaleeRoutineManager.prototype, "_isNew", 2);
-__decorateClass$2([
+__decorateClass$3([
   r()
 ], CaleeRoutineManager.prototype, "_confirmDeleteId", 2);
-CaleeRoutineManager = __decorateClass$2([
+CaleeRoutineManager = __decorateClass$3([
   t("calee-routine-manager")
 ], CaleeRoutineManager);
-var __defProp$1 = Object.defineProperty;
-var __getOwnPropDesc$1 = Object.getOwnPropertyDescriptor;
-var __decorateClass$1 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$1(target, key) : target;
+var __defProp$2 = Object.defineProperty;
+var __getOwnPropDesc$2 = Object.getOwnPropertyDescriptor;
+var __decorateClass$2 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$2(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$1(target, key, result);
+  if (kind && result) __defProp$2(target, key, result);
   return result;
 };
 const COLOUR_OPTIONS = [
@@ -10511,6 +10979,9 @@ let CaleeCalendarManager = class extends i {
       <div class="item-row">
         <div class="item-dot" style="background:${cal.color}"></div>
         <span class="item-name">${cal.emoji ? `${cal.emoji} ` : ""}${cal.name}</span>
+        <button class="icon-btn" @click=${() => this._toggleCalendarPrivacy(cal)} title="${cal.is_private ? "Make public" : "Make private"}" style="color:${cal.is_private ? "var(--primary-color,#03a9f4)" : "var(--secondary-text-color,#999)"};">
+          ${cal.is_private ? "🔒" : "🔓"}
+        </button>
         <button class="icon-btn" @click=${() => {
       this._editingCalendarId = cal.id;
       this._editName = cal.name;
@@ -10584,6 +11055,9 @@ let CaleeCalendarManager = class extends i {
       <div class="item-row">
         <span class="item-name">${lst.name}</span>
         <span style="font-size:11px;color:var(--secondary-text-color,#999);padding:2px 6px;border-radius:4px;background:var(--secondary-background-color,#f0f0f0);">${lst.list_type}</span>
+        <button class="icon-btn" @click=${() => this._toggleListPrivacy(lst)} title="${lst.is_private ? "Make public" : "Make private"}" style="color:${lst.is_private ? "var(--primary-color,#03a9f4)" : "var(--secondary-text-color,#999)"};">
+          ${lst.is_private ? "🔒" : "🔓"}
+        </button>
         <button class="icon-btn" @click=${() => {
       this._editingListId = lst.id;
       this._editListName = lst.name;
@@ -10700,6 +11174,30 @@ let CaleeCalendarManager = class extends i {
       this._fireChanged();
     } catch (err) {
       console.error("Failed to delete list:", err);
+    }
+  }
+  async _toggleCalendarPrivacy(cal) {
+    try {
+      await this.hass.callWS({
+        type: "calee/set_calendar_private",
+        calendar_id: cal.id,
+        is_private: !cal.is_private
+      });
+      this._fireChanged();
+    } catch (err) {
+      console.error("Failed to toggle calendar privacy:", err);
+    }
+  }
+  async _toggleListPrivacy(lst) {
+    try {
+      await this.hass.callWS({
+        type: "calee/set_list_private",
+        list_id: lst.id,
+        is_private: !lst.is_private
+      });
+      this._fireChanged();
+    } catch (err) {
+      console.error("Failed to toggle list privacy:", err);
     }
   }
   // ── Helpers ────────────────────────────────────────────────────────
@@ -10832,66 +11330,535 @@ CaleeCalendarManager.styles = i$3`
       cursor: pointer; font-size: 13px; font-weight: 500;
     }
   `;
-__decorateClass$1([
+__decorateClass$2([
   n2({ attribute: false })
 ], CaleeCalendarManager.prototype, "hass", 2);
-__decorateClass$1([
+__decorateClass$2([
   n2({ type: Array })
 ], CaleeCalendarManager.prototype, "calendars", 2);
-__decorateClass$1([
+__decorateClass$2([
   n2({ type: Array })
 ], CaleeCalendarManager.prototype, "lists", 2);
-__decorateClass$1([
+__decorateClass$2([
   n2({ type: Boolean, reflect: true })
 ], CaleeCalendarManager.prototype, "open", 2);
-__decorateClass$1([
+__decorateClass$2([
   r()
 ], CaleeCalendarManager.prototype, "_editingCalendarId", 2);
-__decorateClass$1([
+__decorateClass$2([
   r()
 ], CaleeCalendarManager.prototype, "_editName", 2);
-__decorateClass$1([
+__decorateClass$2([
   r()
 ], CaleeCalendarManager.prototype, "_editColor", 2);
-__decorateClass$1([
+__decorateClass$2([
   r()
 ], CaleeCalendarManager.prototype, "_editEmoji", 2);
-__decorateClass$1([
+__decorateClass$2([
   r()
 ], CaleeCalendarManager.prototype, "_addingCalendar", 2);
-__decorateClass$1([
+__decorateClass$2([
   r()
 ], CaleeCalendarManager.prototype, "_newCalName", 2);
-__decorateClass$1([
+__decorateClass$2([
   r()
 ], CaleeCalendarManager.prototype, "_newCalColor", 2);
-__decorateClass$1([
+__decorateClass$2([
   r()
 ], CaleeCalendarManager.prototype, "_newCalEmoji", 2);
-__decorateClass$1([
+__decorateClass$2([
   r()
 ], CaleeCalendarManager.prototype, "_editingListId", 2);
-__decorateClass$1([
+__decorateClass$2([
   r()
 ], CaleeCalendarManager.prototype, "_editListName", 2);
-__decorateClass$1([
+__decorateClass$2([
   r()
 ], CaleeCalendarManager.prototype, "_addingList", 2);
-__decorateClass$1([
+__decorateClass$2([
   r()
 ], CaleeCalendarManager.prototype, "_newListName", 2);
-__decorateClass$1([
+__decorateClass$2([
   r()
 ], CaleeCalendarManager.prototype, "_newListType", 2);
-__decorateClass$1([
+__decorateClass$2([
   r()
 ], CaleeCalendarManager.prototype, "_confirmDeleteId", 2);
-__decorateClass$1([
+__decorateClass$2([
   r()
 ], CaleeCalendarManager.prototype, "_confirmDeleteType", 2);
-CaleeCalendarManager = __decorateClass$1([
+CaleeCalendarManager = __decorateClass$2([
   t("calee-calendar-manager")
 ], CaleeCalendarManager);
+var __defProp$1 = Object.defineProperty;
+var __getOwnPropDesc$1 = Object.getOwnPropertyDescriptor;
+var __decorateClass$1 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$1(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$1(target, key, result);
+  return result;
+};
+let CaleeDataCenter = class extends i {
+  constructor() {
+    super(...arguments);
+    this.open = false;
+    this.events = [];
+    this.tasks = [];
+    this.calendars = [];
+    this.lists = [];
+    this.templates = [];
+    this.routines = [];
+    this._tab = "export";
+    this._auditLog = [];
+    this._loadingAudit = false;
+  }
+  willUpdate(changed) {
+    if (changed.has("open") && this.open) {
+      this._loadAuditLog();
+    }
+  }
+  async _loadAuditLog() {
+    if (!this.hass) return;
+    this._loadingAudit = true;
+    try {
+      this._auditLog = await this.hass.callWS({ type: "calee/audit_log" }) ?? [];
+    } catch {
+      this._auditLog = [];
+    } finally {
+      this._loadingAudit = false;
+    }
+  }
+  _close() {
+    this.dispatchEvent(new CustomEvent("dialog-close", { bubbles: true, composed: true }));
+  }
+  render() {
+    if (!this.open) return A;
+    return b`
+      <div class="backdrop" @click=${this._close}>
+        <div class="card" @click=${(e2) => e2.stopPropagation()}>
+          <h2>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+              <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+              <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+            </svg>
+            Data Center
+          </h2>
+
+          <div class="tabs">
+            <button class="tab" ?active=${this._tab === "export"} @click=${() => {
+      this._tab = "export";
+    }}>Export</button>
+            <button class="tab" ?active=${this._tab === "imports"} @click=${() => {
+      this._tab = "imports";
+    }}>Import history</button>
+            <button class="tab" ?active=${this._tab === "changes"} @click=${() => {
+      this._tab = "changes";
+    }}>Recent changes</button>
+          </div>
+
+          ${this._tab === "export" ? this._renderExport() : A}
+          ${this._tab === "imports" ? this._renderImports() : A}
+          ${this._tab === "changes" ? this._renderChanges() : A}
+
+          <button class="close-btn" @click=${this._close}>Close</button>
+        </div>
+      </div>
+    `;
+  }
+  // ── Export ────────────────────────────────────────────────────────
+  _renderExport() {
+    return b`
+      <div class="export-grid">
+        <button class="export-btn" @click=${this._exportJSON}>
+          <div class="export-icon" style="background:color-mix(in srgb,#2196f3 15%,transparent);color:#1565c0;">{ }</div>
+          <div class="export-info">
+            <div class="export-title">JSON (export all data)</div>
+            <div class="export-desc">All calendars, events, tasks, templates, routines, and settings</div>
+          </div>
+        </button>
+
+        <button class="export-btn" @click=${this._exportCSV}>
+          <div class="export-icon" style="background:color-mix(in srgb,#4caf50 15%,transparent);color:#2e7d32;">CSV</div>
+          <div class="export-info">
+            <div class="export-title">CSV (events only)</div>
+            <div class="export-desc">Spreadsheet-friendly format with all event fields</div>
+          </div>
+        </button>
+
+        <button class="export-btn" @click=${this._exportICS}>
+          <div class="export-icon" style="background:color-mix(in srgb,#9c27b0 15%,transparent);color:#6a1b9a;">ICS</div>
+          <div class="export-info">
+            <div class="export-title">ICS (iCalendar)</div>
+            <div class="export-desc">Import into Apple Calendar, Google Calendar, Outlook</div>
+          </div>
+        </button>
+      </div>
+    `;
+  }
+  async _exportJSON() {
+    let allEvents = [];
+    let allTasks = [];
+    let presets = [];
+    let settings = {};
+    let auditSummary = { total: 0, recent: [] };
+    try {
+      allEvents = await this.hass.callWS({ type: "calee/events" }) ?? [];
+    } catch {
+      allEvents = this.events;
+    }
+    try {
+      allTasks = await this.hass.callWS({ type: "calee/tasks" }) ?? [];
+    } catch {
+      allTasks = this.tasks;
+    }
+    try {
+      presets = await this.hass.callWS({ type: "calee/presets" }) ?? [];
+    } catch {
+    }
+    try {
+      settings = await this.hass.callWS({ type: "calee/get_settings" }) ?? {};
+    } catch {
+    }
+    try {
+      const log = await this.hass.callWS({ type: "calee/audit_log" }) ?? [];
+      auditSummary = { total: log.length, recent: log.slice(-20) };
+    } catch {
+    }
+    const data = {
+      exported_at: (/* @__PURE__ */ new Date()).toISOString(),
+      calendars: this.calendars,
+      events: allEvents,
+      tasks: allTasks,
+      lists: this.lists,
+      templates: this.templates,
+      routines: this.routines,
+      presets,
+      settings,
+      audit_summary: auditSummary
+    };
+    this._downloadFile(
+      JSON.stringify(data, null, 2),
+      "application/json",
+      `calee-export-${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.json`
+    );
+  }
+  async _exportCSV() {
+    let allEvents = [];
+    try {
+      allEvents = await this.hass.callWS({ type: "calee/events" }) ?? [];
+    } catch {
+      allEvents = this.events;
+    }
+    const headers = ["id", "calendar_id", "title", "start", "end", "all_day", "note", "source", "recurrence_rule", "created_at"];
+    const rows = allEvents.filter((e2) => !e2.deleted_at).map(
+      (e2) => headers.map((h2) => {
+        const val = e2[h2] ?? "";
+        const str = String(val);
+        if (str.includes(",") || str.includes('"') || str.includes("\n")) {
+          return `"${str.replace(/"/g, '""')}"`;
+        }
+        return str;
+      }).join(",")
+    );
+    const csv = [headers.join(","), ...rows].join("\n");
+    this._downloadFile(csv, "text/csv", `calee-events-${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.csv`);
+  }
+  async _exportICS() {
+    let allEvents = [];
+    try {
+      allEvents = await this.hass.callWS({ type: "calee/events" }) ?? [];
+    } catch {
+      allEvents = this.events;
+    }
+    const lines = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//Calee//Planner//EN",
+      "CALSCALE:GREGORIAN"
+    ];
+    for (const ev of allEvents.filter((e2) => !e2.deleted_at)) {
+      lines.push("BEGIN:VEVENT");
+      lines.push(`UID:${ev.id}@calee`);
+      lines.push(`SUMMARY:${this._icsEscape(ev.title)}`);
+      if (ev.all_day) {
+        lines.push(`DTSTART;VALUE=DATE:${ev.start.replace(/-/g, "").slice(0, 8)}`);
+        lines.push(`DTEND;VALUE=DATE:${ev.end.replace(/-/g, "").slice(0, 8)}`);
+      } else {
+        lines.push(`DTSTART:${this._toIcsDate(ev.start)}`);
+        lines.push(`DTEND:${this._toIcsDate(ev.end)}`);
+      }
+      if (ev.note) {
+        lines.push(`DESCRIPTION:${this._icsEscape(ev.note)}`);
+      }
+      if (ev.recurrence_rule) {
+        lines.push(`RRULE:${ev.recurrence_rule}`);
+      }
+      lines.push("END:VEVENT");
+    }
+    lines.push("END:VCALENDAR");
+    this._downloadFile(lines.join("\r\n"), "text/calendar", `calee-events-${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.ics`);
+  }
+  _icsEscape(str) {
+    return str.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\n/g, "\\n");
+  }
+  _toIcsDate(iso) {
+    const d2 = new Date(iso);
+    if (isNaN(d2.getTime())) return "";
+    return d2.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  }
+  _downloadFile(content, mimeType, filename) {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a2 = document.createElement("a");
+    a2.href = url;
+    a2.download = filename;
+    document.body.appendChild(a2);
+    a2.click();
+    document.body.removeChild(a2);
+    URL.revokeObjectURL(url);
+  }
+  // ── Import history ───────────────────────────────────────────────
+  _renderImports() {
+    const imports = this._auditLog.filter(
+      (entry) => entry.detail && (entry.detail.startsWith("Imported") || entry.detail.includes("source="))
+    );
+    if (imports.length === 0) {
+      return b`<div class="empty">No imports found in the audit log.</div>`;
+    }
+    return b`
+      ${imports.slice(-50).reverse().map((entry) => b`
+        <div class="log-entry">
+          <span class="log-action create">import</span>
+          <span class="log-detail">${entry.detail || `${entry.resource_type} ${entry.resource_id}`}</span>
+          <span class="log-time">${this._formatTime(entry.timestamp)}</span>
+        </div>
+      `)}
+    `;
+  }
+  // ── Recent changes ───────────────────────────────────────────────
+  _renderChanges() {
+    if (this._loadingAudit) {
+      return b`<div class="empty">Loading...</div>`;
+    }
+    const recent = this._auditLog.slice(-50).reverse();
+    if (recent.length === 0) {
+      return b`<div class="empty">No activity recorded yet.</div>`;
+    }
+    return b`
+      ${recent.map((entry) => b`
+        <div class="log-entry">
+          <span class="log-action ${entry.action}">${entry.action}</span>
+          <span class="log-detail">${entry.detail || `${entry.resource_type} ${entry.resource_id}`}</span>
+          <span class="log-time">${this._formatTime(entry.timestamp)}</span>
+        </div>
+      `)}
+    `;
+  }
+  _formatTime(iso) {
+    try {
+      const d2 = new Date(iso);
+      const now = /* @__PURE__ */ new Date();
+      const diffMs = now.getTime() - d2.getTime();
+      const diffH = Math.floor(diffMs / (1e3 * 60 * 60));
+      if (diffH < 1) {
+        const diffM = Math.floor(diffMs / (1e3 * 60));
+        return diffM <= 0 ? "just now" : `${diffM}m ago`;
+      }
+      if (diffH < 24) return `${diffH}h ago`;
+      const diffD = Math.floor(diffH / 24);
+      if (diffD < 7) return `${diffD}d ago`;
+      return d2.toLocaleDateString(void 0, { month: "short", day: "numeric" });
+    } catch {
+      return iso;
+    }
+  }
+};
+CaleeDataCenter.styles = i$3`
+    :host { display: none; }
+    :host([open]) { display: block; }
+
+    .backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      display: flex; align-items: center; justify-content: center;
+      animation: fadeIn 0.15s ease;
+      padding: 16px;
+    }
+    @keyframes fadeIn { from { opacity: 0; } }
+
+    .card {
+      background: var(--card-background-color, #fff);
+      color: var(--primary-text-color, #212121);
+      border-radius: 16px;
+      padding: 24px;
+      width: 90%; max-width: 560px; max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+    }
+
+    h2 {
+      margin: 0 0 16px;
+      font-size: 18px;
+      font-weight: 600;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    h2 svg { width: 20px; height: 20px; color: var(--secondary-text-color, #727272); }
+
+    .tabs {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--divider-color, #e0e0e0);
+      padding-bottom: 8px;
+    }
+
+    .tab {
+      background: none; border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px; font-weight: 500;
+      cursor: pointer;
+      color: var(--secondary-text-color, #727272);
+      transition: background 0.15s, color 0.15s;
+      font-family: inherit;
+    }
+    .tab:hover { background: var(--secondary-background-color, rgba(0,0,0,0.04)); }
+    .tab[active] {
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 10%, transparent);
+      color: var(--primary-color, #03a9f4);
+      font-weight: 600;
+    }
+
+    .export-grid {
+      display: flex; flex-direction: column; gap: 10px;
+    }
+
+    .export-btn {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px;
+      background: var(--secondary-background-color, rgba(0,0,0,0.03));
+      border: 1px solid var(--divider-color, #e0e0e0);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: inherit;
+      text-align: left;
+    }
+    .export-btn:hover {
+      background: var(--primary-background-color, #f5f5f5);
+    }
+
+    .export-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .export-info { flex: 1; }
+    .export-title { font-size: 14px; font-weight: 600; color: var(--primary-text-color, #212121); }
+    .export-desc { font-size: 12px; color: var(--secondary-text-color, #757575); margin-top: 2px; }
+
+    .log-entry {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--divider-color, #f0f0f0);
+      font-size: 13px;
+    }
+    .log-entry:last-child { border-bottom: none; }
+
+    .log-action {
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .log-action.create { background: color-mix(in srgb, #4caf50 15%, transparent); color: #2e7d32; }
+    .log-action.update { background: color-mix(in srgb, #2196f3 15%, transparent); color: #1565c0; }
+    .log-action.delete { background: color-mix(in srgb, #f44336 15%, transparent); color: #c62828; }
+    .log-action.restore { background: color-mix(in srgb, #ff9800 15%, transparent); color: #e65100; }
+    .log-action.complete { background: color-mix(in srgb, #4caf50 15%, transparent); color: #2e7d32; }
+
+    .log-detail {
+      flex: 1;
+      color: var(--primary-text-color, #212121);
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .log-time {
+      font-size: 11px;
+      color: var(--secondary-text-color, #999);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 24px;
+      color: var(--secondary-text-color, #757575);
+      font-size: 14px;
+    }
+
+    .close-btn {
+      padding: 8px 20px;
+      border: none; border-radius: 8px;
+      background: var(--secondary-background-color, rgba(0,0,0,0.04));
+      color: var(--primary-text-color, #212121);
+      cursor: pointer;
+      font-size: 14px; font-weight: 500;
+      font-family: inherit;
+      margin-top: 16px;
+      float: right;
+    }
+    .close-btn:hover { background: var(--divider-color, #e0e0e0); }
+  `;
+__decorateClass$1([
+  n2({ type: Boolean, reflect: true })
+], CaleeDataCenter.prototype, "open", 2);
+__decorateClass$1([
+  n2({ attribute: false })
+], CaleeDataCenter.prototype, "hass", 2);
+__decorateClass$1([
+  n2({ type: Array })
+], CaleeDataCenter.prototype, "events", 2);
+__decorateClass$1([
+  n2({ type: Array })
+], CaleeDataCenter.prototype, "tasks", 2);
+__decorateClass$1([
+  n2({ type: Array })
+], CaleeDataCenter.prototype, "calendars", 2);
+__decorateClass$1([
+  n2({ type: Array })
+], CaleeDataCenter.prototype, "lists", 2);
+__decorateClass$1([
+  n2({ type: Array })
+], CaleeDataCenter.prototype, "templates", 2);
+__decorateClass$1([
+  n2({ type: Array })
+], CaleeDataCenter.prototype, "routines", 2);
+__decorateClass$1([
+  r()
+], CaleeDataCenter.prototype, "_tab", 2);
+__decorateClass$1([
+  r()
+], CaleeDataCenter.prototype, "_auditLog", 2);
+__decorateClass$1([
+  r()
+], CaleeDataCenter.prototype, "_loadingAudit", 2);
+CaleeDataCenter = __decorateClass$1([
+  t("calee-data-center")
+], CaleeDataCenter);
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __decorateClass = (decorators, target, key, kind) => {
@@ -10903,7 +11870,7 @@ var __decorateClass = (decorators, target, key, kind) => {
   return result;
 };
 const DATE_VIEWS = ["month", "week", "day", "year"];
-const ALL_VIEWS = ["month", "week", "day", "agenda", "tasks", "shopping", "year"];
+const ALL_VIEWS = ["month", "week", "day", "agenda", "tasks", "shopping", "year", "smart"];
 const TAB_VIEWS = ["week", "month", "agenda", "tasks", "shopping"];
 function todayISO() {
   return (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
@@ -11012,11 +11979,24 @@ let CaleePanel = class extends i {
     this._showDeletedItems = false;
     this._showActivityFeed = false;
     this._showRoutineManager = false;
+    this._showDataCenter = false;
+    this._smartSubTab = "before-shift";
+    this._settingsReminderCalendars = ["work_shifts"];
+    this._settingsStrictPrivacy = false;
     this._shoppingToast = "";
     this._hashHandler = this._onHashChange.bind(this);
     this._keyHandler = this._handleKeydown.bind(this);
     this._tasksLoaded = false;
     this._refreshDebounce = null;
+  }
+  /** Guard against adoptedStyleSheets polyfill crashes in older browsers. */
+  createRenderRoot() {
+    try {
+      return super.createRenderRoot();
+    } catch {
+      if (!this.shadowRoot) this.attachShadow({ mode: "open" });
+      return this.shadowRoot;
+    }
   }
   // ── Lifecycle ────────────────────────────────────────────────────
   connectedCallback() {
@@ -11346,7 +12326,7 @@ let CaleePanel = class extends i {
   _handleKeydown(e2) {
     if (this.narrow) return;
     if (this._isEditableKeyboardTarget(e2)) return;
-    if (this._showEventDialog || this._showTemplatePicker || this._showTemplateManager || this._showSettings || this._showDeletedItems || this._showActivityFeed || this._showRoutineManager || this._showAddDialog || this._showRecurringActionDialog || this._showCalendarManager) {
+    if (this._showEventDialog || this._showTemplatePicker || this._showTemplateManager || this._showSettings || this._showDeletedItems || this._showActivityFeed || this._showRoutineManager || this._showAddDialog || this._showRecurringActionDialog || this._showCalendarManager || this._showDataCenter) {
       if (e2.key === "Escape") {
         this._onDialogClose();
         this._showDeletedItems = false;
@@ -11354,6 +12334,7 @@ let CaleePanel = class extends i {
         this._showAddDialog = false;
         this._showRecurringActionDialog = false;
         this._showCalendarManager = false;
+        this._showDataCenter = false;
       }
       return;
     }
@@ -11420,21 +12401,11 @@ let CaleePanel = class extends i {
       this._calendars.filter((c2) => c2.visible).map((c2) => c2.id)
     );
   }
-  /** Only work shifts — used for progress/next-shift sidebar cards. */
+  /** Only work shifts — used for next-shift sidebar card. */
   get _workEvents() {
     return this._events.filter((e2) => e2.calendar_id === "work_shifts");
   }
-  /** The currently active shift (started but not yet ended). */
-  get _currentShift() {
-    const now = Date.now();
-    return this._workEvents.find((e2) => {
-      if (e2.deleted_at || e2.all_day) return false;
-      const start = new Date(e2.start).getTime();
-      const end = new Date(e2.end).getTime();
-      return start <= now && end > now;
-    }) ?? null;
-  }
-  /** The next upcoming shift (starts in the future). */
+  /** The next upcoming work shift (starts in the future). */
   get _nextShift() {
     const now = Date.now();
     const upcoming = this._workEvents.filter((e2) => {
@@ -11558,6 +12529,17 @@ let CaleePanel = class extends i {
         @calendar-changed=${this._onCalendarManagerChanged}
         @dialog-close=${this._onCalendarManagerClose}
       ></calee-calendar-manager>
+      <calee-data-center
+        .hass=${this.hass}
+        .events=${this._events}
+        .tasks=${this._tasks}
+        .calendars=${this._rawCalendars}
+        .lists=${this._lists}
+        .templates=${this._templates}
+        .routines=${this._routines}
+        ?open=${this._showDataCenter}
+        @dialog-close=${this._onDataCenterClose}
+      ></calee-data-center>
       ${this._showRecurringActionDialog ? this._renderRecurringActionDialog() : A}
     `;
   }
@@ -11708,6 +12690,7 @@ let CaleePanel = class extends i {
                       style="--cal-color: ${cal.color}"
                     ></div>
                     <span class="calendar-name">${cal.name}</span>
+                    ${this._rawCalendars.find((rc) => rc.id === cal.id)?.is_private ? b`<svg viewBox="0 0 24 24" fill="none" stroke="var(--secondary-text-color,#999)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0;margin-left:auto;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0110 0v4"></path></svg>` : A}
                   </div>
                 `
     )}
@@ -11737,6 +12720,7 @@ let CaleePanel = class extends i {
                           <polyline points="10 9 9 9 8 9"></polyline>
                         </svg>`}
                     <span>${lst.name}</span>
+                    ${lst.is_private ? b`<svg viewBox="0 0 24 24" fill="none" stroke="var(--secondary-text-color,#999)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0;margin-left:auto;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0110 0v4"></path></svg>` : A}
                   </div>
                 `
     )}
@@ -11771,7 +12755,81 @@ let CaleePanel = class extends i {
           </button>
         </div>
 
-        <!-- More: Year, Recently Deleted & Activity -->
+        <!-- Smart Views -->
+        <div class="sidebar-section">
+          <h3 class="sidebar-heading">Smart Views</h3>
+          <button
+            class="nav-item nav-item-muted"
+            ?active=${this._currentView === "smart" && this._smartSubTab === "before-shift"}
+            @click=${() => {
+      this._smartSubTab = "before-shift";
+      this._navigate("smart");
+    }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>Before next shift</span>
+          </button>
+          <button
+            class="nav-item nav-item-muted"
+            ?active=${this._currentView === "smart" && this._smartSubTab === "weekend"}
+            @click=${() => {
+      this._smartSubTab = "weekend";
+      this._navigate("smart");
+    }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
+              <path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+            </svg>
+            <span>This weekend</span>
+          </button>
+          <button
+            class="nav-item nav-item-muted"
+            ?active=${this._currentView === "smart" && this._smartSubTab === "budget"}
+            @click=${() => {
+      this._smartSubTab = "budget";
+      this._navigate("smart");
+    }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"></path>
+            </svg>
+            <span>Budget watch</span>
+          </button>
+          <button
+            class="nav-item nav-item-muted"
+            ?active=${this._currentView === "smart" && this._smartSubTab === "overdue"}
+            @click=${() => {
+      this._smartSubTab = "overdue";
+      this._navigate("smart");
+    }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <span>Overdue</span>
+          </button>
+          <button
+            class="nav-item nav-item-muted"
+            ?active=${this._currentView === "smart" && this._smartSubTab === "conflicts"}
+            @click=${() => {
+      this._smartSubTab = "conflicts";
+      this._navigate("smart");
+    }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+            <span>Conflicts${this._conflicts.length > 0 ? ` (${this._conflicts.length})` : ""}</span>
+          </button>
+        </div>
+
+        <!-- More: Year, Recently Deleted, Activity & Data Center -->
         <div class="sidebar-section">
           <h3 class="sidebar-heading">More</h3>
           <button
@@ -11807,6 +12865,19 @@ let CaleePanel = class extends i {
             </svg>
             Activity
           </button>
+          <button
+            class="nav-item nav-item-muted"
+            @click=${() => {
+      this._showDataCenter = true;
+    }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+              <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+              <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+            </svg>
+            Data Center
+          </button>
         </div>
 
         <!-- Conflicts -->
@@ -11825,9 +12896,6 @@ let CaleePanel = class extends i {
 
         <!-- Shift cards -->
         <div class="sidebar-cards">
-          <calee-shift-progress
-            .currentShift=${this._currentShift}
-          ></calee-shift-progress>
           <calee-next-shift
             .nextShift=${this._nextShift}
           ></calee-next-shift>
@@ -12244,6 +13312,19 @@ let CaleePanel = class extends i {
         }}
         ></calee-shopping-view>`;
       }
+      case "smart":
+        return b`<calee-smart-views
+          .events=${this._events}
+          .tasks=${this._tasks}
+          .lists=${this._lists}
+          .conflicts=${this._conflicts}
+          .calendars=${calendarMap}
+          .currency=${this._settingsCurrency}
+          .budget=${this._settingsBudget}
+          .reminderCalendars=${this._settingsReminderCalendars}
+          .initialTab=${this._smartSubTab}
+          ?narrow=${this.narrow}
+        ></calee-smart-views>`;
       default:
         return b`<div class="view-placeholder">
           <div class="inner">
@@ -12731,6 +13812,8 @@ let CaleePanel = class extends i {
       this._settingsTimeFormat = result.time_format ?? "12h";
       this._settingsCurrency = result.currency ?? "$";
       this._settingsBudget = result.budget ?? 0;
+      this._settingsReminderCalendars = result.reminder_calendars ?? ["work_shifts"];
+      this._settingsStrictPrivacy = result.strict_privacy ?? false;
     } catch {
     }
   }
@@ -12842,6 +13925,10 @@ let CaleePanel = class extends i {
   }
   _onCalendarManagerClose() {
     this._showCalendarManager = false;
+  }
+  // ── Data Center ──────────────────────────────────────────────────
+  _onDataCenterClose() {
+    this._showDataCenter = false;
   }
   // ── Quick Add Dialog ──────────────────────────────────────────────
   _renderAddDialog() {
@@ -14035,6 +15122,18 @@ __decorateClass([
 __decorateClass([
   r()
 ], CaleePanel.prototype, "_showRoutineManager", 2);
+__decorateClass([
+  r()
+], CaleePanel.prototype, "_showDataCenter", 2);
+__decorateClass([
+  r()
+], CaleePanel.prototype, "_smartSubTab", 2);
+__decorateClass([
+  r()
+], CaleePanel.prototype, "_settingsReminderCalendars", 2);
+__decorateClass([
+  r()
+], CaleePanel.prototype, "_settingsStrictPrivacy", 2);
 __decorateClass([
   r()
 ], CaleePanel.prototype, "_shoppingToast", 2);
