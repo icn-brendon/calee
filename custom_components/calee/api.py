@@ -1372,6 +1372,66 @@ class PlannerAPI:
 
         return result
 
+    def _preview_import(
+        self,
+        calendar_id: str,
+        parsed: list[dict[str, str]],
+        source: str,
+    ) -> ImportResult:
+        """Compute import counts without writing (dry run)."""
+        result = ImportResult(dry_run=True)
+
+        for shift in parsed:
+            external_id = shift.get("external_id", "")
+            if not external_id:
+                result.errors += 1
+                result.error_details.append(
+                    f"Missing external_id for shift '{shift.get('title', '?')}'"
+                )
+                continue
+
+            existing = self._store.find_event_by_source(source, external_id)
+            if existing and (
+                existing.title == shift.get("title", "")
+                and existing.start == shift.get("start", "")
+                and existing.end == shift.get("end", "")
+                and existing.note == shift.get("note", "")
+                and existing.calendar_id == calendar_id
+            ):
+                result.skipped += 1
+            elif existing:
+                result.updated += 1
+            else:
+                result.created += 1
+
+        return result
+
+    async def async_preview_import_csv(
+        self,
+        calendar_id: str,
+        csv_data: str,
+        source: str = "csv",
+    ) -> ImportResult:
+        """Parse CSV and return counts without writing."""
+        if self._store.get_calendar(calendar_id) is None:
+            raise HomeAssistantError(f"Calendar '{calendar_id}' not found")
+
+        parsed = parse_csv(csv_data)
+        return self._preview_import(calendar_id, parsed, source)
+
+    async def async_preview_import_ics(
+        self,
+        calendar_id: str,
+        ics_data: str,
+        source: str = "ics",
+    ) -> ImportResult:
+        """Parse ICS and return counts without writing."""
+        if self._store.get_calendar(calendar_id) is None:
+            raise HomeAssistantError(f"Calendar '{calendar_id}' not found")
+
+        parsed = parse_ics(ics_data)
+        return self._preview_import(calendar_id, parsed, source)
+
     # ── Service handlers (thin wrappers) ─────────────────────────────
 
     async def _handle_add_shift(self, call: ServiceCall) -> None:
@@ -1550,20 +1610,34 @@ class PlannerAPI:
         )
 
     async def _handle_import_csv(self, call: ServiceCall) -> None:
-        await self.async_import_csv(
-            calendar_id=call.data[ATTR_CALENDAR_ID],
-            csv_data=call.data[ATTR_IMPORT_DATA],
-            source=call.data.get(ATTR_SOURCE, "csv"),
-            user_id=call.context.user_id,
-        )
+        if call.data.get("dry_run", False):
+            await self.async_preview_import_csv(
+                calendar_id=call.data[ATTR_CALENDAR_ID],
+                csv_data=call.data[ATTR_IMPORT_DATA],
+                source=call.data.get(ATTR_SOURCE, "csv"),
+            )
+        else:
+            await self.async_import_csv(
+                calendar_id=call.data[ATTR_CALENDAR_ID],
+                csv_data=call.data[ATTR_IMPORT_DATA],
+                source=call.data.get(ATTR_SOURCE, "csv"),
+                user_id=call.context.user_id,
+            )
 
     async def _handle_import_ics(self, call: ServiceCall) -> None:
-        await self.async_import_ics(
-            calendar_id=call.data[ATTR_CALENDAR_ID],
-            ics_data=call.data[ATTR_IMPORT_DATA],
-            source=call.data.get(ATTR_SOURCE, "ics"),
-            user_id=call.context.user_id,
-        )
+        if call.data.get("dry_run", False):
+            await self.async_preview_import_ics(
+                calendar_id=call.data[ATTR_CALENDAR_ID],
+                ics_data=call.data[ATTR_IMPORT_DATA],
+                source=call.data.get(ATTR_SOURCE, "ics"),
+            )
+        else:
+            await self.async_import_ics(
+                calendar_id=call.data[ATTR_CALENDAR_ID],
+                ics_data=call.data[ATTR_IMPORT_DATA],
+                source=call.data.get(ATTR_SOURCE, "ics"),
+                user_id=call.context.user_id,
+            )
 
     async def _handle_set_calendar_private(self, call: ServiceCall) -> None:
         await self.async_set_calendar_private(

@@ -67,6 +67,9 @@ export class CaleeShoppingView extends LitElement {
   @state() private _presetFormEmoji = "";
   @state() private _confirmDeletePresetId: string | null = null;
 
+  /** Number of pending items to render; grows when user taps "Show more". */
+  @state() private _pendingRenderLimit = 100;
+
   @query("#quick-add-input") private _inputEl!: HTMLInputElement;
 
   static styles = css`
@@ -430,6 +433,24 @@ export class CaleeShoppingView extends LitElement {
       padding: 48px 16px;
       color: var(--shop-secondary);
       font-size: 14px;
+    }
+
+    .show-more-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      background: var(--secondary-background-color, #f5f5f5);
+      border: 1px solid var(--shop-border);
+      border-radius: 8px;
+      color: var(--primary-color, #03a9f4);
+      font-size: 14px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .show-more-btn:hover {
+      background: var(--primary-color, #03a9f4);
+      color: #fff;
     }
 
     /* ── Preset quick-add ──────────────────────────────────────── */
@@ -1042,6 +1063,10 @@ export class CaleeShoppingView extends LitElement {
     this._collapsedSections = next;
   }
 
+  private _showMorePending(): void {
+    this._pendingRenderLimit += 100;
+  }
+
   /* ── Render ─────────────────────────────────────────────────────── */
 
   render() {
@@ -1203,15 +1228,32 @@ export class CaleeShoppingView extends LitElement {
           )
         : nothing}
 
-      <!-- Category groups -->
-      ${Array.from(grouped.entries()).map(([cat, items]) =>
-        this._renderSection(
-          cat,
-          categoryIcon(cat),
-          categoryLabel(cat),
-          items,
-        ),
-      )}
+      <!-- Category groups (capped to _pendingRenderLimit total items) -->
+      ${(() => {
+        let remaining = this._pendingRenderLimit - alwaysItems.length;
+        return Array.from(grouped.entries()).map(([cat, items]) => {
+          if (remaining <= 0) return nothing;
+          const visible = items.slice(0, remaining);
+          remaining -= visible.length;
+          return this._renderSection(
+            cat,
+            categoryIcon(cat),
+            categoryLabel(cat),
+            visible,
+          );
+        });
+      })()}
+
+      ${pending.length > this._pendingRenderLimit
+        ? html`
+            <button
+              class="show-more-btn"
+              @click=${this._showMorePending}
+            >
+              Show more (${pending.length - this._pendingRenderLimit} remaining)
+            </button>
+          `
+        : nothing}
 
       <!-- Budget / totals -->
       ${this._renderTotals()}
@@ -1236,8 +1278,18 @@ export class CaleeShoppingView extends LitElement {
             ${this._completedOpen
               ? html`
                   <ul class="item-list completed-items">
-                    ${completed.map((t) => this._renderItem(t, true))}
+                    ${completed.slice(0, this._pendingRenderLimit).map((t) => this._renderItem(t, true))}
                   </ul>
+                  ${completed.length > this._pendingRenderLimit
+                    ? html`
+                        <button
+                          class="show-more-btn"
+                          @click=${this._showMorePending}
+                        >
+                          Show more completed (${completed.length - this._pendingRenderLimit} remaining)
+                        </button>
+                      `
+                    : nothing}
                 `
               : nothing}
           `

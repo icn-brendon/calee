@@ -50,12 +50,19 @@ export class PlannerConnection {
     return this._hass.callWS<PlannerEvent[]>(msg);
   }
 
-  getTasks(listId?: string, view?: string): Promise<PlannerTask[]> {
+  getTasks(opts?: {
+    listId?: string;
+    view?: string;
+    completed?: boolean;
+    limit?: number;
+  }): Promise<PlannerTask[]> {
     const msg: Record<string, unknown> = {
       type: "calee/tasks",
     };
-    if (listId) msg.list_id = listId;
-    if (view) msg.view = view;
+    if (opts?.listId) msg.list_id = opts.listId;
+    if (opts?.view) msg.view = opts.view;
+    if (opts?.completed !== undefined) msg.completed = opts.completed;
+    if (opts?.limit !== undefined) msg.limit = opts.limit;
     return this._hass.callWS<PlannerTask[]>(msg);
   }
 

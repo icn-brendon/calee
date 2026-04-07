@@ -229,7 +229,7 @@ export class PlannerStore {
     const [calendars, events, tasks, lists, templates, presets] = await Promise.all([
       this._conn.getCalendars(),
       this._conn.getEvents(),
-      this._conn.getTasks(),
+      this._conn.getTasks({}),
       this._conn.getLists(),
       this._conn.getTemplates(),
       this._conn.getPresets(),

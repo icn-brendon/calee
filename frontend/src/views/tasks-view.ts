@@ -82,6 +82,9 @@ export class CaleeTasksView extends LitElement {
   @state() private _selectedRecurrence: RecurrencePill = "none";
   @state() private _customDate = "";
 
+  /** Number of tasks to render; grows when user taps "Show more". */
+  @state() private _renderLimit = 100;
+
   /* Inline edit state */
   @state() private _editingTaskId: string | null = null;
   @state() private _editTitle = "";
@@ -362,6 +365,24 @@ export class CaleeTasksView extends LitElement {
       font-size: 14px;
     }
 
+    .show-more-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      background: var(--secondary-background-color, #f5f5f5);
+      border: 1px solid var(--task-border);
+      border-radius: 8px;
+      color: var(--primary-color, #03a9f4);
+      font-size: 14px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .show-more-btn:hover {
+      background: var(--primary-color, #03a9f4);
+      color: #fff;
+    }
+
     /* ── Inline edit ─────────────────────────────────────────────── */
 
     .task-edit {
@@ -569,7 +590,12 @@ export class CaleeTasksView extends LitElement {
     );
   }
 
+  private _showMore(): void {
+    this._renderLimit += 100;
+  }
+
   private _switchTab(view: TaskView): void {
+    this._renderLimit = 100;
     this.activeView = view;
     this.dispatchEvent(
       new CustomEvent("view-change", {
@@ -796,12 +822,22 @@ export class CaleeTasksView extends LitElement {
         ? html`<div class="empty">No tasks</div>`
         : html`
             <ul class="task-list">
-              ${filtered.map((t) =>
+              ${filtered.slice(0, this._renderLimit).map((t) =>
                 this._editingTaskId === t.id
                   ? this._renderEditRow(t)
                   : this._renderTask(t),
               )}
             </ul>
+            ${filtered.length > this._renderLimit
+              ? html`
+                  <button
+                    class="show-more-btn"
+                    @click=${this._showMore}
+                  >
+                    Show more (${filtered.length - this._renderLimit} remaining)
+                  </button>
+                `
+              : nothing}
           `}
     `;
   }
