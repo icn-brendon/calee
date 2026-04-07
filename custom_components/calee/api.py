@@ -940,6 +940,10 @@ class PlannerAPI:
         if event is None:
             raise HomeAssistantError(f"Event '{event_id}' not found")
 
+        await async_require_write(
+            self._hass, self._store, user_id, "calendar", event.calendar_id
+        )
+
         snooze_until = (datetime.now(UTC) + timedelta(minutes=minutes)).isoformat()
         event.snooze_until = snooze_until
         event.updated_at = datetime.now(UTC).isoformat()

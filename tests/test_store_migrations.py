@@ -90,6 +90,35 @@ class TestModelRoundTrip:
         restored = PlannerList.from_dict(data)
         assert restored.list_type == "shopping"
 
+    def test_event_snooze_until_round_trip(self) -> None:
+        """snooze_until survives a to_dict / from_dict cycle."""
+        snooze_iso = "2026-04-07T10:30:00+00:00"
+        ev = PlannerEvent(
+            id="snz1",
+            calendar_id="cal1",
+            title="Snoozed",
+            start="2026-04-07T06:00:00+00:00",
+            end="2026-04-07T14:00:00+00:00",
+            snooze_until=snooze_iso,
+        )
+        data = ev.to_dict()
+        assert data["snooze_until"] == snooze_iso
+
+        restored = PlannerEvent.from_dict(data)
+        assert restored.snooze_until == snooze_iso
+
+    def test_event_snooze_until_defaults_none(self) -> None:
+        """Events without snooze_until in dict default to None."""
+        data = {
+            "id": "no_snooze",
+            "calendar_id": "cal1",
+            "title": "Normal",
+            "start": "",
+            "end": "",
+        }
+        ev = PlannerEvent.from_dict(data)
+        assert ev.snooze_until is None
+
     def test_event_from_dict_defaults_version(self) -> None:
         """Events from old storage (no version field) default to 1."""
         data = {

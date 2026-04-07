@@ -103,9 +103,12 @@ async def async_setup_shift_reminders(
     )
     cancel_callbacks.append(cancel_morning)
 
-    # Register notification action listener for Companion app.
-    cancel_action = _register_notification_actions(hass, store)
-    cancel_callbacks.append(cancel_action)
+    # Register notification action listener for Companion app — only once
+    # globally, not per config entry.
+    if not hass.data.get("calee_notification_listener_registered"):
+        cancel_action = _register_notification_actions(hass)
+        cancel_callbacks.append(cancel_action)
+        hass.data["calee_notification_listener_registered"] = True
 
     _LOGGER.info("Shift reminder system initialised")
     return cancel_callbacks
@@ -128,6 +131,22 @@ async def async_check_and_send_reminders(
 
     notified: set[str] = hass.data[DOMAIN][entry.entry_id][_KEY_NOTIFIED_EVENTS]
     time_format = entry.options.get("time_format", DEFAULT_TIME_FORMAT)
+
+    # Prune event IDs where the shift has already ended to prevent unbounded
+    # growth of the notified set.
+    active_ids = {e.id for e in events}
+    stale_ids = set()
+    for eid in notified:
+        if eid not in active_ids:
+            stale_ids.add(eid)
+            continue
+        # Also prune if the shift's end time is in the past.
+        ev = next((e for e in events if e.id == eid), None)
+        if ev is not None:
+            end_dt = _parse_datetime(ev.end)
+            if end_dt is not None and end_dt <= now:
+                stale_ids.add(eid)
+    notified -= stale_ids
 
     for event in events:
         start = _parse_datetime(event.start)
@@ -325,7 +344,6 @@ async def async_send_morning_summary(
 @callback
 def _register_notification_actions(
     hass: HomeAssistant,
-    store: AbstractPlannerStore,
 ):
     """Register listener for Companion app notification actions.
 
@@ -337,9 +355,9 @@ def _register_notification_actions(
         action = event.data.get("action", "")
 
         if action == ACTION_SNOOZE_15:
-            await _handle_snooze_from_notification(hass, store, event, 15)
+            await _handle_snooze_from_notification(hass, event, 15)
         elif action == ACTION_SNOOZE_60:
-            await _handle_snooze_from_notification(hass, store, event, 60)
+            await _handle_snooze_from_notification(hass, event, 60)
         elif action == ACTION_OPEN_PLANNER:
             # No server-side action needed — the Companion app handles the URL.
             pass
@@ -351,7 +369,6 @@ def _register_notification_actions(
 
 async def _handle_snooze_from_notification(
     hass: HomeAssistant,
-    store: AbstractPlannerStore,
     event,
     minutes: int,
 ) -> None:
