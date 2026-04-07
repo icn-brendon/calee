@@ -330,9 +330,17 @@ class SqlPlannerStore(AbstractPlannerStore):
         self.calendars[calendar.id] = calendar
         await self._upsert(calendars_table, calendar.to_dict())
 
+    async def async_remove_calendar(self, calendar_id: str) -> None:
+        self.calendars.pop(calendar_id, None)
+        await self._delete_by_pk(calendars_table, calendar_id)
+
     async def async_put_list(self, planner_list: PlannerList) -> None:
         self.lists[planner_list.id] = planner_list
         await self._upsert(lists_table, planner_list.to_dict())
+
+    async def async_remove_list(self, list_id: str) -> None:
+        self.lists.pop(list_id, None)
+        await self._delete_by_pk(lists_table, list_id)
 
     # ── Events ──────────────────────────────────────────────────────────
 

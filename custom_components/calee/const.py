@@ -212,6 +212,14 @@ WS_TYPE_CREATE_ROUTINE: Final = f"{DOMAIN}/create_routine"
 WS_TYPE_UPDATE_ROUTINE: Final = f"{DOMAIN}/update_routine"
 WS_TYPE_DELETE_ROUTINE: Final = f"{DOMAIN}/delete_routine"
 WS_TYPE_EXECUTE_ROUTINE: Final = f"{DOMAIN}/execute_routine"
+WS_TYPE_ADD_EVENT_EXCEPTION: Final = f"{DOMAIN}/add_event_exception"
+WS_TYPE_EDIT_EVENT_OCCURRENCE: Final = f"{DOMAIN}/edit_event_occurrence"
+WS_TYPE_CREATE_CALENDAR: Final = f"{DOMAIN}/create_calendar"
+WS_TYPE_UPDATE_CALENDAR: Final = f"{DOMAIN}/update_calendar"
+WS_TYPE_DELETE_CALENDAR: Final = f"{DOMAIN}/delete_calendar"
+WS_TYPE_CREATE_LIST: Final = f"{DOMAIN}/create_list"
+WS_TYPE_UPDATE_LIST: Final = f"{DOMAIN}/update_list"
+WS_TYPE_DELETE_LIST: Final = f"{DOMAIN}/delete_list"
 
 # ── Diagnostics redaction ────────────────────────────────────────────
 REDACT_KEYS: Final = frozenset(

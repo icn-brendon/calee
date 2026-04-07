@@ -731,3 +731,63 @@ execute_routine:
       required: true
       selector:
         text:
+
+add_event_exception:
+  name: Add event exception
+  description: >-
+    Add a date to a recurring event's exception list. The event will
+    not appear on that date.
+  fields:
+    event_id:
+      name: Event ID
+      description: The ID of the recurring event.
+      required: true
+      selector:
+        text:
+    date:
+      name: Date
+      description: The date to skip (ISO 8601 date, e.g. "2026-04-07").
+      required: true
+      selector:
+        text:
+
+edit_event_occurrence:
+  name: Edit event occurrence
+  description: >-
+    Edit a single occurrence of a recurring event. Creates a standalone
+    replacement event for that date and adds the date to the parent's
+    exception list.
+  fields:
+    event_id:
+      name: Event ID
+      description: The ID of the recurring parent event.
+      required: true
+      selector:
+        text:
+    date:
+      name: Date
+      description: The occurrence date to edit (ISO 8601 date).
+      required: true
+      selector:
+        text:
+    title:
+      name: Title
+      description: New title for this occurrence (leave blank to keep parent's title).
+      selector:
+        text:
+    start:
+      name: Start
+      description: New start time for this occurrence (leave blank to keep parent's time).
+      selector:
+        text:
+    end:
+      name: End
+      description: New end time for this occurrence (leave blank to keep parent's time).
+      selector:
+        text:
+    note:
+      name: Note
+      description: New note for this occurrence (leave blank to keep parent's note).
+      selector:
+        text:
+          multiline: true

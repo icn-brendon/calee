@@ -1,6 +1,6 @@
 import { LitElement, html, css, nothing, type PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import type { PlannerEvent, PlannerCalendar, ShiftTemplate } from "../store/types.js";
+import type { PlannerEvent, PlannerCalendar, PlannerTask, ShiftTemplate, Conflict } from "../store/types.js";
 
 // ── Helpers ────────────────────────────────────────────────────────────
 
@@ -96,11 +96,15 @@ export class CaleeMonthView extends LitElement {
   @property({ attribute: false }) enabledCalendarIds: Set<string> = new Set();
   @property({ attribute: false }) selectedDate: Date = new Date();
   @property({ attribute: false }) templates: ShiftTemplate[] = [];
+  @property({ attribute: false }) tasks: PlannerTask[] = [];
+  @property({ attribute: false }) conflicts: Conflict[] = [];
   @property({ type: Boolean }) weekStartsMonday = true;
   @property({ type: Boolean, reflect: true }) narrow = false;
 
   @state() private _grid: MonthDay[] = [];
   @state() private _eventsByDay: Map<string, PlannerEvent[]> = new Map();
+  @state() private _taskCountByDay: Map<string, number> = new Map();
+  @state() private _conflictDays: Set<string> = new Set();
 
   private _today = dateKey(new Date());
 
@@ -122,6 +126,14 @@ export class CaleeMonthView extends LitElement {
       changed.has("weekStartsMonday")
     ) {
       this._buildEventMap();
+    }
+
+    if (changed.has("tasks")) {
+      this._buildTaskCountMap();
+    }
+
+    if (changed.has("conflicts")) {
+      this._buildConflictDays();
     }
   }
 
@@ -161,6 +173,37 @@ export class CaleeMonthView extends LitElement {
     }
 
     this._eventsByDay = map;
+  }
+
+  /** Precompute task counts per day to avoid O(days x tasks) in render. */
+  private _buildTaskCountMap(): void {
+    const map = new Map<string, number>();
+    for (const t of this.tasks) {
+      if (t.due && !t.completed && !t.deleted_at) {
+        const key = t.due.slice(0, 10);
+        map.set(key, (map.get(key) ?? 0) + 1);
+      }
+    }
+    this._taskCountByDay = map;
+  }
+
+  /** Precompute which days have conflicts, handling multi-day event spans. */
+  private _buildConflictDays(): void {
+    const days = new Set<string>();
+    for (const c of this.conflicts) {
+      // For each event in the conflict, add every day it spans.
+      for (const ev of [c.eventA, c.eventB]) {
+        const start = parseISO(ev.start);
+        const end = parseISO(ev.end);
+        const cursor = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+        const endDay = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+        while (cursor <= endDay) {
+          days.add(dateKey(cursor));
+          cursor.setDate(cursor.getDate() + 1);
+        }
+      }
+    }
+    this._conflictDays = days;
   }
 
   // ── Event handlers ───────────────────────────────────────────────────
@@ -223,6 +266,8 @@ export class CaleeMonthView extends LitElement {
       `;
     }
 
+    const isRecurring = !!ev.recurrence_rule;
+
     return html`
       <div
         class="event-chip"
@@ -231,6 +276,7 @@ export class CaleeMonthView extends LitElement {
         @click=${(e: MouseEvent) => this._onEventClick(e, ev.id)}
       >
         ${tplEmoji ? html`<span class="chip-emoji">${tplEmoji}</span>` : nothing}
+        ${isRecurring ? html`<span class="chip-recur" title="Recurring">&#x1F501;</span>` : nothing}
         ${timeStr ? html`<span class="chip-time">${timeStr}</span>` : nothing}
         <span class="chip-title">${ev.title}</span>
       </div>
@@ -243,6 +289,12 @@ export class CaleeMonthView extends LitElement {
     const dayEvents = this._eventsByDay.get(day.key) ?? [];
     const overflow = dayEvents.length - MAX_VISIBLE_EVENTS;
 
+    // Task count for this day (precomputed in willUpdate).
+    const taskCount = this._taskCountByDay.get(day.key) ?? 0;
+
+    // Conflict check for this day (precomputed, handles multi-day spans).
+    const dayHasConflict = this._conflictDays.has(day.key);
+
     const classes: string[] = ["cell"];
     if (!day.inMonth) classes.push("outside");
     if (isToday) classes.push("today");
@@ -250,7 +302,10 @@ export class CaleeMonthView extends LitElement {
 
     return html`
       <div class=${classes.join(" ")} @click=${() => this._onCellClick(day.key)}>
-        <span class="date-number">${day.date.getDate()}</span>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <span class="date-number">${day.date.getDate()}</span>
+          ${dayHasConflict ? html`<span class="conflict-badge" title="Schedule conflict">!</span>` : nothing}
+        </div>
         <div class="events">
           ${dayEvents
             .slice(0, MAX_VISIBLE_EVENTS)
@@ -262,6 +317,7 @@ export class CaleeMonthView extends LitElement {
               >+${overflow} more</button>`
             : nothing}
         </div>
+        ${taskCount > 0 ? html`<div class="task-badge">${taskCount} task${taskCount > 1 ? "s" : ""}</div>` : nothing}
       </div>
     `;
   }
@@ -421,6 +477,13 @@ export class CaleeMonthView extends LitElement {
       line-height: 1;
     }
 
+    .chip-recur {
+      flex-shrink: 0;
+      font-size: 0.55rem;
+      line-height: 1;
+      opacity: 0.6;
+    }
+
     .chip-time {
       flex-shrink: 0;
       opacity: 0.7;
@@ -444,6 +507,31 @@ export class CaleeMonthView extends LitElement {
 
     .more-link:hover {
       background: var(--secondary-background-color, rgba(0, 0, 0, 0.08));
+    }
+
+    .task-badge {
+      font-size: 0.6rem;
+      color: var(--secondary-text-color, #999);
+      padding: 1px 4px;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .conflict-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--warning-color, #ff9800);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      flex-shrink: 0;
+      line-height: 1;
     }
 
     /* ── Event dot (narrow/mobile mode) ────────────────────────────── */

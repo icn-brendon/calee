@@ -12,6 +12,7 @@ export interface PlannerCalendar {
   id: string;
   name: string;
   color: string;
+  emoji: string;
   timezone: string;
   created_at: string;
 }
@@ -30,6 +31,11 @@ export interface PlannerEvent {
   source: string;
   external_id: string | null;
   recurrence_rule: string | null;
+  exceptions: string[];
+  /** True when this is a virtual instance generated from a recurring parent. */
+  is_recurring_instance?: boolean;
+  /** The parent event ID for recurring instances. */
+  parent_event_id?: string;
   version: number;
   deleted_at: string | null;
   created_at: string;
@@ -143,6 +149,13 @@ export interface DeletedItem {
   calendar_id?: string;
   // task fields
   list_id?: string;
+}
+
+// ── Conflict ─────────────────────────────────────────────────────────
+
+export interface Conflict {
+  eventA: PlannerEvent;
+  eventB: PlannerEvent;
 }
 
 // ── View types ────────────────────────────────────────────────────────

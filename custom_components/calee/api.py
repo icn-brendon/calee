@@ -73,7 +73,7 @@ from .const import (
 )
 from .db.base import AbstractPlannerStore
 from .importer import ImportResult, parse_csv, parse_ics
-from .models import PlannerEvent, PlannerTask, Routine, ShiftTemplate, TaskPreset, _new_id
+from .models import PlannerCalendar, PlannerEvent, PlannerList, PlannerTask, Routine, ShiftTemplate, TaskPreset, _new_id
 from .permissions import async_require_write
 from .recurrence import next_due_date, parse_recurrence
 
@@ -178,6 +178,12 @@ class PlannerAPI:
         self._hass.services.async_register(
             DOMAIN, SERVICE_EXECUTE_ROUTINE, self._handle_execute_routine
         )
+        self._hass.services.async_register(
+            DOMAIN, "add_event_exception", self._handle_add_event_exception
+        )
+        self._hass.services.async_register(
+            DOMAIN, "edit_event_occurrence", self._handle_edit_event_occurrence
+        )
 
     async def async_unregister_services(self) -> None:
         """Remove all calee.* services."""
@@ -211,6 +217,8 @@ class PlannerAPI:
             SERVICE_UPDATE_ROUTINE,
             SERVICE_DELETE_ROUTINE,
             SERVICE_EXECUTE_ROUTINE,
+            "add_event_exception",
+            "edit_event_occurrence",
         ):
             self._hass.services.async_remove(DOMAIN, service)
 
@@ -1512,6 +1520,11 @@ class PlannerAPI:
                     break
 
                 if occ_date >= start_date:
+                    # Skip dates in the exception list.
+                    if occ_date.isoformat() in (ev.exceptions or []):
+                        current_date_str = next_due_date(current_date_str, pattern)
+                        continue
+
                     # Build a virtual event for this occurrence.
                     occ_start = datetime.combine(
                         occ_date, ev_start_dt.time(),
@@ -1532,6 +1545,7 @@ class PlannerAPI:
                         source=ev.source,
                         external_id=ev.external_id,
                         recurrence_rule=ev.recurrence_rule,
+                        exceptions=ev.exceptions,
                         created_at=ev.created_at,
                         updated_at=ev.updated_at,
                         version=ev.version,
@@ -1996,6 +2010,332 @@ class PlannerAPI:
         await self.async_execute_routine(
             routine_id=call.data["routine_id"],
             target_date=call.data["date"],
+            user_id=call.context.user_id,
+        )
+
+    # ── Exception handling (recurring events) ────────────────────────
+
+    async def async_add_event_exception(
+        self,
+        event_id: str,
+        exception_date: str,
+        user_id: str | None = None,
+    ) -> PlannerEvent:
+        """Add a date to the event's exception list (skip that occurrence)."""
+        event = self._store.get_event(event_id)
+        if event is None or event.deleted_at is not None:
+            raise HomeAssistantError(f"Event '{event_id}' not found")
+        if not event.recurrence_rule:
+            raise HomeAssistantError(f"Event '{event_id}' is not recurring")
+
+        await async_require_write(
+            self._hass, self._store, user_id, "calendar", event.calendar_id
+        )
+
+        # Validate date format.
+        try:
+            date.fromisoformat(exception_date)
+        except (ValueError, TypeError) as exc:
+            raise HomeAssistantError(
+                f"Invalid exception date: {exception_date}"
+            ) from exc
+
+        if exception_date not in event.exceptions:
+            event.exceptions.append(exception_date)
+
+        event.updated_at = datetime.now(UTC).isoformat()
+        event.version += 1
+
+        await self._store.async_put_event(event)
+        self._store.record_audit(
+            user_id=user_id or "",
+            action=AuditAction.UPDATE,
+            resource_type="event",
+            resource_id=event.id,
+            detail=f"Added exception {exception_date} to '{event.title}'",
+        )
+        self._fire_change("update", "event", event.id)
+        await self._store.async_save()
+        return event
+
+    async def async_edit_event_occurrence(
+        self,
+        event_id: str,
+        occurrence_date: str,
+        title: str | None = None,
+        start: str | None = None,
+        end: str | None = None,
+        note: str | None = None,
+        calendar_id: str | None = None,
+        user_id: str | None = None,
+    ) -> PlannerEvent:
+        """Edit a single occurrence: create a standalone event + add exception to parent."""
+        parent = self._store.get_event(event_id)
+        if parent is None or parent.deleted_at is not None:
+            raise HomeAssistantError(f"Event '{event_id}' not found")
+        if not parent.recurrence_rule:
+            raise HomeAssistantError(f"Event '{event_id}' is not recurring")
+
+        # Permission: must be able to write to the parent's calendar.
+        await async_require_write(
+            self._hass, self._store, user_id, "calendar", parent.calendar_id
+        )
+        # If moving to a different calendar, also check write access there.
+        if calendar_id and calendar_id != parent.calendar_id:
+            await async_require_write(
+                self._hass, self._store, user_id, "calendar", calendar_id
+            )
+
+        # Validate date.
+        try:
+            occ_date = date.fromisoformat(occurrence_date)
+        except (ValueError, TypeError) as exc:
+            raise HomeAssistantError(
+                f"Invalid occurrence date: {occurrence_date}"
+            ) from exc
+
+        # Add exception to parent.
+        if occurrence_date not in parent.exceptions:
+            parent.exceptions.append(occurrence_date)
+        parent.updated_at = datetime.now(UTC).isoformat()
+        parent.version += 1
+        await self._store.async_put_event(parent)
+
+        # Compute the standalone event start/end from the parent's times.
+        try:
+            parent_start_dt = datetime.fromisoformat(parent.start)
+            parent_end_dt = datetime.fromisoformat(parent.end)
+            duration = parent_end_dt - parent_start_dt
+        except (ValueError, TypeError):
+            duration = timedelta(hours=1)
+            parent_start_dt = datetime.fromisoformat(parent.start) if parent.start else datetime.now(UTC)
+
+        occ_start = datetime.combine(occ_date, parent_start_dt.time())
+        if parent_start_dt.tzinfo:
+            occ_start = occ_start.replace(tzinfo=parent_start_dt.tzinfo)
+        occ_end = occ_start + duration
+
+        standalone = PlannerEvent(
+            calendar_id=calendar_id or parent.calendar_id,
+            title=title if title is not None else parent.title,
+            start=start if start is not None else occ_start.isoformat(),
+            end=end if end is not None else occ_end.isoformat(),
+            all_day=parent.all_day,
+            note=note if note is not None else parent.note,
+            template_id=parent.template_id,
+            source="occurrence_edit",
+            external_id=f"{parent.id}_{occurrence_date}",
+        )
+        await self._store.async_put_event(standalone)
+
+        self._store.record_audit(
+            user_id=user_id or "",
+            action=AuditAction.CREATE,
+            resource_type="event",
+            resource_id=standalone.id,
+            detail=f"Created occurrence override for '{parent.title}' on {occurrence_date}",
+        )
+        self._fire_change("update", "event", parent.id)
+        self._fire_change("create", "event", standalone.id)
+        await self._store.async_save()
+        return standalone
+
+    # ── Calendar CRUD ──────────────────────────────────────────────
+
+    async def async_create_calendar(
+        self,
+        name: str,
+        color: str = "#64b5f6",
+        emoji: str = "",
+        user_id: str | None = None,
+    ) -> PlannerCalendar:
+        """Create a new calendar."""
+        from .models import PlannerCalendar
+
+        cal = PlannerCalendar(name=name, color=color, emoji=emoji)
+        await self._store.async_put_calendar(cal)
+        self._store.record_audit(
+            user_id=user_id or "",
+            action=AuditAction.CREATE,
+            resource_type="calendar",
+            resource_id=cal.id,
+            detail=f"Created calendar '{name}'",
+        )
+        self._fire_change("create", "calendar", cal.id)
+        await self._store.async_save()
+        return cal
+
+    async def async_update_calendar(
+        self,
+        calendar_id: str,
+        name: str | None = None,
+        color: str | None = None,
+        emoji: str | None = None,
+        user_id: str | None = None,
+    ) -> PlannerCalendar:
+        """Rename or recolour a calendar."""
+        cal = self._store.get_calendar(calendar_id)
+        if cal is None:
+            raise HomeAssistantError(f"Calendar '{calendar_id}' not found")
+
+        await async_require_write(
+            self._hass, self._store, user_id, "calendar", calendar_id
+        )
+
+        if name is not None:
+            cal.name = name
+        if color is not None:
+            cal.color = color
+        if emoji is not None:
+            cal.emoji = emoji
+
+        await self._store.async_put_calendar(cal)
+        self._store.record_audit(
+            user_id=user_id or "",
+            action=AuditAction.UPDATE,
+            resource_type="calendar",
+            resource_id=cal.id,
+            detail=f"Updated calendar '{cal.name}'",
+        )
+        self._fire_change("update", "calendar", cal.id)
+        await self._store.async_save()
+        return cal
+
+    async def async_delete_calendar(
+        self,
+        calendar_id: str,
+        user_id: str | None = None,
+    ) -> None:
+        """Soft-delete all events in a calendar and remove the calendar."""
+        cal = self._store.get_calendar(calendar_id)
+        if cal is None:
+            raise HomeAssistantError(f"Calendar '{calendar_id}' not found")
+
+        await async_require_write(
+            self._hass, self._store, user_id, "calendar", calendar_id
+        )
+
+        # Soft-delete all events in this calendar and persist each.
+        events = self._store.get_active_events(calendar_id=calendar_id)
+        for ev in events:
+            self._store.soft_delete_event(ev.id)
+            await self._store.async_put_event(ev)
+
+        # Remove the calendar.
+        await self._store.async_remove_calendar(calendar_id)
+        self._store.record_audit(
+            user_id=user_id or "",
+            action=AuditAction.DELETE,
+            resource_type="calendar",
+            resource_id=calendar_id,
+            detail=f"Deleted calendar '{cal.name}' and {len(events)} events",
+        )
+        self._fire_change("delete", "calendar", calendar_id)
+        await self._store.async_save()
+
+    # ── List CRUD ──────────────────────────────────────────────────
+
+    async def async_create_list(
+        self,
+        name: str,
+        list_type: str = "standard",
+        user_id: str | None = None,
+    ) -> PlannerList:
+        """Create a new to-do list."""
+        from .models import PlannerList
+
+        lst = PlannerList(name=name, list_type=list_type)
+        await self._store.async_put_list(lst)
+        self._store.record_audit(
+            user_id=user_id or "",
+            action=AuditAction.CREATE,
+            resource_type="list",
+            resource_id=lst.id,
+            detail=f"Created list '{name}'",
+        )
+        self._fire_change("create", "list", lst.id)
+        await self._store.async_save()
+        return lst
+
+    async def async_update_list(
+        self,
+        list_id: str,
+        name: str | None = None,
+        user_id: str | None = None,
+    ) -> PlannerList:
+        """Rename a to-do list."""
+        lst = self._store.get_list(list_id)
+        if lst is None:
+            raise HomeAssistantError(f"List '{list_id}' not found")
+
+        await async_require_write(
+            self._hass, self._store, user_id, "list", list_id
+        )
+
+        if name is not None:
+            lst.name = name
+
+        await self._store.async_put_list(lst)
+        self._store.record_audit(
+            user_id=user_id or "",
+            action=AuditAction.UPDATE,
+            resource_type="list",
+            resource_id=lst.id,
+            detail=f"Updated list '{lst.name}'",
+        )
+        self._fire_change("update", "list", lst.id)
+        await self._store.async_save()
+        return lst
+
+    async def async_delete_list(
+        self,
+        list_id: str,
+        user_id: str | None = None,
+    ) -> None:
+        """Soft-delete all tasks in a list and remove the list."""
+        lst = self._store.get_list(list_id)
+        if lst is None:
+            raise HomeAssistantError(f"List '{list_id}' not found")
+
+        await async_require_write(
+            self._hass, self._store, user_id, "list", list_id
+        )
+
+        # Soft-delete all tasks in this list and persist each.
+        tasks = self._store.get_active_tasks(list_id=list_id)
+        for task in tasks:
+            self._store.soft_delete_task(task.id)
+            await self._store.async_put_task(task)
+
+        # Remove the list.
+        await self._store.async_remove_list(list_id)
+        self._store.record_audit(
+            user_id=user_id or "",
+            action=AuditAction.DELETE,
+            resource_type="list",
+            resource_id=list_id,
+            detail=f"Deleted list '{lst.name}' and {len(tasks)} tasks",
+        )
+        self._fire_change("delete", "list", list_id)
+        await self._store.async_save()
+
+    # ── Service handlers for new operations ─────────────────────────
+
+    async def _handle_add_event_exception(self, call: ServiceCall) -> None:
+        await self.async_add_event_exception(
+            event_id=call.data[ATTR_EVENT_ID],
+            exception_date=call.data[ATTR_DATE],
+            user_id=call.context.user_id,
+        )
+
+    async def _handle_edit_event_occurrence(self, call: ServiceCall) -> None:
+        await self.async_edit_event_occurrence(
+            event_id=call.data[ATTR_EVENT_ID],
+            occurrence_date=call.data[ATTR_DATE],
+            title=call.data.get(ATTR_SHIFT_TITLE),
+            start=call.data.get(ATTR_SHIFT_START),
+            end=call.data.get(ATTR_SHIFT_END),
+            note=call.data.get(ATTR_SHIFT_NOTE),
             user_id=call.context.user_id,
         )
 
