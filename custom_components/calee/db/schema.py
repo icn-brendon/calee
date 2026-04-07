@@ -18,6 +18,7 @@ calendars = sa.Table(
     sa.Column("id", sa.String(32), primary_key=True),
     sa.Column("name", sa.String(255), nullable=False),
     sa.Column("color", sa.String(7), default="#64b5f6"),
+    sa.Column("emoji", sa.String(16), default=""),
     sa.Column("timezone", sa.String(64), default=""),
     sa.Column("is_private", sa.Boolean, default=False),
     sa.Column("created_at", sa.String(32), nullable=False),
@@ -48,6 +49,7 @@ events = sa.Table(
     sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False),
     sa.Column("version", sa.Integer, default=1),
     sa.Column("deleted_at", sa.DateTime(timezone=True), nullable=True),
+    sa.Column("exceptions", sa.Text, default="[]"),  # JSON array of ISO date strings
     sa.Column("snooze_until", sa.DateTime(timezone=True), nullable=True),
     sa.Index("ix_calee_events_calendar", "calendar_id"),
     sa.Index("ix_calee_events_source", "source", "external_id"),
@@ -128,6 +130,19 @@ routines = sa.Table(
     sa.Column("tasks", sa.Text, default="[]"),  # JSON array
     sa.Column("shopping_items", sa.Text, default="[]"),  # JSON array
     sa.Column("created_at", sa.String(32), nullable=False),
+)
+
+# ── Task Presets ────────────────────────────────────────────────────────
+
+presets = sa.Table(
+    "calee_presets",
+    metadata,
+    sa.Column("id", sa.String(32), primary_key=True),
+    sa.Column("title", sa.String(255), nullable=False, default=""),
+    sa.Column("list_id", sa.String(32), default=""),
+    sa.Column("note", sa.Text, default=""),
+    sa.Column("category", sa.String(64), default=""),
+    sa.Column("icon", sa.String(64), default=""),
 )
 
 # ── Role Assignments ────────────────────────────────────────────────────
