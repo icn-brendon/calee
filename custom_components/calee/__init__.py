@@ -114,6 +114,16 @@ async def _run_migration(
         await old_store.async_load()
 
         count = 0
+        # Copy calendars.
+        for cal in old_store.get_calendars().values():
+            await new_store.async_put_calendar(cal)
+            count += 1
+
+        # Copy lists.
+        for lst in old_store.get_lists().values():
+            await new_store.async_put_list(lst)
+            count += 1
+
         # Copy events into the new store.
         for ev in old_store.get_active_events():
             await new_store.async_put_event(ev)
