@@ -6,10 +6,12 @@
  * Also offers a "+ Custom event" option and a "Manage templates" link.
  *
  * Dispatches:
- *  - `template-select`   { templateId: string, date: string }
- *  - `custom-event`      { date: string, time?: string }
- *  - `manage-templates`  (no detail)
- *  - `dialog-close`      (no detail)
+ *  - `template-select`     { templateId: string, date: string }
+ *  - `custom-event`        { date: string, time?: string }
+ *  - `quick-add-task`      { date: string }
+ *  - `quick-add-shopping`  { date: string }
+ *  - `manage-templates`    (no detail)
+ *  - `dialog-close`        (no detail)
  */
 
 import { LitElement, html, css, nothing, type PropertyValues } from "lit";
@@ -354,12 +356,12 @@ export class CaleeTemplatePicker extends LitElement {
       color: var(--disabled-text-color, #aaa);
     }
 
-    /* ── Choose step (Shift vs Event) ────────────────────────── */
+    /* ── Choose step (Shift / Event / Task / Shop) ───────────── */
 
     .choose-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 12px;
     }
 
     .choose-card {
@@ -367,8 +369,8 @@ export class CaleeTemplatePicker extends LitElement {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      padding: 28px 16px;
+      gap: 8px;
+      padding: 22px 16px;
       border: 1px solid var(--divider-color, #e0e0e0);
       border-radius: 14px;
       cursor: pointer;
@@ -589,6 +591,28 @@ export class CaleeTemplatePicker extends LitElement {
     );
   }
 
+  private _quickAddTask(): void {
+    this.dispatchEvent(
+      new CustomEvent("quick-add-task", {
+        detail: { date: this.selectedDate },
+        bubbles: true,
+        composed: true,
+      }),
+    );
+    this._close();
+  }
+
+  private _quickAddShopping(): void {
+    this.dispatchEvent(
+      new CustomEvent("quick-add-shopping", {
+        detail: { date: this.selectedDate },
+        bubbles: true,
+        composed: true,
+      }),
+    );
+    this._close();
+  }
+
   private _manageTemplates(): void {
     this.dispatchEvent(
       new CustomEvent("manage-templates", {
@@ -702,6 +726,14 @@ export class CaleeTemplatePicker extends LitElement {
         <div class="choose-card" @click=${this._customEvent}>
           <span class="choose-emoji">\u{1F4C5}</span>
           <span class="choose-label">Event</span>
+        </div>
+        <div class="choose-card" @click=${this._quickAddTask}>
+          <span class="choose-emoji">\u{2705}</span>
+          <span class="choose-label">Task</span>
+        </div>
+        <div class="choose-card" @click=${this._quickAddShopping}>
+          <span class="choose-emoji">\u{1F6D2}</span>
+          <span class="choose-label">Shop</span>
         </div>
       </div>
 
