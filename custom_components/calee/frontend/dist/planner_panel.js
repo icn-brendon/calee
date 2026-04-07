@@ -587,14 +587,14 @@ function e(e2, r2) {
     } });
   };
 }
-var __defProp$f = Object.defineProperty;
-var __getOwnPropDesc$f = Object.getOwnPropertyDescriptor;
-var __decorateClass$f = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$f(target, key) : target;
+var __defProp$g = Object.defineProperty;
+var __getOwnPropDesc$g = Object.getOwnPropertyDescriptor;
+var __decorateClass$g = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$g(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$f(target, key, result);
+  if (kind && result) __defProp$g(target, key, result);
   return result;
 };
 function parseISO$3(iso) {
@@ -1028,44 +1028,44 @@ CaleeMonthView.styles = i$3`
       }
     }
   `;
-__decorateClass$f([
+__decorateClass$g([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "events", 2);
-__decorateClass$f([
+__decorateClass$g([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "calendars", 2);
-__decorateClass$f([
+__decorateClass$g([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "enabledCalendarIds", 2);
-__decorateClass$f([
+__decorateClass$g([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "selectedDate", 2);
-__decorateClass$f([
+__decorateClass$g([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "templates", 2);
-__decorateClass$f([
+__decorateClass$g([
   n2({ type: Boolean })
 ], CaleeMonthView.prototype, "weekStartsMonday", 2);
-__decorateClass$f([
+__decorateClass$g([
   n2({ type: Boolean, reflect: true })
 ], CaleeMonthView.prototype, "narrow", 2);
-__decorateClass$f([
+__decorateClass$g([
   r()
 ], CaleeMonthView.prototype, "_grid", 2);
-__decorateClass$f([
+__decorateClass$g([
   r()
 ], CaleeMonthView.prototype, "_eventsByDay", 2);
-CaleeMonthView = __decorateClass$f([
+CaleeMonthView = __decorateClass$g([
   t("calee-month-view")
 ], CaleeMonthView);
-var __defProp$e = Object.defineProperty;
-var __getOwnPropDesc$e = Object.getOwnPropertyDescriptor;
-var __decorateClass$e = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$e(target, key) : target;
+var __defProp$f = Object.defineProperty;
+var __getOwnPropDesc$f = Object.getOwnPropertyDescriptor;
+var __decorateClass$f = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$f(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$e(target, key, result);
+  if (kind && result) __defProp$f(target, key, result);
   return result;
 };
 function parseISO$2(iso) {
@@ -1668,53 +1668,53 @@ CaleeWeekView.styles = i$3`
       }
     }
   `;
-__decorateClass$e([
+__decorateClass$f([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "events", 2);
-__decorateClass$e([
+__decorateClass$f([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "calendars", 2);
-__decorateClass$e([
+__decorateClass$f([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "enabledCalendarIds", 2);
-__decorateClass$e([
+__decorateClass$f([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "selectedDate", 2);
-__decorateClass$e([
+__decorateClass$f([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "templates", 2);
-__decorateClass$e([
+__decorateClass$f([
   n2({ type: Boolean })
 ], CaleeWeekView.prototype, "weekStartsMonday", 2);
-__decorateClass$e([
+__decorateClass$f([
   n2({ type: Boolean, reflect: true })
 ], CaleeWeekView.prototype, "narrow", 2);
-__decorateClass$e([
+__decorateClass$f([
   r()
 ], CaleeWeekView.prototype, "_weekDays", 2);
-__decorateClass$e([
+__decorateClass$f([
   r()
 ], CaleeWeekView.prototype, "_allDayByDay", 2);
-__decorateClass$e([
+__decorateClass$f([
   r()
 ], CaleeWeekView.prototype, "_timedByDay", 2);
-__decorateClass$e([
+__decorateClass$f([
   r()
 ], CaleeWeekView.prototype, "_now", 2);
-__decorateClass$e([
+__decorateClass$f([
   e(".time-grid-scroll")
 ], CaleeWeekView.prototype, "_scrollContainer", 2);
-CaleeWeekView = __decorateClass$e([
+CaleeWeekView = __decorateClass$f([
   t("calee-week-view")
 ], CaleeWeekView);
-var __defProp$d = Object.defineProperty;
-var __getOwnPropDesc$d = Object.getOwnPropertyDescriptor;
-var __decorateClass$d = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$d(target, key) : target;
+var __defProp$e = Object.defineProperty;
+var __getOwnPropDesc$e = Object.getOwnPropertyDescriptor;
+var __decorateClass$e = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$e(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$d(target, key, result);
+  if (kind && result) __defProp$e(target, key, result);
   return result;
 };
 function parseISO$1(iso) {
@@ -2282,41 +2282,41 @@ CaleeDayView.styles = i$3`
       }
     }
   `;
-__decorateClass$d([
+__decorateClass$e([
   n2({ attribute: false })
 ], CaleeDayView.prototype, "events", 2);
-__decorateClass$d([
+__decorateClass$e([
   n2({ attribute: false })
 ], CaleeDayView.prototype, "calendars", 2);
-__decorateClass$d([
+__decorateClass$e([
   n2({ attribute: false })
 ], CaleeDayView.prototype, "enabledCalendarIds", 2);
-__decorateClass$d([
+__decorateClass$e([
   n2({ attribute: false })
 ], CaleeDayView.prototype, "selectedDate", 2);
-__decorateClass$d([
+__decorateClass$e([
   r()
 ], CaleeDayView.prototype, "_allDayEvents", 2);
-__decorateClass$d([
+__decorateClass$e([
   r()
 ], CaleeDayView.prototype, "_timedEvents", 2);
-__decorateClass$d([
+__decorateClass$e([
   r()
 ], CaleeDayView.prototype, "_now", 2);
-__decorateClass$d([
+__decorateClass$e([
   e(".time-grid-scroll")
 ], CaleeDayView.prototype, "_scrollContainer", 2);
-CaleeDayView = __decorateClass$d([
+CaleeDayView = __decorateClass$e([
   t("calee-day-view")
 ], CaleeDayView);
-var __defProp$c = Object.defineProperty;
-var __getOwnPropDesc$c = Object.getOwnPropertyDescriptor;
-var __decorateClass$c = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$c(target, key) : target;
+var __defProp$d = Object.defineProperty;
+var __getOwnPropDesc$d = Object.getOwnPropertyDescriptor;
+var __decorateClass$d = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$d(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$c(target, key, result);
+  if (kind && result) __defProp$d(target, key, result);
   return result;
 };
 function parseISO(iso) {
@@ -2600,32 +2600,32 @@ CaleeYearView.styles = i$3`
       }
     }
   `;
-__decorateClass$c([
+__decorateClass$d([
   n2({ attribute: false })
 ], CaleeYearView.prototype, "events", 2);
-__decorateClass$c([
+__decorateClass$d([
   n2({ attribute: false })
 ], CaleeYearView.prototype, "calendars", 2);
-__decorateClass$c([
+__decorateClass$d([
   n2({ attribute: false })
 ], CaleeYearView.prototype, "enabledCalendarIds", 2);
-__decorateClass$c([
+__decorateClass$d([
   n2({ attribute: false })
 ], CaleeYearView.prototype, "selectedDate", 2);
-__decorateClass$c([
+__decorateClass$d([
   r()
 ], CaleeYearView.prototype, "_eventsByDay", 2);
-CaleeYearView = __decorateClass$c([
+CaleeYearView = __decorateClass$d([
   t("calee-year-view")
 ], CaleeYearView);
-var __defProp$b = Object.defineProperty;
-var __getOwnPropDesc$b = Object.getOwnPropertyDescriptor;
-var __decorateClass$b = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$b(target, key) : target;
+var __defProp$c = Object.defineProperty;
+var __getOwnPropDesc$c = Object.getOwnPropertyDescriptor;
+var __decorateClass$c = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$c(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$b(target, key, result);
+  if (kind && result) __defProp$c(target, key, result);
   return result;
 };
 function toLocalDateKey(iso) {
@@ -2824,26 +2824,137 @@ CaleeAgendaView.styles = i$3`
       border-radius: 4px;
     }
   `;
-__decorateClass$b([
+__decorateClass$c([
   n2({ type: Array })
 ], CaleeAgendaView.prototype, "events", 2);
-__decorateClass$b([
+__decorateClass$c([
   n2({ attribute: false })
 ], CaleeAgendaView.prototype, "calendars", 2);
-__decorateClass$b([
+__decorateClass$c([
   r()
 ], CaleeAgendaView.prototype, "_groups", 2);
-CaleeAgendaView = __decorateClass$b([
+CaleeAgendaView = __decorateClass$c([
   t("calee-agenda-view")
 ], CaleeAgendaView);
-var __defProp$a = Object.defineProperty;
-var __getOwnPropDesc$a = Object.getOwnPropertyDescriptor;
-var __decorateClass$a = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$a(target, key) : target;
+const SWIPE_THRESHOLD = 80;
+const swipeStyles = i$3`
+  .swipe-row-wrapper {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .swipe-action-complete {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 80px;
+    background: #4caf50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 22px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .swipe-action-delete {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 80px;
+    background: #f44336;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 22px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .swipe-row-wrapper.swiping .swipe-action-complete,
+  .swipe-row-wrapper.swiping .swipe-action-delete {
+    opacity: 1;
+  }
+
+  .swipe-row-inner {
+    position: relative;
+    z-index: 1;
+    background: var(--card-background-color, #fff);
+    transition: transform 0.2s ease;
+  }
+
+  .swipe-row-inner.dragging {
+    transition: none;
+  }
+`;
+function createSwipeState() {
+  return {
+    touchStartX: 0,
+    touchStartY: 0,
+    touchCurrentX: 0,
+    swipingId: null,
+    directionLocked: false
+  };
+}
+function handleTouchStart(state, e2, itemId) {
+  state.touchStartX = e2.touches[0].clientX;
+  state.touchStartY = e2.touches[0].clientY;
+  state.touchCurrentX = e2.touches[0].clientX;
+  state.swipingId = itemId;
+  state.directionLocked = false;
+}
+function handleTouchMove(state, e2) {
+  if (!state.swipingId) return 0;
+  const currentX = e2.touches[0].clientX;
+  const currentY = e2.touches[0].clientY;
+  if (!state.directionLocked) {
+    const dx = Math.abs(currentX - state.touchStartX);
+    const dy = Math.abs(currentY - state.touchStartY);
+    if (dx < 8 && dy < 8) return 0;
+    if (dy > dx) {
+      state.swipingId = null;
+      return 0;
+    }
+    state.directionLocked = true;
+  }
+  e2.preventDefault();
+  state.touchCurrentX = currentX;
+  return currentX - state.touchStartX;
+}
+function handleTouchEnd(state) {
+  const id = state.swipingId;
+  if (!id) return { action: null, itemId: "" };
+  const delta = state.touchCurrentX - state.touchStartX;
+  state.swipingId = null;
+  state.touchStartX = 0;
+  state.touchCurrentX = 0;
+  state.directionLocked = false;
+  if (delta < -SWIPE_THRESHOLD) {
+    return { action: "complete", itemId: id };
+  }
+  if (delta > SWIPE_THRESHOLD) {
+    return { action: "delete", itemId: id };
+  }
+  return { action: null, itemId: id };
+}
+function getSwipeDelta(state, itemId) {
+  if (state.swipingId !== itemId) return 0;
+  return state.touchCurrentX - state.touchStartX;
+}
+var __defProp$b = Object.defineProperty;
+var __getOwnPropDesc$b = Object.getOwnPropertyDescriptor;
+var __decorateClass$b = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$b(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$a(target, key, result);
+  if (kind && result) __defProp$b(target, key, result);
   return result;
 };
 function todayISO$1() {
@@ -2892,6 +3003,7 @@ let CaleeTasksView = class extends i {
     this.lists = [];
     this.presets = [];
     this.activeView = "inbox";
+    this.narrow = false;
     this._quickAddText = "";
     this._quickAddFocused = false;
     this._selectedDatePill = "none";
@@ -2903,11 +3015,40 @@ let CaleeTasksView = class extends i {
     this._editDatePill = "none";
     this._editCustomDate = "";
     this._editRecurrence = "none";
+    this._showMoreOptions = false;
+    this._quickAddNote = "";
+    this._swipe = createSwipeState();
+    this._confirmDeleteId = null;
+    this._boundHashChange = this._checkHashForTaskId.bind(this);
   }
-  /* ── Lifecycle ──────────────────────────────────────────────────── */
+  connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener("hashchange", this._boundHashChange);
+    this._checkHashForTaskId();
+  }
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener("hashchange", this._boundHashChange);
+  }
   updated(changed) {
     if (changed.has("activeView")) {
       this._resetQuickAdd();
+    }
+    if (changed.has("tasks")) {
+      this._checkHashForTaskId();
+    }
+  }
+  /** If the URL hash is #/tasks/<taskId>, auto-expand that task for inline editing. */
+  _checkHashForTaskId() {
+    const hash = window.location.hash.replace(/^#\/?/, "");
+    const parts = hash.split("/");
+    if (parts[0] === "tasks" && parts[1] && parts[1].length > 0) {
+      const taskId = parts[1];
+      const task = this.tasks.find((t2) => t2.id === taskId);
+      if (task) {
+        this._startEdit(task);
+        window.location.hash = "#/tasks";
+      }
     }
   }
   /* ── Quick-add defaults per tab ─────────────────────────────────── */
@@ -2926,6 +3067,8 @@ let CaleeTasksView = class extends i {
     this._selectedDatePill = this._defaultDatePill;
     this._selectedRecurrence = "none";
     this._customDate = "";
+    this._quickAddNote = "";
+    this._showMoreOptions = false;
   }
   /* ── Resolve due date from pill ─────────────────────────────────── */
   _resolveDue(pill, customDate) {
@@ -3009,18 +3152,24 @@ let CaleeTasksView = class extends i {
     if (e2.key === "Enter" && this._quickAddText.trim()) {
       const due = this._resolveDue(this._selectedDatePill, this._customDate);
       const recurrence = this._selectedRecurrence !== "none" && due ? this._selectedRecurrence : void 0;
+      const detail = {
+        title: this._quickAddText.trim(),
+        due,
+        recurrence_rule: recurrence
+      };
+      if (this._quickAddNote.trim()) {
+        detail.note = this._quickAddNote.trim();
+      }
       this.dispatchEvent(
         new CustomEvent("task-quick-add", {
-          detail: {
-            title: this._quickAddText.trim(),
-            due,
-            recurrence_rule: recurrence
-          },
+          detail,
           bubbles: true,
           composed: true
         })
       );
       this._quickAddText = "";
+      this._quickAddNote = "";
+      this._showMoreOptions = false;
       this._inputEl.value = "";
       this._resetQuickAdd();
     }
@@ -3047,6 +3196,19 @@ let CaleeTasksView = class extends i {
   }
   _onCustomDateChange(e2) {
     this._customDate = e2.target.value;
+  }
+  /* ── Task row click — dispatch event for panel detail drawer ───── */
+  _onTaskRowClick(task) {
+    this.dispatchEvent(
+      new CustomEvent("task-click", {
+        detail: { task },
+        bubbles: true,
+        composed: true
+      })
+    );
+    if (this.narrow) {
+      this._startEdit(task);
+    }
   }
   /* ── Inline editing ─────────────────────────────────────────────── */
   _startEdit(task) {
@@ -3100,6 +3262,51 @@ let CaleeTasksView = class extends i {
       this._cancelEdit();
     }
   }
+  /* ── Swipe handlers (mobile) ───────────────────────────────────── */
+  _onTouchStart(e2, itemId) {
+    handleTouchStart(this._swipe, e2, itemId);
+  }
+  _onTouchMove(e2) {
+    handleTouchMove(this._swipe, e2);
+    this.requestUpdate();
+  }
+  _onTouchEnd(_e) {
+    const result = handleTouchEnd(this._swipe);
+    this.requestUpdate();
+    if (!result.action) return;
+    if (result.action === "complete") {
+      this.dispatchEvent(
+        new CustomEvent("task-complete", {
+          detail: { taskId: result.itemId },
+          bubbles: true,
+          composed: true
+        })
+      );
+    } else if (result.action === "delete") {
+      this._confirmDeleteId = result.itemId;
+    }
+  }
+  _confirmSwipeDelete() {
+    if (!this._confirmDeleteId) return;
+    this.dispatchEvent(
+      new CustomEvent("task-delete", {
+        detail: { taskId: this._confirmDeleteId },
+        bubbles: true,
+        composed: true
+      })
+    );
+    this._confirmDeleteId = null;
+  }
+  _cancelSwipeDelete() {
+    this._confirmDeleteId = null;
+  }
+  /* ── Progressive disclosure ────────────────────────────────────── */
+  _toggleMoreOptions() {
+    this._showMoreOptions = !this._showMoreOptions;
+  }
+  _onNoteInput(e2) {
+    this._quickAddNote = e2.target.value;
+  }
   /* ── Render ─────────────────────────────────────────────────────── */
   render() {
     const tabs = [
@@ -3108,7 +3315,7 @@ let CaleeTasksView = class extends i {
       { key: "upcoming", label: "Upcoming" }
     ];
     const filtered = this._filteredTasks;
-    const showPills = this._quickAddFocused || this._quickAddText.length > 0;
+    const showDatePills = this._quickAddFocused || this._quickAddText.length > 0;
     const hasDue = this._selectedDatePill !== "none";
     return b`
       <div class="tabs" role="tablist">
@@ -3140,19 +3347,59 @@ let CaleeTasksView = class extends i {
           />
         </div>
 
-        <div class="pills-container ${showPills ? "expanded" : ""}">
+        <!-- Progressive disclosure: date pills shown on focus -->
+        <div class="pills-date-container ${showDatePills ? "visible" : ""}">
           ${this._renderDatePills(
       this._selectedDatePill,
       this._customDate,
       (p2) => this._selectDatePill(p2),
       (e2) => this._onCustomDateChange(e2)
     )}
+        </div>
+
+        <!-- Progressive disclosure: recurrence pills shown after date selected -->
+        <div class="pills-recurrence-container ${showDatePills && hasDue ? "visible" : ""}">
           ${hasDue ? this._renderRecurrencePills(
       this._selectedRecurrence,
       (p2) => this._selectRecurrence(p2)
     ) : A}
         </div>
+
+        <!-- Progressive disclosure: "More options" toggle for note -->
+        ${showDatePills ? b`
+          <button class="more-options-toggle" @click=${this._toggleMoreOptions}>
+            ${this._showMoreOptions ? "Less options" : "More options"}
+          </button>
+          ${this._showMoreOptions ? b`
+            <textarea
+              class="note-input"
+              placeholder="Add a note..."
+              .value=${this._quickAddNote}
+              @input=${this._onNoteInput}
+            ></textarea>
+          ` : A}
+        ` : A}
       </div>
+
+      <!-- Swipe delete confirmation -->
+      ${this._confirmDeleteId ? b`
+            <div
+              class="confirm-delete-overlay"
+              @click=${(e2) => {
+      if (e2.target.classList.contains("confirm-delete-overlay")) {
+        this._cancelSwipeDelete();
+      }
+    }}
+            >
+              <div class="confirm-delete-dialog">
+                <p>Delete this task?</p>
+                <div class="confirm-delete-actions">
+                  <button class="confirm-cancel" @click=${this._cancelSwipeDelete}>Cancel</button>
+                  <button class="confirm-confirm" @click=${this._confirmSwipeDelete}>Delete</button>
+                </div>
+              </div>
+            </div>
+          ` : A}
 
       ${this.activeView === "inbox" && this._inboxPresets.length > 0 ? b`
             <div class="presets-section">
@@ -3256,34 +3503,49 @@ let CaleeTasksView = class extends i {
   _renderTask(task) {
     const overdue = task.due ? isPast(task.due) : false;
     const dueIsToday = task.due ? isToday(task.due) : false;
+    const delta = getSwipeDelta(this._swipe, task.id);
+    const isSwiping = this._swipe.swipingId === task.id;
     return b`
-      <li class="task-item" @click=${() => this._startEdit(task)}>
-        <button
-          class="task-check"
-          aria-label="Complete task"
-          @click=${(e2) => this._onComplete(task, e2)}
-        >
-          <svg viewBox="0 0 16 16">
-            <polyline points="3.5,8 6.5,11 12.5,5" />
-          </svg>
-        </button>
+      <li class="swipe-row-wrapper ${isSwiping ? "swiping" : ""}">
+        <!-- Swipe reveal backgrounds -->
+        <div class="swipe-action-complete" aria-hidden="true">&#10003;</div>
+        <div class="swipe-action-delete" aria-hidden="true">&#128465;</div>
 
-        <div class="task-body">
-          <div class="task-title">${task.title}</div>
-          <div class="task-meta">
-            ${task.due ? b`<span class="due-badge ${overdue ? "overdue" : ""} ${dueIsToday && !overdue ? "today" : ""}">
-                  ${formatDue(task.due)}
-                </span>` : A}
-            ${task.due && task.recurrence_rule ? b`<span class="meta-dot"></span>` : A}
-            ${task.recurrence_rule ? b`<span class="recurrence-badge">
-                  <span class="repeat-icon">&#x1f504;</span>
-                  ${formatRecurrence(task.recurrence_rule)}
-                </span>` : A}
-            ${task.related_event_id ? b`<svg class="linked-icon" viewBox="0 0 24 24">
-                  <path
-                    d="M17 7h-4v2h4c1.65 0 3 1.35 3 3s-1.35 3-3 3h-4v2h4c2.76 0 5-2.24 5-5s-2.24-5-5-5zm-6 8H7c-1.65 0-3-1.35-3-3s1.35-3 3-3h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-2zm-3-4h8v2H8z"
-                  />
-                </svg>` : A}
+        <div
+          class="swipe-row-inner task-item ${isSwiping ? "dragging" : ""}"
+          style="transform: translateX(${delta}px)"
+          @click=${() => this._onTaskRowClick(task)}
+          @touchstart=${(e2) => this._onTouchStart(e2, task.id)}
+          @touchmove=${(e2) => this._onTouchMove(e2)}
+          @touchend=${(e2) => this._onTouchEnd(e2)}
+        >
+          <button
+            class="task-check"
+            aria-label="Complete task"
+            @click=${(e2) => this._onComplete(task, e2)}
+          >
+            <svg viewBox="0 0 16 16">
+              <polyline points="3.5,8 6.5,11 12.5,5" />
+            </svg>
+          </button>
+
+          <div class="task-body">
+            <div class="task-title">${task.title}</div>
+            <div class="task-meta">
+              ${task.due ? b`<span class="due-badge ${overdue ? "overdue" : ""} ${dueIsToday && !overdue ? "today" : ""}">
+                    ${formatDue(task.due)}
+                  </span>` : A}
+              ${task.due && task.recurrence_rule ? b`<span class="meta-dot"></span>` : A}
+              ${task.recurrence_rule ? b`<span class="recurrence-badge">
+                    <span class="repeat-icon">&#x1f504;</span>
+                    ${formatRecurrence(task.recurrence_rule)}
+                  </span>` : A}
+              ${task.related_event_id ? b`<svg class="linked-icon" viewBox="0 0 24 24">
+                    <path
+                      d="M17 7h-4v2h4c1.65 0 3 1.35 3 3s-1.35 3-3 3h-4v2h4c2.76 0 5-2.24 5-5s-2.24-5-5-5zm-6 8H7c-1.65 0-3-1.35-3-3s1.35-3 3-3h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-2zm-3-4h8v2H8z"
+                    />
+                  </svg>` : A}
+            </div>
           </div>
         </div>
       </li>
@@ -3326,7 +3588,7 @@ let CaleeTasksView = class extends i {
     `;
   }
 };
-CaleeTasksView.styles = i$3`
+CaleeTasksView.styles = [swipeStyles, i$3`
     :host {
       display: block;
       padding: 16px;
@@ -3456,16 +3718,7 @@ CaleeTasksView.styles = i$3`
       border-color: var(--task-accent);
     }
 
-    .pills-container {
-      overflow: hidden;
-      max-height: 0;
-      opacity: 0;
-      transition: max-height 0.2s ease, opacity 0.2s ease, margin 0.2s ease;
-    }
-    .pills-container.expanded {
-      max-height: 120px;
-      opacity: 1;
-    }
+    /* (progressive disclosure containers moved below) */
 
     /* ── Task list ───────────────────────────────────────────────── */
 
@@ -3724,66 +3977,197 @@ CaleeTasksView.styles = i$3`
       width: 16px;
       height: 16px;
     }
-  `;
-__decorateClass$a([
+
+    /* ── Progressive disclosure ─────────────────────────────── */
+
+    .pills-date-container {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.2s ease, opacity 0.2s ease;
+    }
+    .pills-date-container.visible {
+      max-height: 60px;
+      opacity: 1;
+    }
+
+    .pills-recurrence-container {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.2s ease, opacity 0.2s ease;
+    }
+    .pills-recurrence-container.visible {
+      max-height: 60px;
+      opacity: 1;
+    }
+
+    .more-options-toggle {
+      font-size: 12px;
+      color: var(--task-secondary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 0;
+      margin-top: 4px;
+      transition: color 0.15s;
+    }
+    .more-options-toggle:hover {
+      color: var(--task-accent);
+    }
+
+    .note-input {
+      width: 100%;
+      font-size: 13px;
+      padding: 6px 10px;
+      border: 1px solid var(--task-border);
+      border-radius: 6px;
+      background: var(--task-bg);
+      color: var(--task-text);
+      outline: none;
+      box-sizing: border-box;
+      resize: vertical;
+      min-height: 36px;
+      max-height: 120px;
+      font-family: inherit;
+      margin-top: 6px;
+      overflow: auto;
+    }
+    .note-input:focus {
+      border-color: var(--task-accent);
+    }
+
+    /* ── Swipe delete confirmation ─────────────────────────── */
+
+    .confirm-delete-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .confirm-delete-dialog {
+      background: var(--card-background-color, #fff);
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 320px;
+      width: 100%;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .confirm-delete-dialog p {
+      font-size: 14px;
+      color: var(--task-text);
+      margin: 0 0 16px;
+    }
+
+    .confirm-delete-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .confirm-delete-actions button {
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 20px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s;
+    }
+
+    .confirm-delete-actions button:hover {
+      opacity: 0.9;
+    }
+
+    .confirm-cancel {
+      background: var(--secondary-background-color, #f0f0f0);
+      color: var(--task-text);
+    }
+
+    .confirm-confirm {
+      background: var(--error-color, #f44336);
+      color: #fff;
+    }
+  `];
+__decorateClass$b([
   n2({ type: Array })
 ], CaleeTasksView.prototype, "tasks", 2);
-__decorateClass$a([
+__decorateClass$b([
   n2({ type: Array })
 ], CaleeTasksView.prototype, "lists", 2);
-__decorateClass$a([
+__decorateClass$b([
   n2({ type: Array })
 ], CaleeTasksView.prototype, "presets", 2);
-__decorateClass$a([
+__decorateClass$b([
   n2({ type: String })
 ], CaleeTasksView.prototype, "activeView", 2);
-__decorateClass$a([
+__decorateClass$b([
+  n2({ type: Boolean, reflect: true })
+], CaleeTasksView.prototype, "narrow", 2);
+__decorateClass$b([
   r()
 ], CaleeTasksView.prototype, "_quickAddText", 2);
-__decorateClass$a([
+__decorateClass$b([
   r()
 ], CaleeTasksView.prototype, "_quickAddFocused", 2);
-__decorateClass$a([
+__decorateClass$b([
   r()
 ], CaleeTasksView.prototype, "_selectedDatePill", 2);
-__decorateClass$a([
+__decorateClass$b([
   r()
 ], CaleeTasksView.prototype, "_selectedRecurrence", 2);
-__decorateClass$a([
+__decorateClass$b([
   r()
 ], CaleeTasksView.prototype, "_customDate", 2);
-__decorateClass$a([
+__decorateClass$b([
   r()
 ], CaleeTasksView.prototype, "_renderLimit", 2);
-__decorateClass$a([
+__decorateClass$b([
   r()
 ], CaleeTasksView.prototype, "_editingTaskId", 2);
-__decorateClass$a([
+__decorateClass$b([
   r()
 ], CaleeTasksView.prototype, "_editTitle", 2);
-__decorateClass$a([
+__decorateClass$b([
   r()
 ], CaleeTasksView.prototype, "_editDatePill", 2);
-__decorateClass$a([
+__decorateClass$b([
   r()
 ], CaleeTasksView.prototype, "_editCustomDate", 2);
-__decorateClass$a([
+__decorateClass$b([
   r()
 ], CaleeTasksView.prototype, "_editRecurrence", 2);
-__decorateClass$a([
+__decorateClass$b([
+  r()
+], CaleeTasksView.prototype, "_showMoreOptions", 2);
+__decorateClass$b([
+  r()
+], CaleeTasksView.prototype, "_quickAddNote", 2);
+__decorateClass$b([
+  r()
+], CaleeTasksView.prototype, "_confirmDeleteId", 2);
+__decorateClass$b([
   e("#quick-add-input")
 ], CaleeTasksView.prototype, "_inputEl", 2);
-CaleeTasksView = __decorateClass$a([
+CaleeTasksView = __decorateClass$b([
   t("calee-tasks-view")
 ], CaleeTasksView);
-var __defProp$9 = Object.defineProperty;
-var __getOwnPropDesc$9 = Object.getOwnPropertyDescriptor;
-var __decorateClass$9 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$9(target, key) : target;
+var __defProp$a = Object.defineProperty;
+var __getOwnPropDesc$a = Object.getOwnPropertyDescriptor;
+var __decorateClass$a = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$a(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$9(target, key, result);
+  if (kind && result) __defProp$a(target, key, result);
   return result;
 };
 const CATEGORY_META = {
@@ -3813,6 +4197,7 @@ let CaleeShoppingView = class extends i {
     this.tasks = [];
     this.presets = [];
     this.listId = "shopping";
+    this.toastMessage = "";
     this.currency = "$";
     this.budget = 0;
     this._quickAddText = "";
@@ -3827,6 +4212,19 @@ let CaleeShoppingView = class extends i {
     this._presetFormEmoji = "";
     this._confirmDeletePresetId = null;
     this._pendingRenderLimit = 100;
+    this._toastMessage = "";
+    this._toastTimer = null;
+    this._swipe = createSwipeState();
+    this._confirmSwipeDeleteId = null;
+  }
+  /* ── Lifecycle ───────────────────────────────────────────────────── */
+  updated(changedProps) {
+    if (changedProps.has("toastMessage") && this.toastMessage) {
+      this._showToast(this.toastMessage);
+      this.dispatchEvent(
+        new CustomEvent("toast-shown", { bubbles: true, composed: true })
+      );
+    }
   }
   /* ── Computed ────────────────────────────────────────────────────── */
   /** All non-deleted, non-completed tasks. */
@@ -4043,6 +4441,43 @@ let CaleeShoppingView = class extends i {
       this._inputEl.value = "";
     }
   }
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    if (this._toastTimer) {
+      clearTimeout(this._toastTimer);
+      this._toastTimer = null;
+    }
+  }
+  /** Show a toast notification that auto-dismisses. */
+  _showToast(message) {
+    if (this._toastTimer) clearTimeout(this._toastTimer);
+    this._toastMessage = message;
+    this._toastTimer = setTimeout(() => {
+      this._toastMessage = "";
+      this._toastTimer = null;
+    }, 2500);
+  }
+  _onQuantityChange(task, delta) {
+    const current = task.quantity ?? 1;
+    const newQty = Math.max(0.1, current + delta);
+    this.dispatchEvent(
+      new CustomEvent("task-quantity-update", {
+        detail: { taskId: task.id, quantity: newQty, version: task.version },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  _onUnitChange(task, e2) {
+    const unit = e2.target.value;
+    this.dispatchEvent(
+      new CustomEvent("task-unit-update", {
+        detail: { taskId: task.id, unit, version: task.version },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
   _onPriceChange(task, e2) {
     const input = e2.target;
     const raw = input.value.trim();
@@ -4067,6 +4502,45 @@ let CaleeShoppingView = class extends i {
   }
   _showMorePending() {
     this._pendingRenderLimit += 100;
+  }
+  /* ── Swipe handlers (mobile) ───────────────────────────────────── */
+  _onTouchStart(e2, itemId) {
+    handleTouchStart(this._swipe, e2, itemId);
+  }
+  _onTouchMove(e2) {
+    handleTouchMove(this._swipe, e2);
+    this.requestUpdate();
+  }
+  _onTouchEnd(_e) {
+    const result = handleTouchEnd(this._swipe);
+    this.requestUpdate();
+    if (!result.action) return;
+    if (result.action === "complete") {
+      const task = this.tasks.find((t2) => t2.id === result.itemId);
+      if (task) {
+        if (task.completed) {
+          this._uncompleteItem(task);
+        } else {
+          this._completeItem(task);
+        }
+      }
+    } else if (result.action === "delete") {
+      this._confirmSwipeDeleteId = result.itemId;
+    }
+  }
+  _confirmSwipeDelete() {
+    if (!this._confirmSwipeDeleteId) return;
+    this.dispatchEvent(
+      new CustomEvent("task-delete", {
+        detail: { taskId: this._confirmSwipeDeleteId },
+        bubbles: true,
+        composed: true
+      })
+    );
+    this._confirmSwipeDeleteId = null;
+  }
+  _cancelSwipeDelete() {
+    this._confirmSwipeDeleteId = null;
   }
   /* ── Render ─────────────────────────────────────────────────────── */
   render() {
@@ -4176,6 +4650,26 @@ let CaleeShoppingView = class extends i {
       <!-- Preset add form -->
       ${this._showPresetForm ? this._renderPresetForm() : A}
 
+      <!-- Swipe delete confirmation -->
+      ${this._confirmSwipeDeleteId ? b`
+            <div
+              class="swipe-confirm-overlay"
+              @click=${(e2) => {
+      if (e2.target.classList.contains("swipe-confirm-overlay")) {
+        this._cancelSwipeDelete();
+      }
+    }}
+            >
+              <div class="swipe-confirm-dialog">
+                <p>Delete this item?</p>
+                <div class="swipe-confirm-actions">
+                  <button class="swipe-cancel-btn" @click=${this._cancelSwipeDelete}>Cancel</button>
+                  <button class="swipe-delete-btn" @click=${this._confirmSwipeDelete}>Delete</button>
+                </div>
+              </div>
+            </div>
+          ` : A}
+
       <!-- Delete confirmation -->
       ${this._confirmDeletePresetId ? b`
             <div
@@ -4269,6 +4763,9 @@ let CaleeShoppingView = class extends i {
                       ` : A}
                 ` : A}
           ` : A}
+
+      <!-- Toast -->
+      ${this._toastMessage ? b`<div class="toast">${this._toastMessage}</div>` : A}
     `;
   }
   _renderPresetForm() {
@@ -4402,31 +4899,65 @@ let CaleeShoppingView = class extends i {
     `;
   }
   _renderItem(task, done) {
+    const delta = getSwipeDelta(this._swipe, task.id);
+    const isSwiping = this._swipe.swipingId === task.id;
+    const qty = task.quantity ?? 1;
+    const unit = task.unit ?? "";
+    const UNIT_OPTIONS = ["", "pcs", "L", "kg", "pack", "box", "bag", "can", "bottle", "dozen"];
+    const qtyLabel = qty > 1 ? `${qty % 1 === 0 ? qty.toFixed(0) : qty}x` : "";
+    const unitLabel = unit ? ` ${unit}` : "";
     return b`
-      <li class="item">
-        <button
-          class="checkbox ${done ? "checked" : ""}"
-          aria-label="${done ? "Undo" : "Complete"} item"
-          @click=${() => done ? this._uncompleteItem(task) : this._completeItem(task)}
+      <li class="swipe-row-wrapper ${isSwiping ? "swiping" : ""}">
+        <div class="swipe-action-complete" aria-hidden="true">&#10003;</div>
+        <div class="swipe-action-delete" aria-hidden="true">&#128465;</div>
+
+        <div
+          class="swipe-row-inner item ${isSwiping ? "dragging" : ""}"
+          style="transform: translateX(${delta}px)"
+          @touchstart=${(e2) => this._onTouchStart(e2, task.id)}
+          @touchmove=${(e2) => this._onTouchMove(e2)}
+          @touchend=${(e2) => this._onTouchEnd(e2)}
         >
-          <svg viewBox="0 0 16 16">
-            <polyline points="3.5,8 6.5,11 12.5,5" />
-          </svg>
-        </button>
-        ${task.is_recurring && !done ? b`<span class="recurring-badge" title="Recurring item">\uD83D\uDD04</span>` : A}
-        <span class="item-title">${task.title}</span>
-        ${!done ? b`
-              <span class="item-price">
-                <input
-                  type="text"
-                  inputmode="decimal"
-                  placeholder="${this.currency}"
-                  .value=${task.price != null ? task.price.toFixed(2) : ""}
-                  @change=${(e2) => this._onPriceChange(task, e2)}
-                  aria-label="Price"
-                />
-              </span>
-            ` : A}
+          <button
+            class="checkbox ${done ? "checked" : ""}"
+            aria-label="${done ? "Undo" : "Complete"} item"
+            @click=${() => done ? this._uncompleteItem(task) : this._completeItem(task)}
+          >
+            <svg viewBox="0 0 16 16">
+              <polyline points="3.5,8 6.5,11 12.5,5" />
+            </svg>
+          </button>
+          ${task.is_recurring && !done ? b`<span class="recurring-badge" title="Recurring item">\uD83D\uDD04</span>` : A}
+          <span class="item-title">${qtyLabel ? b`<span class="item-qty-info">${qtyLabel}</span>` : A}${task.title}${unitLabel ? b`<span class="item-qty-info">${unitLabel}</span>` : A}</span>
+          ${!done ? b`
+                <span class="qty-controls">
+                  <button class="qty-btn" @click=${() => this._onQuantityChange(task, -1)} title="Decrease" aria-label="Decrease quantity">-</button>
+                  <span class="qty-value">${qty % 1 === 0 ? qty.toFixed(0) : qty}</span>
+                  <button class="qty-btn" @click=${() => this._onQuantityChange(task, 1)} title="Increase" aria-label="Increase quantity">+</button>
+                </span>
+                <select
+                  class="unit-select"
+                  .value=${unit}
+                  @change=${(e2) => this._onUnitChange(task, e2)}
+                  title="Unit"
+                  aria-label="Unit"
+                >
+                  ${UNIT_OPTIONS.map(
+      (u2) => b`<option value=${u2} ?selected=${unit === u2}>${u2 || "--"}</option>`
+    )}
+                </select>
+                <span class="item-price">
+                  <input
+                    type="text"
+                    inputmode="decimal"
+                    placeholder="${this.currency}"
+                    .value=${task.price != null ? task.price.toFixed(2) : ""}
+                    @change=${(e2) => this._onPriceChange(task, e2)}
+                    aria-label="Price"
+                  />
+                </span>
+              ` : A}
+        </div>
       </li>
     `;
   }
@@ -4460,7 +4991,7 @@ let CaleeShoppingView = class extends i {
     `;
   }
 };
-CaleeShoppingView.styles = i$3`
+CaleeShoppingView.styles = [swipeStyles, i$3`
     :host {
       display: block;
       padding: 16px;
@@ -4697,6 +5228,69 @@ CaleeShoppingView.styles = i$3`
       white-space: nowrap;
     }
 
+    .item-qty-info {
+      font-size: 12px;
+      color: var(--shop-secondary);
+      font-weight: 500;
+      flex-shrink: 0;
+      margin-right: 2px;
+    }
+
+    .qty-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+
+    .qty-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      border: 1px solid var(--shop-border);
+      background: var(--shop-bg);
+      color: var(--shop-text);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: background 0.15s, border-color 0.15s;
+      line-height: 1;
+    }
+
+    .qty-btn:hover {
+      border-color: var(--shop-accent);
+      background: color-mix(in srgb, var(--shop-accent) 10%, transparent);
+    }
+
+    .qty-value {
+      min-width: 24px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--shop-text);
+    }
+
+    .unit-select {
+      font-size: 11px;
+      padding: 2px 4px;
+      border: 1px solid var(--shop-border);
+      border-radius: 4px;
+      background: var(--shop-bg);
+      color: var(--shop-secondary);
+      outline: none;
+      cursor: pointer;
+      max-width: 56px;
+      flex-shrink: 0;
+    }
+
+    .unit-select:focus {
+      border-color: var(--shop-accent);
+    }
+
     .recurring-badge {
       font-size: 14px;
       line-height: 1;
@@ -4707,6 +5301,32 @@ CaleeShoppingView.styles = i$3`
     .item-price {
       flex-shrink: 0;
       width: 72px;
+    }
+
+    /* ── Toast notification ──────────────────────────────────── */
+
+    .toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary-text-color, #212121);
+      color: var(--card-background-color, #fff);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      z-index: 300;
+      pointer-events: none;
+      animation: toast-fade 2.5s ease forwards;
+    }
+
+    @keyframes toast-fade {
+      0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
     }
     .item-price input {
       width: 100%;
@@ -5170,72 +5790,141 @@ CaleeShoppingView.styles = i$3`
       background: var(--error-color, #f44336);
       color: #fff;
     }
-  `;
-__decorateClass$9([
+
+    /* ── Swipe delete confirmation (separate from preset delete) ── */
+
+    .swipe-confirm-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .swipe-confirm-dialog {
+      background: var(--card-background-color, #fff);
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 320px;
+      width: 100%;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .swipe-confirm-dialog p {
+      font-size: 14px;
+      color: var(--shop-text);
+      margin: 0 0 16px;
+    }
+
+    .swipe-confirm-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .swipe-confirm-actions button {
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 20px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s;
+    }
+
+    .swipe-confirm-actions button:hover {
+      opacity: 0.9;
+    }
+
+    .swipe-cancel-btn {
+      background: var(--secondary-background-color, #f0f0f0);
+      color: var(--shop-text);
+    }
+
+    .swipe-delete-btn {
+      background: var(--error-color, #f44336);
+      color: #fff;
+    }
+  `];
+__decorateClass$a([
   n2({ type: Array })
 ], CaleeShoppingView.prototype, "tasks", 2);
-__decorateClass$9([
+__decorateClass$a([
   n2({ type: Array })
 ], CaleeShoppingView.prototype, "presets", 2);
-__decorateClass$9([
+__decorateClass$a([
   n2({ type: String })
 ], CaleeShoppingView.prototype, "listId", 2);
-__decorateClass$9([
+__decorateClass$a([
+  n2({ type: String })
+], CaleeShoppingView.prototype, "toastMessage", 2);
+__decorateClass$a([
   n2({ type: String })
 ], CaleeShoppingView.prototype, "currency", 2);
-__decorateClass$9([
+__decorateClass$a([
   n2({ type: Number })
 ], CaleeShoppingView.prototype, "budget", 2);
-__decorateClass$9([
+__decorateClass$a([
   r()
 ], CaleeShoppingView.prototype, "_quickAddText", 2);
-__decorateClass$9([
+__decorateClass$a([
   r()
 ], CaleeShoppingView.prototype, "_selectedCategory", 2);
-__decorateClass$9([
+__decorateClass$a([
   r()
 ], CaleeShoppingView.prototype, "_completedOpen", 2);
-__decorateClass$9([
+__decorateClass$a([
   r()
 ], CaleeShoppingView.prototype, "_collapsedSections", 2);
-__decorateClass$9([
+__decorateClass$a([
   r()
 ], CaleeShoppingView.prototype, "_showCustomCategoryInput", 2);
-__decorateClass$9([
+__decorateClass$a([
   r()
 ], CaleeShoppingView.prototype, "_customCategoryText", 2);
-__decorateClass$9([
+__decorateClass$a([
   r()
 ], CaleeShoppingView.prototype, "_showPresetForm", 2);
-__decorateClass$9([
+__decorateClass$a([
   r()
 ], CaleeShoppingView.prototype, "_presetFormCategory", 2);
-__decorateClass$9([
+__decorateClass$a([
   r()
 ], CaleeShoppingView.prototype, "_presetFormTitle", 2);
-__decorateClass$9([
+__decorateClass$a([
   r()
 ], CaleeShoppingView.prototype, "_presetFormEmoji", 2);
-__decorateClass$9([
+__decorateClass$a([
   r()
 ], CaleeShoppingView.prototype, "_confirmDeletePresetId", 2);
-__decorateClass$9([
+__decorateClass$a([
   r()
 ], CaleeShoppingView.prototype, "_pendingRenderLimit", 2);
-__decorateClass$9([
+__decorateClass$a([
+  r()
+], CaleeShoppingView.prototype, "_toastMessage", 2);
+__decorateClass$a([
+  r()
+], CaleeShoppingView.prototype, "_confirmSwipeDeleteId", 2);
+__decorateClass$a([
   e("#quick-add-input")
 ], CaleeShoppingView.prototype, "_inputEl", 2);
-CaleeShoppingView = __decorateClass$9([
+CaleeShoppingView = __decorateClass$a([
   t("calee-shopping-view")
 ], CaleeShoppingView);
-var __defProp$8 = Object.defineProperty;
-var __getOwnPropDesc$8 = Object.getOwnPropertyDescriptor;
-var __decorateClass$8 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$8(target, key) : target;
+var __defProp$9 = Object.defineProperty;
+var __getOwnPropDesc$9 = Object.getOwnPropertyDescriptor;
+var __decorateClass$9 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$9(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$8(target, key, result);
+  if (kind && result) __defProp$9(target, key, result);
   return result;
 };
 function formatTime(iso) {
@@ -5397,29 +6086,29 @@ CaleeShiftProgress.styles = i$3`
       color: var(--primary-color, #03a9f4);
     }
   `;
-__decorateClass$8([
+__decorateClass$9([
   n2({ type: Object })
 ], CaleeShiftProgress.prototype, "currentShift", 2);
-__decorateClass$8([
+__decorateClass$9([
   r()
 ], CaleeShiftProgress.prototype, "_pct", 2);
-__decorateClass$8([
+__decorateClass$9([
   r()
 ], CaleeShiftProgress.prototype, "_elapsed", 2);
-__decorateClass$8([
+__decorateClass$9([
   r()
 ], CaleeShiftProgress.prototype, "_remaining", 2);
-CaleeShiftProgress = __decorateClass$8([
+CaleeShiftProgress = __decorateClass$9([
   t("calee-shift-progress")
 ], CaleeShiftProgress);
-var __defProp$7 = Object.defineProperty;
-var __getOwnPropDesc$7 = Object.getOwnPropertyDescriptor;
-var __decorateClass$7 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$7(target, key) : target;
+var __defProp$8 = Object.defineProperty;
+var __getOwnPropDesc$8 = Object.getOwnPropertyDescriptor;
+var __decorateClass$8 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$8(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$7(target, key, result);
+  if (kind && result) __defProp$8(target, key, result);
   return result;
 };
 function formatStartTime(iso) {
@@ -5541,23 +6230,23 @@ CaleeNextShift.styles = i$3`
       letter-spacing: -0.5px;
     }
   `;
-__decorateClass$7([
+__decorateClass$8([
   n2({ type: Object })
 ], CaleeNextShift.prototype, "nextShift", 2);
-__decorateClass$7([
+__decorateClass$8([
   r()
 ], CaleeNextShift.prototype, "_countdown", 2);
-CaleeNextShift = __decorateClass$7([
+CaleeNextShift = __decorateClass$8([
   t("calee-next-shift")
 ], CaleeNextShift);
-var __defProp$6 = Object.defineProperty;
-var __getOwnPropDesc$6 = Object.getOwnPropertyDescriptor;
-var __decorateClass$6 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$6(target, key) : target;
+var __defProp$7 = Object.defineProperty;
+var __getOwnPropDesc$7 = Object.getOwnPropertyDescriptor;
+var __decorateClass$7 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$7(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$6(target, key, result);
+  if (kind && result) __defProp$7(target, key, result);
   return result;
 };
 const RECURRENCE_OPTIONS = [
@@ -5963,50 +6652,50 @@ CaleeEventDialog.styles = i$3`
       }
     }
   `;
-__decorateClass$6([
+__decorateClass$7([
   n2({ type: Object })
 ], CaleeEventDialog.prototype, "event", 2);
-__decorateClass$6([
+__decorateClass$7([
   n2({ type: Array })
 ], CaleeEventDialog.prototype, "calendars", 2);
-__decorateClass$6([
+__decorateClass$7([
   n2({ type: Boolean, reflect: true })
 ], CaleeEventDialog.prototype, "open", 2);
-__decorateClass$6([
+__decorateClass$7([
   n2({ type: Object })
 ], CaleeEventDialog.prototype, "defaults", 2);
-__decorateClass$6([
+__decorateClass$7([
   r()
 ], CaleeEventDialog.prototype, "_title", 2);
-__decorateClass$6([
+__decorateClass$7([
   r()
 ], CaleeEventDialog.prototype, "_calendarId", 2);
-__decorateClass$6([
+__decorateClass$7([
   r()
 ], CaleeEventDialog.prototype, "_start", 2);
-__decorateClass$6([
+__decorateClass$7([
   r()
 ], CaleeEventDialog.prototype, "_end", 2);
-__decorateClass$6([
+__decorateClass$7([
   r()
 ], CaleeEventDialog.prototype, "_note", 2);
-__decorateClass$6([
+__decorateClass$7([
   r()
 ], CaleeEventDialog.prototype, "_recurrenceRule", 2);
-__decorateClass$6([
+__decorateClass$7([
   r()
 ], CaleeEventDialog.prototype, "_templateId", 2);
-CaleeEventDialog = __decorateClass$6([
+CaleeEventDialog = __decorateClass$7([
   t("calee-event-dialog")
 ], CaleeEventDialog);
-var __defProp$5 = Object.defineProperty;
-var __getOwnPropDesc$5 = Object.getOwnPropertyDescriptor;
-var __decorateClass$5 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$5(target, key) : target;
+var __defProp$6 = Object.defineProperty;
+var __getOwnPropDesc$6 = Object.getOwnPropertyDescriptor;
+var __decorateClass$6 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$6(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$5(target, key, result);
+  if (kind && result) __defProp$6(target, key, result);
   return result;
 };
 function formatShiftTime(t2) {
@@ -6086,6 +6775,26 @@ let CaleeTemplatePicker = class extends i {
         composed: true
       })
     );
+  }
+  _quickAddTask() {
+    this.dispatchEvent(
+      new CustomEvent("quick-add-task", {
+        detail: { date: this.selectedDate },
+        bubbles: true,
+        composed: true
+      })
+    );
+    this._close();
+  }
+  _quickAddShopping() {
+    this.dispatchEvent(
+      new CustomEvent("quick-add-shopping", {
+        detail: { date: this.selectedDate },
+        bubbles: true,
+        composed: true
+      })
+    );
+    this._close();
   }
   _manageTemplates() {
     this.dispatchEvent(
@@ -6185,6 +6894,14 @@ let CaleeTemplatePicker = class extends i {
         <div class="choose-card" @click=${this._customEvent}>
           <span class="choose-emoji">\u{1F4C5}</span>
           <span class="choose-label">Event</span>
+        </div>
+        <div class="choose-card" @click=${this._quickAddTask}>
+          <span class="choose-emoji">\u{2705}</span>
+          <span class="choose-label">Task</span>
+        </div>
+        <div class="choose-card" @click=${this._quickAddShopping}>
+          <span class="choose-emoji">\u{1F6D2}</span>
+          <span class="choose-label">Shop</span>
         </div>
       </div>
 
@@ -6540,12 +7257,12 @@ CaleeTemplatePicker.styles = i$3`
       color: var(--disabled-text-color, #aaa);
     }
 
-    /* ── Choose step (Shift vs Event) ────────────────────────── */
+    /* ── Choose step (Shift / Event / Task / Shop) ───────────── */
 
     .choose-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 12px;
     }
 
     .choose-card {
@@ -6553,8 +7270,8 @@ CaleeTemplatePicker.styles = i$3`
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      padding: 28px 16px;
+      gap: 8px;
+      padding: 22px 16px;
       border: 1px solid var(--divider-color, #e0e0e0);
       border-radius: 14px;
       cursor: pointer;
@@ -6724,35 +7441,35 @@ CaleeTemplatePicker.styles = i$3`
       }
     }
   `;
-__decorateClass$5([
+__decorateClass$6([
   n2({ type: Array })
 ], CaleeTemplatePicker.prototype, "templates", 2);
-__decorateClass$5([
+__decorateClass$6([
   n2({ type: String })
 ], CaleeTemplatePicker.prototype, "selectedDate", 2);
-__decorateClass$5([
+__decorateClass$6([
   n2({ type: String })
 ], CaleeTemplatePicker.prototype, "selectedTime", 2);
-__decorateClass$5([
+__decorateClass$6([
   n2({ type: Boolean, reflect: true })
 ], CaleeTemplatePicker.prototype, "open", 2);
-__decorateClass$5([
+__decorateClass$6([
   r()
 ], CaleeTemplatePicker.prototype, "_step", 2);
-__decorateClass$5([
+__decorateClass$6([
   r()
 ], CaleeTemplatePicker.prototype, "_datePill", 2);
-CaleeTemplatePicker = __decorateClass$5([
+CaleeTemplatePicker = __decorateClass$6([
   t("calee-template-picker")
 ], CaleeTemplatePicker);
-var __defProp$4 = Object.defineProperty;
-var __getOwnPropDesc$4 = Object.getOwnPropertyDescriptor;
-var __decorateClass$4 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$4(target, key) : target;
+var __defProp$5 = Object.defineProperty;
+var __getOwnPropDesc$5 = Object.getOwnPropertyDescriptor;
+var __decorateClass$5 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$5(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$4(target, key, result);
+  if (kind && result) __defProp$5(target, key, result);
   return result;
 };
 const PRESET_COLORS = [
@@ -7487,41 +8204,41 @@ CaleeTemplateManager.styles = i$3`
       }
     }
   `;
-__decorateClass$4([
+__decorateClass$5([
   n2({ type: Array })
 ], CaleeTemplateManager.prototype, "templates", 2);
-__decorateClass$4([
+__decorateClass$5([
   n2({ type: Array })
 ], CaleeTemplateManager.prototype, "calendars", 2);
-__decorateClass$4([
+__decorateClass$5([
   n2({ attribute: false })
 ], CaleeTemplateManager.prototype, "hass", 2);
-__decorateClass$4([
+__decorateClass$5([
   n2({ type: Boolean, reflect: true })
 ], CaleeTemplateManager.prototype, "open", 2);
-__decorateClass$4([
+__decorateClass$5([
   r()
 ], CaleeTemplateManager.prototype, "_editingTemplate", 2);
-__decorateClass$4([
+__decorateClass$5([
   r()
 ], CaleeTemplateManager.prototype, "_isNew", 2);
-__decorateClass$4([
+__decorateClass$5([
   r()
 ], CaleeTemplateManager.prototype, "_confirmDeleteId", 2);
-__decorateClass$4([
+__decorateClass$5([
   r()
 ], CaleeTemplateManager.prototype, "_saving", 2);
-CaleeTemplateManager = __decorateClass$4([
+CaleeTemplateManager = __decorateClass$5([
   t("calee-template-manager")
 ], CaleeTemplateManager);
-var __defProp$3 = Object.defineProperty;
-var __getOwnPropDesc$3 = Object.getOwnPropertyDescriptor;
-var __decorateClass$3 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$3(target, key) : target;
+var __defProp$4 = Object.defineProperty;
+var __getOwnPropDesc$4 = Object.getOwnPropertyDescriptor;
+var __decorateClass$4 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$4(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$3(target, key, result);
+  if (kind && result) __defProp$4(target, key, result);
   return result;
 };
 let CaleeSettingsDialog = class extends i {
@@ -8088,50 +8805,50 @@ CaleeSettingsDialog.styles = i$3`
       cursor: not-allowed;
     }
   `;
-__decorateClass$3([
+__decorateClass$4([
   n2({ type: Boolean, reflect: true })
 ], CaleeSettingsDialog.prototype, "open", 2);
-__decorateClass$3([
+__decorateClass$4([
   n2({ attribute: false })
 ], CaleeSettingsDialog.prototype, "hass", 2);
-__decorateClass$3([
+__decorateClass$4([
   r()
 ], CaleeSettingsDialog.prototype, "_timeFormat", 2);
-__decorateClass$3([
+__decorateClass$4([
   r()
 ], CaleeSettingsDialog.prototype, "_weekStartsOn", 2);
-__decorateClass$3([
+__decorateClass$4([
   r()
 ], CaleeSettingsDialog.prototype, "_maxEventAgeDays", 2);
-__decorateClass$3([
+__decorateClass$4([
   r()
 ], CaleeSettingsDialog.prototype, "_currencySymbol", 2);
-__decorateClass$3([
+__decorateClass$4([
   r()
 ], CaleeSettingsDialog.prototype, "_budgetAmount", 2);
-__decorateClass$3([
+__decorateClass$4([
   r()
 ], CaleeSettingsDialog.prototype, "_customCategories", 2);
-__decorateClass$3([
+__decorateClass$4([
   r()
 ], CaleeSettingsDialog.prototype, "_newCategoryText", 2);
-__decorateClass$3([
+__decorateClass$4([
   r()
 ], CaleeSettingsDialog.prototype, "_saving", 2);
-__decorateClass$3([
+__decorateClass$4([
   r()
 ], CaleeSettingsDialog.prototype, "_loadingSettings", 2);
-CaleeSettingsDialog = __decorateClass$3([
+CaleeSettingsDialog = __decorateClass$4([
   t("calee-settings-dialog")
 ], CaleeSettingsDialog);
-var __defProp$2 = Object.defineProperty;
-var __getOwnPropDesc$2 = Object.getOwnPropertyDescriptor;
-var __decorateClass$2 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$2(target, key) : target;
+var __defProp$3 = Object.defineProperty;
+var __getOwnPropDesc$3 = Object.getOwnPropertyDescriptor;
+var __decorateClass$3 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$3(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$2(target, key, result);
+  if (kind && result) __defProp$3(target, key, result);
   return result;
 };
 function relativeTime$1(isoStr) {
@@ -8456,41 +9173,41 @@ CaleeDeletedItems.styles = i$3`
       }
     }
   `;
-__decorateClass$2([
+__decorateClass$3([
   n2({ attribute: false })
 ], CaleeDeletedItems.prototype, "hass", 2);
-__decorateClass$2([
+__decorateClass$3([
   n2({ type: Boolean, reflect: true })
 ], CaleeDeletedItems.prototype, "open", 2);
-__decorateClass$2([
+__decorateClass$3([
   n2({ attribute: false })
 ], CaleeDeletedItems.prototype, "calendars", 2);
-__decorateClass$2([
+__decorateClass$3([
   n2({ attribute: false })
 ], CaleeDeletedItems.prototype, "lists", 2);
-__decorateClass$2([
+__decorateClass$3([
   r()
 ], CaleeDeletedItems.prototype, "_items", 2);
-__decorateClass$2([
+__decorateClass$3([
   r()
 ], CaleeDeletedItems.prototype, "_loading", 2);
-__decorateClass$2([
+__decorateClass$3([
   r()
 ], CaleeDeletedItems.prototype, "_restoringId", 2);
-__decorateClass$2([
+__decorateClass$3([
   r()
 ], CaleeDeletedItems.prototype, "_toastMessage", 2);
-CaleeDeletedItems = __decorateClass$2([
+CaleeDeletedItems = __decorateClass$3([
   t("calee-deleted-items")
 ], CaleeDeletedItems);
-var __defProp$1 = Object.defineProperty;
-var __getOwnPropDesc$1 = Object.getOwnPropertyDescriptor;
-var __decorateClass$1 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$1(target, key) : target;
+var __defProp$2 = Object.defineProperty;
+var __getOwnPropDesc$2 = Object.getOwnPropertyDescriptor;
+var __decorateClass$2 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$2(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$1(target, key, result);
+  if (kind && result) __defProp$2(target, key, result);
   return result;
 };
 function relativeTime(isoStr) {
@@ -8752,21 +9469,778 @@ CaleeActivityFeed.styles = i$3`
       }
     }
   `;
-__decorateClass$1([
+__decorateClass$2([
   n2({ attribute: false })
 ], CaleeActivityFeed.prototype, "hass", 2);
-__decorateClass$1([
+__decorateClass$2([
   n2({ type: Boolean, reflect: true })
 ], CaleeActivityFeed.prototype, "open", 2);
-__decorateClass$1([
+__decorateClass$2([
   r()
 ], CaleeActivityFeed.prototype, "_entries", 2);
-__decorateClass$1([
+__decorateClass$2([
   r()
 ], CaleeActivityFeed.prototype, "_loading", 2);
-CaleeActivityFeed = __decorateClass$1([
+CaleeActivityFeed = __decorateClass$2([
   t("calee-activity-feed")
 ], CaleeActivityFeed);
+var __defProp$1 = Object.defineProperty;
+var __getOwnPropDesc$1 = Object.getOwnPropertyDescriptor;
+var __decorateClass$1 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$1(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$1(target, key, result);
+  return result;
+};
+let CaleeRoutineManager = class extends i {
+  constructor() {
+    super(...arguments);
+    this.routines = [];
+    this.templates = [];
+    this.open = false;
+    this._editingRoutine = null;
+    this._isNew = false;
+    this._confirmDeleteId = null;
+  }
+  render() {
+    if (!this.open) return A;
+    return b`
+      <div class="overlay" @click=${this._onOverlayClick}>
+        <div class="dialog" @click=${(e2) => e2.stopPropagation()}>
+          <div class="dialog-header">
+            <span class="dialog-title">Routines</span>
+            <button class="close-btn" @click=${this._close}>\u2715</button>
+          </div>
+
+          ${this.routines.length === 0 && !this._editingRoutine ? b`<div class="empty-msg">No routines yet. Create one to get started.</div>` : A}
+
+          ${this.routines.map((r2) => b`
+            <div class="routine-row">
+              <span class="routine-emoji">${r2.emoji || "⚡"}</span>
+              <div class="routine-info">
+                <div class="routine-name">${r2.name}</div>
+                ${r2.description ? b`<div class="routine-desc">${r2.description}</div>` : A}
+              </div>
+              <div class="routine-actions">
+                <button class="icon-btn" @click=${() => this._editRoutine(r2)} title="Edit">\u270E</button>
+                <button class="icon-btn" @click=${() => {
+      this._confirmDeleteId = r2.id;
+    }} title="Delete">\u2715</button>
+              </div>
+            </div>
+          `)}
+
+          <button class="add-btn" @click=${this._newRoutine}>+ Add routine</button>
+
+          ${this._editingRoutine ? this._renderForm() : A}
+
+          ${this._confirmDeleteId ? b`
+            <div class="confirm-overlay" @click=${() => {
+      this._confirmDeleteId = null;
+    }}>
+              <div class="confirm-dialog" @click=${(e2) => e2.stopPropagation()}>
+                <p>Delete this routine?</p>
+                <div class="confirm-actions">
+                  <button class="confirm-cancel" @click=${() => {
+      this._confirmDeleteId = null;
+    }}>Cancel</button>
+                  <button class="confirm-delete" @click=${this._doDelete}>Delete</button>
+                </div>
+              </div>
+            </div>
+          ` : A}
+        </div>
+      </div>
+    `;
+  }
+  _renderForm() {
+    const r2 = this._editingRoutine;
+    const tasks = r2.tasks ?? [];
+    const items = r2.shopping_items ?? [];
+    return b`
+      <div class="form-section">
+        <div class="form-title">${this._isNew ? "New Routine" : "Edit Routine"}</div>
+
+        <div class="form-row">
+          <label>Emoji</label>
+          <input
+            type="text"
+            class="form-emoji-input"
+            maxlength="2"
+            .value=${r2.emoji ?? ""}
+            @input=${(e2) => {
+      this._editingRoutine = { ...r2, emoji: e2.target.value };
+    }}
+          />
+        </div>
+
+        <div class="form-row">
+          <label>Name</label>
+          <input
+            type="text"
+            class="form-input"
+            .value=${r2.name ?? ""}
+            @input=${(e2) => {
+      this._editingRoutine = { ...r2, name: e2.target.value };
+    }}
+            placeholder="Routine name"
+          />
+        </div>
+
+        <div class="form-row">
+          <label>Description</label>
+          <input
+            type="text"
+            class="form-input"
+            .value=${r2.description ?? ""}
+            @input=${(e2) => {
+      this._editingRoutine = { ...r2, description: e2.target.value };
+    }}
+            placeholder="What does it do?"
+          />
+        </div>
+
+        <div class="form-row">
+          <label>Shift</label>
+          <select
+            class="form-select"
+            .value=${r2.shift_template_id ?? ""}
+            @change=${(e2) => {
+      const val = e2.target.value;
+      this._editingRoutine = { ...r2, shift_template_id: val || null };
+    }}
+          >
+            <option value="">None</option>
+            ${this.templates.map(
+      (t2) => b`<option value=${t2.id} ?selected=${r2.shift_template_id === t2.id}>${t2.emoji ? t2.emoji + " " : ""}${t2.name}</option>`
+    )}
+          </select>
+        </div>
+
+        <!-- Tasks -->
+        <div class="inline-list-heading">Tasks</div>
+        ${tasks.map((task, idx) => b`
+          <div class="inline-row">
+            <input
+              class="inline-input"
+              .value=${task.title ?? ""}
+              @input=${(e2) => {
+      const newTasks = [...tasks];
+      newTasks[idx] = { ...task, title: e2.target.value };
+      this._editingRoutine = { ...r2, tasks: newTasks };
+    }}
+              placeholder="Task title"
+            />
+            <input
+              class="inline-input inline-input-sm"
+              type="text"
+              .value=${task.list_id ?? "inbox"}
+              @input=${(e2) => {
+      const newTasks = [...tasks];
+      newTasks[idx] = { ...task, list_id: e2.target.value };
+      this._editingRoutine = { ...r2, tasks: newTasks };
+    }}
+              placeholder="list"
+              title="List ID"
+            />
+            <input
+              class="inline-input inline-input-sm"
+              type="number"
+              .value=${String(task.due_offset_days ?? 0)}
+              @input=${(e2) => {
+      const newTasks = [...tasks];
+      newTasks[idx] = { ...task, due_offset_days: parseInt(e2.target.value) || 0 };
+      this._editingRoutine = { ...r2, tasks: newTasks };
+    }}
+              placeholder="+days"
+              title="Due offset (days)"
+            />
+            <button class="inline-remove-btn" @click=${() => {
+      const newTasks = tasks.filter((_2, i2) => i2 !== idx);
+      this._editingRoutine = { ...r2, tasks: newTasks };
+    }}>\u2715</button>
+          </div>
+        `)}
+        <button class="inline-add-btn" @click=${() => {
+      const newTasks = [...tasks, { title: "", list_id: "inbox", due_offset_days: 0 }];
+      this._editingRoutine = { ...r2, tasks: newTasks };
+    }}>+ Add task</button>
+
+        <!-- Shopping items -->
+        <div class="inline-list-heading">Shopping Items</div>
+        ${items.map((item, idx) => b`
+          <div class="inline-row">
+            <input
+              class="inline-input"
+              .value=${item.title ?? ""}
+              @input=${(e2) => {
+      const newItems = [...items];
+      newItems[idx] = { ...item, title: e2.target.value };
+      this._editingRoutine = { ...r2, shopping_items: newItems };
+    }}
+              placeholder="Item title"
+            />
+            <input
+              class="inline-input inline-input-sm"
+              type="text"
+              .value=${item.category ?? ""}
+              @input=${(e2) => {
+      const newItems = [...items];
+      newItems[idx] = { ...item, category: e2.target.value };
+      this._editingRoutine = { ...r2, shopping_items: newItems };
+    }}
+              placeholder="cat"
+              title="Category"
+            />
+            <input
+              class="inline-input inline-input-sm"
+              type="number"
+              min="0.1"
+              step="0.1"
+              .value=${String(item.quantity ?? 1)}
+              @input=${(e2) => {
+      const newItems = [...items];
+      const parsed = parseFloat(e2.target.value);
+      newItems[idx] = { ...item, quantity: Number.isFinite(parsed) ? Math.max(0.1, parsed) : 1 };
+      this._editingRoutine = { ...r2, shopping_items: newItems };
+    }}
+              placeholder="qty"
+              title="Quantity"
+            />
+            <input
+              class="inline-input inline-input-sm"
+              type="text"
+              .value=${item.unit ?? ""}
+              @input=${(e2) => {
+      const newItems = [...items];
+      newItems[idx] = { ...item, unit: e2.target.value };
+      this._editingRoutine = { ...r2, shopping_items: newItems };
+    }}
+              placeholder="unit"
+              title="Unit (L, kg, pcs...)"
+            />
+            <button class="inline-remove-btn" @click=${() => {
+      const newItems = items.filter((_2, i2) => i2 !== idx);
+      this._editingRoutine = { ...r2, shopping_items: newItems };
+    }}>\u2715</button>
+          </div>
+        `)}
+        <button class="inline-add-btn" @click=${() => {
+      const newItems = [...items, { title: "", category: "groceries", quantity: 1, unit: "" }];
+      this._editingRoutine = { ...r2, shopping_items: newItems };
+    }}>+ Add item</button>
+
+        <div class="form-actions">
+          <button class="form-btn form-btn-cancel" @click=${() => {
+      this._editingRoutine = null;
+    }}>Cancel</button>
+          <button
+            class="form-btn form-btn-save"
+            ?disabled=${!(r2.name ?? "").trim()}
+            @click=${this._saveRoutine}
+          >Save</button>
+        </div>
+      </div>
+    `;
+  }
+  /* ── Actions ──────────────────────────────────────────────────────── */
+  _onOverlayClick(e2) {
+    if (e2.target.classList.contains("overlay")) {
+      this._close();
+    }
+  }
+  _close() {
+    this._editingRoutine = null;
+    this._confirmDeleteId = null;
+    this.dispatchEvent(new CustomEvent("dialog-close", { bubbles: true, composed: true }));
+  }
+  _newRoutine() {
+    this._isNew = true;
+    this._editingRoutine = {
+      name: "",
+      emoji: "",
+      description: "",
+      shift_template_id: null,
+      tasks: [],
+      shopping_items: []
+    };
+  }
+  _editRoutine(routine) {
+    this._isNew = false;
+    this._editingRoutine = {
+      ...routine,
+      tasks: [...routine.tasks],
+      shopping_items: [...routine.shopping_items]
+    };
+  }
+  async _saveRoutine() {
+    if (!this.hass || !this._editingRoutine) return;
+    const r2 = this._editingRoutine;
+    try {
+      if (this._isNew) {
+        await this.hass.callWS({
+          type: "calee/create_routine",
+          name: r2.name ?? "",
+          emoji: r2.emoji ?? "",
+          description: r2.description ?? "",
+          shift_template_id: r2.shift_template_id ?? void 0,
+          tasks: r2.tasks ?? [],
+          shopping_items: r2.shopping_items ?? []
+        });
+      } else {
+        await this.hass.callWS({
+          type: "calee/update_routine",
+          routine_id: r2.id,
+          name: r2.name,
+          emoji: r2.emoji,
+          description: r2.description,
+          shift_template_id: r2.shift_template_id,
+          tasks: r2.tasks,
+          shopping_items: r2.shopping_items
+        });
+      }
+      this._editingRoutine = null;
+      this.dispatchEvent(new CustomEvent("routine-changed", { bubbles: true, composed: true }));
+    } catch (err) {
+      console.error("Failed to save routine:", err);
+    }
+  }
+  async _doDelete() {
+    if (!this.hass || !this._confirmDeleteId) return;
+    try {
+      await this.hass.callWS({
+        type: "calee/delete_routine",
+        routine_id: this._confirmDeleteId
+      });
+      this._confirmDeleteId = null;
+      this.dispatchEvent(new CustomEvent("routine-changed", { bubbles: true, composed: true }));
+    } catch (err) {
+      console.error("Failed to delete routine:", err);
+    }
+  }
+};
+CaleeRoutineManager.styles = i$3`
+    :host {
+      display: none;
+    }
+    :host([open]) {
+      display: block;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .dialog {
+      background: var(--card-background-color, #fff);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+      padding: 24px;
+    }
+
+    .dialog-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .dialog-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary-text-color, #212121);
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--secondary-text-color, #757575);
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+
+    .close-btn:hover {
+      background: var(--secondary-background-color, #f0f0f0);
+    }
+
+    /* ── Routine list ──────────────────────────────────── */
+
+    .routine-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--divider-color, #e0e0e0);
+    }
+
+    .routine-row:last-child {
+      border-bottom: none;
+    }
+
+    .routine-emoji {
+      font-size: 22px;
+      width: 32px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .routine-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .routine-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--primary-text-color, #212121);
+    }
+
+    .routine-desc {
+      font-size: 12px;
+      color: var(--secondary-text-color, #757575);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .routine-actions {
+      display: flex;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+      color: var(--secondary-text-color, #757575);
+      font-size: 14px;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .icon-btn:hover {
+      background: var(--secondary-background-color, #f0f0f0);
+      color: var(--primary-text-color, #212121);
+    }
+
+    .add-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      margin-top: 12px;
+      background: none;
+      border: 1px dashed var(--divider-color, #e0e0e0);
+      border-radius: 8px;
+      color: var(--primary-color, #03a9f4);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      width: 100%;
+      justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+      font-family: inherit;
+    }
+
+    .add-btn:hover {
+      border-color: var(--primary-color, #03a9f4);
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 8%, transparent);
+    }
+
+    /* ── Edit form ─────────────────────────────────────── */
+
+    .form-section {
+      margin-top: 16px;
+      padding: 16px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      border-radius: 12px;
+      background: var(--secondary-background-color, #fafafa);
+    }
+
+    .form-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--primary-text-color, #212121);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+
+    .form-row label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--secondary-text-color, #757575);
+      width: 80px;
+      flex-shrink: 0;
+    }
+
+    .form-input {
+      flex: 1;
+      font-size: 14px;
+      padding: 6px 10px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      border-radius: 8px;
+      background: var(--card-background-color, #fff);
+      color: var(--primary-text-color, #212121);
+      outline: none;
+      font-family: inherit;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary-color, #03a9f4);
+    }
+
+    .form-select {
+      flex: 1;
+      font-size: 13px;
+      padding: 6px 10px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      border-radius: 8px;
+      background: var(--card-background-color, #fff);
+      color: var(--primary-text-color, #212121);
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .form-select:focus {
+      border-color: var(--primary-color, #03a9f4);
+    }
+
+    .form-emoji-input {
+      width: 48px;
+      font-size: 20px;
+      text-align: center;
+      padding: 4px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      border-radius: 8px;
+      background: var(--card-background-color, #fff);
+      outline: none;
+      font-family: inherit;
+    }
+
+    .form-emoji-input:focus {
+      border-color: var(--primary-color, #03a9f4);
+    }
+
+    /* ── Inline list items ─────────────────────────────── */
+
+    .inline-list-heading {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--secondary-text-color, #757575);
+      margin: 12px 0 6px;
+    }
+
+    .inline-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .inline-input {
+      flex: 1;
+      font-size: 13px;
+      padding: 4px 8px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      border-radius: 6px;
+      background: var(--card-background-color, #fff);
+      color: var(--primary-text-color, #212121);
+      outline: none;
+      font-family: inherit;
+    }
+
+    .inline-input:focus {
+      border-color: var(--primary-color, #03a9f4);
+    }
+
+    .inline-input-sm {
+      width: 50px;
+      flex: none;
+    }
+
+    .inline-remove-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--secondary-text-color, #999);
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: color 0.15s;
+    }
+
+    .inline-remove-btn:hover {
+      color: var(--error-color, #f44336);
+    }
+
+    .inline-add-btn {
+      font-size: 12px;
+      color: var(--primary-color, #03a9f4);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 8px;
+      font-weight: 500;
+      font-family: inherit;
+    }
+
+    .inline-add-btn:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Form actions ──────────────────────────────────── */
+
+    .form-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 14px;
+    }
+
+    .form-btn {
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s;
+    }
+
+    .form-btn:hover {
+      opacity: 0.9;
+    }
+
+    .form-btn-cancel {
+      background: var(--secondary-background-color, #f0f0f0);
+      color: var(--primary-text-color, #212121);
+    }
+
+    .form-btn-save {
+      background: var(--primary-color, #03a9f4);
+      color: #fff;
+    }
+
+    .form-btn-save:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ── Delete confirm ────────────────────────────────── */
+
+    .confirm-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .confirm-dialog {
+      background: var(--card-background-color, #fff);
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 320px;
+      width: 100%;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .confirm-dialog p {
+      font-size: 14px;
+      color: var(--primary-text-color, #212121);
+      margin: 0 0 16px;
+    }
+
+    .confirm-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .confirm-actions button {
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 20px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s;
+    }
+
+    .confirm-cancel {
+      background: var(--secondary-background-color, #f0f0f0);
+      color: var(--primary-text-color, #212121);
+    }
+
+    .confirm-delete {
+      background: var(--error-color, #f44336);
+      color: #fff;
+    }
+
+    .empty-msg {
+      text-align: center;
+      padding: 24px 16px;
+      color: var(--secondary-text-color, #757575);
+      font-size: 14px;
+    }
+  `;
+__decorateClass$1([
+  n2({ attribute: false })
+], CaleeRoutineManager.prototype, "hass", 2);
+__decorateClass$1([
+  n2({ type: Array })
+], CaleeRoutineManager.prototype, "routines", 2);
+__decorateClass$1([
+  n2({ type: Array })
+], CaleeRoutineManager.prototype, "templates", 2);
+__decorateClass$1([
+  n2({ type: Boolean, reflect: true })
+], CaleeRoutineManager.prototype, "open", 2);
+__decorateClass$1([
+  r()
+], CaleeRoutineManager.prototype, "_editingRoutine", 2);
+__decorateClass$1([
+  r()
+], CaleeRoutineManager.prototype, "_isNew", 2);
+__decorateClass$1([
+  r()
+], CaleeRoutineManager.prototype, "_confirmDeleteId", 2);
+CaleeRoutineManager = __decorateClass$1([
+  t("calee-routine-manager")
+], CaleeRoutineManager);
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __decorateClass = (decorators, target, key, kind) => {
@@ -8779,7 +10253,7 @@ var __decorateClass = (decorators, target, key, kind) => {
 };
 const DATE_VIEWS = ["month", "week", "day", "year"];
 const ALL_VIEWS = ["month", "week", "day", "agenda", "tasks", "shopping", "year"];
-const TAB_VIEWS = ["week", "month", "day", "agenda", "tasks", "shopping"];
+const TAB_VIEWS = ["week", "month", "agenda", "tasks", "shopping"];
 function todayISO() {
   return (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
 }
@@ -8863,11 +10337,15 @@ let CaleePanel = class extends i {
     this._tasks = [];
     this._templates = [];
     this._presets = [];
+    this._routines = [];
     this._rawCalendars = [];
     this._settingsWeekStart = "monday";
     this._settingsTimeFormat = "12h";
     this._settingsCurrency = "$";
     this._settingsBudget = 0;
+    this._detailDrawerOpen = false;
+    this._detailItem = null;
+    this._detailItemType = null;
     this._editEvent = null;
     this._showEventDialog = false;
     this._eventDialogDefaults = {};
@@ -8878,7 +10356,10 @@ let CaleePanel = class extends i {
     this._showSettings = false;
     this._showDeletedItems = false;
     this._showActivityFeed = false;
+    this._showRoutineManager = false;
+    this._shoppingToast = "";
     this._hashHandler = this._onHashChange.bind(this);
+    this._keyHandler = this._handleKeydown.bind(this);
     this._tasksLoaded = false;
     this._refreshDebounce = null;
   }
@@ -8886,11 +10367,13 @@ let CaleePanel = class extends i {
   connectedCallback() {
     super.connectedCallback();
     window.addEventListener("hashchange", this._hashHandler);
+    window.addEventListener("keydown", this._keyHandler);
     this._applyHash();
   }
   disconnectedCallback() {
     super.disconnectedCallback();
     window.removeEventListener("hashchange", this._hashHandler);
+    window.removeEventListener("keydown", this._keyHandler);
     if (this._unsubscribe) {
       this._unsubscribe();
       this._unsubscribe = void 0;
@@ -8991,16 +10474,18 @@ let CaleePanel = class extends i {
     this._tasks = store.tasks ?? [];
     this._templates = store.templates ?? [];
     this._presets = store.presets ?? [];
+    this._routines = store.routines ?? [];
     this._tasksLoaded = true;
   }
   async _loadViaWebSocket() {
     if (!this.hass) return;
     try {
-      const [calendars, lists, templates, presets] = await Promise.all([
+      const [calendars, lists, templates, presets, routines] = await Promise.all([
         this.hass.callWS({ type: "calee/calendars" }),
         this.hass.callWS({ type: "calee/lists" }),
         this.hass.callWS({ type: "calee/templates" }),
-        this.hass.callWS({ type: "calee/presets" }).catch(() => [])
+        this.hass.callWS({ type: "calee/presets" }).catch(() => []),
+        this.hass.callWS({ type: "calee/routines" }).catch(() => [])
       ]);
       this._rawCalendars = calendars ?? [];
       this._calendars = this._rawCalendars.map((c2) => ({
@@ -9012,6 +10497,7 @@ let CaleePanel = class extends i {
       this._lists = lists ?? [];
       this._templates = templates ?? [];
       this._presets = presets ?? [];
+      this._routines = routines ?? [];
       if (this._currentView === "tasks" || this._currentView === "shopping") {
         await this._loadTasks();
       }
@@ -9022,6 +10508,7 @@ let CaleePanel = class extends i {
       this._tasks = [];
       this._templates = [];
       this._presets = [];
+      this._routines = [];
     }
     await this._loadEvents();
   }
@@ -9159,6 +10646,80 @@ let CaleePanel = class extends i {
   _closeDrawer() {
     this._drawerOpen = false;
   }
+  // ── Keyboard shortcuts (desktop) ────────────────────────────────
+  _isEditableKeyboardTarget(e2) {
+    const isEditableElement = (value) => {
+      if (!(value instanceof HTMLElement)) return false;
+      const tag = value.tagName.toLowerCase();
+      return tag === "input" || tag === "textarea" || tag === "select" || value.isContentEditable;
+    };
+    if (e2.composedPath().some((target) => isEditableElement(target))) return true;
+    let active = document.activeElement;
+    while (active && active.shadowRoot?.activeElement) {
+      active = active.shadowRoot.activeElement;
+    }
+    return isEditableElement(active);
+  }
+  _handleKeydown(e2) {
+    if (this.narrow) return;
+    if (this._isEditableKeyboardTarget(e2)) return;
+    if (this._showEventDialog || this._showTemplatePicker || this._showTemplateManager || this._showSettings || this._showDeletedItems || this._showActivityFeed || this._showRoutineManager || this._showAddDialog) {
+      if (e2.key === "Escape") {
+        this._onDialogClose();
+        this._showDeletedItems = false;
+        this._showActivityFeed = false;
+        this._showAddDialog = false;
+      }
+      return;
+    }
+    if (e2.ctrlKey || e2.metaKey || e2.altKey) return;
+    switch (e2.key) {
+      case "n":
+        e2.preventDefault();
+        this._onSidebarAdd();
+        break;
+      case "t":
+        e2.preventDefault();
+        this._onToday();
+        break;
+      case "w":
+        e2.preventDefault();
+        this._navigate("week");
+        break;
+      case "m":
+        e2.preventDefault();
+        this._navigate("month");
+        break;
+      case "a":
+        e2.preventDefault();
+        this._navigate("agenda");
+        break;
+      case "1":
+        e2.preventDefault();
+        this._navigate("tasks");
+        break;
+      case "2":
+        e2.preventDefault();
+        this._navigate("shopping");
+        break;
+      case "ArrowLeft":
+        e2.preventDefault();
+        this._onPrev();
+        break;
+      case "ArrowRight":
+        e2.preventDefault();
+        this._onNext();
+        break;
+      case "Escape":
+        if (this._drawerOpen) {
+          this._closeDrawer();
+        }
+        if (this._detailDrawerOpen) {
+          this._closeDetailDrawer();
+        }
+        break;
+    }
+  }
   // ── Computed helpers ──────────────────────────────────────────────
   /** Map of calendar ID to PlannerCalendar for passing to view components. */
   get _calendarMap() {
@@ -9227,11 +10788,16 @@ let CaleePanel = class extends i {
         <div class="main"
           @event-click=${this._onEventClick}
           @cell-click=${this._onCellClick}
+          @task-click=${this._onTaskClick}
           @task-complete=${this._onTaskComplete}
           @task-uncomplete=${this._onTaskUncomplete}
+          @task-delete=${this._onTaskDelete}
           @task-quick-add=${this._onTaskQuickAdd}
           @task-update=${this._onTaskUpdate}
           @task-price-update=${this._onTaskPriceUpdate}
+          @task-quantity-update=${this._onTaskQuantityUpdate}
+          @task-unit-update=${this._onTaskUnitUpdate}
+          @routine-execute=${this._onRoutineExecute}
           @preset-add=${this._onPresetAdd}
           @preset-create=${this._onPresetCreate}
           @preset-delete=${this._onPresetDelete}
@@ -9239,6 +10805,7 @@ let CaleePanel = class extends i {
         >
           ${this._loading ? b`<div class="loading">Loading...</div>` : this._renderView()}
         </div>
+        ${this._renderDetailDrawer()}
       </div>
       ${this._renderBottomNav()}
       ${this._showAddDialog ? this._renderAddDialog() : A}
@@ -9258,6 +10825,8 @@ let CaleePanel = class extends i {
         ?open=${this._showTemplatePicker}
         @template-select=${this._onTemplateSelect}
         @custom-event=${this._onCustomEvent}
+        @quick-add-task=${this._onQuickAddTask}
+        @quick-add-shopping=${this._onQuickAddShopping}
         @manage-templates=${this._onManageTemplates}
         @dialog-close=${this._onDialogClose}
       ></calee-template-picker>
@@ -9288,6 +10857,14 @@ let CaleePanel = class extends i {
         ?open=${this._showActivityFeed}
         @dialog-close=${this._onActivityFeedClose}
       ></calee-activity-feed>
+      <calee-routine-manager
+        .hass=${this.hass}
+        .routines=${this._routines}
+        .templates=${this._templates}
+        ?open=${this._showRoutineManager}
+        @routine-changed=${this._onRoutineChanged}
+        @dialog-close=${this._onRoutineManagerClose}
+      ></calee-routine-manager>
     `;
   }
   // ── Header ───────────────────────────────────────────────────────
@@ -9415,24 +10992,6 @@ let CaleePanel = class extends i {
           </button>
         </div>
 
-        <!-- Secondary navigation -->
-        <div class="sidebar-section">
-          <button
-            class="nav-item nav-item-muted"
-            ?active=${this._currentView === "year"}
-            @click=${() => this._navigate("year", todayISO())}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-              <line x1="3" y1="16" x2="21" y2="16"></line>
-              <line x1="9" y1="4" x2="9" y2="22"></line>
-              <line x1="15" y1="4" x2="15" y2="22"></line>
-            </svg>
-            Year
-          </button>
-        </div>
-
         <!-- Calendars -->
         <div class="sidebar-section">
           <h3 class="sidebar-heading">Calendars</h3>
@@ -9481,9 +11040,52 @@ let CaleePanel = class extends i {
     )}
         </div>
 
-        <!-- Recently Deleted & Activity -->
+        <!-- Routines -->
+        <div class="sidebar-section">
+          <h3 class="sidebar-heading">Routines</h3>
+          ${this._routines.map(
+      (r2) => b`
+              <button
+                class="nav-item nav-item-muted"
+                @click=${() => this._executeRoutine(r2.id)}
+                title="${r2.description || `Run ${r2.name}`}"
+              >
+                <span style="font-size:18px;width:20px;text-align:center;flex-shrink:0;">${r2.emoji || "⚡"}</span>
+                <span>${r2.name}</span>
+              </button>
+            `
+    )}
+          <button
+            class="nav-item nav-item-muted"
+            @click=${() => {
+      this._showRoutineManager = true;
+    }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.32 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"></path>
+            </svg>
+            Manage routines
+          </button>
+        </div>
+
+        <!-- More: Year, Recently Deleted & Activity -->
         <div class="sidebar-section">
           <h3 class="sidebar-heading">More</h3>
+          <button
+            class="nav-item nav-item-muted"
+            ?active=${this._currentView === "year"}
+            @click=${() => this._navigate("year", todayISO())}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+              <line x1="3" y1="16" x2="21" y2="16"></line>
+              <line x1="9" y1="4" x2="9" y2="22"></line>
+              <line x1="15" y1="4" x2="15" y2="22"></line>
+            </svg>
+            Year
+          </button>
           <button
             class="nav-item nav-item-muted"
             @click=${this._openDeletedItems}
@@ -9546,6 +11148,212 @@ let CaleePanel = class extends i {
       </div>
     `;
   }
+  // ── Detail Drawer (desktop) ──────────────────────────────────────
+  _renderDetailDrawer() {
+    const open = this._detailDrawerOpen && this._detailItem && !this.narrow;
+    return b`
+      <div class="detail-drawer ${open ? "" : "closed"}">
+        ${open ? this._renderDetailDrawerContent() : A}
+      </div>
+    `;
+  }
+  _renderDetailDrawerContent() {
+    if (!this._detailItem) return A;
+    if (this._detailItemType === "event") {
+      return this._renderEventDetail(this._detailItem);
+    }
+    return this._renderTaskDetail(this._detailItem);
+  }
+  _renderEventDetail(event) {
+    const cal = this._calendarMap.get(event.calendar_id);
+    const start = new Date(event.start);
+    const end = new Date(event.end);
+    const dateOpts = {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric"
+    };
+    const timeOpts = {
+      hour: "numeric",
+      minute: "2-digit"
+    };
+    const linkedTasks = this._tasks.filter(
+      (t2) => t2.related_event_id === event.id && !t2.deleted_at
+    );
+    return b`
+      <div class="drawer-header">
+        <h3>Event</h3>
+        <button class="drawer-close-btn" @click=${this._closeDetailDrawer} aria-label="Close">&times;</button>
+      </div>
+
+      <div class="drawer-field">
+        <div class="drawer-field-label">Title</div>
+        <div class="drawer-field-value">${event.title}</div>
+      </div>
+
+      <div class="drawer-field">
+        <div class="drawer-field-label">Calendar</div>
+        <div class="drawer-field-value">
+          ${cal ? b`<span style="display:inline-flex;align-items:center;gap:6px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:${cal.color};display:inline-block;"></span>
+            ${cal.name}
+          </span>` : b`<span class="muted">Unknown</span>`}
+        </div>
+      </div>
+
+      <div class="drawer-field">
+        <div class="drawer-field-label">Start</div>
+        <div class="drawer-field-value">
+          ${event.all_day ? start.toLocaleDateString(void 0, dateOpts) : b`${start.toLocaleDateString(void 0, dateOpts)} at ${start.toLocaleTimeString(void 0, timeOpts)}`}
+        </div>
+      </div>
+
+      <div class="drawer-field">
+        <div class="drawer-field-label">End</div>
+        <div class="drawer-field-value">
+          ${event.all_day ? end.toLocaleDateString(void 0, dateOpts) : b`${end.toLocaleDateString(void 0, dateOpts)} at ${end.toLocaleTimeString(void 0, timeOpts)}`}
+        </div>
+      </div>
+
+      ${event.recurrence_rule ? b`
+        <div class="drawer-field">
+          <div class="drawer-field-label">Recurrence</div>
+          <div class="drawer-field-value">
+            <span class="drawer-badge">${event.recurrence_rule}</span>
+          </div>
+        </div>
+      ` : A}
+
+      <div class="drawer-field">
+        <div class="drawer-field-label">Note</div>
+        <div class="drawer-field-value ${event.note ? "" : "muted"}">
+          ${event.note || "No note"}
+        </div>
+      </div>
+
+      ${linkedTasks.length > 0 ? b`
+        <div class="drawer-field">
+          <div class="drawer-field-label">Linked Tasks</div>
+          ${linkedTasks.map(
+      (t2) => b`<div class="drawer-field-value" style="margin-bottom:4px;">
+              ${t2.completed ? b`<s>${t2.title}</s>` : t2.title}
+            </div>`
+    )}
+        </div>
+      ` : A}
+
+      <div class="drawer-actions">
+        <button class="drawer-btn drawer-btn-edit" @click=${() => this._onDrawerEditEvent(event)}>Edit</button>
+        <button class="drawer-btn drawer-btn-delete" @click=${() => this._onDrawerDeleteEvent(event)}>Delete</button>
+      </div>
+    `;
+  }
+  _renderTaskDetail(task) {
+    const list = this._lists.find((l2) => l2.id === task.list_id);
+    const linkedEvent = task.related_event_id ? this._events.find((e2) => e2.id === task.related_event_id) : null;
+    return b`
+      <div class="drawer-header">
+        <h3>Task</h3>
+        <button class="drawer-close-btn" @click=${this._closeDetailDrawer} aria-label="Close">&times;</button>
+      </div>
+
+      <div class="drawer-field">
+        <div class="drawer-field-label">Title</div>
+        <div class="drawer-field-value">${task.completed ? b`<s>${task.title}</s>` : task.title}</div>
+      </div>
+
+      <div class="drawer-field">
+        <div class="drawer-field-label">List</div>
+        <div class="drawer-field-value">${list?.name ?? task.list_id}</div>
+      </div>
+
+      ${task.due ? b`
+        <div class="drawer-field">
+          <div class="drawer-field-label">Due Date</div>
+          <div class="drawer-field-value">
+            ${(/* @__PURE__ */ new Date(task.due + "T00:00:00")).toLocaleDateString(void 0, {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric"
+    })}
+          </div>
+        </div>
+      ` : A}
+
+      ${task.recurrence_rule ? b`
+        <div class="drawer-field">
+          <div class="drawer-field-label">Recurrence</div>
+          <div class="drawer-field-value">
+            <span class="drawer-badge">${task.recurrence_rule}</span>
+          </div>
+        </div>
+      ` : A}
+
+      <div class="drawer-field">
+        <div class="drawer-field-label">Note</div>
+        <div class="drawer-field-value ${task.note ? "" : "muted"}">
+          ${task.note || "No note"}
+        </div>
+      </div>
+
+      ${linkedEvent ? b`
+        <div class="drawer-field">
+          <div class="drawer-field-label">Linked Event</div>
+          <div class="drawer-field-value">${linkedEvent.title}</div>
+        </div>
+      ` : A}
+
+      <div class="drawer-actions">
+        <button class="drawer-btn drawer-btn-edit" @click=${() => this._onDrawerEditTask(task)}>Open in Tasks</button>
+        <button class="drawer-btn drawer-btn-delete" @click=${() => this._onDrawerDeleteTask(task)}>Delete</button>
+      </div>
+    `;
+  }
+  _openDetailDrawer(item, type) {
+    this._detailItem = item;
+    this._detailItemType = type;
+    this._detailDrawerOpen = true;
+  }
+  _closeDetailDrawer() {
+    this._detailDrawerOpen = false;
+    this._detailItem = null;
+    this._detailItemType = null;
+  }
+  _onDrawerEditEvent(event) {
+    this._closeDetailDrawer();
+    this._editEvent = event;
+    this._showEventDialog = true;
+  }
+  async _onDrawerDeleteEvent(event) {
+    try {
+      await this.hass.callWS({
+        type: "calee/delete_event",
+        event_id: event.id
+      });
+      this._events = this._events.filter((ev) => ev.id !== event.id);
+      this._closeDetailDrawer();
+    } catch (err) {
+      console.error("Failed to delete event:", err);
+    }
+  }
+  _onDrawerEditTask(task) {
+    this._closeDetailDrawer();
+    window.location.hash = `#/tasks/${task.id}`;
+  }
+  async _onDrawerDeleteTask(task) {
+    try {
+      await this.hass.callWS({
+        type: "calee/delete_task",
+        task_id: task.id
+      });
+      this._tasks = this._tasks.filter((t2) => t2.id !== task.id);
+      this._closeDetailDrawer();
+    } catch (err) {
+      console.error("Failed to delete task:", err);
+    }
+  }
   // ── View Area ────────────────────────────────────────────────────
   _renderView() {
     const selectedDate = /* @__PURE__ */ new Date(this._currentDate + "T00:00:00");
@@ -9597,6 +11405,7 @@ let CaleePanel = class extends i {
           .tasks=${this._standardTasks}
           .lists=${this._lists.filter((l2) => l2.list_type !== "shopping")}
           .presets=${this._presets.filter((p2) => p2.list_id !== "shopping")}
+          ?narrow=${this.narrow}
         ></calee-tasks-view>`;
       case "shopping": {
         const shoppingList = this._lists.find((l2) => l2.list_type === "shopping");
@@ -9608,6 +11417,10 @@ let CaleePanel = class extends i {
           .listId=${shoppingList?.id ?? "shopping"}
           .currency=${this._settingsCurrency}
           .budget=${this._settingsBudget}
+          .toastMessage=${this._shoppingToast}
+          @toast-shown=${() => {
+          this._shoppingToast = "";
+        }}
         ></calee-shopping-view>`;
       }
       default:
@@ -9623,7 +11436,7 @@ let CaleePanel = class extends i {
     const views = [
       { key: "week", label: "Week", icon: "M3 4h18v18H3zM3 10h18M3 16h18M8 2v4M16 2v4" },
       { key: "month", label: "Month", icon: "M3 4h18v18H3zM3 10h18M9 4v18M15 4v18" },
-      { key: "day", label: "Day", icon: "M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8" },
+      { key: "agenda", label: "Agenda", icon: "M3 4h18v18H3zM3 10h18M8 2v4M16 2v4M8 14h8M8 18h4" },
       { key: "tasks", label: "Tasks", icon: "M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" },
       { key: "shopping", label: "Shop", icon: "M9 21a1 1 0 100-2 1 1 0 000 2zM20 21a1 1 0 100-2 1 1 0 000 2zM1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" }
     ];
@@ -9651,19 +11464,33 @@ let CaleePanel = class extends i {
     this._showTemplatePicker = true;
   }
   // ── View Event Handlers ──────────────────────────────────────────
-  /** Handle event-click from calendar views — open edit dialog. */
+  /** Handle event-click from calendar views — open detail drawer (desktop) or edit dialog (mobile). */
   _onEventClick(e2) {
     const { eventId } = e2.detail;
     const event = this._events.find((ev) => ev.id === eventId);
     if (event) {
-      this._editEvent = event;
-      this._showEventDialog = true;
+      if (this.narrow) {
+        this._editEvent = event;
+        this._showEventDialog = true;
+      } else {
+        this._openDetailDrawer(event, "event");
+      }
     }
   }
-  /** Handle event-select from agenda view — open edit dialog. */
+  /** Handle event-select from agenda view — open detail drawer (desktop) or edit dialog (mobile). */
   _onEventSelect(e2) {
-    this._editEvent = e2.detail.event;
-    this._showEventDialog = true;
+    if (this.narrow) {
+      this._editEvent = e2.detail.event;
+      this._showEventDialog = true;
+    } else {
+      this._openDetailDrawer(e2.detail.event, "event");
+    }
+  }
+  /** Handle task-click from tasks view — open detail drawer (desktop) or inline edit (mobile). */
+  _onTaskClick(e2) {
+    if (!this.narrow) {
+      this._openDetailDrawer(e2.detail.task, "task");
+    }
   }
   /** Handle cell-click from calendar views — open the template picker for quick shift creation. */
   _onCellClick(e2) {
@@ -9700,6 +11527,18 @@ let CaleePanel = class extends i {
       console.error("Failed to uncomplete task:", err);
     }
   }
+  /** Handle task-delete from swipe-to-delete on tasks/shopping views. */
+  async _onTaskDelete(e2) {
+    try {
+      await this.hass.callWS({
+        type: "calee/delete_task",
+        task_id: e2.detail.taskId
+      });
+      this._tasks = this._tasks.filter((t2) => t2.id !== e2.detail.taskId);
+    } catch (err) {
+      console.error("Failed to delete task:", err);
+    }
+  }
   /** Handle task-price-update from shopping view. */
   async _onTaskPriceUpdate(e2) {
     const { taskId, price, version } = e2.detail;
@@ -9719,6 +11558,44 @@ let CaleePanel = class extends i {
       console.error("Failed to update task price:", err);
     }
   }
+  /** Handle task-quantity-update from shopping view. */
+  async _onTaskQuantityUpdate(e2) {
+    const { taskId, quantity, version } = e2.detail;
+    try {
+      const updated = await this.hass.callWS({
+        type: "calee/update_task",
+        task_id: taskId,
+        version,
+        quantity
+      });
+      if (updated) {
+        this._tasks = this._tasks.map(
+          (t2) => t2.id === taskId ? updated : t2
+        );
+      }
+    } catch (err) {
+      console.error("Failed to update task quantity:", err);
+    }
+  }
+  /** Handle task-unit-update from shopping view. */
+  async _onTaskUnitUpdate(e2) {
+    const { taskId, unit, version } = e2.detail;
+    try {
+      const updated = await this.hass.callWS({
+        type: "calee/update_task",
+        task_id: taskId,
+        version,
+        unit
+      });
+      if (updated) {
+        this._tasks = this._tasks.map(
+          (t2) => t2.id === taskId ? updated : t2
+        );
+      }
+    } catch (err) {
+      console.error("Failed to update task unit:", err);
+    }
+  }
   /** Handle task-quick-add from tasks/shopping views. */
   async _onTaskQuickAdd(e2) {
     const listId = this._currentView === "shopping" ? this._lists.find((l2) => l2.list_type === "shopping")?.id ?? "shopping" : this._lists.find((l2) => l2.list_type === "standard")?.id ?? "inbox";
@@ -9734,10 +11611,21 @@ let CaleePanel = class extends i {
     if (e2.detail.recurrence_rule) {
       wsMsg.recurrence_rule = e2.detail.recurrence_rule;
     }
+    if (e2.detail.note) {
+      wsMsg.note = e2.detail.note;
+    }
     try {
       const newTask = await this.hass.callWS(wsMsg);
       if (newTask) {
-        this._tasks = [...this._tasks, newTask];
+        if (newTask.merged) {
+          this._tasks = this._tasks.map(
+            (t2) => t2.id === newTask.id ? newTask : t2
+          );
+          const qty = newTask.quantity ?? 1;
+          this._shoppingToast = `${newTask.title} — quantity updated to ${qty % 1 === 0 ? qty.toFixed(0) : qty}`;
+        } else {
+          this._tasks = [...this._tasks, newTask];
+        }
       }
     } catch (err) {
       console.error("Failed to create task:", err);
@@ -9778,7 +11666,15 @@ let CaleePanel = class extends i {
         preset_id: e2.detail.presetId
       });
       if (result) {
-        this._tasks = [...this._tasks, result];
+        if (result.merged) {
+          this._tasks = this._tasks.map(
+            (t2) => t2.id === result.id ? result : t2
+          );
+          const qty = result.quantity ?? 1;
+          this._shoppingToast = `${result.title} — quantity updated to ${qty % 1 === 0 ? qty.toFixed(0) : qty}`;
+        } else {
+          this._tasks = [...this._tasks, result];
+        }
       }
     } catch (err) {
       console.error("Failed to add from preset:", err);
@@ -9811,6 +11707,51 @@ let CaleePanel = class extends i {
       this._presets = this._presets.filter((p2) => p2.id !== e2.detail.presetId);
     } catch (err) {
       console.error("Failed to delete preset:", err);
+    }
+  }
+  /** Handle quick-add-task from the template picker — create a task with the given date as due date. */
+  async _onQuickAddTask(e2) {
+    const { date } = e2.detail;
+    if (!this._tasksLoaded) {
+      await this._loadTasks();
+    }
+    const listId = this._lists.find((l2) => l2.list_type === "standard")?.id ?? "inbox";
+    try {
+      const newTask = await this.hass.callWS({
+        type: "calee/create_task",
+        list_id: listId,
+        title: "New task",
+        due: date
+      });
+      if (newTask) {
+        this._tasks = [...this._tasks, newTask];
+        window.location.hash = `#/tasks/${newTask.id}`;
+      } else {
+        this._navigate("tasks");
+      }
+    } catch (err) {
+      console.error("Failed to create task:", err);
+    }
+  }
+  /** Handle quick-add-shopping from the template picker — create a shopping item. */
+  async _onQuickAddShopping(e2) {
+    if (!this._tasksLoaded) {
+      await this._loadTasks();
+    }
+    const shoppingList = this._lists.find((l2) => l2.list_type === "shopping");
+    const listId = shoppingList?.id ?? "shopping";
+    try {
+      const newTask = await this.hass.callWS({
+        type: "calee/create_task",
+        list_id: listId,
+        title: "New item"
+      });
+      if (newTask) {
+        this._tasks = [...this._tasks, newTask];
+      }
+      this._navigate("shopping");
+    } catch (err) {
+      console.error("Failed to create shopping item:", err);
     }
   }
   /** Handle template-select from the template picker. */
@@ -9962,6 +11903,34 @@ let CaleePanel = class extends i {
   }
   _onActivityFeedClose() {
     this._showActivityFeed = false;
+  }
+  // ── Routines ─────────────────────────────────────────────────────
+  async _executeRoutine(routineId) {
+    if (!this.hass) return;
+    const today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+    try {
+      await this.hass.callWS({
+        type: "calee/execute_routine",
+        routine_id: routineId,
+        date: today
+      });
+      this._refreshAll();
+    } catch (err) {
+      console.error("Failed to execute routine:", err);
+    }
+  }
+  async _onRoutineExecute(e2) {
+    await this._executeRoutine(e2.detail.routineId);
+  }
+  async _onRoutineChanged() {
+    if (!this.hass) return;
+    try {
+      this._routines = await this.hass.callWS({ type: "calee/routines" }) ?? [];
+    } catch {
+    }
+  }
+  _onRoutineManagerClose() {
+    this._showRoutineManager = false;
   }
   // ── Quick Add Dialog ──────────────────────────────────────────────
   _renderAddDialog() {
@@ -10873,6 +12842,170 @@ CaleePanel.styles = i$3`
     .btn-save:hover {
       opacity: 0.9;
     }
+
+    /* ── Detail Drawer (desktop right panel) ──────────────── */
+
+    .detail-drawer {
+      width: 360px;
+      min-width: 360px;
+      background: var(--card-background-color, #fff);
+      border-left: 1px solid var(--divider-color, #e0e0e0);
+      overflow-y: auto;
+      padding: 20px;
+      transition: width 0.2s ease, min-width 0.2s ease;
+      z-index: 3;
+    }
+
+    .detail-drawer.closed {
+      width: 0;
+      min-width: 0;
+      padding: 0;
+      overflow: hidden;
+      border-left-width: 0;
+    }
+
+    :host([narrow]) .detail-drawer {
+      display: none;
+    }
+
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .drawer-header h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--primary-text-color, #212121);
+    }
+
+    .drawer-close-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 6px;
+      font-size: 18px;
+      line-height: 1;
+      color: var(--secondary-text-color, #757575);
+      transition: background 0.15s, color 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .drawer-close-btn:hover {
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
+      color: var(--primary-text-color, #212121);
+    }
+
+    .drawer-field {
+      margin-bottom: 14px;
+    }
+
+    .drawer-field-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--secondary-text-color, #757575);
+      margin-bottom: 4px;
+    }
+
+    .drawer-field-value {
+      font-size: 14px;
+      color: var(--primary-text-color, #212121);
+      line-height: 1.4;
+    }
+
+    .drawer-field-value.muted {
+      color: var(--secondary-text-color, #757575);
+      font-style: italic;
+    }
+
+    .drawer-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--divider-color, #e0e0e0);
+    }
+
+    .drawer-btn {
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+      transition: background 0.15s, color 0.15s;
+      font-family: inherit;
+    }
+
+    .drawer-btn-edit {
+      background: var(--primary-color, #03a9f4);
+      color: #fff;
+    }
+    .drawer-btn-edit:hover {
+      filter: brightness(1.1);
+    }
+
+    .drawer-btn-delete {
+      background: transparent;
+      color: var(--error-color, #f44336);
+      border: 1px solid var(--error-color, #f44336);
+    }
+    .drawer-btn-delete:hover {
+      background: color-mix(in srgb, var(--error-color, #f44336) 10%, transparent);
+    }
+
+    .drawer-edit-input {
+      width: 100%;
+      font-size: 14px;
+      padding: 6px 10px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      border-radius: 6px;
+      background: var(--card-background-color, #fff);
+      color: var(--primary-text-color, #212121);
+      outline: none;
+      box-sizing: border-box;
+      font-family: inherit;
+      transition: border-color 0.15s;
+    }
+    .drawer-edit-input:focus {
+      border-color: var(--primary-color, #03a9f4);
+    }
+
+    .drawer-edit-textarea {
+      width: 100%;
+      font-size: 14px;
+      padding: 6px 10px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      border-radius: 6px;
+      background: var(--card-background-color, #fff);
+      color: var(--primary-text-color, #212121);
+      outline: none;
+      box-sizing: border-box;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 60px;
+      transition: border-color 0.15s;
+    }
+    .drawer-edit-textarea:focus {
+      border-color: var(--primary-color, #03a9f4);
+    }
+
+    .drawer-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--secondary-background-color, #f0f0f0);
+      color: var(--secondary-text-color, #757575);
+    }
   `;
 __decorateClass([
   n2({ attribute: false })
@@ -10921,6 +13054,9 @@ __decorateClass([
 ], CaleePanel.prototype, "_presets", 2);
 __decorateClass([
   r()
+], CaleePanel.prototype, "_routines", 2);
+__decorateClass([
+  r()
 ], CaleePanel.prototype, "_rawCalendars", 2);
 __decorateClass([
   r()
@@ -10934,6 +13070,15 @@ __decorateClass([
 __decorateClass([
   r()
 ], CaleePanel.prototype, "_settingsBudget", 2);
+__decorateClass([
+  r()
+], CaleePanel.prototype, "_detailDrawerOpen", 2);
+__decorateClass([
+  r()
+], CaleePanel.prototype, "_detailItem", 2);
+__decorateClass([
+  r()
+], CaleePanel.prototype, "_detailItemType", 2);
 __decorateClass([
   r()
 ], CaleePanel.prototype, "_editEvent", 2);
@@ -10964,6 +13109,12 @@ __decorateClass([
 __decorateClass([
   r()
 ], CaleePanel.prototype, "_showActivityFeed", 2);
+__decorateClass([
+  r()
+], CaleePanel.prototype, "_showRoutineManager", 2);
+__decorateClass([
+  r()
+], CaleePanel.prototype, "_shoppingToast", 2);
 CaleePanel = __decorateClass([
   t("calee-panel")
 ], CaleePanel);
@@ -11092,6 +13243,12 @@ class PlannerConnection {
       preset_id: presetId
     });
   }
+  // ── Routine queries ────────────────────────────────────────────────
+  getRoutines() {
+    return this._hass.callWS({
+      type: "calee/routines"
+    });
+  }
   // ── Subscription ──────────────────────────────────────────────────
   /**
    * Subscribe to real-time planner change notifications.
@@ -11114,6 +13271,7 @@ class PlannerStore {
     this.lists = [];
     this.templates = [];
     this.presets = [];
+    this.routines = [];
     this.selectedDate = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
     this.currentView = "month";
     this.enabledCalendarIds = /* @__PURE__ */ new Set();
@@ -11266,14 +13424,21 @@ class PlannerStore {
   getPresets() {
     return this.presets;
   }
+  /**
+   * Return routines loaded by the store.
+   */
+  getRoutines() {
+    return this.routines;
+  }
   async _fetchAll() {
-    const [calendars, events, tasks, lists, templates, presets] = await Promise.all([
+    const [calendars, events, tasks, lists, templates, presets, routines] = await Promise.all([
       this._conn.getCalendars(),
       this._conn.getEvents(),
       this._conn.getTasks({}),
       this._conn.getLists(),
       this._conn.getTemplates(),
-      this._conn.getPresets()
+      this._conn.getPresets(),
+      this._conn.getRoutines()
     ]);
     this.calendars = calendars;
     this.events = events;
@@ -11281,6 +13446,7 @@ class PlannerStore {
     this.lists = lists;
     this.templates = templates;
     this.presets = presets;
+    this.routines = routines;
     if (this.enabledCalendarIds.size === 0 && calendars.length > 0) {
       this.enabledCalendarIds = new Set(calendars.map((c2) => c2.id));
     }
