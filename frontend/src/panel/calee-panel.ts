@@ -192,6 +192,9 @@ export class CaleePanel extends LitElement {
   private _hashHandler = this._onHashChange.bind(this);
   private _unsubscribe?: () => void;
 
+  /** Track whether tasks have been loaded for the current session. */
+  private _tasksLoaded = false;
+
   // ── Lifecycle ────────────────────────────────────────────────────
 
   connectedCallback(): void {
@@ -244,6 +247,13 @@ export class CaleePanel extends LitElement {
     if (changedProps.has("_currentView") || changedProps.has("_currentDate")) {
       if (!this._loading) {
         this._loadEvents();
+        // Lazy-load tasks when navigating to tasks or shopping views
+        if (
+          (this._currentView === "tasks" || this._currentView === "shopping") &&
+          !this._tasksLoaded
+        ) {
+          this._loadTasks();
+        }
       }
     }
   }
@@ -322,15 +332,15 @@ export class CaleePanel extends LitElement {
     this._tasks = store.tasks ?? [];
     this._templates = store.templates ?? [];
     this._presets = store.presets ?? [];
+    this._tasksLoaded = true;
   }
 
   private async _loadViaWebSocket(): Promise<void> {
     if (!this.hass) return;
     try {
-      const [calendars, lists, tasks, templates, presets] = await Promise.all([
+      const [calendars, lists, templates, presets] = await Promise.all([
         this.hass.callWS({ type: "calee/calendars" }),
         this.hass.callWS({ type: "calee/lists" }),
-        this.hass.callWS({ type: "calee/tasks" }),
         this.hass.callWS({ type: "calee/templates" }),
         this.hass.callWS({ type: "calee/presets" }).catch(() => []),
       ]);
@@ -342,9 +352,13 @@ export class CaleePanel extends LitElement {
         visible: true,
       }));
       this._lists = lists ?? [];
-      this._tasks = tasks ?? [];
       this._templates = templates ?? [];
       this._presets = presets ?? [];
+
+      // Load tasks lazily — only fetch now if the initial view needs them.
+      if (this._currentView === "tasks" || this._currentView === "shopping") {
+        await this._loadTasks();
+      }
     } catch {
       // Integration may not be loaded yet
       this._rawCalendars = [];
@@ -372,6 +386,23 @@ export class CaleePanel extends LitElement {
       })) ?? [];
     } catch {
       // Silently handle — events may not be available yet
+    }
+  }
+
+  /**
+   * Lazy-load tasks via WebSocket.
+   * Called when switching to tasks or shopping view for the first time,
+   * or on refresh. Avoids loading all tasks on every startup.
+   */
+  private async _loadTasks(): Promise<void> {
+    if (!this.hass) return;
+    try {
+      this._tasks = (await this.hass.callWS({
+        type: "calee/tasks",
+      })) ?? [];
+      this._tasksLoaded = true;
+    } catch {
+      // Silently handle — tasks may not be available yet
     }
   }
 
@@ -472,6 +503,13 @@ export class CaleePanel extends LitElement {
         this._syncFromStore();
       } else {
         await this._loadViaWebSocket();
+      }
+      // Re-fetch tasks if currently viewing them (handles mutation refreshes)
+      if (
+        !this._store &&
+        (this._currentView === "tasks" || this._currentView === "shopping")
+      ) {
+        await this._loadTasks();
       }
     }, 250);
   }

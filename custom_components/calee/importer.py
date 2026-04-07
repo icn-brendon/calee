@@ -19,6 +19,11 @@ from typing import Any
 
 _LOGGER = logging.getLogger(__name__)
 
+# ── Safety limits ────────────────────────────────────────────────────────
+
+MAX_IMPORT_PAYLOAD_BYTES: int = 5 * 1024 * 1024  # 5 MB
+MAX_IMPORT_EVENTS: int = 5000
+
 # ── Import result ───────────────────────────────────────────────────────
 
 
@@ -31,6 +36,7 @@ class ImportResult:
     skipped: int = 0
     errors: int = 0
     error_details: list[str] = field(default_factory=list)
+    dry_run: bool = False
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -39,6 +45,7 @@ class ImportResult:
             "skipped": self.skipped,
             "errors": self.errors,
             "error_details": self.error_details,
+            "dry_run": self.dry_run,
         }
 
 
@@ -120,7 +127,15 @@ def parse_csv(csv_data: str) -> list[dict[str, str]]:
     - ``date,start_time,end_time,title`` format
     - ``start_datetime,end_datetime,title`` format (ISO 8601)
     - common shift app: ``Date,Start,End,Name,Note``
+
+    Raises ``ValueError`` if the payload exceeds ``MAX_IMPORT_PAYLOAD_BYTES``.
+    Results are capped at ``MAX_IMPORT_EVENTS`` rows.
     """
+    if len(csv_data.encode("utf-8")) > MAX_IMPORT_PAYLOAD_BYTES:
+        raise ValueError(
+            f"CSV payload exceeds {MAX_IMPORT_PAYLOAD_BYTES} byte limit"
+        )
+
     reader = csv.DictReader(io.StringIO(csv_data.strip()))
     if reader.fieldnames is None:
         return []
@@ -135,6 +150,14 @@ def parse_csv(csv_data: str) -> list[dict[str, str]]:
     results: list[dict[str, str]] = []
 
     for row_num, row in enumerate(reader, start=2):  # row 1 is header
+        if len(results) >= MAX_IMPORT_EVENTS:
+            _LOGGER.warning(
+                "CSV import truncated at %d events (limit %d)",
+                MAX_IMPORT_EVENTS,
+                MAX_IMPORT_EVENTS,
+            )
+            break
+
         try:
             title = row.get(reverse.get("title", ""), "").strip()
             note = row.get(reverse.get("note", ""), "").strip()
@@ -294,7 +317,15 @@ def parse_ics(ics_data: str) -> list[dict[str, str]]:
     ``external_id``.  Start/end are ISO 8601 datetime strings.
 
     Uses the VEVENT UID as ``external_id`` for idempotent imports.
+
+    Raises ``ValueError`` if the payload exceeds ``MAX_IMPORT_PAYLOAD_BYTES``.
+    Results are capped at ``MAX_IMPORT_EVENTS`` VEVENT components.
     """
+    if len(ics_data.encode("utf-8")) > MAX_IMPORT_PAYLOAD_BYTES:
+        raise ValueError(
+            f"ICS payload exceeds {MAX_IMPORT_PAYLOAD_BYTES} byte limit"
+        )
+
     unfolded = _unfold_ics(ics_data)
     results: list[dict[str, str]] = []
 
@@ -302,6 +333,13 @@ def parse_ics(ics_data: str) -> list[dict[str, str]]:
     parts = re.split(r"BEGIN:VEVENT\b", unfolded)
 
     for block in parts[1:]:  # skip everything before first VEVENT
+        if len(results) >= MAX_IMPORT_EVENTS:
+            _LOGGER.warning(
+                "ICS import truncated at %d events (limit %d)",
+                MAX_IMPORT_EVENTS,
+                MAX_IMPORT_EVENTS,
+            )
+            break
         end_idx = block.find("END:VEVENT")
         if end_idx == -1:
             continue

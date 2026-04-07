@@ -169,8 +169,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: CaleeConfigEntry) -> boo
     # Run recurring-task processing every hour.
     async def _periodic_recurrence(_now: object) -> None:
         """Process recurring tasks and reset recurring shopping items."""
-        await api.async_process_recurring_tasks()
-        await api.async_process_recurring_shopping_items()
+        try:
+            await api.async_process_recurring_tasks()
+        except Exception:
+            _LOGGER.exception("Recurring task processing failed")
+        try:
+            await api.async_process_recurring_shopping_items()
+        except Exception:
+            _LOGGER.exception("Recurring shopping reset failed")
 
     cancel_interval = async_track_time_interval(
         hass, _periodic_recurrence, timedelta(hours=1)

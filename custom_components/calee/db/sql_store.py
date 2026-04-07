@@ -9,7 +9,7 @@ entirely from the in-memory cache.
 from __future__ import annotations
 
 import logging
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 import sqlalchemy as sa
 from sqlalchemy.dialects.mysql import insert as mysql_insert
@@ -21,6 +21,7 @@ from ..const import (
     DEFAULT_CALENDARS,
     DEFAULT_LISTS,
     DEFAULT_TEMPLATES,
+    SOFT_DELETE_RETENTION_DAYS,
     AuditAction,
 )
 from ..models import (
@@ -62,6 +63,12 @@ _LOGGER = logging.getLogger(__name__)
 
 # Maximum audit entries kept in memory.
 _MAX_AUDIT_ENTRIES = 500
+
+# Maximum age (in days) for audit entries before they are pruned.
+_MAX_AUDIT_AGE_DAYS = 90
+
+# Maximum audit rows retained in the database regardless of age.
+_MAX_AUDIT_ROWS = 10_000
 
 # ── ISO string <-> native datetime helpers ─────────────────────────────
 # The model layer uses ISO 8601 strings throughout; the SQL layer now
@@ -124,6 +131,9 @@ class SqlPlannerStore(AbstractPlannerStore):
         # Load all rows into the in-memory cache.
         await self._load_all_from_db()
 
+        # Prune expired soft-deletes and old audit entries on startup.
+        await self.async_prune()
+
         # Seed defaults if tables are empty (first run).
         if not self.calendars:
             _LOGGER.info("SQL store first run — seeding default calendars, lists, and templates")
@@ -138,6 +148,115 @@ class SqlPlannerStore(AbstractPlannerStore):
             await self._engine.dispose()
             self._engine = None
             self._session_factory = None
+
+    # ── Pruning ────────────────────────────────────────────────────────
+
+    async def async_prune(self) -> None:
+        """Prune expired soft-deleted items and old audit entries."""
+        await self._prune_expired_soft_deletes()
+        await self._prune_old_audit_entries()
+
+    async def _prune_expired_soft_deletes(self) -> None:
+        """Delete events/tasks where deleted_at is older than the retention window."""
+        cutoff = datetime.now(UTC) - timedelta(days=SOFT_DELETE_RETENTION_DAYS)
+
+        pruned_events = 0
+        pruned_tasks = 0
+
+        async with self._session_factory() as session, session.begin():
+            # Delete expired soft-deleted events from DB.
+            result = await session.execute(
+                events_table.delete().where(
+                    events_table.c.deleted_at.isnot(None),
+                    events_table.c.deleted_at < cutoff,
+                )
+            )
+            pruned_events = result.rowcount
+
+            # Delete expired soft-deleted tasks from DB.
+            result = await session.execute(
+                tasks_table.delete().where(
+                    tasks_table.c.deleted_at.isnot(None),
+                    tasks_table.c.deleted_at < cutoff,
+                )
+            )
+            pruned_tasks = result.rowcount
+
+        # Remove from in-memory cache.
+        cutoff_iso = cutoff.isoformat()
+        expired_event_ids = [
+            eid
+            for eid, e in self.events.items()
+            if e.deleted_at is not None and e.deleted_at < cutoff_iso
+        ]
+        for eid in expired_event_ids:
+            del self.events[eid]
+
+        expired_task_ids = [
+            tid
+            for tid, t in self.tasks.items()
+            if t.deleted_at is not None and t.deleted_at < cutoff_iso
+        ]
+        for tid in expired_task_ids:
+            del self.tasks[tid]
+
+        if pruned_events or pruned_tasks:
+            _LOGGER.debug(
+                "Pruned %d expired events and %d expired tasks from SQL store",
+                pruned_events,
+                pruned_tasks,
+            )
+
+    async def _prune_old_audit_entries(self) -> None:
+        """Delete audit entries older than _MAX_AUDIT_AGE_DAYS and cap total rows."""
+        cutoff = datetime.now(UTC) - timedelta(days=_MAX_AUDIT_AGE_DAYS)
+        pruned = 0
+
+        async with self._session_factory() as session, session.begin():
+            # Delete entries older than the age limit.
+            result = await session.execute(
+                audit_log_table.delete().where(
+                    audit_log_table.c.timestamp < cutoff,
+                )
+            )
+            pruned = result.rowcount
+
+            # Cap at _MAX_AUDIT_ROWS by deleting the oldest excess rows.
+            count_result = await session.execute(
+                sa.select(sa.func.count()).select_from(audit_log_table)
+            )
+            total = count_result.scalar() or 0
+
+            if total > _MAX_AUDIT_ROWS:
+                excess = total - _MAX_AUDIT_ROWS
+                # Find the timestamp of the Nth oldest row to use as cutoff.
+                oldest = await session.execute(
+                    sa.select(audit_log_table.c.id)
+                    .order_by(audit_log_table.c.timestamp.asc())
+                    .limit(excess)
+                )
+                excess_ids = [row.id for row in oldest]
+                if excess_ids:
+                    await session.execute(
+                        audit_log_table.delete().where(
+                            audit_log_table.c.id.in_(excess_ids)
+                        )
+                    )
+                    pruned += len(excess_ids)
+
+        # Prune in-memory cache by age.
+        cutoff_iso = cutoff.isoformat()
+        self.audit_log = [
+            entry
+            for entry in self.audit_log
+            if entry.timestamp >= cutoff_iso
+        ]
+        # Also cap in-memory to _MAX_AUDIT_ENTRIES.
+        if len(self.audit_log) > _MAX_AUDIT_ENTRIES:
+            self.audit_log = self.audit_log[-_MAX_AUDIT_ENTRIES:]
+
+        if pruned:
+            _LOGGER.debug("Pruned %d old audit entries from SQL store", pruned)
 
     # ── Calendars ───────────────────────────────────────────────────────
 
@@ -485,6 +604,7 @@ class SqlPlannerStore(AbstractPlannerStore):
                     is_recurring=bool(getattr(row, "is_recurring", False)),
                     recur_reset_hour=getattr(row, "recur_reset_hour", 0) or 0,
                     price=getattr(row, "price", None),
+                    position=getattr(row, "position", 0) or 0,
                     created_at=_dt_to_iso(row.created_at) or "",
                     updated_at=_dt_to_iso(row.updated_at) or "",
                     version=row.version or 1,

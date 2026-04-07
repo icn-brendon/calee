@@ -478,6 +478,14 @@ import_csv:
       description: Import source label (default "csv").
       selector:
         text:
+    dry_run:
+      name: Dry run
+      description: >-
+        When true, parse and return counts (created/updated/skipped) without
+        writing any data. Useful for previewing an import.
+      default: false
+      selector:
+        boolean:
 
 import_ics:
   name: Import shifts from ICS
@@ -503,6 +511,14 @@ import_ics:
       description: Import source label (default "ics").
       selector:
         text:
+    dry_run:
+      name: Dry run
+      description: >-
+        When true, parse and return counts (created/updated/skipped) without
+        writing any data. Useful for previewing an import.
+      default: false
+      selector:
+        boolean:
 
 create_preset:
   name: Create task preset

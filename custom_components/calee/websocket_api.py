@@ -280,6 +280,8 @@ def _parse_date_loose(value: str) -> date | None:
         vol.Required("type"): WS_TYPE_TASKS,
         vol.Optional("list_id"): str,
         vol.Optional("view"): vol.In([VIRTUAL_VIEW_TODAY, VIRTUAL_VIEW_UPCOMING]),
+        vol.Optional("completed"): bool,
+        vol.Optional("limit"): vol.All(int, vol.Range(min=1, max=5000)),
     }
 )
 @callback
@@ -288,7 +290,14 @@ def ws_handle_tasks(
     connection: websocket_api.ActiveConnection,
     msg: dict[str, Any],
 ) -> None:
-    """Return active tasks, optionally filtered by list or virtual view.
+    """Return tasks, optionally filtered by list, virtual view, or status.
+
+    Filters:
+    - ``list_id`` — restrict to a single list.
+    - ``view``    — virtual view ("today" / "upcoming").
+    - ``completed`` — ``true`` returns only completed tasks, ``false``
+      (or omitted) returns only active tasks.
+    - ``limit``   — cap the number of returned tasks (default 500).
 
     When roles are configured, tasks are limited to lists the
     requesting user can read.
@@ -298,7 +307,13 @@ def ws_handle_tasks(
         connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
         return
 
+    # get_active_tasks returns non-deleted tasks (both completed and active).
     tasks = store.get_active_tasks(list_id=msg.get("list_id"))
+
+    # Optional completed filter: true = completed only, false = active only.
+    if "completed" in msg:
+        want_completed = msg["completed"]
+        tasks = [t for t in tasks if t.completed == want_completed]
 
     # Per-user list filtering when roles are configured.
     user_id = connection.user.id if connection.user else None
@@ -316,6 +331,10 @@ def ws_handle_tasks(
     elif view == VIRTUAL_VIEW_UPCOMING:
         today_str = date.today().isoformat()
         tasks = [t for t in tasks if t.due and t.due[:10] > today_str]
+
+    # Apply limit (default 500).
+    limit = msg.get("limit", 500)
+    tasks = tasks[:limit]
 
     result = [t.to_dict() for t in tasks]
     connection.send_result(msg["id"], result)
@@ -909,6 +928,7 @@ async def ws_handle_unlink_task_from_event(
         vol.Required("calendar_id"): str,
         vol.Required("data"): str,
         vol.Optional("source", default="csv"): str,
+        vol.Optional("dry_run", default=False): bool,
     }
 )
 @websocket_api.async_response
@@ -917,20 +937,30 @@ async def ws_handle_import_csv(
     connection: websocket_api.ActiveConnection,
     msg: dict[str, Any],
 ) -> None:
-    """Import shifts from CSV data."""
+    """Import shifts from CSV data (or preview with dry_run)."""
     api = _get_api(hass)
     if api is None:
         connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
         return
 
     try:
-        result = await api.async_import_csv(
-            calendar_id=msg["calendar_id"],
-            csv_data=msg["data"],
-            source=msg.get("source", "csv"),
-            user_id=connection.user.id if connection.user else None,
-        )
+        if msg.get("dry_run", False):
+            result = await api.async_preview_import_csv(
+                calendar_id=msg["calendar_id"],
+                csv_data=msg["data"],
+                source=msg.get("source", "csv"),
+            )
+        else:
+            result = await api.async_import_csv(
+                calendar_id=msg["calendar_id"],
+                csv_data=msg["data"],
+                source=msg.get("source", "csv"),
+                user_id=connection.user.id if connection.user else None,
+            )
     except HomeAssistantError as err:
+        connection.send_error(msg["id"], "import_failed", str(err))
+        return
+    except ValueError as err:
         connection.send_error(msg["id"], "import_failed", str(err))
         return
 
@@ -943,6 +973,7 @@ async def ws_handle_import_csv(
         vol.Required("calendar_id"): str,
         vol.Required("data"): str,
         vol.Optional("source", default="ics"): str,
+        vol.Optional("dry_run", default=False): bool,
     }
 )
 @websocket_api.async_response
@@ -951,20 +982,30 @@ async def ws_handle_import_ics(
     connection: websocket_api.ActiveConnection,
     msg: dict[str, Any],
 ) -> None:
-    """Import shifts from ICS (iCalendar) data."""
+    """Import shifts from ICS (iCalendar) data (or preview with dry_run)."""
     api = _get_api(hass)
     if api is None:
         connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
         return
 
     try:
-        result = await api.async_import_ics(
-            calendar_id=msg["calendar_id"],
-            ics_data=msg["data"],
-            source=msg.get("source", "ics"),
-            user_id=connection.user.id if connection.user else None,
-        )
+        if msg.get("dry_run", False):
+            result = await api.async_preview_import_ics(
+                calendar_id=msg["calendar_id"],
+                ics_data=msg["data"],
+                source=msg.get("source", "ics"),
+            )
+        else:
+            result = await api.async_import_ics(
+                calendar_id=msg["calendar_id"],
+                ics_data=msg["data"],
+                source=msg.get("source", "ics"),
+                user_id=connection.user.id if connection.user else None,
+            )
     except HomeAssistantError as err:
+        connection.send_error(msg["id"], "import_failed", str(err))
+        return
+    except ValueError as err:
         connection.send_error(msg["id"], "import_failed", str(err))
         return
 

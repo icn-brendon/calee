@@ -41,6 +41,9 @@ _LOGGER = logging.getLogger(__name__)
 # Maximum audit entries retained (ring buffer).
 _MAX_AUDIT_ENTRIES = 500
 
+# Maximum age (in days) for audit entries before they are pruned.
+_MAX_AUDIT_AGE_DAYS = 90
+
 
 class JsonPlannerStore(AbstractPlannerStore):
     """Manages all planner data in a single .storage file."""
@@ -381,6 +384,23 @@ class JsonPlannerStore(AbstractPlannerStore):
                 len(expired_event_ids),
                 len(expired_task_ids),
             )
+
+        # Prune audit entries older than _MAX_AUDIT_AGE_DAYS.
+        audit_cutoff = (
+            datetime.now(UTC) - timedelta(days=_MAX_AUDIT_AGE_DAYS)
+        ).isoformat()
+        before_len = len(self.audit_log)
+        self.audit_log = [
+            entry
+            for entry in self.audit_log
+            if entry.timestamp >= audit_cutoff
+        ]
+        # Also enforce the count cap.
+        if len(self.audit_log) > _MAX_AUDIT_ENTRIES:
+            self.audit_log = self.audit_log[-_MAX_AUDIT_ENTRIES:]
+        pruned_audit = before_len - len(self.audit_log)
+        if pruned_audit:
+            _LOGGER.debug("Pruned %d old audit entries", pruned_audit)
 
 
 # Backward-compatible alias so existing imports continue to work.
