@@ -12387,6 +12387,11 @@ let CaleePanel = class extends i {
     }
   }
   // ── Computed helpers ──────────────────────────────────────────────
+  /** True when the viewport is in tablet range (600px - 1024px). */
+  get _isTablet() {
+    const w = window.innerWidth;
+    return w >= 600 && w <= 1024;
+  }
   /** Map of calendar ID to PlannerCalendar for passing to view components. */
   get _calendarMap() {
     const map = /* @__PURE__ */ new Map();
@@ -12435,9 +12440,57 @@ let CaleePanel = class extends i {
     );
     return this._tasks.filter((t2) => !shoppingIds.has(t2.list_id));
   }
+  _renderTabletSummary() {
+    if (this.narrow || !this._isTablet) return A;
+    const today = /* @__PURE__ */ new Date();
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ];
+    const dateStr = `Today, ${days[today.getDay()]} ${today.getDate()} ${months[today.getMonth()]}`;
+    const now = Date.now();
+    const workShifts = this._events.filter((e2) => e2.calendar_id === "work_shifts" && !e2.deleted_at).map((e2) => ({ ...e2, _start: new Date(e2.start).getTime() })).filter((e2) => e2._start > now).sort((a2, b2) => a2._start - b2._start);
+    let shiftStr = "No upcoming shifts";
+    if (workShifts.length > 0) {
+      const next = workShifts[0];
+      const d2 = new Date(next.start);
+      const h2 = d2.getHours();
+      const ampm = h2 >= 12 ? "pm" : "am";
+      const h12 = h2 % 12 || 12;
+      shiftStr = `Next: ${next.title} at ${h12}${ampm}`;
+    }
+    const shoppingTasks = this._tasks.filter(
+      (t2) => t2.list_id === "shopping" && !t2.completed && !t2.deleted_at
+    );
+    const totalPrice = shoppingTasks.reduce(
+      (sum, t2) => sum + (t2.price ?? 0),
+      0
+    );
+    const budget = this._settingsBudget;
+    const budgetStr = budget > 0 ? `Budget: ${this._settingsCurrency}${Math.round(budget - totalPrice)} left` : "";
+    return b`
+      <div class="tablet-summary">
+        <span class="summary-date">${dateStr}</span>
+        <span class="summary-shift">${shiftStr}</span>
+        ${budgetStr ? b`<span class="summary-budget">${budgetStr}</span>` : A}
+      </div>
+    `;
+  }
   render() {
     return b`
       ${this._renderHeader()}
+      ${this._renderTabletSummary()}
       <div class="body">
         ${this._renderSidebarBackdrop()}
         ${this._renderSidebar()}
@@ -15003,6 +15056,125 @@ CaleePanel.styles = i$3`
       border-radius: 4px;
       background: var(--secondary-background-color, #f0f0f0);
       color: var(--secondary-text-color, #757575);
+    }
+
+    /* ── Tablet summary strip ──────────────────────────────── */
+
+    .tablet-summary {
+      display: none;
+    }
+
+    /* ── Tablet landscape (768px - 1024px) ─────────────────── */
+
+    @media (min-width: 768px) and (max-width: 1024px) {
+      :host {
+        --sidebar-width: 200px;
+      }
+
+      .detail-drawer {
+        width: 300px;
+        min-width: 300px;
+      }
+
+      .tablet-summary {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 4px 16px;
+        height: 32px;
+        min-height: 32px;
+        background: var(--secondary-background-color, rgba(0, 0, 0, 0.03));
+        border-bottom: 1px solid var(--divider-color, #e0e0e0);
+        font-size: 12px;
+        color: var(--secondary-text-color, #666);
+        flex-shrink: 0;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      .tablet-summary[hidden] {
+        display: none;
+      }
+
+      .summary-date {
+        font-weight: 600;
+        color: var(--primary-text-color, #212121);
+      }
+
+      .summary-shift,
+      .summary-budget {
+        font-weight: 400;
+      }
+    }
+
+    /* ── Tablet portrait (600px - 768px) ───────────────────── */
+
+    @media (min-width: 600px) and (max-width: 767px) {
+      .sidebar {
+        width: 48px;
+        min-width: 48px;
+      }
+
+      .sidebar .nav-item span,
+      .sidebar .nav-item-muted span,
+      .sidebar .section-label,
+      .sidebar .cal-toggle-name,
+      .sidebar .calendar-name,
+      .sidebar .sidebar-upcoming,
+      .sidebar .sidebar-cards,
+      .sidebar .sidebar-add-btn,
+      .sidebar .sidebar-heading {
+        display: none;
+      }
+
+      .sidebar .nav-item,
+      .sidebar .nav-item-muted {
+        justify-content: center;
+        padding: 8px 0;
+      }
+
+      .sidebar .calendar-item {
+        justify-content: center;
+        padding: 6px 0;
+      }
+
+      .sidebar .sidebar-collapse-btn {
+        display: none;
+      }
+
+      .detail-drawer {
+        display: none;
+      }
+
+      .tablet-summary {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 4px 12px;
+        height: 32px;
+        min-height: 32px;
+        background: var(--secondary-background-color, rgba(0, 0, 0, 0.03));
+        border-bottom: 1px solid var(--divider-color, #e0e0e0);
+        font-size: 11px;
+        color: var(--secondary-text-color, #666);
+        flex-shrink: 0;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      .tablet-summary[hidden] {
+        display: none;
+      }
+
+      .summary-date {
+        font-weight: 600;
+        color: var(--primary-text-color, #212121);
+      }
+
+      .summary-shift,
+      .summary-budget {
+        font-weight: 400;
+      }
     }
   `;
 __decorateClass([
