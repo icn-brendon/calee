@@ -1,5 +1,7 @@
 {
   "name": "Calee",
   "homeassistant": "2026.1.0",
-  "render_readme": true
+  "render_readme": true,
+  "icon": "https://raw.githubusercontent.com/icn-brendon/calee/main/custom_components/calee/brand/icon.png",
+  "logo": "https://raw.githubusercontent.com/icn-brendon/calee/main/custom_components/calee/brand/logo.png"
 }
