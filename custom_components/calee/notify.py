@@ -7,7 +7,7 @@ notification action handling for the Companion app.
 from __future__ import annotations
 
 import logging
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from typing import Final
 
 from homeassistant.config_entries import ConfigEntry
@@ -21,6 +21,7 @@ from .const import (
     DEFAULT_NOTIFICATION_TARGET,
     DEFAULT_NOTIFICATIONS_ENABLED,
     DEFAULT_REMINDER_MINUTES,
+    DEFAULT_TIME_FORMAT,
     DOMAIN,
     PANEL_URL,
 )
@@ -36,13 +37,9 @@ ACTION_OPEN_PLANNER: Final = "CALEE_OPEN"
 ACTION_SNOOZE_15: Final = "CALEE_SNOOZE_15"
 ACTION_SNOOZE_60: Final = "CALEE_SNOOZE_60"
 
-# In-memory set of event IDs that have already been notified this session.
-# Cleared on restart (intentional — if HA restarts close to a shift,
-# the user gets a fresh reminder).
-_notified_events: set[str] = set()
-
-# Track whether morning summary has been sent today.
-_morning_summary_sent_date: date | None = None
+# Keys for per-entry notification state stored in hass.data[DOMAIN][entry_id].
+_KEY_NOTIFIED_EVENTS: Final = "notified_events"
+_KEY_MORNING_SENT_DATE: Final = "morning_sent_date"
 
 
 async def async_setup_shift_reminders(
@@ -54,6 +51,11 @@ async def async_setup_shift_reminders(
 
     Returns a list of cancel callbacks for cleanup.
     """
+    # Initialise per-entry notification state.
+    entry_data = hass.data[DOMAIN][entry.entry_id]
+    entry_data.setdefault(_KEY_NOTIFIED_EVENTS, set())
+    entry_data.setdefault(_KEY_MORNING_SENT_DATE, None)
+
     cancel_callbacks: list = []
 
     # Per-minute check for shift reminders.
@@ -85,14 +87,15 @@ async def async_setup_shift_reminders(
         if not notifications_enabled:
             return
 
-        global _morning_summary_sent_date
         now = dt_util.now()
         summary_hour = entry.options.get(
             "morning_summary_hour", DEFAULT_MORNING_SUMMARY_HOUR
         )
 
-        if now.hour == summary_hour and _morning_summary_sent_date != now.date():
-            _morning_summary_sent_date = now.date()
+        edata = hass.data[DOMAIN][entry.entry_id]
+        sent_date = edata.get(_KEY_MORNING_SENT_DATE)
+        if now.hour == summary_hour and sent_date != now.date():
+            edata[_KEY_MORNING_SENT_DATE] = now.date()
             await async_send_morning_summary(hass, store, entry)
 
     cancel_morning = async_track_time_interval(
@@ -123,6 +126,9 @@ async def async_check_and_send_reminders(
     # Get work shifts (all active events from the work_shifts calendar).
     events = store.get_active_events(calendar_id="work_shifts")
 
+    notified: set[str] = hass.data[DOMAIN][entry.entry_id][_KEY_NOTIFIED_EVENTS]
+    time_format = entry.options.get("time_format", DEFAULT_TIME_FORMAT)
+
     for event in events:
         start = _parse_datetime(event.start)
         if start is None:
@@ -147,7 +153,7 @@ async def async_check_and_send_reminders(
                     continue
 
             # Check if already notified this session.
-            if event.id in _notified_events:
+            if event.id in notified:
                 continue
 
             minutes_until = int((start - now).total_seconds() / 60)
@@ -155,9 +161,10 @@ async def async_check_and_send_reminders(
                 "notification_target", DEFAULT_NOTIFICATION_TARGET
             )
             await _send_shift_notification(
-                hass, event, start, minutes_until, target
+                hass, event, start, minutes_until, target,
+                time_format=time_format,
             )
-            _notified_events.add(event.id)
+            notified.add(event.id)
 
 
 async def _send_shift_notification(
@@ -166,10 +173,13 @@ async def _send_shift_notification(
     start: datetime,
     minutes_before: int,
     target: str = "",
+    time_format: str = "12h",
 ) -> None:
     """Send a shift reminder via HA's persistent notification + mobile."""
+    local_start = dt_util.as_local(start)
+    fmt = "%I:%M %p" if time_format == "12h" else "%H:%M"
     title = f"Shift in {minutes_before} minutes"
-    message = f"{event.title} starts at {start.strftime('%I:%M %p')}"
+    message = f"{event.title} starts at {local_start.strftime(fmt)}"
 
     # Persistent notification (shows in HA sidebar) — always available.
     await hass.services.async_call(
@@ -182,9 +192,16 @@ async def _send_shift_notification(
         },
     )
 
-    # Mobile notification via notify service (if available).
-    notify_service = target if target else "notify"
-    notify_domain = "notify"
+    # Mobile notification via notify service (if configured and available).
+    notify_target = target if target else "notify"
+    if not hass.services.has_service("notify", notify_target):
+        _LOGGER.debug(
+            "Notify service 'notify.%s' not available, skipping mobile push for event %s",
+            notify_target,
+            event.id,
+        )
+        return
+
     service_data = {
         "title": title,
         "message": message,
@@ -201,10 +218,9 @@ async def _send_shift_notification(
 
     try:
         await hass.services.async_call(
-            notify_domain, notify_service, service_data
+            "notify", notify_target, service_data
         )
     except Exception:
-        # notify service may not be configured — that's fine.
         _LOGGER.debug(
             "Could not send mobile notification for event %s", event.id
         )
@@ -218,15 +234,17 @@ async def async_send_morning_summary(
     """Send a morning summary notification."""
     today = dt_util.now().date()
     today_iso = today.isoformat()
+    time_format = entry.options.get("time_format", DEFAULT_TIME_FORMAT)
+    fmt = "%I:%M %p" if time_format == "12h" else "%H:%M"
 
-    # Today's shifts.
+    # Today's shifts — compare in local time for correct day attribution.
     all_shifts = store.get_active_events(calendar_id="work_shifts")
     shifts = []
     for ev in all_shifts:
         start_dt = _parse_datetime(ev.start)
         if start_dt is None:
             continue
-        if start_dt.date() == today:
+        if dt_util.as_local(start_dt).date() == today:
             shifts.append(ev)
 
     # Tasks due today.
@@ -252,7 +270,11 @@ async def async_send_morning_summary(
         lines.append(f"{len(shifts)} shift(s) today")
         for s in shifts:
             start_dt = _parse_datetime(s.start)
-            time_str = start_dt.strftime("%I:%M %p") if start_dt else ""
+            if start_dt:
+                local_start = dt_util.as_local(start_dt)
+                time_str = local_start.strftime(fmt)
+            else:
+                time_str = ""
             lines.append(f"  - {s.title} at {time_str}")
     if tasks_due:
         lines.append(f"{len(tasks_due)} task(s) due")
@@ -273,13 +295,20 @@ async def async_send_morning_summary(
         },
     )
 
-    # Also send as mobile notification.
+    # Also send as mobile notification (if service is available).
     target = entry.options.get("notification_target", DEFAULT_NOTIFICATION_TARGET)
-    notify_service = target if target else "notify"
+    notify_target = target if target else "notify"
+    if not hass.services.has_service("notify", notify_target):
+        _LOGGER.debug(
+            "Notify service 'notify.%s' not available, skipping morning summary mobile push",
+            notify_target,
+        )
+        return
+
     try:
         await hass.services.async_call(
             "notify",
-            notify_service,
+            notify_target,
             {
                 "title": "Calee — Today",
                 "message": message,
@@ -335,32 +364,38 @@ async def _handle_snooze_from_notification(
         return
 
     event_id = tag.removeprefix("calee_shift_")
-    planner_event = store.get_event(event_id)
-    if planner_event is None:
-        _LOGGER.warning("Snooze action for unknown event %s", event_id)
-        return
 
-    # Use the PlannerAPI to snooze so audit + persistence are handled correctly.
+    # Find the correct config entry by checking which entry's store owns this event.
     data = hass.data.get(DOMAIN, {})
-    for entry_data in data.values():
+    for _entry_id, entry_data in data.items():
         if not isinstance(entry_data, dict):
             continue
-        api = entry_data.get("api")
-        if api is not None:
-            try:
-                await api.async_snooze_reminder(event_id, minutes)
-                _LOGGER.info(
-                    "Snoozed event %s for %d minutes via notification action",
-                    event_id,
-                    minutes,
-                )
-            except Exception:
-                _LOGGER.exception("Failed to snooze event %s", event_id)
-            # Remove from notified set so it can re-fire after snooze expires.
-            _notified_events.discard(event_id)
-            return
+        entry_store = entry_data.get("store")
+        if entry_store is None:
+            continue
+        if entry_store.get_event(event_id) is None:
+            continue
 
-    _LOGGER.warning("No PlannerAPI found for snooze action on event %s", event_id)
+        api = entry_data.get("api")
+        if api is None:
+            continue
+
+        try:
+            await api.async_snooze_reminder(event_id, minutes)
+            _LOGGER.info(
+                "Snoozed event %s for %d minutes via notification action",
+                event_id,
+                minutes,
+            )
+        except Exception:
+            _LOGGER.exception("Failed to snooze event %s", event_id)
+        # Remove from per-entry notified set so it can re-fire after snooze expires.
+        notified = entry_data.get(_KEY_NOTIFIED_EVENTS)
+        if notified is not None:
+            notified.discard(event_id)
+        return
+
+    _LOGGER.warning("No config entry found with event %s for snooze action", event_id)
 
 
 def _parse_datetime(iso_str: str | None) -> datetime | None:
