@@ -201,13 +201,15 @@ class CaleeOptionsFlow(OptionsFlow):
                 if chosen_backend and chosen_backend != current_backend:
                     self._new_backend = chosen_backend
                     if chosen_backend == BACKEND_JSON:
-                        # Switching back to JSON — no DB details needed.
+                        # Switching back to JSON — save old DB creds for migration.
+                        old_data = dict(self._config_entry.data)
                         new_data = {CONF_STORAGE_BACKEND: BACKEND_JSON}
                         self.hass.config_entries.async_update_entry(
                             self._config_entry,
                             data=new_data,
                         )
                         user_input["_pending_migration"] = current_backend
+                        user_input["_old_db_config"] = old_data
                         return self.async_create_entry(data=user_input)
                     return await self.async_step_database()
 

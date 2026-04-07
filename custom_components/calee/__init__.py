@@ -90,16 +90,23 @@ async def _run_migration(
 
         old_store = JsonPlannerStore(hass)
     elif old_backend in (BACKEND_MARIADB, BACKEND_POSTGRESQL):
-        # We no longer have DB creds for the OLD backend in entry.data
-        # because they were overwritten.  Migration from DB->JSON stores the
-        # old backend name only; full reverse migration would need stored
-        # creds.  For now we log and skip.
-        _LOGGER.warning(
-            "Automatic migration from %s is not supported yet; "
-            "the new store will start empty",
-            old_backend,
-        )
-        return
+        # Old DB credentials are saved in options by the config flow.
+        old_db_config = entry.options.get("_old_db_config")
+        if not old_db_config:
+            _LOGGER.warning(
+                "Cannot migrate from %s — old database credentials not available. "
+                "The new store will start empty.",
+                old_backend,
+            )
+            return
+        try:
+            from .db.sql_store import SqlPlannerStore
+
+            old_url = _build_db_url(old_backend, old_db_config)
+            old_store = SqlPlannerStore(old_url)
+        except Exception:
+            _LOGGER.exception("Failed to connect to old %s database for migration", old_backend)
+            return
     else:
         return
 
@@ -153,8 +160,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: CaleeConfigEntry) -> boo
     pending = entry.options.get("_pending_migration")
     if pending:
         await _run_migration(hass, entry, pending, store)
-        # Clear the migration flag.
-        new_opts = {k: v for k, v in entry.options.items() if k != "_pending_migration"}
+        # Clear the migration flags.
+        new_opts = {
+            k: v for k, v in entry.options.items()
+            if k not in ("_pending_migration", "_old_db_config")
+        }
         hass.config_entries.async_update_entry(entry, options=new_opts)
 
     api = PlannerAPI(hass, store)
