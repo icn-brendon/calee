@@ -18,6 +18,7 @@ from custom_components.calee.models import (
     PlannerList,
     PlannerTask,
     RoleAssignment,
+    Routine,
     ShiftTemplate,
     TaskPreset,
 )
@@ -33,6 +34,7 @@ class FakeStore:
         self.lists: dict[str, PlannerList] = {}
         self.tasks: dict[str, PlannerTask] = {}
         self.presets: dict[str, TaskPreset] = {}
+        self.routines: dict[str, Routine] = {}
         self.roles: list[RoleAssignment] = []
         self.audit_log: list = []
         self._seed_defaults()
@@ -124,6 +126,22 @@ class FakeStore:
     async def async_remove_preset(self, preset_id: str) -> None:
         """Remove a preset from the store."""
         self.presets.pop(preset_id, None)
+
+    def get_routines(self) -> dict[str, Routine]:
+        """Return all routines."""
+        return self.routines
+
+    def get_routine(self, routine_id: str) -> Routine | None:
+        """Return a single routine by ID, or None."""
+        return self.routines.get(routine_id)
+
+    async def async_put_routine(self, routine: Routine) -> None:
+        """Insert or update a routine."""
+        self.routines[routine.id] = routine
+
+    async def async_remove_routine(self, routine_id: str) -> None:
+        """Remove a routine from the store."""
+        self.routines.pop(routine_id, None)
 
     def get_roles(self) -> list[RoleAssignment]:
         """Return all role assignments."""

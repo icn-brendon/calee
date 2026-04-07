@@ -429,5 +429,5 @@ class Routine:
             shift_template_id=data.get("shift_template_id"),
             tasks=data.get("tasks", []),
             shopping_items=data.get("shopping_items", []),
-            created_at=data.get("created_at", ""),
+            created_at=data.get("created_at") or _utc_now_iso(),
         )

@@ -605,10 +605,13 @@ export class CaleeRoutineManager extends LitElement {
             <input
               class="inline-input inline-input-sm"
               type="number"
+              min="0.1"
+              step="0.1"
               .value=${String(item.quantity ?? 1)}
               @input=${(e: Event) => {
                 const newItems = [...items];
-                newItems[idx] = { ...item, quantity: parseFloat((e.target as HTMLInputElement).value) || 1 };
+                const parsed = parseFloat((e.target as HTMLInputElement).value);
+                newItems[idx] = { ...item, quantity: Number.isFinite(parsed) ? Math.max(0.1, parsed) : 1 };
                 this._editingRoutine = { ...r, shopping_items: newItems };
               }}
               placeholder="qty"

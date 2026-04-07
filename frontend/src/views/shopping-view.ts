@@ -1237,7 +1237,8 @@ export class CaleeShoppingView extends LitElement {
   }
 
   private _onQuantityChange(task: PlannerTask, delta: number): void {
-    const newQty = Math.max(1, task.quantity + delta);
+    const current = task.quantity ?? 1;
+    const newQty = Math.max(0.1, current + delta);
     this.dispatchEvent(
       new CustomEvent("task-quantity-update", {
         detail: { taskId: task.id, quantity: newQty, version: task.version },
@@ -1766,6 +1767,7 @@ export class CaleeShoppingView extends LitElement {
                   .value=${unit}
                   @change=${(e: Event) => this._onUnitChange(task, e)}
                   title="Unit"
+                  aria-label="Unit"
                 >
                   ${UNIT_OPTIONS.map(
                     (u) => html`<option value=${u} ?selected=${unit === u}>${u || "--"}</option>`,

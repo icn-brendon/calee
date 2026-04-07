@@ -1355,11 +1355,18 @@ class PlannerAPI:
 
         for item_def in routine.shopping_items:
             try:
+                raw_qty = item_def.get("quantity", 1.0)
+                try:
+                    qty = float(raw_qty)
+                except (TypeError, ValueError):
+                    qty = 1.0
+                qty = max(0.1, qty)
+
                 task = await self.async_add_task(
                     list_id=shopping_list_id,
                     title=item_def.get("title", ""),
                     category=item_def.get("category", ""),
-                    quantity=item_def.get("quantity", 1.0),
+                    quantity=qty,
                     unit=item_def.get("unit", ""),
                     user_id=user_id,
                 )
@@ -1379,6 +1386,8 @@ class PlannerAPI:
             resource_id=routine.id,
             detail=f"Executed routine '{routine.name}' for {target_date}",
         )
+        self._fire_change("execute", "routine", routine.id)
+        await self._store.async_save()
 
         return result
 
@@ -1925,10 +1934,20 @@ class PlannerAPI:
     async def _handle_create_routine(self, call: ServiceCall) -> None:
         tasks = call.data.get("tasks", [])
         if isinstance(tasks, str):
-            tasks = json.loads(tasks)
+            try:
+                tasks = json.loads(tasks)
+            except json.JSONDecodeError as exc:
+                raise HomeAssistantError(
+                    f"Invalid JSON for tasks: {exc}"
+                ) from exc
         shopping_items = call.data.get("shopping_items", [])
         if isinstance(shopping_items, str):
-            shopping_items = json.loads(shopping_items)
+            try:
+                shopping_items = json.loads(shopping_items)
+            except json.JSONDecodeError as exc:
+                raise HomeAssistantError(
+                    f"Invalid JSON for shopping_items: {exc}"
+                ) from exc
         await self.async_create_routine(
             name=call.data["name"],
             emoji=call.data.get("emoji", ""),
@@ -1942,10 +1961,20 @@ class PlannerAPI:
     async def _handle_update_routine(self, call: ServiceCall) -> None:
         tasks = call.data.get("tasks")
         if isinstance(tasks, str):
-            tasks = json.loads(tasks)
+            try:
+                tasks = json.loads(tasks)
+            except json.JSONDecodeError as exc:
+                raise HomeAssistantError(
+                    f"Invalid JSON for tasks: {exc}"
+                ) from exc
         shopping_items = call.data.get("shopping_items")
         if isinstance(shopping_items, str):
-            shopping_items = json.loads(shopping_items)
+            try:
+                shopping_items = json.loads(shopping_items)
+            except json.JSONDecodeError as exc:
+                raise HomeAssistantError(
+                    f"Invalid JSON for shopping_items: {exc}"
+                ) from exc
         await self.async_update_routine(
             routine_id=call.data["routine_id"],
             name=call.data.get("name"),
