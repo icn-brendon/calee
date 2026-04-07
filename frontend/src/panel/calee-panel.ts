@@ -594,7 +594,7 @@ export class CaleePanel extends LitElement {
         break;
       case "t":
         e.preventDefault();
-        this._navigate("day", todayISO());
+        this._onToday();
         break;
       case "w":
         e.preventDefault();
@@ -1488,6 +1488,7 @@ export class CaleePanel extends LitElement {
       min-width: 0;
       padding: 0;
       overflow: hidden;
+      border-left-width: 0;
     }
 
     :host([narrow]) .detail-drawer {
@@ -2278,10 +2279,7 @@ export class CaleePanel extends LitElement {
   }
 
   private _onDrawerEditTask(task: PlannerTask): void {
-    // Close drawer and navigate to tasks view, passing the task ID in the
-    // hash so tasks-view can auto-expand it for inline editing.
     this._closeDetailDrawer();
-    this._navigate("tasks");
     window.location.hash = `#/tasks/${task.id}`;
   }
 
@@ -2356,6 +2354,7 @@ export class CaleePanel extends LitElement {
           .tasks=${this._standardTasks}
           .lists=${this._lists.filter((l) => l.list_type !== "shopping")}
           .presets=${this._presets.filter((p) => p.list_id !== "shopping")}
+          ?narrow=${this.narrow}
         ></calee-tasks-view>`;
 
       case "shopping": {

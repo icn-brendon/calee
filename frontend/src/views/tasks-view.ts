@@ -83,6 +83,7 @@ export class CaleeTasksView extends LitElement {
   @property({ type: Array }) lists: PlannerList[] = [];
   @property({ type: Array }) presets: TaskPreset[] = [];
   @property({ type: String }) activeView: TaskView = "inbox";
+  @property({ type: Boolean, reflect: true }) narrow = false;
 
   /* Quick-add state */
   @state() private _quickAddText = "";
@@ -543,8 +544,8 @@ export class CaleeTasksView extends LitElement {
     .note-input {
       width: 100%;
       font-size: 13px;
-      padding: 6px 10px;
-      border: 1px solid var(--task-border);
+      padding: 0;
+      border: 0 solid var(--task-border);
       border-radius: 6px;
       background: var(--task-bg);
       color: var(--task-text);
@@ -553,13 +554,16 @@ export class CaleeTasksView extends LitElement {
       resize: vertical;
       min-height: 36px;
       font-family: inherit;
-      margin-top: 6px;
+      margin-top: 0;
       overflow: hidden;
       max-height: 0;
       opacity: 0;
-      transition: max-height 0.2s ease, opacity 0.2s ease, margin 0.2s ease;
+      transition: max-height 0.2s ease, opacity 0.2s ease, margin-top 0.2s ease, padding 0.2s ease, border-width 0.2s ease;
     }
     .note-input.visible {
+      padding: 6px 10px;
+      border-width: 1px;
+      margin-top: 6px;
       max-height: 80px;
       opacity: 1;
     }
@@ -849,8 +853,11 @@ export class CaleeTasksView extends LitElement {
         composed: true,
       }),
     );
-    // Also start inline editing (mobile relies on this; desktop uses the drawer)
-    this._startEdit(task);
+    // Only start inline editing on narrow (mobile) layouts;
+    // on desktop the panel handles it via the detail drawer.
+    if (this.narrow) {
+      this._startEdit(task);
+    }
   }
 
   /* ── Inline editing ─────────────────────────────────────────────── */
