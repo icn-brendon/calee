@@ -2897,6 +2897,7 @@ let CaleeTasksView = class extends i {
     this._selectedDatePill = "none";
     this._selectedRecurrence = "none";
     this._customDate = "";
+    this._renderLimit = 100;
     this._editingTaskId = null;
     this._editTitle = "";
     this._editDatePill = "none";
@@ -2980,7 +2981,11 @@ let CaleeTasksView = class extends i {
       })
     );
   }
+  _showMore() {
+    this._renderLimit += 100;
+  }
   _switchTab(view) {
+    this._renderLimit = 100;
     this.activeView = view;
     this.dispatchEvent(
       new CustomEvent("view-change", {
@@ -3171,10 +3176,18 @@ let CaleeTasksView = class extends i {
 
       ${filtered.length === 0 ? b`<div class="empty">No tasks</div>` : b`
             <ul class="task-list">
-              ${filtered.map(
+              ${filtered.slice(0, this._renderLimit).map(
       (t2) => this._editingTaskId === t2.id ? this._renderEditRow(t2) : this._renderTask(t2)
     )}
             </ul>
+            ${filtered.length > this._renderLimit ? b`
+                  <button
+                    class="show-more-btn"
+                    @click=${this._showMore}
+                  >
+                    Show more (${filtered.length - this._renderLimit} remaining)
+                  </button>
+                ` : A}
           `}
     `;
   }
@@ -3584,6 +3597,24 @@ CaleeTasksView.styles = i$3`
       font-size: 14px;
     }
 
+    .show-more-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      background: var(--secondary-background-color, #f5f5f5);
+      border: 1px solid var(--task-border);
+      border-radius: 8px;
+      color: var(--primary-color, #03a9f4);
+      font-size: 14px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .show-more-btn:hover {
+      background: var(--primary-color, #03a9f4);
+      color: #fff;
+    }
+
     /* ── Inline edit ─────────────────────────────────────────────── */
 
     .task-edit {
@@ -3723,6 +3754,9 @@ __decorateClass$a([
 ], CaleeTasksView.prototype, "_customDate", 2);
 __decorateClass$a([
   r()
+], CaleeTasksView.prototype, "_renderLimit", 2);
+__decorateClass$a([
+  r()
 ], CaleeTasksView.prototype, "_editingTaskId", 2);
 __decorateClass$a([
   r()
@@ -3792,6 +3826,7 @@ let CaleeShoppingView = class extends i {
     this._presetFormTitle = "";
     this._presetFormEmoji = "";
     this._confirmDeletePresetId = null;
+    this._pendingRenderLimit = 100;
   }
   /* ── Computed ────────────────────────────────────────────────────── */
   /** All non-deleted, non-completed tasks. */
@@ -4030,6 +4065,9 @@ let CaleeShoppingView = class extends i {
     }
     this._collapsedSections = next;
   }
+  _showMorePending() {
+    this._pendingRenderLimit += 100;
+  }
   /* ── Render ─────────────────────────────────────────────────────── */
   render() {
     const pending = this._pending;
@@ -4173,15 +4211,30 @@ let CaleeShoppingView = class extends i {
       alwaysItems
     ) : A}
 
-      <!-- Category groups -->
-      ${Array.from(grouped.entries()).map(
-      ([cat, items]) => this._renderSection(
-        cat,
-        categoryIcon(cat),
-        categoryLabel(cat),
-        items
-      )
-    )}
+      <!-- Category groups (capped to _pendingRenderLimit total items) -->
+      ${(() => {
+      let remaining = this._pendingRenderLimit - alwaysItems.length;
+      return Array.from(grouped.entries()).map(([cat, items]) => {
+        if (remaining <= 0) return A;
+        const visible = items.slice(0, remaining);
+        remaining -= visible.length;
+        return this._renderSection(
+          cat,
+          categoryIcon(cat),
+          categoryLabel(cat),
+          visible
+        );
+      });
+    })()}
+
+      ${pending.length > this._pendingRenderLimit ? b`
+            <button
+              class="show-more-btn"
+              @click=${this._showMorePending}
+            >
+              Show more (${pending.length - this._pendingRenderLimit} remaining)
+            </button>
+          ` : A}
 
       <!-- Budget / totals -->
       ${this._renderTotals()}
@@ -4204,8 +4257,16 @@ let CaleeShoppingView = class extends i {
 
             ${this._completedOpen ? b`
                   <ul class="item-list completed-items">
-                    ${completed.map((t2) => this._renderItem(t2, true))}
+                    ${completed.slice(0, this._pendingRenderLimit).map((t2) => this._renderItem(t2, true))}
                   </ul>
+                  ${completed.length > this._pendingRenderLimit ? b`
+                        <button
+                          class="show-more-btn"
+                          @click=${this._showMorePending}
+                        >
+                          Show more completed (${completed.length - this._pendingRenderLimit} remaining)
+                        </button>
+                      ` : A}
                 ` : A}
           ` : A}
     `;
@@ -4762,6 +4823,24 @@ CaleeShoppingView.styles = i$3`
       font-size: 14px;
     }
 
+    .show-more-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      background: var(--secondary-background-color, #f5f5f5);
+      border: 1px solid var(--shop-border);
+      border-radius: 8px;
+      color: var(--primary-color, #03a9f4);
+      font-size: 14px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .show-more-btn:hover {
+      background: var(--primary-color, #03a9f4);
+      color: #fff;
+    }
+
     /* ── Preset quick-add ──────────────────────────────────────── */
 
     .presets-section {
@@ -5140,6 +5219,9 @@ __decorateClass$9([
 __decorateClass$9([
   r()
 ], CaleeShoppingView.prototype, "_confirmDeletePresetId", 2);
+__decorateClass$9([
+  r()
+], CaleeShoppingView.prototype, "_pendingRenderLimit", 2);
 __decorateClass$9([
   e("#quick-add-input")
 ], CaleeShoppingView.prototype, "_inputEl", 2);
@@ -8797,6 +8879,7 @@ let CaleePanel = class extends i {
     this._showDeletedItems = false;
     this._showActivityFeed = false;
     this._hashHandler = this._onHashChange.bind(this);
+    this._tasksLoaded = false;
     this._refreshDebounce = null;
   }
   // ── Lifecycle ────────────────────────────────────────────────────
@@ -8838,6 +8921,9 @@ let CaleePanel = class extends i {
     if (changedProps.has("_currentView") || changedProps.has("_currentDate")) {
       if (!this._loading) {
         this._loadEvents();
+        if ((this._currentView === "tasks" || this._currentView === "shopping") && !this._tasksLoaded) {
+          this._loadTasks();
+        }
       }
     }
   }
@@ -8905,14 +8991,14 @@ let CaleePanel = class extends i {
     this._tasks = store.tasks ?? [];
     this._templates = store.templates ?? [];
     this._presets = store.presets ?? [];
+    this._tasksLoaded = true;
   }
   async _loadViaWebSocket() {
     if (!this.hass) return;
     try {
-      const [calendars, lists, tasks, templates, presets] = await Promise.all([
+      const [calendars, lists, templates, presets] = await Promise.all([
         this.hass.callWS({ type: "calee/calendars" }),
         this.hass.callWS({ type: "calee/lists" }),
-        this.hass.callWS({ type: "calee/tasks" }),
         this.hass.callWS({ type: "calee/templates" }),
         this.hass.callWS({ type: "calee/presets" }).catch(() => [])
       ]);
@@ -8924,9 +9010,11 @@ let CaleePanel = class extends i {
         visible: true
       }));
       this._lists = lists ?? [];
-      this._tasks = tasks ?? [];
       this._templates = templates ?? [];
       this._presets = presets ?? [];
+      if (this._currentView === "tasks" || this._currentView === "shopping") {
+        await this._loadTasks();
+      }
     } catch {
       this._rawCalendars = [];
       this._calendars = [];
@@ -8947,6 +9035,21 @@ let CaleePanel = class extends i {
         start,
         end
       }) ?? [];
+    } catch {
+    }
+  }
+  /**
+   * Lazy-load tasks via WebSocket.
+   * Called when switching to tasks or shopping view for the first time,
+   * or on refresh. Avoids loading all tasks on every startup.
+   */
+  async _loadTasks() {
+    if (!this.hass) return;
+    try {
+      this._tasks = await this.hass.callWS({
+        type: "calee/tasks"
+      }) ?? [];
+      this._tasksLoaded = true;
     } catch {
     }
   }
@@ -9037,6 +9140,9 @@ let CaleePanel = class extends i {
         this._syncFromStore();
       } else {
         await this._loadViaWebSocket();
+      }
+      if (!this._store && (this._currentView === "tasks" || this._currentView === "shopping")) {
+        await this._loadTasks();
       }
     }, 250);
   }
@@ -10884,12 +10990,14 @@ class PlannerConnection {
     if (end) msg.end = end;
     return this._hass.callWS(msg);
   }
-  getTasks(listId, view) {
+  getTasks(opts) {
     const msg = {
       type: "calee/tasks"
     };
-    if (listId) msg.list_id = listId;
-    if (view) msg.view = view;
+    if (opts?.listId) msg.list_id = opts.listId;
+    if (opts?.view) msg.view = opts.view;
+    if (opts?.completed !== void 0) msg.completed = opts.completed;
+    if (opts?.limit !== void 0) msg.limit = opts.limit;
     return this._hass.callWS(msg);
   }
   getLists() {
@@ -11162,7 +11270,7 @@ class PlannerStore {
     const [calendars, events, tasks, lists, templates, presets] = await Promise.all([
       this._conn.getCalendars(),
       this._conn.getEvents(),
-      this._conn.getTasks(),
+      this._conn.getTasks({}),
       this._conn.getLists(),
       this._conn.getTemplates(),
       this._conn.getPresets()
