@@ -15,6 +15,7 @@ from datetime import UTC, date, datetime, timedelta
 
 from homeassistant.core import HomeAssistant, ServiceCall, callback
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.util import dt as dt_util
 
 from .const import (
     ATTR_CALENDAR_ID,
@@ -896,9 +897,14 @@ class PlannerAPI:
                 ) from exc
 
         target_date = date.fromisoformat(shift_date)
-        start_dt = datetime.combine(target_date, datetime.strptime(template.start_time, "%H:%M").time())
+        tz = dt_util.DEFAULT_TIME_ZONE
+        start_dt = datetime.combine(
+            target_date, datetime.strptime(template.start_time, "%H:%M").time()
+        ).replace(tzinfo=tz)
         end_date = target_date + timedelta(days=1) if template.is_overnight else target_date
-        end_dt = datetime.combine(end_date, datetime.strptime(template.end_time, "%H:%M").time())
+        end_dt = datetime.combine(
+            end_date, datetime.strptime(template.end_time, "%H:%M").time()
+        ).replace(tzinfo=tz)
 
         event = PlannerEvent(
             calendar_id=template.calendar_id,
@@ -933,13 +939,22 @@ class PlannerAPI:
     ) -> None:
         """Record a snooze for a shift reminder.
 
-        Snooze state is persisted so the notification system knows not
-        to re-fire within the snooze window.  The actual re-notification
-        scheduling is handled by the notify module (Milestone 4).
+        Sets snooze_until on the event so the notification system knows
+        not to re-fire until the snooze window expires.
         """
         event = self._store.get_event(event_id)
         if event is None:
             raise HomeAssistantError(f"Event '{event_id}' not found")
+
+        await async_require_write(
+            self._hass, self._store, user_id, "calendar", event.calendar_id
+        )
+
+        snooze_until = (datetime.now(UTC) + timedelta(minutes=minutes)).isoformat()
+        event.snooze_until = snooze_until
+        event.updated_at = datetime.now(UTC).isoformat()
+        event.version += 1
+        await self._store.async_put_event(event)
 
         self._store.record_audit(
             user_id=user_id or "",

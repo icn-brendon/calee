@@ -20,6 +20,10 @@ from .const import (
     DEFAULT_BUDGET,
     DEFAULT_CURRENCY,
     DEFAULT_MAX_EVENT_AGE_DAYS,
+    DEFAULT_MORNING_SUMMARY_ENABLED,
+    DEFAULT_MORNING_SUMMARY_HOUR,
+    DEFAULT_NOTIFICATION_TARGET,
+    DEFAULT_NOTIFICATIONS_ENABLED,
     DEFAULT_REMINDER_MINUTES,
     DEFAULT_TIME_FORMAT,
     DEFAULT_WEEK_START,
@@ -1287,6 +1291,10 @@ def ws_handle_get_settings(
             "budget": opts.get("budget", DEFAULT_BUDGET),
             "week_start": opts.get("week_start", DEFAULT_WEEK_START),
             "time_format": opts.get("time_format", DEFAULT_TIME_FORMAT),
+            "notifications_enabled": opts.get("notifications_enabled", DEFAULT_NOTIFICATIONS_ENABLED),
+            "morning_summary_enabled": opts.get("morning_summary_enabled", DEFAULT_MORNING_SUMMARY_ENABLED),
+            "morning_summary_hour": opts.get("morning_summary_hour", DEFAULT_MORNING_SUMMARY_HOUR),
+            "notification_target": opts.get("notification_target", DEFAULT_NOTIFICATION_TARGET),
         },
     )
 
@@ -1300,6 +1308,10 @@ def ws_handle_get_settings(
         vol.Optional("budget"): vol.All(vol.Coerce(float), vol.Range(min=0)),
         vol.Optional("week_start"): vol.In(["monday", "sunday"]),
         vol.Optional("time_format"): vol.In(["12h", "24h"]),
+        vol.Optional("notifications_enabled"): bool,
+        vol.Optional("morning_summary_enabled"): bool,
+        vol.Optional("morning_summary_hour"): vol.All(vol.Coerce(int), vol.Range(min=0, max=23)),
+        vol.Optional("notification_target"): str,
     }
 )
 @websocket_api.async_response
@@ -1316,7 +1328,12 @@ async def ws_handle_update_settings(
 
     # Build the updated options dict, merging incoming values with existing.
     new_opts = dict(entry.options)
-    for key in ("reminder_minutes", "max_event_age_days", "currency", "budget", "week_start", "time_format"):
+    _settings_keys = (
+        "reminder_minutes", "max_event_age_days", "currency", "budget",
+        "week_start", "time_format", "notifications_enabled",
+        "morning_summary_enabled", "morning_summary_hour", "notification_target",
+    )
+    for key in _settings_keys:
         if key in msg:
             new_opts[key] = msg[key]
 
@@ -1331,6 +1348,10 @@ async def ws_handle_update_settings(
             "budget": new_opts.get("budget", DEFAULT_BUDGET),
             "week_start": new_opts.get("week_start", DEFAULT_WEEK_START),
             "time_format": new_opts.get("time_format", DEFAULT_TIME_FORMAT),
+            "notifications_enabled": new_opts.get("notifications_enabled", DEFAULT_NOTIFICATIONS_ENABLED),
+            "morning_summary_enabled": new_opts.get("morning_summary_enabled", DEFAULT_MORNING_SUMMARY_ENABLED),
+            "morning_summary_hour": new_opts.get("morning_summary_hour", DEFAULT_MORNING_SUMMARY_HOUR),
+            "notification_target": new_opts.get("notification_target", DEFAULT_NOTIFICATION_TARGET),
         },
     )
 

@@ -109,6 +109,13 @@ DEFAULT_BUDGET: Final = 0
 DEFAULT_WEEK_START: Final = "monday"
 DEFAULT_TIME_FORMAT: Final = "12h"
 
+# ── Notification options defaults ──────────────────────────────────
+DEFAULT_NOTIFICATIONS_ENABLED: Final = True
+DEFAULT_MORNING_SUMMARY_ENABLED: Final = True
+DEFAULT_MORNING_SUMMARY_HOUR: Final = 7
+DEFAULT_NOTIFICATION_TARGET: Final = ""  # empty = all notify services
+DEFAULT_REMINDER_CALENDARS: Final = ["work_shifts"]
+
 # ── Panel ────────────────────────────────────────────────────────────
 PANEL_URL: Final = "/calee"
 PANEL_TITLE: Final = "Planner"

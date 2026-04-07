@@ -11,7 +11,8 @@ from __future__ import annotations
 import pytest
 
 from custom_components.calee.api import PlannerAPI
-from custom_components.calee.models import PlannerEvent, PlannerTask
+from custom_components.calee.const import PlannerRole
+from custom_components.calee.models import PlannerEvent, PlannerTask, RoleAssignment
 
 # ── Lightweight HA fakes ────────────────────────────────────────────
 
@@ -408,3 +409,89 @@ class TestDeleteTask:
 
         # soft_delete_task bumps version
         assert fake_store.tasks[task.id].version == original_version + 1
+
+
+# ── API-level snooze tests ─────────────────────────────────────────
+
+
+class _FakeNonAdminAuth:
+    """Stub auth that returns a non-admin user."""
+
+    async def async_get_user(self, user_id: str):
+        return type("User", (), {"is_admin": False})()
+
+
+class _FakeNonAdminHass:
+    """Minimal stand-in for HomeAssistant with a non-admin user."""
+
+    def __init__(self) -> None:
+        self.bus = _FakeBus()
+        self.auth = _FakeNonAdminAuth()
+
+
+class TestSnoozeReminder:
+    async def test_snooze_sets_snooze_until(self, api, fake_store) -> None:
+        """async_snooze_reminder should set snooze_until on the event."""
+        ev = PlannerEvent(
+            id="snz_evt",
+            calendar_id="work_shifts",
+            title="Shift",
+            start="2026-04-07T06:00:00+00:00",
+            end="2026-04-07T14:00:00+00:00",
+        )
+        fake_store.events[ev.id] = ev
+        assert ev.snooze_until is None
+
+        await api.async_snooze_reminder(event_id=ev.id, minutes=15)
+
+        updated = fake_store.events[ev.id]
+        assert updated.snooze_until is not None
+        # snooze_until should be a valid ISO datetime string.
+        from datetime import datetime
+        dt = datetime.fromisoformat(updated.snooze_until)
+        assert dt is not None
+
+    async def test_snooze_bumps_version(self, api, fake_store) -> None:
+        """async_snooze_reminder should increment the event version."""
+        ev = PlannerEvent(
+            id="snz_ver",
+            calendar_id="work_shifts",
+            title="Shift",
+            start="2026-04-07T06:00:00+00:00",
+            end="2026-04-07T14:00:00+00:00",
+            version=3,
+        )
+        fake_store.events[ev.id] = ev
+
+        await api.async_snooze_reminder(event_id=ev.id, minutes=60)
+
+        assert fake_store.events[ev.id].version == 4
+
+    async def test_snooze_denied_for_viewer(self, fake_store) -> None:
+        """A viewer-role user must be denied snooze access."""
+        fake_store.roles.append(
+            RoleAssignment(
+                user_id="viewer_user",
+                resource_type="calendar",
+                resource_id="work_shifts",
+                role=PlannerRole.VIEWER,
+            )
+        )
+        hass = _FakeNonAdminHass()
+        api = PlannerAPI(hass, fake_store)
+
+        ev = PlannerEvent(
+            id="snz_deny",
+            calendar_id="work_shifts",
+            title="Shift",
+            start="2026-04-07T06:00:00+00:00",
+            end="2026-04-07T14:00:00+00:00",
+        )
+        fake_store.events[ev.id] = ev
+
+        from homeassistant.exceptions import HomeAssistantError
+
+        with pytest.raises(HomeAssistantError, match="does not have write access"):
+            await api.async_snooze_reminder(
+                event_id=ev.id, minutes=15, user_id="viewer_user"
+            )

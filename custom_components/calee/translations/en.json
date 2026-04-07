@@ -34,6 +34,11 @@
         "data": {
           "reminder_minutes": "Default reminder (minutes before shift)",
           "max_event_age_days": "Keep events for (days)",
+          "notifications_enabled": "Enable notifications",
+          "morning_summary_enabled": "Enable morning summary",
+          "morning_summary_hour": "Morning summary hour (0-23)",
+          "notification_target": "Notification target service",
+          "reminder_calendars": "Reminder calendars (comma-separated IDs)",
           "storage_backend": "Storage backend"
         }
       },
@@ -50,7 +55,8 @@
       }
     },
     "error": {
-      "cannot_connect": "Could not connect to the database. Check your credentials and ensure the database exists."
+      "cannot_connect": "Could not connect to the database. Check your credentials and ensure the database exists.",
+      "invalid_notify_service": "The notification target service does not exist. Check that the service name is correct."
     }
   }
 }
