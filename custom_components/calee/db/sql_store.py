@@ -679,6 +679,8 @@ class SqlPlannerStore(AbstractPlannerStore):
                     category=getattr(row, "category", "") or "",
                     is_recurring=bool(getattr(row, "is_recurring", False)),
                     recur_reset_hour=getattr(row, "recur_reset_hour", 0) or 0,
+                    quantity=getattr(row, "quantity", 1.0) or 1.0,
+                    unit=getattr(row, "unit", "") or "",
                     price=getattr(row, "price", None),
                     position=getattr(row, "position", 0) or 0,
                     created_at=_dt_to_iso(row.created_at) or "",

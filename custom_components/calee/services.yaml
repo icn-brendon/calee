@@ -671,6 +671,22 @@ update_routine:
       description: New name (leave blank to keep current).
       selector:
         text:
+    emoji:
+      name: Emoji
+      description: Optional emoji displayed on the routine.
+      selector:
+        text:
+    description:
+      name: Description
+      description: Optional description of what the routine does.
+      selector:
+        text:
+          multiline: true
+    shift_template_id:
+      name: Shift template
+      description: Optional shift template ID to create a shift from.
+      selector:
+        text:
     tasks:
       name: Tasks
       description: >-

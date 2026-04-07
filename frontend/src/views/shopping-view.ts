@@ -1757,9 +1757,9 @@ export class CaleeShoppingView extends LitElement {
           ${!done
             ? html`
                 <span class="qty-controls">
-                  <button class="qty-btn" @click=${() => this._onQuantityChange(task, -1)} title="Decrease">-</button>
+                  <button class="qty-btn" @click=${() => this._onQuantityChange(task, -1)} title="Decrease" aria-label="Decrease quantity">-</button>
                   <span class="qty-value">${qty % 1 === 0 ? qty.toFixed(0) : qty}</span>
-                  <button class="qty-btn" @click=${() => this._onQuantityChange(task, 1)} title="Increase">+</button>
+                  <button class="qty-btn" @click=${() => this._onQuantityChange(task, 1)} title="Increase" aria-label="Increase quantity">+</button>
                 </span>
                 <select
                   class="unit-select"
