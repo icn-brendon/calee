@@ -1,6 +1,6 @@
 import { LitElement, html, css, nothing, type PropertyValues } from "lit";
 import { customElement, property, state, query } from "lit/decorators.js";
-import type { PlannerEvent, PlannerCalendar, ShiftTemplate } from "../store/types.js";
+import type { PlannerEvent, PlannerCalendar, PlannerTask, ShiftTemplate } from "../store/types.js";
 
 // ── Helpers ────────────────────────────────────────────────────────────
 
@@ -158,6 +158,7 @@ export class CaleeWeekView extends LitElement {
   @property({ attribute: false }) enabledCalendarIds: Set<string> = new Set();
   @property({ attribute: false }) selectedDate: Date = new Date();
   @property({ attribute: false }) templates: ShiftTemplate[] = [];
+  @property({ attribute: false }) tasks: PlannerTask[] = [];
   @property({ type: Boolean }) weekStartsMonday = true;
   @property({ type: Boolean, reflect: true }) narrow = false;
 
@@ -313,12 +314,13 @@ export class CaleeWeekView extends LitElement {
               ${evts.map((ev) => {
                 const cal = this.calendars.get(ev.calendar_id);
                 const color = cal?.color ?? "var(--primary-color)";
+                const isRecurring = !!ev.recurrence_rule;
                 return html`
                   <div
                     class="all-day-chip"
                     style="--chip-color: ${color}"
                     @click=${(e: MouseEvent) => this._onEventClick(e, ev.id)}
-                  >${ev.title}</div>
+                  >${isRecurring ? html`<span class="te-recur" title="Recurring">&#x1F501; </span>` : nothing}${ev.title}</div>
                 `;
               })}
             </div>
@@ -336,7 +338,13 @@ export class CaleeWeekView extends LitElement {
       const classes = ["day-header"];
       if (isToday) classes.push("today");
       if (isSelected) classes.push("selected");
-      return html`<div class=${classes.join(" ")}>${fmtDayHeader(d)}</div>`;
+
+      // Task count for this day.
+      const taskCount = this.tasks.filter(
+        (t) => t.due && t.due.slice(0, 10) === key && !t.completed && !t.deleted_at,
+      ).length;
+
+      return html`<div class=${classes.join(" ")}>${fmtDayHeader(d)}${taskCount > 0 ? html`<span class="day-task-count">${taskCount}</span>` : nothing}</div>`;
     });
   }
 
@@ -369,6 +377,8 @@ export class CaleeWeekView extends LitElement {
         ? this.templates.find((t) => t.id === p.event.template_id)?.emoji ?? ""
         : "";
 
+      const isRecurring = !!p.event.recurrence_rule;
+
       return html`
         <div
           class="timed-event"
@@ -382,7 +392,7 @@ export class CaleeWeekView extends LitElement {
           title="${p.event.title}"
           @click=${(e: MouseEvent) => this._onEventClick(e, p.event.id)}
         >
-          <span class="te-title">${tplEmoji ? html`<span class="te-emoji">${tplEmoji}</span>` : nothing}${p.event.title}</span>
+          <span class="te-title">${tplEmoji ? html`<span class="te-emoji">${tplEmoji}</span>` : nothing}${isRecurring ? html`<span class="te-recur" title="Recurring">&#x1F501;</span>` : nothing}${p.event.title}</span>
           <span class="te-time">${fmtTime(startDate)} - ${fmtTime(endDate)}</span>
         </div>
       `;
@@ -489,6 +499,22 @@ export class CaleeWeekView extends LitElement {
 
     .day-header.selected {
       font-weight: 700;
+    }
+
+    .day-task-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 14px;
+      height: 14px;
+      border-radius: 7px;
+      background: var(--secondary-text-color, #999);
+      color: #fff;
+      font-size: 0.55rem;
+      font-weight: 600;
+      margin-left: 4px;
+      padding: 0 3px;
+      vertical-align: middle;
     }
 
     /* ── All-day row ───────────────────────────────────────────────── */
@@ -643,6 +669,12 @@ export class CaleeWeekView extends LitElement {
 
     .te-emoji {
       margin-right: 2px;
+    }
+
+    .te-recur {
+      font-size: 0.55rem;
+      opacity: 0.6;
+      margin-right: 1px;
     }
 
     .te-time {

@@ -26,22 +26,28 @@ from .const import (
     DOMAIN,
     VIRTUAL_VIEW_TODAY,
     VIRTUAL_VIEW_UPCOMING,
+    WS_TYPE_ADD_EVENT_EXCEPTION,
     WS_TYPE_ADD_FROM_PRESET,
     WS_TYPE_ADD_SHIFT_FROM_TEMPLATE,
     WS_TYPE_AUDIT_LOG,
     WS_TYPE_CALENDARS,
     WS_TYPE_COMPLETE_TASK,
+    WS_TYPE_CREATE_CALENDAR,
     WS_TYPE_CREATE_EVENT,
+    WS_TYPE_CREATE_LIST,
     WS_TYPE_CREATE_PRESET,
     WS_TYPE_CREATE_ROUTINE,
     WS_TYPE_CREATE_TASK,
     WS_TYPE_CREATE_TEMPLATE,
+    WS_TYPE_DELETE_CALENDAR,
     WS_TYPE_DELETE_EVENT,
+    WS_TYPE_DELETE_LIST,
     WS_TYPE_DELETE_PRESET,
     WS_TYPE_DELETE_ROUTINE,
     WS_TYPE_DELETE_TASK,
     WS_TYPE_DELETE_TEMPLATE,
     WS_TYPE_DELETED_ITEMS,
+    WS_TYPE_EDIT_EVENT_OCCURRENCE,
     WS_TYPE_EVENTS,
     WS_TYPE_EXECUTE_ROUTINE,
     WS_TYPE_EXPAND_RECURRING_EVENTS,
@@ -61,7 +67,9 @@ from .const import (
     WS_TYPE_TEMPLATES,
     WS_TYPE_UNCOMPLETE_TASK,
     WS_TYPE_UNLINK_TASK_FROM_EVENT,
+    WS_TYPE_UPDATE_CALENDAR,
     WS_TYPE_UPDATE_EVENT,
+    WS_TYPE_UPDATE_LIST,
     WS_TYPE_UPDATE_ROUTINE,
     WS_TYPE_UPDATE_SETTINGS,
     WS_TYPE_UPDATE_TASK,
@@ -120,6 +128,14 @@ def async_register_websocket_commands(hass: HomeAssistant) -> None:
     websocket_api.async_register_command(hass, ws_handle_update_routine)
     websocket_api.async_register_command(hass, ws_handle_delete_routine)
     websocket_api.async_register_command(hass, ws_handle_execute_routine)
+    websocket_api.async_register_command(hass, ws_handle_add_event_exception)
+    websocket_api.async_register_command(hass, ws_handle_edit_event_occurrence)
+    websocket_api.async_register_command(hass, ws_handle_create_calendar)
+    websocket_api.async_register_command(hass, ws_handle_update_calendar)
+    websocket_api.async_register_command(hass, ws_handle_delete_calendar)
+    websocket_api.async_register_command(hass, ws_handle_create_list)
+    websocket_api.async_register_command(hass, ws_handle_update_list)
+    websocket_api.async_register_command(hass, ws_handle_delete_list)
 
     hass.data[_REGISTERED] = True
     _LOGGER.debug("Calee WebSocket commands registered")
@@ -1708,5 +1724,282 @@ def ws_handle_expand_recurring_events(
             if can_read(store, user_id, "calendar", e.calendar_id)
         ]
 
-    result = [e.to_dict() for e in events]
+    # Mark recurring instances with metadata for the frontend.
+    result = []
+    for e in events:
+        d = e.to_dict()
+        # Virtual instances have IDs like "{parent_id}_{date}".
+        if e.recurrence_rule and "_" in e.id:
+            parts = e.id.rsplit("_", 1)
+            if len(parts) == 2 and len(parts[1]) == 10:
+                d["is_recurring_instance"] = True
+                d["parent_event_id"] = parts[0]
+        result.append(d)
     connection.send_result(msg["id"], result)
+
+
+# ── Exception handling (recurring events) ────────────────────────────
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_TYPE_ADD_EVENT_EXCEPTION,
+        vol.Required("event_id"): str,
+        vol.Required("date"): str,  # ISO 8601 date
+    }
+)
+@websocket_api.async_response
+async def ws_handle_add_event_exception(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Add a date to an event's exception list (skip that occurrence)."""
+    api = _get_api(hass)
+    if api is None:
+        connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
+        return
+
+    try:
+        event = await api.async_add_event_exception(
+            event_id=msg["event_id"],
+            exception_date=msg["date"],
+            user_id=connection.user.id if connection.user else None,
+        )
+    except HomeAssistantError as err:
+        connection.send_error(msg["id"], "exception_failed", str(err))
+        return
+
+    connection.send_result(msg["id"], event.to_dict())
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_TYPE_EDIT_EVENT_OCCURRENCE,
+        vol.Required("event_id"): str,
+        vol.Required("date"): str,  # ISO 8601 date
+        vol.Optional("title"): str,
+        vol.Optional("start"): str,
+        vol.Optional("end"): str,
+        vol.Optional("note"): str,
+        vol.Optional("calendar_id"): str,
+    }
+)
+@websocket_api.async_response
+async def ws_handle_edit_event_occurrence(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Create a standalone event for one date and add exception to parent."""
+    api = _get_api(hass)
+    if api is None:
+        connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
+        return
+
+    try:
+        standalone = await api.async_edit_event_occurrence(
+            event_id=msg["event_id"],
+            occurrence_date=msg["date"],
+            title=msg.get("title"),
+            start=msg.get("start"),
+            end=msg.get("end"),
+            note=msg.get("note"),
+            calendar_id=msg.get("calendar_id"),
+            user_id=connection.user.id if connection.user else None,
+        )
+    except HomeAssistantError as err:
+        connection.send_error(msg["id"], "occurrence_failed", str(err))
+        return
+
+    connection.send_result(msg["id"], standalone.to_dict())
+
+
+# ── Calendar CRUD ────────────────────────────────────────────────────
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_TYPE_CREATE_CALENDAR,
+        vol.Required("name"): str,
+        vol.Optional("color", default="#64b5f6"): str,
+        vol.Optional("emoji", default=""): str,
+    }
+)
+@websocket_api.async_response
+async def ws_handle_create_calendar(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Create a new calendar."""
+    api = _get_api(hass)
+    if api is None:
+        connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
+        return
+
+    cal = await api.async_create_calendar(
+        name=msg["name"],
+        color=msg.get("color", "#64b5f6"),
+        emoji=msg.get("emoji", ""),
+        user_id=connection.user.id if connection.user else None,
+    )
+    connection.send_result(msg["id"], cal.to_dict())
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_TYPE_UPDATE_CALENDAR,
+        vol.Required("calendar_id"): str,
+        vol.Optional("name"): str,
+        vol.Optional("color"): str,
+        vol.Optional("emoji"): str,
+    }
+)
+@websocket_api.async_response
+async def ws_handle_update_calendar(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Update an existing calendar."""
+    api = _get_api(hass)
+    if api is None:
+        connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
+        return
+
+    try:
+        cal = await api.async_update_calendar(
+            calendar_id=msg["calendar_id"],
+            name=msg.get("name"),
+            color=msg.get("color"),
+            emoji=msg.get("emoji"),
+            user_id=connection.user.id if connection.user else None,
+        )
+    except HomeAssistantError as err:
+        connection.send_error(msg["id"], "update_failed", str(err))
+        return
+
+    connection.send_result(msg["id"], cal.to_dict())
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_TYPE_DELETE_CALENDAR,
+        vol.Required("calendar_id"): str,
+    }
+)
+@websocket_api.async_response
+async def ws_handle_delete_calendar(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Delete a calendar and all its events."""
+    api = _get_api(hass)
+    if api is None:
+        connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
+        return
+
+    try:
+        await api.async_delete_calendar(
+            calendar_id=msg["calendar_id"],
+            user_id=connection.user.id if connection.user else None,
+        )
+    except HomeAssistantError as err:
+        connection.send_error(msg["id"], "delete_failed", str(err))
+        return
+
+    connection.send_result(msg["id"], {"success": True})
+
+
+# ── List CRUD ─────────────────────────────────────────────────────────
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_TYPE_CREATE_LIST,
+        vol.Required("name"): str,
+        vol.Optional("list_type", default="standard"): str,
+    }
+)
+@websocket_api.async_response
+async def ws_handle_create_list(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Create a new to-do list."""
+    api = _get_api(hass)
+    if api is None:
+        connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
+        return
+
+    lst = await api.async_create_list(
+        name=msg["name"],
+        list_type=msg.get("list_type", "standard"),
+        user_id=connection.user.id if connection.user else None,
+    )
+    connection.send_result(msg["id"], lst.to_dict())
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_TYPE_UPDATE_LIST,
+        vol.Required("list_id"): str,
+        vol.Optional("name"): str,
+    }
+)
+@websocket_api.async_response
+async def ws_handle_update_list(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Update an existing to-do list."""
+    api = _get_api(hass)
+    if api is None:
+        connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
+        return
+
+    try:
+        lst = await api.async_update_list(
+            list_id=msg["list_id"],
+            name=msg.get("name"),
+            user_id=connection.user.id if connection.user else None,
+        )
+    except HomeAssistantError as err:
+        connection.send_error(msg["id"], "update_failed", str(err))
+        return
+
+    connection.send_result(msg["id"], lst.to_dict())
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_TYPE_DELETE_LIST,
+        vol.Required("list_id"): str,
+    }
+)
+@websocket_api.async_response
+async def ws_handle_delete_list(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Delete a to-do list and all its tasks."""
+    api = _get_api(hass)
+    if api is None:
+        connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
+        return
+
+    try:
+        await api.async_delete_list(
+            list_id=msg["list_id"],
+            user_id=connection.user.id if connection.user else None,
+        )
+    except HomeAssistantError as err:
+        connection.send_error(msg["id"], "delete_failed", str(err))
+        return
+
+    connection.send_result(msg["id"], {"success": True})

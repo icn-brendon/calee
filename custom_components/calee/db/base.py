@@ -60,8 +60,18 @@ class AbstractPlannerStore(ABC):
         ...
 
     @abstractmethod
+    async def async_remove_calendar(self, calendar_id: str) -> None:
+        """Hard-delete a calendar by id."""
+        ...
+
+    @abstractmethod
     async def async_put_list(self, planner_list: PlannerList) -> None:
         """Insert or replace a to-do list."""
+        ...
+
+    @abstractmethod
+    async def async_remove_list(self, list_id: str) -> None:
+        """Hard-delete a to-do list by id."""
         ...
 
     # ── Events ───────────────────────────────────────────────────────

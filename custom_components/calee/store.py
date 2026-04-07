@@ -152,9 +152,17 @@ class JsonPlannerStore(AbstractPlannerStore):
         """Insert or replace a calendar."""
         self.calendars[calendar.id] = calendar
 
+    async def async_remove_calendar(self, calendar_id: str) -> None:
+        """Hard-delete a calendar by id."""
+        self.calendars.pop(calendar_id, None)
+
     async def async_put_list(self, planner_list: PlannerList) -> None:
         """Insert or replace a to-do list."""
         self.lists[planner_list.id] = planner_list
+
+    async def async_remove_list(self, list_id: str) -> None:
+        """Hard-delete a to-do list by id."""
+        self.lists.pop(list_id, None)
 
     # ── Events ───────────────────────────────────────────────────────
 

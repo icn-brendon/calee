@@ -1,6 +1,6 @@
 import { LitElement, html, css, nothing, type PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import type { PlannerEvent, PlannerCalendar, ShiftTemplate } from "../store/types.js";
+import type { PlannerEvent, PlannerCalendar, PlannerTask, ShiftTemplate, Conflict } from "../store/types.js";
 
 // ── Helpers ────────────────────────────────────────────────────────────
 
@@ -96,6 +96,8 @@ export class CaleeMonthView extends LitElement {
   @property({ attribute: false }) enabledCalendarIds: Set<string> = new Set();
   @property({ attribute: false }) selectedDate: Date = new Date();
   @property({ attribute: false }) templates: ShiftTemplate[] = [];
+  @property({ attribute: false }) tasks: PlannerTask[] = [];
+  @property({ attribute: false }) conflicts: Conflict[] = [];
   @property({ type: Boolean }) weekStartsMonday = true;
   @property({ type: Boolean, reflect: true }) narrow = false;
 
@@ -223,6 +225,8 @@ export class CaleeMonthView extends LitElement {
       `;
     }
 
+    const isRecurring = !!ev.recurrence_rule;
+
     return html`
       <div
         class="event-chip"
@@ -231,6 +235,7 @@ export class CaleeMonthView extends LitElement {
         @click=${(e: MouseEvent) => this._onEventClick(e, ev.id)}
       >
         ${tplEmoji ? html`<span class="chip-emoji">${tplEmoji}</span>` : nothing}
+        ${isRecurring ? html`<span class="chip-recur" title="Recurring">&#x1F501;</span>` : nothing}
         ${timeStr ? html`<span class="chip-time">${timeStr}</span>` : nothing}
         <span class="chip-title">${ev.title}</span>
       </div>
@@ -243,6 +248,19 @@ export class CaleeMonthView extends LitElement {
     const dayEvents = this._eventsByDay.get(day.key) ?? [];
     const overflow = dayEvents.length - MAX_VISIBLE_EVENTS;
 
+    // Task count for this day.
+    const dayTasks = this.tasks.filter(
+      (t) => t.due && t.due.slice(0, 10) === day.key && !t.completed && !t.deleted_at,
+    );
+    const taskCount = dayTasks.length;
+
+    // Conflict check for this day.
+    const dayHasConflict = this.conflicts.some((c) => {
+      const aDate = c.eventA.start.slice(0, 10);
+      const bDate = c.eventB.start.slice(0, 10);
+      return aDate === day.key || bDate === day.key;
+    });
+
     const classes: string[] = ["cell"];
     if (!day.inMonth) classes.push("outside");
     if (isToday) classes.push("today");
@@ -250,7 +268,10 @@ export class CaleeMonthView extends LitElement {
 
     return html`
       <div class=${classes.join(" ")} @click=${() => this._onCellClick(day.key)}>
-        <span class="date-number">${day.date.getDate()}</span>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <span class="date-number">${day.date.getDate()}</span>
+          ${dayHasConflict ? html`<span class="conflict-badge" title="Schedule conflict">!</span>` : nothing}
+        </div>
         <div class="events">
           ${dayEvents
             .slice(0, MAX_VISIBLE_EVENTS)
@@ -262,6 +283,7 @@ export class CaleeMonthView extends LitElement {
               >+${overflow} more</button>`
             : nothing}
         </div>
+        ${taskCount > 0 ? html`<div class="task-badge">${taskCount} task${taskCount > 1 ? "s" : ""}</div>` : nothing}
       </div>
     `;
   }
@@ -421,6 +443,13 @@ export class CaleeMonthView extends LitElement {
       line-height: 1;
     }
 
+    .chip-recur {
+      flex-shrink: 0;
+      font-size: 0.55rem;
+      line-height: 1;
+      opacity: 0.6;
+    }
+
     .chip-time {
       flex-shrink: 0;
       opacity: 0.7;
@@ -444,6 +473,31 @@ export class CaleeMonthView extends LitElement {
 
     .more-link:hover {
       background: var(--secondary-background-color, rgba(0, 0, 0, 0.08));
+    }
+
+    .task-badge {
+      font-size: 0.6rem;
+      color: var(--secondary-text-color, #999);
+      padding: 1px 4px;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .conflict-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--warning-color, #ff9800);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      flex-shrink: 0;
+      line-height: 1;
     }
 
     /* ── Event dot (narrow/mobile mode) ────────────────────────────── */

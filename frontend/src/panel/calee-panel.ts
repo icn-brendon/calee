@@ -16,6 +16,7 @@ import { LitElement, html, css, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import type { PlannerStore } from "../store/planner-store";
 import type {
+  Conflict,
   PlannerEvent,
   PlannerCalendar,
   PlannerTask,
@@ -42,6 +43,7 @@ import "../dialogs/settings-dialog.js";
 import "../dialogs/deleted-items.js";
 import "../dialogs/activity-feed.js";
 import "../dialogs/routine-manager.js";
+import "../dialogs/calendar-manager.js";
 
 // ── Types ──────────────────────────────────────────────────────────
 
@@ -183,6 +185,13 @@ export class CaleePanel extends LitElement {
   @state() private _detailDrawerOpen = false;
   @state() private _detailItem: PlannerEvent | PlannerTask | null = null;
   @state() private _detailItemType: "event" | "task" | null = null;
+  // ── Recurring action dialog ─────────────────────────────────────────
+  @state() private _showRecurringActionDialog = false;
+  @state() private _recurringActionEvent: PlannerEvent | null = null;
+  // ── Calendar manager dialog ─────────────────────────────────────────
+  @state() private _showCalendarManager = false;
+  // ── Conflicts ───────────────────────────────────────────────────────
+  @state() private _conflicts: import("../store/types.js").Conflict[] = [];
   // ── Dialog state ────────────────────────────────────────────────────
   @state() private _editEvent: PlannerEvent | null = null;
   @state() private _showEventDialog = false;
@@ -259,11 +268,8 @@ export class CaleePanel extends LitElement {
     if (changedProps.has("_currentView") || changedProps.has("_currentDate")) {
       if (!this._loading) {
         this._loadEvents();
-        // Lazy-load tasks when navigating to tasks or shopping views
-        if (
-          (this._currentView === "tasks" || this._currentView === "shopping") &&
-          !this._tasksLoaded
-        ) {
+        // Lazy-load tasks when navigating to any view (needed for task badges and shopping)
+        if (!this._tasksLoaded) {
           this._loadTasks();
         }
       }
@@ -370,10 +376,8 @@ export class CaleePanel extends LitElement {
       this._presets = presets ?? [];
       this._routines = (routines as Routine[]) ?? [];
 
-      // Load tasks lazily — only fetch now if the initial view needs them.
-      if (this._currentView === "tasks" || this._currentView === "shopping") {
-        await this._loadTasks();
-      }
+      // Load tasks — needed for task badges on calendar views and task/shopping views.
+      await this._loadTasks();
     } catch {
       // Integration may not be loaded yet
       this._rawCalendars = [];
@@ -389,20 +393,54 @@ export class CaleePanel extends LitElement {
     await this._loadEvents();
   }
 
-  /** Load events for the visible date range based on the current view. */
+  /** Load events for the visible date range based on the current view.
+   *  Uses the expand_recurring_events endpoint to include virtual recurring instances. */
   private async _loadEvents(): Promise<void> {
     if (!this.hass) return;
 
     const { start, end } = this._getViewRange();
     try {
       this._events = (await this.hass.callWS({
-        type: "calee/events",
+        type: "calee/expand_recurring_events",
         start,
         end,
       })) ?? [];
     } catch {
-      // Silently handle — events may not be available yet
+      // Fallback to raw events if expansion not available
+      try {
+        this._events = (await this.hass.callWS({
+          type: "calee/events",
+          start,
+          end,
+        })) ?? [];
+      } catch {
+        // Silently handle — events may not be available yet
+      }
     }
+    // Detect conflicts after loading events.
+    this._conflicts = this._detectConflicts(this._events);
+  }
+
+  /** Scan loaded events for overlapping timed events across different calendars. */
+  private _detectConflicts(events: PlannerEvent[]): Conflict[] {
+    const timed = events
+      .filter((e) => !e.deleted_at && !e.all_day && e.start && e.end)
+      .sort((a, b) => a.start.localeCompare(b.start));
+
+    const conflicts: Conflict[] = [];
+    for (let i = 0; i < timed.length; i++) {
+      for (let j = i + 1; j < timed.length; j++) {
+        const a = timed[i];
+        const b = timed[j];
+        // b starts after a ends — no more overlaps possible for a.
+        if (b.start >= a.end) break;
+        // Overlap exists and different calendars.
+        if (a.calendar_id !== b.calendar_id) {
+          conflicts.push({ eventA: a, eventB: b });
+        }
+      }
+    }
+    return conflicts;
   }
 
   /**
@@ -580,7 +618,9 @@ export class CaleePanel extends LitElement {
       this._showDeletedItems ||
       this._showActivityFeed ||
       this._showRoutineManager ||
-      this._showAddDialog
+      this._showAddDialog ||
+      this._showRecurringActionDialog ||
+      this._showCalendarManager
     ) {
       // Only handle Escape to close the dialog
       if (e.key === "Escape") {
@@ -588,6 +628,8 @@ export class CaleePanel extends LitElement {
         this._showDeletedItems = false;
         this._showActivityFeed = false;
         this._showAddDialog = false;
+        this._showRecurringActionDialog = false;
+        this._showCalendarManager = false;
       }
       return;
     }
@@ -1807,6 +1849,15 @@ export class CaleePanel extends LitElement {
         @routine-changed=${this._onRoutineChanged}
         @dialog-close=${this._onRoutineManagerClose}
       ></calee-routine-manager>
+      <calee-calendar-manager
+        .hass=${this.hass}
+        .calendars=${this._rawCalendars}
+        .lists=${this._lists}
+        ?open=${this._showCalendarManager}
+        @calendar-changed=${this._onCalendarManagerChanged}
+        @dialog-close=${this._onCalendarManagerClose}
+      ></calee-calendar-manager>
+      ${this._showRecurringActionDialog ? this._renderRecurringActionDialog() : nothing}
     `;
   }
 
@@ -1939,7 +1990,13 @@ export class CaleePanel extends LitElement {
 
         <!-- Calendars -->
         <div class="sidebar-section">
-          <h3 class="sidebar-heading">Calendars</h3>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 12px 6px;">
+            <h3 class="sidebar-heading" style="padding:0;margin:0;">Calendars</h3>
+            <button
+              style="all:unset;font-size:11px;color:var(--primary-color,#03a9f4);cursor:pointer;font-weight:500;"
+              @click=${() => { this._showCalendarManager = true; }}
+            >Manage</button>
+          </div>
           ${this._calendars.length === 0
             ? html`<div style="font-size:13px;color:var(--secondary-text-color,#999);padding:6px 12px;">No calendars loaded</div>`
             : this._calendars.map(
@@ -2059,6 +2116,20 @@ export class CaleePanel extends LitElement {
           </button>
         </div>
 
+        <!-- Conflicts -->
+        ${this._conflicts.length > 0 ? html`
+          <div class="sidebar-section">
+            <div style="display:flex;align-items:center;gap:8px;padding:6px 12px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--warning-color,#ff9800)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0;">
+                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+              <span style="font-size:13px;color:var(--warning-color,#ff9800);font-weight:500;">${this._conflicts.length} conflict${this._conflicts.length === 1 ? "" : "s"}</span>
+            </div>
+          </div>
+        ` : nothing}
+
         <!-- Shift cards -->
         <div class="sidebar-cards">
           <calee-shift-progress
@@ -2135,6 +2206,15 @@ export class CaleePanel extends LitElement {
     const cal = this._calendarMap.get(event.calendar_id);
     const start = new Date(event.start);
     const end = new Date(event.end);
+
+    // Check if this event has any conflicts.
+    const eventConflicts = this._conflicts.filter(
+      (c) => c.eventA.id === event.id || c.eventB.id === event.id,
+    );
+    const conflictNames = eventConflicts.map((c) => {
+      const other = c.eventA.id === event.id ? c.eventB : c.eventA;
+      return other.title;
+    });
     const dateOpts: Intl.DateTimeFormatOptions = {
       weekday: "short",
       month: "short",
@@ -2156,6 +2236,12 @@ export class CaleePanel extends LitElement {
         <h3>Event</h3>
         <button class="drawer-close-btn" @click=${this._closeDetailDrawer} aria-label="Close">&times;</button>
       </div>
+
+      ${conflictNames.length > 0 ? html`
+        <div style="background:color-mix(in srgb,var(--warning-color,#ff9800) 12%,transparent);border:1px solid var(--warning-color,#ff9800);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:var(--primary-text-color,#212121);">
+          <strong style="color:var(--warning-color,#ff9800);">Conflict:</strong> Overlaps with ${conflictNames.join(", ")}
+        </div>
+      ` : nothing}
 
       <div class="drawer-field">
         <div class="drawer-field-label">Title</div>
@@ -2217,10 +2303,19 @@ export class CaleePanel extends LitElement {
         </div>
       ` : nothing}
 
-      <div class="drawer-actions">
-        <button class="drawer-btn drawer-btn-edit" @click=${() => this._onDrawerEditEvent(event)}>Edit</button>
-        <button class="drawer-btn drawer-btn-delete" @click=${() => this._onDrawerDeleteEvent(event)}>Delete</button>
-      </div>
+      ${(event as any).is_recurring_instance ? html`
+        <div class="drawer-actions" style="flex-wrap:wrap;">
+          <button class="drawer-btn drawer-btn-edit" @click=${() => this._onEditThisOccurrence(event)}>Edit this occurrence</button>
+          <button class="drawer-btn drawer-btn-edit" style="background:var(--secondary-text-color,#727272);" @click=${() => this._onEditAllOccurrences(event)}>Edit all</button>
+          <button class="drawer-btn drawer-btn-delete" @click=${() => this._onDeleteThisOccurrence(event)}>Delete this occurrence</button>
+          <button class="drawer-btn drawer-btn-delete" @click=${() => this._onDeleteAllOccurrences(event)}>Delete all</button>
+        </div>
+      ` : html`
+        <div class="drawer-actions">
+          <button class="drawer-btn drawer-btn-edit" @click=${() => this._onDrawerEditEvent(event)}>Edit</button>
+          <button class="drawer-btn drawer-btn-delete" @click=${() => this._onDrawerDeleteEvent(event)}>Delete</button>
+        </div>
+      `}
     `;
   }
 
@@ -2340,6 +2435,101 @@ export class CaleePanel extends LitElement {
     }
   }
 
+  // ── Recurring event actions ────────────────────────────────────────
+
+  /** Extract the occurrence date from a recurring instance ID like "{parentId}_{YYYY-MM-DD}". */
+  private _getOccurrenceDate(event: PlannerEvent): string {
+    const parentId = (event as any).parent_event_id;
+    if (parentId && event.id.startsWith(parentId + "_")) {
+      return event.id.slice(parentId.length + 1);
+    }
+    // Fallback: extract from the event start.
+    return event.start.slice(0, 10);
+  }
+
+  /** Edit this occurrence: create standalone event and add exception to parent. */
+  private async _onEditThisOccurrence(event: PlannerEvent): Promise<void> {
+    const parentId = (event as any).parent_event_id || event.id.split("_").slice(0, -1).join("_");
+    const occDate = this._getOccurrenceDate(event);
+    this._closeDetailDrawer();
+
+    // Open the event dialog with the occurrence data pre-filled for editing.
+    // The save will create a standalone event via edit_event_occurrence.
+    const standalone: PlannerEvent = {
+      ...event,
+      id: "", // No ID yet — will be created
+      recurrence_rule: null,
+      exceptions: [],
+    };
+    // Store reference to parent for the save handler.
+    (standalone as any)._occurrenceParentId = parentId;
+    (standalone as any)._occurrenceDate = occDate;
+    this._editEvent = standalone;
+    this._showEventDialog = true;
+  }
+
+  /** Edit all occurrences: open the parent event for editing. */
+  private _onEditAllOccurrences(event: PlannerEvent): void {
+    const parentId = (event as any).parent_event_id || event.id.split("_").slice(0, -1).join("_");
+    // Find the parent in raw events (it may not be in expanded list).
+    // We'll load it fresh.
+    this._closeDetailDrawer();
+    this._loadParentAndEdit(parentId);
+  }
+
+  private async _loadParentAndEdit(parentId: string): Promise<void> {
+    // The parent event might not be in the current expanded events list.
+    // Try to find it, or reload all events first.
+    try {
+      const allEvents = (await this.hass.callWS({
+        type: "calee/events",
+      })) as PlannerEvent[];
+      const parent = allEvents.find((e) => e.id === parentId);
+      if (parent) {
+        this._editEvent = parent;
+        this._showEventDialog = true;
+      }
+    } catch {
+      console.error("Failed to load parent event");
+    }
+  }
+
+  /** Delete this occurrence: add exception to parent without creating replacement. */
+  private async _onDeleteThisOccurrence(event: PlannerEvent): Promise<void> {
+    const parentId = (event as any).parent_event_id || event.id.split("_").slice(0, -1).join("_");
+    const occDate = this._getOccurrenceDate(event);
+    try {
+      await this.hass.callWS({
+        type: "calee/add_event_exception",
+        event_id: parentId,
+        date: occDate,
+      });
+      // Remove the virtual instance from local state.
+      this._events = this._events.filter((ev) => ev.id !== event.id);
+      this._closeDetailDrawer();
+    } catch (err) {
+      console.error("Failed to delete occurrence:", err);
+    }
+  }
+
+  /** Delete all occurrences: soft-delete the parent event. */
+  private async _onDeleteAllOccurrences(event: PlannerEvent): Promise<void> {
+    const parentId = (event as any).parent_event_id || event.id.split("_").slice(0, -1).join("_");
+    try {
+      await this.hass.callWS({
+        type: "calee/delete_event",
+        event_id: parentId,
+      });
+      // Remove all instances from local state.
+      this._events = this._events.filter(
+        (ev) => ev.id !== parentId && !((ev as any).parent_event_id === parentId),
+      );
+      this._closeDetailDrawer();
+    } catch (err) {
+      console.error("Failed to delete all occurrences:", err);
+    }
+  }
+
   // ── View Area ────────────────────────────────────────────────────
 
   private _renderView() {
@@ -2355,6 +2545,8 @@ export class CaleePanel extends LitElement {
           .enabledCalendarIds=${enabledIds}
           .selectedDate=${selectedDate}
           .templates=${this._templates}
+          .tasks=${this._tasks}
+          .conflicts=${this._conflicts}
           .weekStartsMonday=${this._settingsWeekStart === "monday"}
           ?narrow=${this.narrow}
         ></calee-month-view>`;
@@ -2366,6 +2558,7 @@ export class CaleePanel extends LitElement {
           .enabledCalendarIds=${enabledIds}
           .selectedDate=${selectedDate}
           .templates=${this._templates}
+          .tasks=${this._tasks}
           .weekStartsMonday=${this._settingsWeekStart === "monday"}
           ?narrow=${this.narrow}
         ></calee-week-view>`;
@@ -2470,8 +2663,14 @@ export class CaleePanel extends LitElement {
     const event = this._events.find((ev) => ev.id === eventId);
     if (event) {
       if (this.narrow) {
-        this._editEvent = event;
-        this._showEventDialog = true;
+        // For recurring instances on mobile, show recurring action dialog
+        if ((event as any).is_recurring_instance) {
+          this._recurringActionEvent = event;
+          this._showRecurringActionDialog = true;
+        } else {
+          this._editEvent = event;
+          this._showEventDialog = true;
+        }
       } else {
         this._openDetailDrawer(event, "event");
       }
@@ -2856,7 +3055,29 @@ export class CaleePanel extends LitElement {
   private async _onEventSave(e: CustomEvent): Promise<void> {
     const detail = e.detail;
     try {
-      if (detail.id) {
+      // Check if this is an occurrence edit (standalone replacement).
+      const occParentId = (this._editEvent as any)?._occurrenceParentId;
+      const occDate = (this._editEvent as any)?._occurrenceDate;
+      if (occParentId && occDate) {
+        // Create standalone replacement via edit_event_occurrence.
+        const standalone = await this.hass.callWS({
+          type: "calee/edit_event_occurrence",
+          event_id: occParentId,
+          date: occDate,
+          title: detail.title,
+          start: detail.start,
+          end: detail.end,
+          note: detail.note,
+          calendar_id: detail.calendar_id,
+        });
+        if (standalone) {
+          // Remove the virtual instance and add the standalone.
+          this._events = this._events.filter(
+            (ev) => ev.id !== `${occParentId}_${occDate}`,
+          );
+          this._events = [...this._events, standalone as PlannerEvent];
+        }
+      } else if (detail.id) {
         // Update existing event
         const updated = await this.hass.callWS({
           type: "calee/update_event",
@@ -2896,12 +3117,22 @@ export class CaleePanel extends LitElement {
 
   /** Handle event-delete from the event dialog. */
   private async _onEventDelete(e: CustomEvent<{ eventId: string }>): Promise<void> {
+    const eventId = e.detail.eventId;
+    const event = this._events.find((ev) => ev.id === eventId);
+
+    // If this is a recurring instance, show recurring action dialog instead.
+    if (event && (event as any).is_recurring_instance) {
+      this._recurringActionEvent = event;
+      this._showRecurringActionDialog = true;
+      return;
+    }
+
     try {
       await this.hass.callWS({
         type: "calee/delete_event",
-        event_id: e.detail.eventId,
+        event_id: eventId,
       });
-      this._events = this._events.filter((ev) => ev.id !== e.detail.eventId);
+      this._events = this._events.filter((ev) => ev.id !== eventId);
     } catch (err) {
       console.error("Failed to delete event:", err);
     }
@@ -3010,6 +3241,60 @@ export class CaleePanel extends LitElement {
 
   private _onRoutineManagerClose(): void {
     this._showRoutineManager = false;
+  }
+
+  // ── Recurring Action Dialog (mobile) ──────────────────────────────
+
+  private _renderRecurringActionDialog() {
+    const event = this._recurringActionEvent;
+    if (!event) return nothing;
+
+    return html`
+      <div class="dialog-backdrop" @click=${this._closeRecurringActionDialog}>
+        <div class="dialog-card" @click=${(e: Event) => e.stopPropagation()} style="max-width:360px;">
+          <h2 style="font-size:16px;margin:0 0 6px;">Recurring Event</h2>
+          <p style="font-size:13px;color:var(--secondary-text-color,#757575);margin:0 0 16px;">${event.title}</p>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <button class="btn-save" style="text-align:center;" @click=${() => { this._closeRecurringActionDialog(); this._onEditThisOccurrence(event); }}>Edit this occurrence</button>
+            <button class="btn-cancel" style="text-align:center;" @click=${() => { this._closeRecurringActionDialog(); this._onEditAllOccurrences(event); }}>Edit all occurrences</button>
+            <button class="btn-cancel" style="text-align:center;color:var(--error-color,#f44336);" @click=${() => { this._closeRecurringActionDialog(); this._onDeleteThisOccurrence(event); }}>Delete this occurrence</button>
+            <button class="btn-cancel" style="text-align:center;color:var(--error-color,#f44336);" @click=${() => { this._closeRecurringActionDialog(); this._onDeleteAllOccurrences(event); }}>Delete all occurrences</button>
+            <button class="btn-cancel" style="text-align:center;" @click=${this._closeRecurringActionDialog}>Cancel</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  private _closeRecurringActionDialog(): void {
+    this._showRecurringActionDialog = false;
+    this._recurringActionEvent = null;
+  }
+
+  // ── Calendar Manager ────────────────────────────────────────────────
+
+  private async _onCalendarManagerChanged(): Promise<void> {
+    // Refresh calendars and lists from backend.
+    try {
+      const [calendars, lists] = await Promise.all([
+        this.hass.callWS({ type: "calee/calendars" }),
+        this.hass.callWS({ type: "calee/lists" }),
+      ]);
+      this._rawCalendars = calendars ?? [];
+      this._calendars = this._rawCalendars.map((c: any) => ({
+        id: c.id,
+        name: c.name,
+        color: c.color ?? "#64b5f6",
+        visible: this._calendars.find((existing) => existing.id === c.id)?.visible ?? true,
+      }));
+      this._lists = lists ?? [];
+    } catch {
+      // ignore
+    }
+  }
+
+  private _onCalendarManagerClose(): void {
+    this._showCalendarManager = false;
   }
 
   // ── Quick Add Dialog ──────────────────────────────────────────────

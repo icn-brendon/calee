@@ -30,6 +30,7 @@ class PlannerCalendar:
     id: str = field(default_factory=_new_id)
     name: str = ""
     color: str = "#64b5f6"
+    emoji: str = ""
     timezone: str = ""  # IANA timezone, defaults to HA configured tz
     is_private: bool = False  # If True, only users with explicit roles can see/edit
     created_at: str = field(default_factory=_utc_now_iso)
@@ -39,6 +40,7 @@ class PlannerCalendar:
             "id": self.id,
             "name": self.name,
             "color": self.color,
+            "emoji": self.emoji,
             "timezone": self.timezone,
             "is_private": self.is_private,
             "created_at": self.created_at,
@@ -50,6 +52,7 @@ class PlannerCalendar:
             id=data["id"],
             name=data["name"],
             color=data.get("color", "#64b5f6"),
+            emoji=data.get("emoji", ""),
             timezone=data.get("timezone", ""),
             is_private=data.get("is_private", False),
             created_at=data.get("created_at", ""),
@@ -71,6 +74,7 @@ class PlannerEvent:
     source: str = "manual"  # manual | import | automation
     external_id: str | None = None  # for idempotent imports
     recurrence_rule: str | None = None  # RFC 5545 RRULE — stubbed for future
+    exceptions: list[str] = field(default_factory=list)  # ISO date strings where recurrence is skipped
     created_at: str = field(default_factory=_utc_now_iso)
     updated_at: str = field(default_factory=_utc_now_iso)
     version: int = 1  # optimistic locking — callers must pass expected version on update
@@ -101,6 +105,7 @@ class PlannerEvent:
             "source": self.source,
             "external_id": self.external_id,
             "recurrence_rule": self.recurrence_rule,
+            "exceptions": self.exceptions,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
             "version": self.version,
@@ -121,6 +126,7 @@ class PlannerEvent:
             source=data.get("source", "manual"),
             external_id=data.get("external_id"),
             recurrence_rule=data.get("recurrence_rule"),
+            exceptions=data.get("exceptions", []),
             created_at=data.get("created_at", ""),
             updated_at=data.get("updated_at", ""),
             version=data.get("version", 1),
