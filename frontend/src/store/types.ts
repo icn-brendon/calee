@@ -162,15 +162,13 @@ export interface Conflict {
 
 // ── View types ────────────────────────────────────────────────────────
 
-export type ViewType =
-  | "month"
-  | "week"
-  | "day"
-  | "agenda"
-  | "tasks"
-  | "shopping"
-  | "year"
-  | "smart";
+export type ShellSection = "home" | "calendar" | "tasks" | "shopping" | "more";
+
+export type CalendarSubView = "day" | "week" | "month" | "agenda";
+
+export type ViewType = CalendarSubView | "tasks" | "shopping" | "year" | "smart";
+
+export type MoreSubView = "year" | "smart" | "data-center" | "activity" | "deleted";
 
 // ── Subscription event payload ────────────────────────────────────────
 

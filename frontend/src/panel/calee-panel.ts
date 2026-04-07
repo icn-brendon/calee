@@ -16,11 +16,14 @@ import { LitElement, html, css, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import type { PlannerStore } from "../store/planner-store";
 import type {
+  CalendarSubView,
   Conflict,
+  MoreSubView as PageMoreSubView,
   PlannerEvent,
   PlannerCalendar,
   PlannerTask,
   Routine,
+  ShellSection,
   ShiftTemplate,
   TaskPreset,
   ViewType,
@@ -35,6 +38,10 @@ import "../views/agenda-view.js";
 import "../views/tasks-view.js";
 import "../views/shopping-view.js";
 import "../views/smart-views.js";
+import "../pages/home-page.js";
+import "../pages/calendar-page.js";
+import "../pages/more-page.js";
+import "../shell/calee-shell.js";
 import "../cards/next-shift.js";
 import "../dialogs/event-dialog.js";
 import "../dialogs/template-picker.js";
@@ -62,9 +69,49 @@ interface PlannerListEntry {
   is_private?: boolean;
 }
 
+type RouteTarget = ShellSection | ViewType;
+type PanelMoreSubView = "overview" | PageMoreSubView;
+
 // Views that carry a date parameter in the hash
-const DATE_VIEWS: ViewType[] = ["month", "week", "day", "year"];
+const DATE_VIEWS: Array<CalendarSubView | "year"> = ["month", "week", "day", "year"];
 const ALL_VIEWS: ViewType[] = ["month", "week", "day", "agenda", "tasks", "shopping", "year", "smart"];
+const CALENDAR_VIEWS: CalendarSubView[] = ["week", "month", "day", "agenda"];
+const MORE_ROUTE_VIEWS: PageMoreSubView[] = ["year", "smart", "data-center", "activity", "deleted"];
+const SHELL_SECTIONS: ShellSection[] = ["home", "calendar", "tasks", "shopping", "more"];
+
+function isShellSection(value: string): value is ShellSection {
+  return SHELL_SECTIONS.includes(value as ShellSection);
+}
+
+function isMoreRouteView(value: string): value is PageMoreSubView {
+  return MORE_ROUTE_VIEWS.includes(value as PageMoreSubView);
+}
+
+function sectionFromView(view: ViewType): ShellSection {
+  if (view === "tasks") return "tasks";
+  if (view === "shopping") return "shopping";
+  if (view === "year" || view === "smart") return "more";
+  if (view === "month" || view === "week" || view === "day" || view === "agenda") {
+    return "calendar";
+  }
+  return "home";
+}
+
+function defaultViewForSection(section: ShellSection): ViewType {
+  switch (section) {
+    case "calendar":
+      return "week";
+    case "tasks":
+      return "tasks";
+    case "shopping":
+      return "shopping";
+    case "more":
+      return "year";
+    case "home":
+    default:
+      return "week";
+  }
+}
 
 // Views shown in the header tab bar (day is drill-down only; year accessed via sidebar)
 const TAB_VIEWS: ViewType[] = ["week", "month", "agenda", "tasks", "shopping"];
@@ -75,23 +122,76 @@ function todayISO(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-function parseHash(): { view: ViewType; date: string } {
+function parseHash(): { section: ShellSection; view: ViewType; date: string; moreSubView: PanelMoreSubView } {
   const hash = window.location.hash.replace(/^#\/?/, "");
   const parts = hash.split("/");
-  const view = ALL_VIEWS.includes(parts[0] as ViewType)
-    ? (parts[0] as ViewType)
-    : 'week';
-  const date = parts[1] && /^\d{4}-\d{2}-\d{2}$/.test(parts[1])
-    ? parts[1]
-    : todayISO();
-  return { view, date };
+  const first = parts[0] || "";
+  const second = parts[1] || "";
+  const third = parts[2] || "";
+
+    if (isShellSection(first)) {
+      const section = first;
+      if (section === "home") {
+        return { section, view: "week", date: todayISO(), moreSubView: "overview" };
+      }
+      if (section === "tasks" || section === "shopping") {
+        return { section, view: section, date: todayISO(), moreSubView: "overview" };
+      }
+      if (section === "calendar") {
+        const view = CALENDAR_VIEWS.includes(second as CalendarSubView) ? (second as ViewType) : "week";
+        const date = DATE_VIEWS.includes(view) && /^\d{4}-\d{2}-\d{2}$/.test(third)
+          ? third
+          : todayISO();
+        return { section, view, date, moreSubView: "overview" };
+      }
+      const moreSubView = isMoreRouteView(second) ? second : "overview";
+      const view = moreSubView === "year" || moreSubView === "smart" ? moreSubView : "week";
+      const date = DATE_VIEWS.includes(view) && /^\d{4}-\d{2}-\d{2}$/.test(third)
+        ? third
+        : todayISO();
+      return { section, view, date, moreSubView };
+    }
+
+  const view = ALL_VIEWS.includes(first as ViewType) ? (first as ViewType) : "week";
+  const date = second && /^\d{4}-\d{2}-\d{2}$/.test(second) ? second : todayISO();
+  const section = sectionFromView(view);
+  const moreSubView = view === "smart" || view === "year" ? (view as PanelMoreSubView) : "overview";
+  return { section, view, date, moreSubView };
 }
 
-function buildHash(view: ViewType, date: string): string {
-  if (DATE_VIEWS.includes(view)) {
-    return `#/${view}/${date}`;
+function buildHash(target: RouteTarget, date: string, subview?: ViewType): string {
+  if (target === "home") {
+    return "#/home";
   }
-  return `#/${view}`;
+  if (target === "calendar") {
+    const view = subview && CALENDAR_VIEWS.includes(subview as CalendarSubView)
+      ? (subview as CalendarSubView)
+      : "week";
+    return DATE_VIEWS.includes(view)
+      ? `#/calendar/${view}/${date}`
+      : `#/calendar/${view}`;
+  }
+  if (target === "more") {
+    const view = subview === "smart" || subview === "year" ? subview : "overview";
+    if (view === "overview") {
+      return "#/more";
+    }
+    return DATE_VIEWS.includes(view)
+      ? `#/more/${view}/${date}`
+      : `#/more/${view}`;
+  }
+  if (target === "tasks" || target === "shopping") {
+    return `#/${target}`;
+  }
+  if (target === "year" || target === "smart") {
+    return target === "smart"
+      ? "#/more/smart"
+      : `#/more/year/${date}`;
+  }
+  if (target === "month" || target === "week" || target === "day" || target === "agenda") {
+    return `#/calendar/${target}/${date}`;
+  }
+  return `#/${target}`;
 }
 
 function addDays(dateStr: string, days: number): string {
@@ -170,8 +270,11 @@ export class CaleePanel extends LitElement {
   }
   @property({ attribute: false }) panel: any;
 
+  @state() private _shellSection: ShellSection = "home";
   @state() private _currentView: ViewType = "week";
   @state() private _currentDate: string = todayISO();
+  @state() private _moreSubView: PanelMoreSubView = "overview";
+  @state() private _shellCollapsed = false;
   @state() private _drawerOpen = false;
   @state() private _sidebarCollapsed = false;
   @state() private _calendars: CalendarToggle[] = [];
@@ -281,7 +384,7 @@ export class CaleePanel extends LitElement {
       this._store.hass = this.hass;
     }
     // Reload events when the view or date changes
-    if (changedProps.has("_currentView") || changedProps.has("_currentDate")) {
+    if (changedProps.has("_shellSection") || changedProps.has("_currentView") || changedProps.has("_currentDate")) {
       if (!this._loading) {
         this._loadEvents();
         // Lazy-load tasks when navigating to any view (needed for task badges and shopping)
@@ -295,12 +398,14 @@ export class CaleePanel extends LitElement {
   // ── Hash Routing ─────────────────────────────────────────────────
 
   private _applyHash(): void {
-    const { view, date } = parseHash();
+    const { section, view, date, moreSubView } = parseHash();
+    this._shellSection = section;
     this._currentView = view;
     this._currentDate = date;
+    this._moreSubView = moreSubView;
     // Set default hash if empty
     if (!window.location.hash) {
-      window.location.hash = buildHash(this._currentView, this._currentDate);
+      window.location.hash = buildHash(this._shellSection, this._currentDate, this._currentView);
     }
   }
 
@@ -308,9 +413,45 @@ export class CaleePanel extends LitElement {
     this._applyHash();
   }
 
-  private _navigate(view: ViewType, date?: string): void {
+  private _navigate(target: RouteTarget, date?: string): void {
     const d = date ?? this._currentDate;
-    window.location.hash = buildHash(view, d);
+    if (target === "home") {
+      window.location.hash = buildHash("home", d);
+      return;
+    }
+    if (target === "calendar") {
+      window.location.hash = buildHash("calendar", d, this._currentView);
+      return;
+    }
+    if (target === "more") {
+      const subview = this._moreSubView === "year" || this._moreSubView === "smart"
+        ? this._moreSubView
+        : undefined;
+      window.location.hash = buildHash("more", d, subview);
+      return;
+    }
+    window.location.hash = buildHash(target, d);
+  }
+
+  private _navigateSection(section: ShellSection, view?: ViewType, date?: string): void {
+    const d = date ?? this._currentDate;
+    if (section === "calendar") {
+      window.location.hash = buildHash("calendar", d, view ?? "week");
+      return;
+    }
+    if (section === "more") {
+      if (!view || view === "year" || view === "smart") {
+        window.location.hash = buildHash("more", d, view);
+      } else {
+        window.location.hash = "#/more";
+      }
+      return;
+    }
+    if (section === "tasks" || section === "shopping") {
+      window.location.hash = buildHash(section, d);
+      return;
+    }
+    window.location.hash = buildHash("home", d);
   }
 
   // ── Date Navigation ──────────────────────────────────────────────
@@ -346,6 +487,10 @@ export class CaleePanel extends LitElement {
   }
 
   private _onToday(): void {
+    if (this._shellSection === "home") {
+      this._navigateSection("calendar", "day", todayISO());
+      return;
+    }
     this._navigate(this._currentView, todayISO());
   }
 
@@ -1288,6 +1433,270 @@ export class CaleePanel extends LitElement {
       background: var(--card-background-color, #fff);
     }
 
+    .shell-layout {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .workspace {
+      display: flex;
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      flex-direction: column;
+      background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--primary-color, #03a9f4) 8%, transparent), transparent 26%),
+        var(--primary-background-color, #fafafa);
+      overflow: hidden;
+    }
+
+    .workspace-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 20px 24px 12px;
+      border-bottom: 1px solid var(--divider-color, #e0e0e0);
+      background: color-mix(in srgb, var(--card-background-color, #fff) 92%, transparent);
+      backdrop-filter: blur(10px);
+      flex-shrink: 0;
+    }
+
+    .workspace-header-copy {
+      min-width: 0;
+    }
+
+    .workspace-title {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--primary-text-color, #212121);
+    }
+
+    .workspace-subtitle {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--secondary-text-color, #727272);
+    }
+
+    .workspace-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .workspace-action-btn {
+      appearance: none;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: var(--card-background-color, #fff);
+      color: var(--primary-text-color, #212121);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .date-nav-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding-left: 4px;
+    }
+
+    .workspace-main {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding: 20px 24px 24px;
+      box-sizing: border-box;
+    }
+
+    .section-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .page-card {
+      background: var(--card-background-color, #fff);
+      border: 1px solid var(--divider-color, #e0e0e0);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.04);
+    }
+
+    .page-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 18px 12px;
+      border-bottom: 1px solid var(--divider-color, #e0e0e0);
+    }
+
+    .page-card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary-text-color, #212121);
+    }
+
+    .page-card-subtitle {
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--secondary-text-color, #727272);
+    }
+
+    .page-card-body {
+      padding: 18px;
+    }
+
+    .page-chip-row,
+    .shortcut-grid,
+    .home-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .page-chip {
+      appearance: none;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.03));
+      color: var(--secondary-text-color, #727272);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-transform: capitalize;
+    }
+
+    .page-chip[active] {
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 12%, transparent);
+      color: var(--primary-color, #03a9f4);
+      border-color: color-mix(in srgb, var(--primary-color, #03a9f4) 20%, var(--divider-color, #e0e0e0));
+    }
+
+    .shortcut-card {
+      appearance: none;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.03));
+      color: var(--primary-text-color, #212121);
+      border-radius: 16px;
+      padding: 14px 16px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      min-height: 52px;
+      text-align: left;
+      flex: 1 1 180px;
+    }
+
+    .home-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+
+    .home-grid > .page-card {
+      grid-column: span 12;
+    }
+
+    .home-hero .page-card-body {
+      padding-top: 8px;
+    }
+
+    .metric {
+      flex: 1 1 160px;
+      min-width: 0;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 8%, transparent);
+    }
+
+    .metric-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary-text-color, #212121);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .metric-label {
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--secondary-text-color, #727272);
+    }
+
+    .compact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .compact-row {
+      appearance: none;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: var(--primary-background-color, #fafafa);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+      font: inherit;
+      width: 100%;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+
+    .compact-row-static {
+      cursor: default;
+    }
+
+    .compact-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .compact-main {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      gap: 2px;
+    }
+
+    .compact-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary-text-color, #212121);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .compact-sub {
+      font-size: 11px;
+      color: var(--secondary-text-color, #727272);
+    }
+
+    .empty-state {
+      font-size: 13px;
+      color: var(--secondary-text-color, #727272);
+    }
+
     .view-placeholder {
       display: flex;
       align-items: center;
@@ -1426,6 +1835,29 @@ export class CaleePanel extends LitElement {
     @media (max-width: 480px) {
       .header-date-nav .date-label {
         max-width: 100px;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .shell-layout {
+        flex-direction: column;
+      }
+
+      .workspace-header {
+        padding: 16px 16px 10px;
+        flex-direction: column;
+      }
+
+      .workspace-title {
+        font-size: 20px;
+      }
+
+      .workspace-main {
+        padding: 16px 16px 92px;
+      }
+
+      .home-grid {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -1945,37 +2377,55 @@ export class CaleePanel extends LitElement {
   }
 
   render() {
+    const showWorkspaceChrome = this._shellSection === "tasks" || this._shellSection === "shopping";
+    const pageTitle = this._shellSection === "home"
+      ? "Home"
+      : this._shellSection === "calendar"
+        ? "Calendar"
+        : this._shellSection === "tasks"
+          ? "Tasks"
+          : this._shellSection === "shopping"
+            ? "Shopping"
+            : "More";
+
     return html`
-      ${this._renderHeader()}
-      ${this._renderTabletSummary()}
-      <div class="body">
-        ${this._renderSidebarBackdrop()}
-        ${this._renderSidebar()}
-        <div class="main"
-          @event-click=${this._onEventClick}
-          @cell-click=${this._onCellClick}
-          @task-click=${this._onTaskClick}
-          @task-complete=${this._onTaskComplete}
-          @task-uncomplete=${this._onTaskUncomplete}
-          @task-delete=${this._onTaskDelete}
-          @task-quick-add=${this._onTaskQuickAdd}
-          @task-update=${this._onTaskUpdate}
-          @task-price-update=${this._onTaskPriceUpdate}
-          @task-quantity-update=${this._onTaskQuantityUpdate}
-          @task-unit-update=${this._onTaskUnitUpdate}
-          @routine-execute=${this._onRoutineExecute}
-          @preset-add=${this._onPresetAdd}
-          @preset-create=${this._onPresetCreate}
-          @preset-delete=${this._onPresetDelete}
-          @event-select=${this._onEventSelect}
-        >
-          ${this._loading
-            ? html`<div class="loading">Loading...</div>`
-            : this._renderView()}
+      <div class="shell-layout">
+        <calee-shell
+          .section=${this._shellSection}
+          .narrow=${this.narrow}
+          .collapsed=${this._shellCollapsed}
+          @section-change=${this._onShellSectionChange}
+          @add-click=${this._onShellAdd}
+          @toggle-collapse=${this._onShellToggleCollapse}
+        ></calee-shell>
+
+        <div class="workspace">
+          ${showWorkspaceChrome ? this._renderWorkspaceHeader(pageTitle) : nothing}
+          ${showWorkspaceChrome ? this._renderTabletSummary() : nothing}
+          <div
+            class="workspace-main"
+            @event-click=${this._onEventClick}
+            @cell-click=${this._onCellClick}
+            @task-click=${this._onTaskClick}
+            @task-complete=${this._onTaskComplete}
+            @task-uncomplete=${this._onTaskUncomplete}
+            @task-delete=${this._onTaskDelete}
+            @task-quick-add=${this._onTaskQuickAdd}
+            @task-update=${this._onTaskUpdate}
+            @task-price-update=${this._onTaskPriceUpdate}
+            @task-quantity-update=${this._onTaskQuantityUpdate}
+            @task-unit-update=${this._onTaskUnitUpdate}
+            @routine-execute=${this._onRoutineExecute}
+            @preset-add=${this._onPresetAdd}
+            @preset-create=${this._onPresetCreate}
+            @preset-delete=${this._onPresetDelete}
+            @event-select=${this._onEventSelect}
+          >
+            ${this._loading ? html`<div class="loading">Loading...</div>` : this._renderSectionContent()}
+          </div>
         </div>
         ${this._renderDetailDrawer()}
       </div>
-      ${this._renderBottomNav()}
       ${this._showAddDialog ? this._renderAddDialog() : nothing}
       <calee-event-dialog
         .event=${this._editEvent}
@@ -2053,6 +2503,340 @@ export class CaleePanel extends LitElement {
         @dialog-close=${this._onDataCenterClose}
       ></calee-data-center>
       ${this._showRecurringActionDialog ? this._renderRecurringActionDialog() : nothing}
+    `;
+  }
+
+  private _renderWorkspaceHeader(pageTitle: string) {
+    const showDateNav = false;
+
+    return html`
+      <div class="workspace-header">
+        <div class="workspace-header-copy">
+          <div class="workspace-title">${pageTitle}</div>
+          <div class="workspace-subtitle">
+            ${this._shellSection === "tasks"
+              ? "Task lists and quick actions"
+              : "Shopping list and item details"}
+          </div>
+        </div>
+
+        <div class="workspace-header-actions">
+          <button class="workspace-action-btn" @click=${this._onShellAdd}>Add</button>
+          <button class="workspace-action-btn" @click=${this._openSettings}>Settings</button>
+          ${showDateNav ? html`
+            <div class="date-nav-inline">
+              <button class="date-nav-btn" @click=${this._onPrev} aria-label="Previous">&lsaquo;</button>
+              <button class="today-btn" @click=${this._onToday}>Today</button>
+              <button class="date-nav-btn" @click=${this._onNext} aria-label="Next">&rsaquo;</button>
+            </div>
+          ` : nothing}
+        </div>
+      </div>
+    `;
+  }
+
+  private _renderSectionContent() {
+    if (this._shellSection === "home") {
+      return html`
+        <calee-home-page
+          .events=${this._events}
+          .tasks=${this._tasks}
+          .calendars=${this._rawCalendars}
+          .lists=${this._lists}
+          .routines=${this._routines}
+          .currency=${this._settingsCurrency}
+          .budget=${this._settingsBudget}
+          ?narrow=${this.narrow}
+          @navigate-view=${this._onHomeNavigate}
+          @event-select=${this._onEventSelect}
+          @task-click=${this._onTaskClick}
+          @routine-execute=${this._onRoutineExecute}
+        ></calee-home-page>
+      `;
+    }
+    if (this._shellSection === "tasks") {
+      return html`
+        <div class="section-panel">
+          ${this._renderTasksSection()}
+        </div>
+      `;
+    }
+    if (this._shellSection === "shopping") {
+      return html`
+        <div class="section-panel">
+          ${this._renderShoppingSection()}
+        </div>
+      `;
+    }
+    if (this._shellSection === "more") {
+      return html`
+        <calee-more-page
+          .events=${this._events}
+          .tasks=${this._tasks}
+          .lists=${this._lists}
+          .conflicts=${this._conflicts}
+          .calendars=${this._calendarMap}
+          .enabledCalendarIds=${this._enabledIds}
+          .selectedDate=${new Date(this._currentDate + "T00:00:00")}
+          .currency=${this._settingsCurrency}
+          .budget=${this._settingsBudget}
+          .reminderCalendars=${this._settingsReminderCalendars}
+          ?narrow=${this.narrow}
+          .initialSubView=${this._moreSubView === "overview" ? "data-center" : this._moreSubView}
+          @more-subview-change=${this._onMoreSubViewChange}
+          @open-settings=${this._openSettings}
+          @open-deleted=${this._openDeletedItems}
+          @open-activity=${this._openActivityFeed}
+          @open-data-center=${this._openDataCenter}
+          @open-calendar-manager=${this._openCalendarManager}
+          @day-click=${this._onYearDayClick}
+        ></calee-more-page>
+      `;
+    }
+    return html`
+      <calee-calendar-page
+        .events=${this._events}
+        .calendars=${this._calendarMap}
+        .enabledCalendarIds=${this._enabledIds}
+        .templates=${this._templates}
+        .tasks=${this._tasks}
+        .conflicts=${this._conflicts}
+        .weekStartsMonday=${this._settingsWeekStart === "monday"}
+        ?narrow=${this.narrow}
+        .currentSubview=${this._currentView as CalendarSubView}
+        .currentDate=${this._currentDate}
+        @calendar-subview-change=${this._onCalendarSubviewChange}
+        @calendar-date-change=${this._onCalendarDateChange}
+        @event-click=${this._onEventClick}
+        @cell-click=${this._onCellClick}
+        @event-select=${this._onEventSelect}
+      ></calee-calendar-page>
+    `;
+  }
+
+  private _renderCalendarSection() {
+    return html`
+      <div class="page-card">
+        <div class="page-card-header">
+          <div>
+            <div class="page-card-title">Calendar views</div>
+            <div class="page-card-subtitle">${formatDateLabel(this._currentView, this._currentDate)}</div>
+          </div>
+          <div class="page-chip-row">
+            ${CALENDAR_VIEWS.map(
+              (view) => html`
+                <button class="page-chip" ?active=${this._currentView === view} @click=${() => this._navigate(view, this._currentDate)}>
+                  ${view}
+                </button>
+              `,
+            )}
+          </div>
+        </div>
+        <div class="page-card-body">
+          ${this._renderView()}
+        </div>
+      </div>
+    `;
+  }
+
+  private _renderTasksSection() {
+    return html`
+      <div class="page-card">
+        <div class="page-card-header">
+          <div>
+            <div class="page-card-title">Tasks</div>
+            <div class="page-card-subtitle">Inbox, due items, and shopping-adjacent work</div>
+          </div>
+        </div>
+        <div class="page-card-body">
+          <calee-tasks-view
+            .tasks=${this._standardTasks}
+            .lists=${this._lists.filter((l) => l.list_type !== "shopping")}
+            .presets=${this._presets.filter((p) => p.list_id !== "shopping")}
+            ?narrow=${this.narrow}
+          ></calee-tasks-view>
+        </div>
+      </div>
+    `;
+  }
+
+  private _renderShoppingSection() {
+    const shoppingList = this._lists.find((l) => l.list_type === "shopping");
+    return html`
+      <div class="page-card">
+        <div class="page-card-header">
+          <div>
+            <div class="page-card-title">Shopping</div>
+            <div class="page-card-subtitle">Items, prices, quantities, and quick add</div>
+          </div>
+        </div>
+        <div class="page-card-body">
+          <calee-shopping-view
+            .tasks=${this._shoppingTasks}
+            .presets=${this._presets.filter((p) => {
+              return shoppingList ? p.list_id === shoppingList.id : p.list_id === "shopping";
+            })}
+            .listId=${shoppingList?.id ?? "shopping"}
+            .currency=${this._settingsCurrency}
+            .budget=${this._settingsBudget}
+            .toastMessage=${this._shoppingToast}
+            @toast-shown=${() => { this._shoppingToast = ""; }}
+          ></calee-shopping-view>
+        </div>
+      </div>
+    `;
+  }
+
+  private _renderHomePage() {
+    const overdueTasks = this._tasks.filter((task) => !task.completed && task.due && task.due < todayISO());
+    const upcomingTasks = this._tasks.filter((task) => !task.completed && task.due && task.due >= todayISO()).slice(0, 5);
+    const shoppingCount = this._shoppingTasks.filter((task) => !task.completed && !task.deleted_at).length;
+
+    return html`
+      <div class="home-grid">
+        <div class="page-card home-hero">
+          <div class="page-card-header">
+            <div>
+              <div class="page-card-title">Today</div>
+              <div class="page-card-subtitle">A lighter overview of what matters next</div>
+            </div>
+          </div>
+          <div class="home-metrics">
+            <div class="metric">
+              <div class="metric-value">${this._nextShift ? this._nextShift.title : "No shift"}</div>
+              <div class="metric-label">Next shift</div>
+            </div>
+            <div class="metric">
+              <div class="metric-value">${upcomingTasks.length}</div>
+              <div class="metric-label">Upcoming tasks</div>
+            </div>
+            <div class="metric">
+              <div class="metric-value">${shoppingCount}</div>
+              <div class="metric-label">Shopping items</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-card">
+          <div class="page-card-header">
+            <div>
+              <div class="page-card-title">Next actions</div>
+              <div class="page-card-subtitle">A quick path to the common surfaces</div>
+            </div>
+          </div>
+          <div class="page-card-body">
+            <div class="shortcut-grid">
+              <button class="shortcut-card" @click=${() => this._navigateSection("calendar", "week")}>Open calendar</button>
+              <button class="shortcut-card" @click=${() => this._navigateSection("tasks")}>Open tasks</button>
+              <button class="shortcut-card" @click=${() => this._navigateSection("shopping")}>Open shopping</button>
+              <button class="shortcut-card" @click=${() => this._navigateSection("more")}>Open more</button>
+              <button class="shortcut-card" @click=${this._onShellAdd}>Add event</button>
+              <button class="shortcut-card" @click=${this._openSettings}>Settings</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-card">
+          <div class="page-card-header">
+            <div>
+              <div class="page-card-title">Upcoming</div>
+              <div class="page-card-subtitle">Events and reminders</div>
+            </div>
+          </div>
+          <div class="page-card-body">
+            ${this._upcomingEvents.length > 0
+              ? html`
+                  <div class="compact-list">
+                    ${this._upcomingEvents.map((event) => {
+                      const cal = this._calendarMap.get(event.calendar_id);
+                      const when = new Date(event.start).toLocaleString(undefined, {
+                        weekday: "short",
+                        hour: "numeric",
+                        minute: "2-digit",
+                      });
+                      return html`
+                        <button class="compact-row" @click=${() => this._onEventClick({ detail: { eventId: event.id } } as CustomEvent<{ eventId: string }>)}>
+                          <span class="compact-dot" style="background:${cal?.color ?? "#64b5f6"}"></span>
+                          <span class="compact-main">
+                            <span class="compact-title">${event.title}</span>
+                            <span class="compact-sub">${when}</span>
+                          </span>
+                        </button>
+                      `;
+                    })}
+                  </div>
+                `
+              : html`<div class="empty-state">No upcoming events loaded.</div>`}
+          </div>
+        </div>
+
+        <div class="page-card">
+          <div class="page-card-header">
+            <div>
+              <div class="page-card-title">Tasks at a glance</div>
+              <div class="page-card-subtitle">${overdueTasks.length} overdue</div>
+            </div>
+          </div>
+          <div class="page-card-body">
+            ${upcomingTasks.length > 0
+              ? html`
+                  <div class="compact-list">
+                    ${upcomingTasks.map((task) => html`
+                      <div class="compact-row compact-row-static">
+                        <span class="compact-main">
+                          <span class="compact-title">${task.title}</span>
+                          <span class="compact-sub">${task.due ?? "No due date"}</span>
+                        </span>
+                      </div>
+                    `)}
+                  </div>
+                `
+              : html`<div class="empty-state">No tasks due soon.</div>`}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  private _renderMorePage() {
+    return html`
+      <div class="section-panel">
+        <div class="page-card">
+          <div class="page-card-header">
+            <div>
+              <div class="page-card-title">More</div>
+              <div class="page-card-subtitle">Utilities and secondary views</div>
+            </div>
+          </div>
+          <div class="page-card-body">
+            <div class="shortcut-grid">
+              <button class="shortcut-card" @click=${() => this._navigate("year", todayISO())}>Year view</button>
+              <button class="shortcut-card" @click=${() => this._navigate("smart")}>Smart views</button>
+              <button class="shortcut-card" @click=${this._openSettings}>Settings</button>
+              <button class="shortcut-card" @click=${this._openDeletedItems}>Recently deleted</button>
+              <button class="shortcut-card" @click=${this._openActivityFeed}>Activity feed</button>
+              <button class="shortcut-card" @click=${() => { this._showCalendarManager = true; }}>Calendar manager</button>
+              <button class="shortcut-card" @click=${() => { this._showRoutineManager = true; }}>Routines</button>
+              <button class="shortcut-card" @click=${() => { this._showDataCenter = true; }}>Data center</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-card">
+          <div class="page-card-header">
+            <div>
+              <div class="page-card-title">Secondary views</div>
+              <div class="page-card-subtitle">Keep year and smart views available without elevating them to primary nav</div>
+            </div>
+          </div>
+          <div class="page-card-body">
+            <div class="shortcut-grid">
+              <button class="shortcut-card" @click=${() => this._navigate("year", todayISO())}>Open year</button>
+              <button class="shortcut-card" @click=${() => this._navigate("smart")}>Open smart</button>
+            </div>
+          </div>
+        </div>
+      </div>
     `;
   }
 
@@ -2933,10 +3717,88 @@ export class CaleePanel extends LitElement {
 
   // ── Sidebar Add ─────────────────────────────────────────────────
 
+  private _onShellSectionChange(e: CustomEvent<{ section: ShellSection }>): void {
+    const section = e.detail.section;
+    if (section === "home") {
+      this._shellSection = "home";
+      this._moreSubView = "overview";
+      this._navigate("home");
+      return;
+    }
+    if (section === "calendar") {
+      this._shellSection = "calendar";
+      this._moreSubView = "overview";
+      this._navigateSection("calendar", this._currentView === "year" || this._currentView === "smart" ? "week" : this._currentView);
+      return;
+    }
+    if (section === "tasks" || section === "shopping") {
+      this._shellSection = section;
+      this._moreSubView = "overview";
+      this._navigateSection(section);
+      return;
+    }
+    this._shellSection = "more";
+    this._moreSubView = "overview";
+    window.location.hash = buildHash("more", this._currentDate);
+  }
+
+  private _onShellAdd = (): void => {
+    this._onSidebarAdd();
+  };
+
+  private _onShellToggleCollapse = (): void => {
+    this._shellCollapsed = !this._shellCollapsed;
+  };
+
+  private _onHomeNavigate(e: CustomEvent<{ view: ShellSection | ViewType }>): void {
+    const target = e.detail.view;
+    if (target === "home" || target === "calendar" || target === "tasks" || target === "shopping" || target === "more") {
+      this._navigateSection(target);
+      return;
+    }
+    this._navigate(target);
+  }
+
+  private _onCalendarSubviewChange(e: CustomEvent<{ subview: CalendarSubView }>): void {
+    this._navigateSection("calendar", e.detail.subview, this._currentDate);
+  }
+
+  private _onCalendarDateChange(e: CustomEvent<{ date: string }>): void {
+    const view = CALENDAR_VIEWS.includes(this._currentView as CalendarSubView)
+      ? (this._currentView as CalendarSubView)
+      : "week";
+    this._navigateSection("calendar", view, e.detail.date);
+  }
+
+  private _onMoreSubViewChange(e: CustomEvent<{ subView: PageMoreSubView }>): void {
+    const { subView } = e.detail;
+    if (subView === "year") {
+      this._currentView = "year";
+      window.location.hash = `#/more/year/${this._currentDate}`;
+      return;
+    }
+    if (subView === "smart") {
+      this._currentView = "smart";
+      window.location.hash = "#/more/smart";
+      return;
+    }
+    this._moreSubView = subView;
+    this._currentView = "week";
+    window.location.hash = `#/more/${subView}`;
+  }
+
   private _onSidebarAdd(): void {
     this._templatePickerDate = this._currentDate;
     this._templatePickerTime = "";
     this._showTemplatePicker = true;
+  }
+
+  private _openCalendarManager(): void {
+    this._showCalendarManager = true;
+  }
+
+  private _openDataCenter(): void {
+    this._showDataCenter = true;
   }
 
   // ── View Event Handlers ──────────────────────────────────────────
