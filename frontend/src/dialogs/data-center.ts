@@ -402,10 +402,10 @@ export class CaleeDataCenter extends LitElement {
   }
 
   private _toIcsDate(iso: string): string {
-    const stripped = iso.replace(/[-:]/g, "").replace(/\.\d{3}/, "");
-    // Only append "Z" if the original timestamp is explicitly UTC.
-    const isUTC = iso.endsWith("Z") || iso.includes("+00:00") || iso.includes("+0000");
-    return stripped.slice(0, 15) + (isUTC ? "Z" : "");
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
+    // Always export as UTC — converts any local/offset timestamp first.
+    return d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
   }
 
   private _downloadFile(content: string, mimeType: string, filename: string): void {

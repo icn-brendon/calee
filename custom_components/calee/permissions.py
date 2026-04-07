@@ -213,6 +213,12 @@ async def async_require_write(
     privacy mode — because automations need to create and update events
     without an interactive user context.  A warning is logged in strict
     mode so administrators can audit internal writes.
+
+    NOTE: user_id=None is intentionally *allowed*, not denied.  This
+    differs from the original PR description, which stated that
+    user_id=None would be denied.  The implementation was updated to
+    allow these calls because blocking them would break automations and
+    internal service calls that have no interactive user context.
     """
     strict = is_strict_privacy(hass)
 

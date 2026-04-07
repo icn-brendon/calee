@@ -1336,6 +1336,7 @@ def ws_handle_get_settings(
         vol.Optional("morning_summary_enabled"): bool,
         vol.Optional("morning_summary_hour"): vol.All(vol.Coerce(int), vol.Range(min=0, max=23)),
         vol.Optional("notification_target"): str,
+        vol.Optional("reminder_calendars"): [str],
         vol.Optional("strict_privacy"): bool,
     }
 )
