@@ -15,7 +15,11 @@ import pytest
 from custom_components.calee.api import PlannerAPI
 from custom_components.calee.const import PlannerRole
 from custom_components.calee.models import PlannerEvent, PlannerTask, RoleAssignment
-from custom_components.calee.permissions import can_read, can_write
+from custom_components.calee.permissions import (
+    async_require_write,
+    can_read,
+    can_write,
+)
 
 # ── Lightweight HA fakes ────────────���───────────────────────────────
 
@@ -529,3 +533,126 @@ class TestRestoreRoundTrip:
 
         active = fake_store.get_active_tasks()
         assert any(t.id == task_id for t in active)
+
+
+# ── Strict privacy mode ──────────────────────────────────────────
+
+
+class _FakeConfigEntry:
+    """Stub config entry with configurable options."""
+
+    def __init__(self, *, strict_privacy: bool = False) -> None:
+        self.options = {
+            "strict_privacy": strict_privacy,
+        }
+
+
+class _FakeConfigEntries:
+    """Stub config_entries that returns a list of FakeConfigEntry."""
+
+    def __init__(self, *, strict_privacy: bool = False) -> None:
+        self._entries = [
+            _FakeConfigEntry(
+                strict_privacy=strict_privacy,
+            )
+        ]
+
+    def async_entries(self, domain: str) -> list:
+        return self._entries
+
+
+class _StrictHass(_FakeHass):
+    """FakeHass with strict_privacy enabled."""
+
+    def __init__(self, *, is_admin: bool = False) -> None:
+        super().__init__(is_admin=is_admin)
+        self.config_entries = _FakeConfigEntries(
+            strict_privacy=True,
+        )
+
+
+class TestStrictPrivacyCanRead:
+    """When strict=True, can_read denies access to unassigned resources."""
+
+    def test_strict_denies_unassigned_resource(self, fake_store) -> None:
+        """User without an explicit role is denied even without global roles."""
+        assert can_read(fake_store, "any_user", "calendar", "work_shifts", strict=True) is False
+
+    def test_strict_allows_explicit_viewer(self, fake_store) -> None:
+        """User with an explicit viewer role is allowed under strict mode."""
+        fake_store.roles.append(
+            RoleAssignment(
+                user_id="viewer_user",
+                resource_type="calendar",
+                resource_id="work_shifts",
+                role=PlannerRole.VIEWER,
+            )
+        )
+        assert can_read(fake_store, "viewer_user", "calendar", "work_shifts", strict=True) is True
+
+    def test_strict_denies_other_user(self, fake_store) -> None:
+        """Another user without a role is still denied under strict mode."""
+        fake_store.roles.append(
+            RoleAssignment(
+                user_id="viewer_user",
+                resource_type="calendar",
+                resource_id="work_shifts",
+                role=PlannerRole.VIEWER,
+            )
+        )
+        assert can_read(fake_store, "other_user", "calendar", "work_shifts", strict=True) is False
+
+
+class TestStrictPrivacyCanWrite:
+    """When strict=True, can_write denies writes without an explicit role."""
+
+    def test_strict_denies_unassigned_write(self, fake_store) -> None:
+        """User without an explicit role is denied write access under strict mode."""
+        assert can_write(fake_store, "any_user", "calendar", "work_shifts", strict=True) is False
+
+    def test_strict_allows_editor(self, fake_store) -> None:
+        """User with an explicit editor role is allowed under strict mode."""
+        fake_store.roles.append(
+            RoleAssignment(
+                user_id="editor_user",
+                resource_type="calendar",
+                resource_id="work_shifts",
+                role=PlannerRole.EDITOR,
+            )
+        )
+        assert can_write(fake_store, "editor_user", "calendar", "work_shifts", strict=True) is True
+
+    def test_strict_denies_viewer_write(self, fake_store) -> None:
+        """Viewer role is insufficient for writes under strict mode."""
+        fake_store.roles.append(
+            RoleAssignment(
+                user_id="viewer_user",
+                resource_type="calendar",
+                resource_id="work_shifts",
+                role=PlannerRole.VIEWER,
+            )
+        )
+        assert can_write(fake_store, "viewer_user", "calendar", "work_shifts", strict=True) is False
+
+
+class TestStrictPrivacyAsyncRequireWrite:
+    """async_require_write with strict mode allows internal writes (user_id=None).
+
+    Automations and internal service calls bypass strict write checks
+    because they need to create and update events without an interactive
+    user context.  A warning is logged for auditing purposes.
+    """
+
+    @pytest.mark.asyncio
+    async def test_strict_allows_none_user_id(self, fake_store) -> None:
+        """Internal call (user_id=None) is allowed under strict privacy."""
+        strict_hass = _StrictHass()
+
+        # Should not raise -- automations always pass.
+        await async_require_write(
+            strict_hass,
+            fake_store,
+            user_id=None,
+            resource_type="calendar",
+            resource_id="work_shifts",
+        )

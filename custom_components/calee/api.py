@@ -1677,6 +1677,20 @@ class PlannerAPI:
                 )
                 _LOGGER.warning("Import error for shift %s: %s", external_id, exc)
 
+        # Record an explicit import summary audit entry so the data
+        # center can reliably identify import operations.
+        if result.created or result.updated:
+            self._store.record_audit(
+                user_id=user_id or "",
+                action=AuditAction.CREATE,
+                resource_type="event",
+                resource_id=calendar_id,
+                detail=(
+                    f"Imported {result.created} new, {result.updated} updated, "
+                    f"{result.skipped} skipped (source={source})"
+                ),
+            )
+
         return result
 
     def _preview_import(

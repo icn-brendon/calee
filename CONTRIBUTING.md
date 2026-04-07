@@ -4,7 +4,7 @@ Contributions are welcome. This guide covers the development setup, coding stand
 
 ## Prerequisites
 
-- Python 3.12+
+- Python 3.13+
 - Node.js 20+ (for frontend)
 - A Home Assistant development environment (or devcontainer)
 

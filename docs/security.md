@@ -43,7 +43,7 @@ An opt-in setting (`strict_privacy`) that changes default behaviour:
 |---|---|---|
 | New calendars/lists | `is_private = false` | `is_private = true` |
 | Unassigned resources (no roles) | Visible to all | Hidden from non-admin users |
-| Internal calls (`user_id = None`) | Allowed | Denied unless `allow_internal_writes` is set |
+| Internal calls (`user_id = None`) | Allowed | Allowed (with warning logged) |
 
 Enable strict mode in **Settings > Privacy > Strict privacy mode**.
 
@@ -52,7 +52,7 @@ Enable strict mode in **Settings > Privacy > Strict privacy mode**.
 Internal automation calls (e.g., service calls from HA automations without a user context) set `user_id = None`.
 
 - **Default mode:** These calls pass permission checks unconditionally.
-- **Strict mode:** These calls are denied unless the config option `allow_internal_writes` is explicitly set to `true`.
+- **Strict mode:** Automations and internal service calls bypass strict write checks so that automations continue to work. A warning is logged for each internal write so administrators can audit them.
 
 ## Diagnostics redaction
 

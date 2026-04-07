@@ -74,6 +74,9 @@ class JsonPlannerStore(AbstractPlannerStore):
         if raw is None:
             _LOGGER.info("First run — seeding default calendars and lists")
             self._seed_defaults()
+            self._templates_seeded = True
+            self._presets_seeded = True
+            self._routines_seeded = True
             await self.async_save()
             return
 
@@ -110,28 +113,38 @@ class JsonPlannerStore(AbstractPlannerStore):
         ]
 
         # Seed default templates for existing installs that upgraded.
-        if not self.templates:
+        # Use a storage flag so intentional deletes are not undone.
+        if not raw.get("templates_seeded") and not self.templates:
             _LOGGER.info("No templates found — seeding defaults")
             for tpl_def in DEFAULT_TEMPLATES:
                 tpl = ShiftTemplate.from_dict(tpl_def)
                 self.templates[tpl.id] = tpl
+            self._templates_seeded = True
             await self.async_save()
+        else:
+            self._templates_seeded = True
 
         # Seed default presets for existing installs that upgraded.
-        if not self.presets:
+        if not raw.get("presets_seeded") and not self.presets:
             _LOGGER.info("No presets found — seeding defaults")
             for preset_def in DEFAULT_PRESETS:
                 preset = TaskPreset.from_dict(preset_def)
                 self.presets[preset.id] = preset
+            self._presets_seeded = True
             await self.async_save()
+        else:
+            self._presets_seeded = True
 
         # Seed default routines for existing installs that upgraded.
-        if not self.routines:
+        if not raw.get("routines_seeded") and not self.routines:
             _LOGGER.info("No routines found — seeding defaults")
             for routine_def in DEFAULT_ROUTINES:
                 routine = Routine.from_dict(routine_def)
                 self.routines[routine.id] = routine
+            self._routines_seeded = True
             await self.async_save()
+        else:
+            self._routines_seeded = True
 
     async def async_save(self) -> None:
         """Persist current state to disk, pruning expired soft-deletes."""
@@ -148,6 +161,9 @@ class JsonPlannerStore(AbstractPlannerStore):
             "routines": [r.to_dict() for r in self.routines.values()],
             "roles": [r.to_dict() for r in self.roles],
             "audit_log": [a.to_dict() for a in self.audit_log[-_MAX_AUDIT_ENTRIES:]],
+            "templates_seeded": getattr(self, "_templates_seeded", False),
+            "presets_seeded": getattr(self, "_presets_seeded", False),
+            "routines_seeded": getattr(self, "_routines_seeded", False),
         }
         await self._store.async_save(data)
 

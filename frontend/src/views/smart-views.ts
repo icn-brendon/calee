@@ -34,8 +34,16 @@ export class CaleeSmartViews extends LitElement {
   @property({ attribute: false }) calendars: Map<string, PlannerCalendar> = new Map();
   @property({ type: String }) currency = "$";
   @property({ type: Number }) budget = 0;
-  @property({ type: String }) activeTab: SmartTab = "before-shift";
+  @property({ type: String }) initialTab: SmartTab = "before-shift";
+  @property({ type: Array }) reminderCalendars: string[] = ["work_shifts"];
+  @state() private activeTab: SmartTab = "before-shift";
   @property({ type: Boolean, reflect: true }) narrow = false;
+
+  override firstUpdated(): void {
+    if (this.initialTab) {
+      this.activeTab = this.initialTab;
+    }
+  }
 
   static styles = css`
     :host {
@@ -329,8 +337,11 @@ export class CaleeSmartViews extends LitElement {
 
   private _renderBeforeShift() {
     const now = Date.now();
+    const shiftCalendars = this.reminderCalendars.length > 0
+      ? this.reminderCalendars
+      : ["work_shifts"];
     const nextShift = this.events
-      .filter((e) => !e.deleted_at && !e.all_day && e.calendar_id === "work_shifts" && new Date(e.start).getTime() > now)
+      .filter((e) => !e.deleted_at && !e.all_day && shiftCalendars.includes(e.calendar_id) && new Date(e.start).getTime() > now)
       .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())[0];
 
     if (!nextShift) {

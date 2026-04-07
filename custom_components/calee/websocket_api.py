@@ -24,6 +24,7 @@ from .const import (
     DEFAULT_MORNING_SUMMARY_HOUR,
     DEFAULT_NOTIFICATION_TARGET,
     DEFAULT_NOTIFICATIONS_ENABLED,
+    DEFAULT_REMINDER_CALENDARS,
     DEFAULT_REMINDER_MINUTES,
     DEFAULT_STRICT_PRIVACY,
     DEFAULT_TIME_FORMAT,
@@ -199,6 +200,7 @@ def ws_handle_calendars(
         return
 
     user_id = connection.user.id if connection.user else None
+    user_is_admin = connection.user.is_admin if connection.user else False
     calendars = list(store.get_calendars().values())
     strict = is_strict_privacy(hass)
 
@@ -210,7 +212,7 @@ def ws_handle_calendars(
         if has_roles or has_private or strict:
             calendars = [
                 c for c in calendars
-                if can_read(store, user_id, "calendar", c.id, strict=strict)
+                if can_read(store, user_id, "calendar", c.id, strict=strict, is_admin=user_is_admin)
             ]
 
     result = [c.to_dict() for c in calendars]
@@ -246,13 +248,21 @@ def ws_handle_events(
 
     events = store.get_active_events(calendar_id=msg.get("calendar_id"))
 
-    # Per-user calendar filtering when roles are configured.
+    # Per-user calendar filtering when roles are configured,
+    # any calendar is private, or strict privacy is active.
     user_id = connection.user.id if connection.user else None
-    if user_id and store.get_roles():
-        events = [
-            e for e in events
-            if can_read(store, user_id, "calendar", e.calendar_id)
-        ]
+    user_is_admin = connection.user.is_admin if connection.user else False
+    strict = is_strict_privacy(hass)
+    if user_id:
+        has_roles = bool(store.get_roles())
+        has_private = any(
+            c.is_private for c in store.get_calendars().values()
+        )
+        if has_roles or has_private or strict:
+            events = [
+                e for e in events
+                if can_read(store, user_id, "calendar", e.calendar_id, strict=strict, is_admin=user_is_admin)
+            ]
 
     # Optional date range filter.
     range_start = msg.get("start")
@@ -347,13 +357,21 @@ def ws_handle_tasks(
         want_completed = msg["completed"]
         tasks = [t for t in tasks if t.completed == want_completed]
 
-    # Per-user list filtering when roles are configured.
+    # Per-user list filtering when roles are configured,
+    # any list is private, or strict privacy is active.
     user_id = connection.user.id if connection.user else None
-    if user_id and store.get_roles():
-        tasks = [
-            t for t in tasks
-            if can_read(store, user_id, "list", t.list_id)
-        ]
+    user_is_admin = connection.user.is_admin if connection.user else False
+    strict = is_strict_privacy(hass)
+    if user_id:
+        has_roles = bool(store.get_roles())
+        has_private = any(
+            lst.is_private for lst in store.get_lists().values()
+        )
+        if has_roles or has_private or strict:
+            tasks = [
+                t for t in tasks
+                if can_read(store, user_id, "list", t.list_id, strict=strict, is_admin=user_is_admin)
+            ]
 
     # Apply virtual view filter.
     view = msg.get("view")
@@ -393,6 +411,7 @@ def ws_handle_lists(
         return
 
     user_id = connection.user.id if connection.user else None
+    user_is_admin = connection.user.is_admin if connection.user else False
     all_lists = list(store.get_lists().values())
     strict = is_strict_privacy(hass)
 
@@ -404,7 +423,7 @@ def ws_handle_lists(
         if has_roles or has_private or strict:
             all_lists = [
                 lst for lst in all_lists
-                if can_read(store, user_id, "list", lst.id, strict=strict)
+                if can_read(store, user_id, "list", lst.id, strict=strict, is_admin=user_is_admin)
             ]
 
     result = [lst.to_dict() for lst in all_lists]
@@ -1298,6 +1317,7 @@ def ws_handle_get_settings(
             "morning_summary_enabled": opts.get("morning_summary_enabled", DEFAULT_MORNING_SUMMARY_ENABLED),
             "morning_summary_hour": opts.get("morning_summary_hour", DEFAULT_MORNING_SUMMARY_HOUR),
             "notification_target": opts.get("notification_target", DEFAULT_NOTIFICATION_TARGET),
+            "reminder_calendars": opts.get("reminder_calendars", list(DEFAULT_REMINDER_CALENDARS)),
             "strict_privacy": opts.get("strict_privacy", DEFAULT_STRICT_PRIVACY),
         },
     )
@@ -1337,7 +1357,7 @@ async def ws_handle_update_settings(
         "reminder_minutes", "max_event_age_days", "currency", "budget",
         "week_start", "time_format", "notifications_enabled",
         "morning_summary_enabled", "morning_summary_hour", "notification_target",
-        "strict_privacy",
+        "reminder_calendars", "strict_privacy",
     )
     for key in _settings_keys:
         if key in msg:
@@ -1358,6 +1378,7 @@ async def ws_handle_update_settings(
             "morning_summary_enabled": new_opts.get("morning_summary_enabled", DEFAULT_MORNING_SUMMARY_ENABLED),
             "morning_summary_hour": new_opts.get("morning_summary_hour", DEFAULT_MORNING_SUMMARY_HOUR),
             "notification_target": new_opts.get("notification_target", DEFAULT_NOTIFICATION_TARGET),
+            "reminder_calendars": new_opts.get("reminder_calendars", list(DEFAULT_REMINDER_CALENDARS)),
             "strict_privacy": new_opts.get("strict_privacy", DEFAULT_STRICT_PRIVACY),
         },
     )
@@ -1743,14 +1764,22 @@ def ws_handle_expand_recurring_events(
         calendar_id=msg.get("calendar_id"),
     )
 
-    # Apply per-user calendar filtering when roles are configured.
+    # Apply per-user calendar filtering when roles are configured,
+    # any calendar is private, or strict privacy is active.
     store = _get_store(hass)
     user_id = connection.user.id if connection.user else None
-    if store and user_id and store.get_roles():
-        events = [
-            e for e in events
-            if can_read(store, user_id, "calendar", e.calendar_id)
-        ]
+    user_is_admin = connection.user.is_admin if connection.user else False
+    strict = is_strict_privacy(hass)
+    if store and user_id:
+        has_roles = bool(store.get_roles())
+        has_private = any(
+            c.is_private for c in store.get_calendars().values()
+        )
+        if has_roles or has_private or strict:
+            events = [
+                e for e in events
+                if can_read(store, user_id, "calendar", e.calendar_id, strict=strict, is_admin=user_is_admin)
+            ]
 
     # Mark recurring instances with metadata for the frontend.
     result = []

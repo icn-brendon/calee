@@ -25,11 +25,15 @@ Privacy:
 
 from __future__ import annotations
 
+import logging
+
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 
 from .const import DOMAIN, PlannerRole
 from .db.base import AbstractPlannerStore
+
+_LOGGER = logging.getLogger(__name__)
 
 # Roles that grant write access.
 _WRITE_ROLES = frozenset({PlannerRole.OWNER, PlannerRole.EDITOR})
@@ -90,8 +94,11 @@ def can_read(
     resource_id: str,
     *,
     strict: bool = False,
+    is_admin: bool = False,
 ) -> bool:
     """Return True if the user may read the resource.
+
+    Admin users bypass all role checks (consistent with write path).
 
     When a resource is marked ``is_private``, the user MUST have an
     explicit role to read it — even when no roles are configured globally.
@@ -106,6 +113,10 @@ def can_read(
     editor, or owner) on the specific resource to read it.  If the user
     has no role on a resource that has roles assigned, access is denied.
     """
+    # HA admin users bypass all planner role checks.
+    if is_admin:
+        return True
+
     # Private resources always require an explicit role.
     if _is_resource_private(store, resource_type, resource_id):
         role = get_role(store, user_id, resource_type, resource_id)
@@ -194,22 +205,21 @@ async def async_require_write(
 ) -> None:
     """Raise HomeAssistantError if the user cannot write.
 
-    Admin users always pass.  If user_id is None (e.g. internal
-    automation call), the check passes unless strict_privacy is enabled
-    and ``allow_internal_writes`` is not set in the config.
+    Admin users always pass.  If user_id is None (e.g. automations and
+    internal service calls), the check always passes — even in strict
+    privacy mode — because automations need to create and update events
+    without an interactive user context.  A warning is logged in strict
+    mode so administrators can audit internal writes.
     """
     strict = is_strict_privacy(hass)
 
     if user_id is None:
         if strict:
-            # In strict mode, internal calls without user_id are denied
-            # unless the config explicitly allows them.
-            entries = hass.config_entries.async_entries(DOMAIN)
-            if entries and entries[0].options.get("allow_internal_writes", False):
-                return
-            raise HomeAssistantError(
-                "Internal write denied: strict_privacy is enabled and "
-                "allow_internal_writes is not set"
+            _LOGGER.warning(
+                "Internal write to %s/%s allowed in strict_privacy mode "
+                "(no user_id — automation or service call)",
+                resource_type,
+                resource_id,
             )
         return
 

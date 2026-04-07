@@ -218,6 +218,7 @@ export class CaleePanel extends LitElement {
   @state() private _showRoutineManager = false;
   @state() private _showDataCenter = false;
   @state() private _smartSubTab: "before-shift" | "weekend" | "budget" | "overdue" | "conflicts" = "before-shift";
+  @state() private _settingsReminderCalendars: string[] = ["work_shifts"];
   @state() private _settingsStrictPrivacy = false;
   @state() private _shoppingToast = "";
 
@@ -2713,7 +2714,8 @@ export class CaleePanel extends LitElement {
           .calendars=${calendarMap}
           .currency=${this._settingsCurrency}
           .budget=${this._settingsBudget}
-          .activeTab=${this._smartSubTab}
+          .reminderCalendars=${this._settingsReminderCalendars}
+          .initialTab=${this._smartSubTab}
           ?narrow=${this.narrow}
         ></calee-smart-views>`;
 
@@ -3278,6 +3280,7 @@ export class CaleePanel extends LitElement {
       this._settingsTimeFormat = result.time_format ?? "12h";
       this._settingsCurrency = result.currency ?? "$";
       this._settingsBudget = result.budget ?? 0;
+      this._settingsReminderCalendars = result.reminder_calendars ?? ["work_shifts"];
       this._settingsStrictPrivacy = result.strict_privacy ?? false;
     } catch {
       // Defaults are already set

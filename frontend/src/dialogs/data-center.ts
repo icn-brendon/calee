@@ -247,7 +247,7 @@ export class CaleeDataCenter extends LitElement {
         <button class="export-btn" @click=${this._exportJSON}>
           <div class="export-icon" style="background:color-mix(in srgb,#2196f3 15%,transparent);color:#1565c0;">{ }</div>
           <div class="export-info">
-            <div class="export-title">JSON (full backup)</div>
+            <div class="export-title">JSON (export all data)</div>
             <div class="export-desc">All calendars, events, tasks, templates, routines, and settings</div>
           </div>
         </button>
@@ -271,26 +271,74 @@ export class CaleeDataCenter extends LitElement {
     `;
   }
 
-  private _exportJSON(): void {
+  private async _exportJSON(): Promise<void> {
+    // Fetch ALL events and tasks directly from the backend (not the
+    // panel's date-range-filtered copies) to ensure a complete export.
+    let allEvents: unknown[] = [];
+    let allTasks: unknown[] = [];
+    let presets: unknown[] = [];
+    let settings: Record<string, unknown> = {};
+    let auditSummary: { total: number; recent: unknown[] } = { total: 0, recent: [] };
+
+    try {
+      allEvents = (await this.hass.callWS({ type: "calee/events" })) ?? [];
+    } catch {
+      // Fall back to the panel's currently loaded events.
+      allEvents = this.events;
+    }
+    try {
+      allTasks = (await this.hass.callWS({ type: "calee/tasks" })) ?? [];
+    } catch {
+      // Fall back to the panel's currently loaded tasks.
+      allTasks = this.tasks;
+    }
+    try {
+      presets = (await this.hass.callWS({ type: "calee/presets" })) ?? [];
+    } catch {
+      // Presets endpoint may not exist on older backends.
+    }
+    try {
+      settings = (await this.hass.callWS({ type: "calee/get_settings" })) ?? {};
+    } catch {
+      // Settings endpoint may not exist on older backends.
+    }
+    try {
+      const log: unknown[] = (await this.hass.callWS({ type: "calee/audit_log" })) ?? [];
+      auditSummary = { total: log.length, recent: log.slice(-20) };
+    } catch {
+      // Audit log endpoint may not exist on older backends.
+    }
+
     const data = {
       exported_at: new Date().toISOString(),
       calendars: this.calendars,
-      events: this.events,
-      tasks: this.tasks,
+      events: allEvents,
+      tasks: allTasks,
       lists: this.lists,
       templates: this.templates,
       routines: this.routines,
+      presets,
+      settings,
+      audit_summary: auditSummary,
     };
     this._downloadFile(
       JSON.stringify(data, null, 2),
       "application/json",
-      `calee-backup-${new Date().toISOString().slice(0, 10)}.json`,
+      `calee-export-${new Date().toISOString().slice(0, 10)}.json`,
     );
   }
 
-  private _exportCSV(): void {
+  private async _exportCSV(): Promise<void> {
+    // Fetch ALL events from backend for a complete export.
+    let allEvents: PlannerEvent[] = [];
+    try {
+      allEvents = (await this.hass.callWS({ type: "calee/events" })) ?? [];
+    } catch {
+      allEvents = this.events;
+    }
+
     const headers = ["id", "calendar_id", "title", "start", "end", "all_day", "note", "source", "recurrence_rule", "created_at"];
-    const rows = this.events
+    const rows = allEvents
       .filter((e) => !e.deleted_at)
       .map((e) =>
         headers.map((h) => {
@@ -307,7 +355,15 @@ export class CaleeDataCenter extends LitElement {
     this._downloadFile(csv, "text/csv", `calee-events-${new Date().toISOString().slice(0, 10)}.csv`);
   }
 
-  private _exportICS(): void {
+  private async _exportICS(): Promise<void> {
+    // Fetch ALL events from backend for a complete export.
+    let allEvents: PlannerEvent[] = [];
+    try {
+      allEvents = (await this.hass.callWS({ type: "calee/events" })) ?? [];
+    } catch {
+      allEvents = this.events;
+    }
+
     const lines: string[] = [
       "BEGIN:VCALENDAR",
       "VERSION:2.0",
@@ -315,7 +371,7 @@ export class CaleeDataCenter extends LitElement {
       "CALSCALE:GREGORIAN",
     ];
 
-    for (const ev of this.events.filter((e) => !e.deleted_at)) {
+    for (const ev of allEvents.filter((e) => !e.deleted_at)) {
       lines.push("BEGIN:VEVENT");
       lines.push(`UID:${ev.id}@calee`);
       lines.push(`SUMMARY:${this._icsEscape(ev.title)}`);
@@ -346,7 +402,10 @@ export class CaleeDataCenter extends LitElement {
   }
 
   private _toIcsDate(iso: string): string {
-    return iso.replace(/[-:]/g, "").replace(/\.\d{3}/, "").slice(0, 15) + "Z";
+    const stripped = iso.replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+    // Only append "Z" if the original timestamp is explicitly UTC.
+    const isUTC = iso.endsWith("Z") || iso.includes("+00:00") || iso.includes("+0000");
+    return stripped.slice(0, 15) + (isUTC ? "Z" : "");
   }
 
   private _downloadFile(content: string, mimeType: string, filename: string): void {
@@ -365,7 +424,10 @@ export class CaleeDataCenter extends LitElement {
 
   private _renderImports() {
     const imports = this._auditLog.filter(
-      (entry) => entry.action === "create" && entry.detail && !entry.detail.toLowerCase().includes("manual"),
+      (entry) =>
+        entry.detail &&
+        (entry.detail.startsWith("Imported") ||
+          entry.detail.includes("source=")),
     );
 
     if (imports.length === 0) {
