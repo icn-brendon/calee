@@ -2641,7 +2641,7 @@ export class CaleePanel extends LitElement {
     try {
       const newTask = (await this.hass.callWS(wsMsg)) as PlannerTask | null;
       if (newTask) {
-        if ((newTask as any).merged) {
+        if (newTask.merged) {
           // Duplicate was merged - update existing task in state
           this._tasks = this._tasks.map((t) =>
             t.id === newTask.id ? newTask : t,
@@ -2695,7 +2695,7 @@ export class CaleePanel extends LitElement {
         preset_id: e.detail.presetId,
       })) as PlannerTask | null;
       if (result) {
-        if ((result as any).merged) {
+        if (result.merged) {
           this._tasks = this._tasks.map((t) =>
             t.id === result.id ? result : t,
           );

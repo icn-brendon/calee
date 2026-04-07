@@ -9,6 +9,7 @@ record audit -> fire bus event (for WS subscribers) -> save.
 
 from __future__ import annotations
 
+import json
 import logging
 from datetime import UTC, date, datetime, timedelta
 
@@ -1922,25 +1923,37 @@ class PlannerAPI:
         )
 
     async def _handle_create_routine(self, call: ServiceCall) -> None:
+        tasks = call.data.get("tasks", [])
+        if isinstance(tasks, str):
+            tasks = json.loads(tasks)
+        shopping_items = call.data.get("shopping_items", [])
+        if isinstance(shopping_items, str):
+            shopping_items = json.loads(shopping_items)
         await self.async_create_routine(
             name=call.data["name"],
             emoji=call.data.get("emoji", ""),
             description=call.data.get("description", ""),
             shift_template_id=call.data.get("shift_template_id"),
-            tasks=call.data.get("tasks", []),
-            shopping_items=call.data.get("shopping_items", []),
+            tasks=tasks,
+            shopping_items=shopping_items,
             user_id=call.context.user_id,
         )
 
     async def _handle_update_routine(self, call: ServiceCall) -> None:
+        tasks = call.data.get("tasks")
+        if isinstance(tasks, str):
+            tasks = json.loads(tasks)
+        shopping_items = call.data.get("shopping_items")
+        if isinstance(shopping_items, str):
+            shopping_items = json.loads(shopping_items)
         await self.async_update_routine(
             routine_id=call.data["routine_id"],
             name=call.data.get("name"),
             emoji=call.data.get("emoji"),
             description=call.data.get("description"),
             shift_template_id=call.data.get("shift_template_id", ...),
-            tasks=call.data.get("tasks"),
-            shopping_items=call.data.get("shopping_items"),
+            tasks=tasks,
+            shopping_items=shopping_items,
             user_id=call.context.user_id,
         )
 

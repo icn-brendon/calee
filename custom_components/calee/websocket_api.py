@@ -681,7 +681,9 @@ async def ws_handle_delete_event(
         vol.Optional("category", default=""): str,
         vol.Optional("is_recurring", default=False): bool,
         vol.Optional("recur_reset_hour", default=0): int,
-        vol.Optional("quantity", default=1.0): vol.Any(float, int),
+        vol.Optional("quantity", default=1.0): vol.All(
+            vol.Coerce(float), vol.Range(min=0.1)
+        ),
         vol.Optional("unit", default=""): str,
         vol.Optional("price"): vol.Any(float, int, None),
     }
@@ -749,7 +751,9 @@ async def ws_handle_create_task(
         vol.Optional("category"): str,
         vol.Optional("is_recurring"): bool,
         vol.Optional("recur_reset_hour"): int,
-        vol.Optional("quantity"): vol.Any(float, int),
+        vol.Optional("quantity"): vol.All(
+            vol.Coerce(float), vol.Range(min=0.1)
+        ),
         vol.Optional("unit"): str,
         vol.Optional("price"): vol.Any(float, int, None),
     }

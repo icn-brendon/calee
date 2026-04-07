@@ -1218,6 +1218,14 @@ export class CaleeShoppingView extends LitElement {
     }
   }
 
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    if (this._toastTimer) {
+      clearTimeout(this._toastTimer);
+      this._toastTimer = null;
+    }
+  }
+
   /** Show a toast notification that auto-dismisses. */
   private _showToast(message: string): void {
     if (this._toastTimer) clearTimeout(this._toastTimer);

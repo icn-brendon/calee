@@ -205,7 +205,7 @@ class SqlPlannerStore(AbstractPlannerStore):
                     _LOGGER.info(
                         "Added missing column %s.%s", table_name, col_name
                     )
-                except Exception:
+                except (sa.exc.OperationalError, sa.exc.ProgrammingError):
                     # Column already exists — expected on up-to-date installs.
                     pass
 
