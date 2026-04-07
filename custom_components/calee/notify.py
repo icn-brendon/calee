@@ -20,6 +20,7 @@ from .const import (
     DEFAULT_MORNING_SUMMARY_HOUR,
     DEFAULT_NOTIFICATION_TARGET,
     DEFAULT_NOTIFICATIONS_ENABLED,
+    DEFAULT_REMINDER_CALENDARS,
     DEFAULT_REMINDER_MINUTES,
     DEFAULT_TIME_FORMAT,
     DOMAIN,
@@ -54,7 +55,17 @@ async def async_setup_shift_reminders(
     # Initialise per-entry notification state.
     entry_data = hass.data[DOMAIN][entry.entry_id]
     entry_data.setdefault(_KEY_NOTIFIED_EVENTS, set())
-    entry_data.setdefault(_KEY_MORNING_SENT_DATE, None)
+
+    # Restore morning summary sent date from persisted options (survives restart).
+    persisted_sent = entry.options.get("_morning_sent_date")
+    if persisted_sent:
+        try:
+            from datetime import date as _date_type
+            entry_data[_KEY_MORNING_SENT_DATE] = _date_type.fromisoformat(persisted_sent)
+        except (ValueError, TypeError):
+            entry_data.setdefault(_KEY_MORNING_SENT_DATE, None)
+    else:
+        entry_data.setdefault(_KEY_MORNING_SENT_DATE, None)
 
     cancel_callbacks: list = []
 
@@ -95,8 +106,13 @@ async def async_setup_shift_reminders(
         edata = hass.data[DOMAIN][entry.entry_id]
         sent_date = edata.get(_KEY_MORNING_SENT_DATE)
         if now.hour == summary_hour and sent_date != now.date():
-            edata[_KEY_MORNING_SENT_DATE] = now.date()
             await async_send_morning_summary(hass, store, entry)
+            # Mark sent AFTER successful send so failures can retry.
+            edata[_KEY_MORNING_SENT_DATE] = now.date()
+            # Persist to entry options so it survives restart.
+            new_opts = dict(entry.options)
+            new_opts["_morning_sent_date"] = now.date().isoformat()
+            hass.config_entries.async_update_entry(entry, options=new_opts)
 
     cancel_morning = async_track_time_interval(
         hass, _morning_check, timedelta(minutes=1)
@@ -126,14 +142,19 @@ async def async_check_and_send_reminders(
 
     now = dt_util.now()
 
-    # Get work shifts (all active events from the work_shifts calendar).
-    events = store.get_active_events(calendar_id="work_shifts")
+    # Get events from all configured reminder calendars.
+    reminder_calendars = entry.options.get(
+        "reminder_calendars", DEFAULT_REMINDER_CALENDARS
+    )
+    events = []
+    for cal_id in reminder_calendars:
+        events.extend(store.get_active_events(calendar_id=cal_id))
 
     notified: set[str] = hass.data[DOMAIN][entry.entry_id][_KEY_NOTIFIED_EVENTS]
     time_format = entry.options.get("time_format", DEFAULT_TIME_FORMAT)
 
     # Prune event IDs where the shift has already ended to prevent unbounded
-    # growth of the notified set.
+    # growth of the notified set.  Also dismiss stale persistent notifications.
     active_ids = {e.id for e in events}
     stale_ids = set()
     for eid in notified:
@@ -146,6 +167,12 @@ async def async_check_and_send_reminders(
             end_dt = _parse_datetime(ev.end)
             if end_dt is not None and end_dt <= now:
                 stale_ids.add(eid)
+    for eid in stale_ids:
+        await hass.services.async_call(
+            "persistent_notification",
+            "dismiss",
+            {"notification_id": f"calee_shift_{eid}"},
+        )
     notified -= stale_ids
 
     for event in events:
@@ -226,10 +253,11 @@ async def _send_shift_notification(
         "message": message,
         "data": {
             "actions": [
-                {"action": ACTION_OPEN_PLANNER, "title": "Open Planner"},
-                {"action": ACTION_SNOOZE_15, "title": "Snooze 15min"},
-                {"action": ACTION_SNOOZE_60, "title": "Snooze 1hr"},
+                {"action": f"CALEE_OPEN_{event.id}", "title": "Open Planner", "uri": PANEL_URL},
+                {"action": f"CALEE_SNOOZE_15_{event.id}", "title": "Snooze 15min"},
+                {"action": f"CALEE_SNOOZE_60_{event.id}", "title": "Snooze 1hr"},
             ],
+            "action_data": {"event_id": event.id},
             "url": PANEL_URL,
             "tag": f"calee_shift_{event.id}",
         },
@@ -257,7 +285,12 @@ async def async_send_morning_summary(
     fmt = "%I:%M %p" if time_format == "12h" else "%H:%M"
 
     # Today's shifts — compare in local time for correct day attribution.
-    all_shifts = store.get_active_events(calendar_id="work_shifts")
+    reminder_calendars = entry.options.get(
+        "reminder_calendars", DEFAULT_REMINDER_CALENDARS
+    )
+    all_shifts = []
+    for cal_id in reminder_calendars:
+        all_shifts.extend(store.get_active_events(calendar_id=cal_id))
     shifts = []
     for ev in all_shifts:
         start_dt = _parse_datetime(ev.start)
@@ -354,12 +387,13 @@ def _register_notification_actions(
         """Handle mobile_app_notification_action events."""
         action = event.data.get("action", "")
 
-        if action == ACTION_SNOOZE_15:
+        if action.startswith("CALEE_SNOOZE_15_"):
             await _handle_snooze_from_notification(hass, event, 15)
-        elif action == ACTION_SNOOZE_60:
+        elif action.startswith("CALEE_SNOOZE_60_"):
             await _handle_snooze_from_notification(hass, event, 60)
-        elif action == ACTION_OPEN_PLANNER:
-            # No server-side action needed — the Companion app handles the URL.
+        elif action.startswith("CALEE_OPEN"):
+            # No server-side action needed — the Companion app navigates via
+            # the ``uri`` key included in the action data.
             pass
 
     return hass.bus.async_listen(
@@ -373,14 +407,19 @@ async def _handle_snooze_from_notification(
     minutes: int,
 ) -> None:
     """Snooze a shift reminder triggered by a notification action."""
-    tag = event.data.get("tag", "")
+    # Prefer event_id from action_data (unique per event), fall back to tag.
+    action_data = event.data.get("action_data", {})
+    event_id = action_data.get("event_id") if isinstance(action_data, dict) else None
 
-    # Extract event_id from the tag format "calee_shift_{event_id}".
-    if not tag.startswith("calee_shift_"):
-        _LOGGER.debug("Notification action tag %r does not match expected format", tag)
-        return
-
-    event_id = tag.removeprefix("calee_shift_")
+    if not event_id:
+        tag = event.data.get("tag", "")
+        # Extract event_id from the tag format "calee_shift_{event_id}".
+        if not tag.startswith("calee_shift_"):
+            _LOGGER.debug(
+                "Notification action tag %r does not match expected format", tag
+            )
+            return
+        event_id = tag.removeprefix("calee_shift_")
 
     # Find the correct config entry by checking which entry's store owns this event.
     data = hass.data.get(DOMAIN, {})
@@ -422,9 +461,7 @@ def _parse_datetime(iso_str: str | None) -> datetime | None:
     try:
         dt = dt_util.parse_datetime(iso_str)
         if dt is not None and dt.tzinfo is None:
-            from datetime import UTC
-
-            dt = dt.replace(tzinfo=UTC)
+            dt = dt.replace(tzinfo=dt_util.DEFAULT_TIME_ZONE)
         return dt
     except (ValueError, TypeError):
         return None

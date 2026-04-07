@@ -15,6 +15,7 @@ from datetime import UTC, date, datetime, timedelta
 
 from homeassistant.core import HomeAssistant, ServiceCall, callback
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.util import dt as dt_util
 
 from .const import (
     ATTR_CALENDAR_ID,
@@ -896,9 +897,14 @@ class PlannerAPI:
                 ) from exc
 
         target_date = date.fromisoformat(shift_date)
-        start_dt = datetime.combine(target_date, datetime.strptime(template.start_time, "%H:%M").time())
+        tz = dt_util.DEFAULT_TIME_ZONE
+        start_dt = datetime.combine(
+            target_date, datetime.strptime(template.start_time, "%H:%M").time()
+        ).replace(tzinfo=tz)
         end_date = target_date + timedelta(days=1) if template.is_overnight else target_date
-        end_dt = datetime.combine(end_date, datetime.strptime(template.end_time, "%H:%M").time())
+        end_dt = datetime.combine(
+            end_date, datetime.strptime(template.end_time, "%H:%M").time()
+        ).replace(tzinfo=tz)
 
         event = PlannerEvent(
             calendar_id=template.calendar_id,

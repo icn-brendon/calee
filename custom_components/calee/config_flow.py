@@ -35,6 +35,7 @@ from .const import (
     DEFAULT_NOTIFICATION_TARGET,
     DEFAULT_NOTIFICATIONS_ENABLED,
     DEFAULT_POSTGRESQL_PORT,
+    DEFAULT_REMINDER_CALENDARS,
     DEFAULT_REMINDER_MINUTES,
     DEFAULT_TIME_FORMAT,
     DEFAULT_WEEK_START,
@@ -170,32 +171,55 @@ class CaleeOptionsFlow(OptionsFlow):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Manage general options and offer backend switching."""
+        errors: dict[str, str] = {}
+
         if user_input is not None:
-            chosen_backend = user_input.pop(CONF_STORAGE_BACKEND, None)
-            current_backend = self._config_entry.data.get(
-                CONF_STORAGE_BACKEND, BACKEND_JSON
-            )
+            # Validate notification_target if provided.
+            notification_target = user_input.get("notification_target", "")
+            if notification_target and not self.hass.services.has_service(
+                "notify", notification_target
+            ):
+                errors["notification_target"] = "invalid_notify_service"
 
-            # If the user picked a different backend, go to the database step.
-            if chosen_backend and chosen_backend != current_backend:
-                self._new_backend = chosen_backend
-                if chosen_backend == BACKEND_JSON:
-                    # Switching back to JSON — no DB details needed.
-                    new_data = {CONF_STORAGE_BACKEND: BACKEND_JSON}
-                    self.hass.config_entries.async_update_entry(
-                        self._config_entry,
-                        data=new_data,
-                    )
-                    user_input["_pending_migration"] = current_backend
-                    return self.async_create_entry(data=user_input)
-                return await self.async_step_database()
+            # Parse reminder_calendars from comma-separated string.
+            raw_calendars = user_input.pop("reminder_calendars", "")
+            if raw_calendars:
+                user_input["reminder_calendars"] = [
+                    c.strip() for c in raw_calendars.split(",") if c.strip()
+                ]
+            else:
+                user_input["reminder_calendars"] = list(DEFAULT_REMINDER_CALENDARS)
 
-            return self.async_create_entry(data=user_input)
+            if not errors:
+                chosen_backend = user_input.pop(CONF_STORAGE_BACKEND, None)
+                current_backend = self._config_entry.data.get(
+                    CONF_STORAGE_BACKEND, BACKEND_JSON
+                )
+
+                # If the user picked a different backend, go to the database step.
+                if chosen_backend and chosen_backend != current_backend:
+                    self._new_backend = chosen_backend
+                    if chosen_backend == BACKEND_JSON:
+                        # Switching back to JSON — no DB details needed.
+                        new_data = {CONF_STORAGE_BACKEND: BACKEND_JSON}
+                        self.hass.config_entries.async_update_entry(
+                            self._config_entry,
+                            data=new_data,
+                        )
+                        user_input["_pending_migration"] = current_backend
+                        return self.async_create_entry(data=user_input)
+                    return await self.async_step_database()
+
+                return self.async_create_entry(data=user_input)
 
         current = self._config_entry.options
         current_backend = self._config_entry.data.get(
             CONF_STORAGE_BACKEND, BACKEND_JSON
         )
+
+        # Display reminder_calendars as comma-separated string for editing.
+        current_calendars = current.get("reminder_calendars", DEFAULT_REMINDER_CALENDARS)
+        calendars_str = ", ".join(current_calendars) if isinstance(current_calendars, list) else str(current_calendars)
 
         return self.async_show_form(
             step_id="init",
@@ -254,11 +278,16 @@ class CaleeOptionsFlow(OptionsFlow):
                         ),
                     ): str,
                     vol.Optional(
+                        "reminder_calendars",
+                        default=calendars_str,
+                    ): str,
+                    vol.Optional(
                         CONF_STORAGE_BACKEND,
                         default=current_backend,
                     ): vol.In(_BACKEND_LABELS),
                 }
             ),
+            errors=errors,
         )
 
     async def async_step_database(
