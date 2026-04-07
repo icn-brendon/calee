@@ -28,6 +28,7 @@ from .const import (
     CONF_STORAGE_BACKEND,
     DOMAIN,
 )
+from .notify import async_setup_shift_reminders
 from .panel import async_register_panel, async_unregister_panel
 from .websocket_api import async_register_websocket_commands
 
@@ -189,6 +190,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: CaleeConfigEntry) -> boo
     # Register WebSocket commands (idempotent — only once per HA instance).
     async_register_websocket_commands(hass)
 
+    # Set up the shift reminder and morning summary notification system.
+    try:
+        notification_cancels = await async_setup_shift_reminders(
+            hass, store, entry
+        )
+        hass.data[DOMAIN][entry.entry_id]["cancel_notifications"] = notification_cancels
+    except Exception:
+        _LOGGER.exception("Failed to set up shift reminder system")
+
     # Forward to entity platforms.
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
@@ -208,6 +218,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: CaleeConfigEntry) -> bo
             cancel = data.get("cancel_recurrence_interval")
             if cancel:
                 cancel()
+            # Cancel notification timers and action listeners.
+            for cancel_fn in data.get("cancel_notifications", []):
+                cancel_fn()
             await data["api"].async_unregister_services()
             await data["store"].async_close()
 

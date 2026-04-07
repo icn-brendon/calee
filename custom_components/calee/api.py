@@ -933,13 +933,18 @@ class PlannerAPI:
     ) -> None:
         """Record a snooze for a shift reminder.
 
-        Snooze state is persisted so the notification system knows not
-        to re-fire within the snooze window.  The actual re-notification
-        scheduling is handled by the notify module (Milestone 4).
+        Sets snooze_until on the event so the notification system knows
+        not to re-fire until the snooze window expires.
         """
         event = self._store.get_event(event_id)
         if event is None:
             raise HomeAssistantError(f"Event '{event_id}' not found")
+
+        snooze_until = (datetime.now(UTC) + timedelta(minutes=minutes)).isoformat()
+        event.snooze_until = snooze_until
+        event.updated_at = datetime.now(UTC).isoformat()
+        event.version += 1
+        await self._store.async_put_event(event)
 
         self._store.record_audit(
             user_id=user_id or "",

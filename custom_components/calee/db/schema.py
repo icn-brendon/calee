@@ -48,6 +48,7 @@ events = sa.Table(
     sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False),
     sa.Column("version", sa.Integer, default=1),
     sa.Column("deleted_at", sa.DateTime(timezone=True), nullable=True),
+    sa.Column("snooze_until", sa.DateTime(timezone=True), nullable=True),
     sa.Index("ix_calee_events_calendar", "calendar_id"),
     sa.Index("ix_calee_events_source", "source", "external_id"),
     sa.Index("ix_calee_events_deleted", "deleted_at"),

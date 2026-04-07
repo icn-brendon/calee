@@ -30,6 +30,10 @@ from .const import (
     DEFAULT_MARIADB_HOST,
     DEFAULT_MARIADB_PORT,
     DEFAULT_MAX_EVENT_AGE_DAYS,
+    DEFAULT_MORNING_SUMMARY_ENABLED,
+    DEFAULT_MORNING_SUMMARY_HOUR,
+    DEFAULT_NOTIFICATION_TARGET,
+    DEFAULT_NOTIFICATIONS_ENABLED,
     DEFAULT_POSTGRESQL_PORT,
     DEFAULT_REMINDER_MINUTES,
     DEFAULT_TIME_FORMAT,
@@ -225,6 +229,30 @@ class CaleeOptionsFlow(OptionsFlow):
                         "time_format",
                         default=current.get("time_format", DEFAULT_TIME_FORMAT),
                     ): vol.In({"12h": "12-hour", "24h": "24-hour"}),
+                    vol.Optional(
+                        "notifications_enabled",
+                        default=current.get(
+                            "notifications_enabled", DEFAULT_NOTIFICATIONS_ENABLED
+                        ),
+                    ): bool,
+                    vol.Optional(
+                        "morning_summary_enabled",
+                        default=current.get(
+                            "morning_summary_enabled", DEFAULT_MORNING_SUMMARY_ENABLED
+                        ),
+                    ): bool,
+                    vol.Optional(
+                        "morning_summary_hour",
+                        default=current.get(
+                            "morning_summary_hour", DEFAULT_MORNING_SUMMARY_HOUR
+                        ),
+                    ): vol.All(vol.Coerce(int), vol.Range(min=0, max=23)),
+                    vol.Optional(
+                        "notification_target",
+                        default=current.get(
+                            "notification_target", DEFAULT_NOTIFICATION_TARGET
+                        ),
+                    ): str,
                     vol.Optional(
                         CONF_STORAGE_BACKEND,
                         default=current_backend,

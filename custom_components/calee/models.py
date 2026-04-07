@@ -79,6 +79,7 @@ class PlannerEvent:
     updated_at: str = field(default_factory=_utc_now_iso)
     version: int = 1  # optimistic locking — callers must pass expected version on update
     deleted_at: str | None = None  # soft delete — ISO 8601 timestamp or None
+    snooze_until: str | None = None  # ISO 8601 datetime — reminder suppressed until this time
 
     @property
     def is_overnight(self) -> bool:
@@ -110,6 +111,7 @@ class PlannerEvent:
             "updated_at": self.updated_at,
             "version": self.version,
             "deleted_at": self.deleted_at,
+            "snooze_until": self.snooze_until,
         }
 
     @classmethod
@@ -131,6 +133,7 @@ class PlannerEvent:
             updated_at=data.get("updated_at", ""),
             version=data.get("version", 1),
             deleted_at=data.get("deleted_at"),
+            snooze_until=data.get("snooze_until"),
         )
 
 

@@ -192,6 +192,7 @@ class SqlPlannerStore(AbstractPlannerStore):
             ("calee_tasks", "unit", "VARCHAR(16) DEFAULT ''"),
             ("calee_tasks", "price", "FLOAT"),
             ("calee_tasks", "position", "INTEGER DEFAULT 0"),
+            ("calee_events", "snooze_until", "TIMESTAMP WITH TIME ZONE"),
         ]
 
         async with self._engine.begin() as conn:
@@ -640,6 +641,7 @@ class SqlPlannerStore(AbstractPlannerStore):
                     updated_at=_dt_to_iso(row.updated_at) or "",
                     version=row.version or 1,
                     deleted_at=_dt_to_iso(row.deleted_at),
+                    snooze_until=_dt_to_iso(getattr(row, "snooze_until", None)),
                 )
                 for row in result
             }
@@ -829,6 +831,7 @@ def _event_to_sql(event: PlannerEvent) -> dict:
     d["created_at"] = _iso_to_dt(d["created_at"])
     d["updated_at"] = _iso_to_dt(d["updated_at"])
     d["deleted_at"] = _iso_to_dt(d.get("deleted_at"))
+    d["snooze_until"] = _iso_to_dt(d.get("snooze_until"))
     return d
 
 
