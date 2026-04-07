@@ -103,6 +103,8 @@ export class CaleeMonthView extends LitElement {
 
   @state() private _grid: MonthDay[] = [];
   @state() private _eventsByDay: Map<string, PlannerEvent[]> = new Map();
+  @state() private _taskCountByDay: Map<string, number> = new Map();
+  @state() private _conflictDays: Set<string> = new Set();
 
   private _today = dateKey(new Date());
 
@@ -124,6 +126,14 @@ export class CaleeMonthView extends LitElement {
       changed.has("weekStartsMonday")
     ) {
       this._buildEventMap();
+    }
+
+    if (changed.has("tasks")) {
+      this._buildTaskCountMap();
+    }
+
+    if (changed.has("conflicts")) {
+      this._buildConflictDays();
     }
   }
 
@@ -163,6 +173,37 @@ export class CaleeMonthView extends LitElement {
     }
 
     this._eventsByDay = map;
+  }
+
+  /** Precompute task counts per day to avoid O(days x tasks) in render. */
+  private _buildTaskCountMap(): void {
+    const map = new Map<string, number>();
+    for (const t of this.tasks) {
+      if (t.due && !t.completed && !t.deleted_at) {
+        const key = t.due.slice(0, 10);
+        map.set(key, (map.get(key) ?? 0) + 1);
+      }
+    }
+    this._taskCountByDay = map;
+  }
+
+  /** Precompute which days have conflicts, handling multi-day event spans. */
+  private _buildConflictDays(): void {
+    const days = new Set<string>();
+    for (const c of this.conflicts) {
+      // For each event in the conflict, add every day it spans.
+      for (const ev of [c.eventA, c.eventB]) {
+        const start = parseISO(ev.start);
+        const end = parseISO(ev.end);
+        const cursor = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+        const endDay = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+        while (cursor <= endDay) {
+          days.add(dateKey(cursor));
+          cursor.setDate(cursor.getDate() + 1);
+        }
+      }
+    }
+    this._conflictDays = days;
   }
 
   // ── Event handlers ───────────────────────────────────────────────────
@@ -248,18 +289,11 @@ export class CaleeMonthView extends LitElement {
     const dayEvents = this._eventsByDay.get(day.key) ?? [];
     const overflow = dayEvents.length - MAX_VISIBLE_EVENTS;
 
-    // Task count for this day.
-    const dayTasks = this.tasks.filter(
-      (t) => t.due && t.due.slice(0, 10) === day.key && !t.completed && !t.deleted_at,
-    );
-    const taskCount = dayTasks.length;
+    // Task count for this day (precomputed in willUpdate).
+    const taskCount = this._taskCountByDay.get(day.key) ?? 0;
 
-    // Conflict check for this day.
-    const dayHasConflict = this.conflicts.some((c) => {
-      const aDate = c.eventA.start.slice(0, 10);
-      const bDate = c.eventB.start.slice(0, 10);
-      return aDate === day.key || bDate === day.key;
-    });
+    // Conflict check for this day (precomputed, handles multi-day spans).
+    const dayHasConflict = this._conflictDays.has(day.key);
 
     const classes: string[] = ["cell"];
     if (!day.inMonth) classes.push("outside");

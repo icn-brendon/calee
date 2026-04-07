@@ -2028,6 +2028,10 @@ class PlannerAPI:
         if not event.recurrence_rule:
             raise HomeAssistantError(f"Event '{event_id}' is not recurring")
 
+        await async_require_write(
+            self._hass, self._store, user_id, "calendar", event.calendar_id
+        )
+
         # Validate date format.
         try:
             date.fromisoformat(exception_date)
@@ -2071,6 +2075,16 @@ class PlannerAPI:
             raise HomeAssistantError(f"Event '{event_id}' not found")
         if not parent.recurrence_rule:
             raise HomeAssistantError(f"Event '{event_id}' is not recurring")
+
+        # Permission: must be able to write to the parent's calendar.
+        await async_require_write(
+            self._hass, self._store, user_id, "calendar", parent.calendar_id
+        )
+        # If moving to a different calendar, also check write access there.
+        if calendar_id and calendar_id != parent.calendar_id:
+            await async_require_write(
+                self._hass, self._store, user_id, "calendar", calendar_id
+            )
 
         # Validate date.
         try:
@@ -2164,6 +2178,10 @@ class PlannerAPI:
         if cal is None:
             raise HomeAssistantError(f"Calendar '{calendar_id}' not found")
 
+        await async_require_write(
+            self._hass, self._store, user_id, "calendar", calendar_id
+        )
+
         if name is not None:
             cal.name = name
         if color is not None:
@@ -2193,10 +2211,15 @@ class PlannerAPI:
         if cal is None:
             raise HomeAssistantError(f"Calendar '{calendar_id}' not found")
 
-        # Soft-delete all events in this calendar.
+        await async_require_write(
+            self._hass, self._store, user_id, "calendar", calendar_id
+        )
+
+        # Soft-delete all events in this calendar and persist each.
         events = self._store.get_active_events(calendar_id=calendar_id)
         for ev in events:
             self._store.soft_delete_event(ev.id)
+            await self._store.async_put_event(ev)
 
         # Remove the calendar.
         await self._store.async_remove_calendar(calendar_id)
@@ -2245,6 +2268,10 @@ class PlannerAPI:
         if lst is None:
             raise HomeAssistantError(f"List '{list_id}' not found")
 
+        await async_require_write(
+            self._hass, self._store, user_id, "list", list_id
+        )
+
         if name is not None:
             lst.name = name
 
@@ -2270,10 +2297,15 @@ class PlannerAPI:
         if lst is None:
             raise HomeAssistantError(f"List '{list_id}' not found")
 
-        # Soft-delete all tasks in this list.
+        await async_require_write(
+            self._hass, self._store, user_id, "list", list_id
+        )
+
+        # Soft-delete all tasks in this list and persist each.
         tasks = self._store.get_active_tasks(list_id=list_id)
         for task in tasks:
             self._store.soft_delete_task(task.id)
+            await self._store.async_put_task(task)
 
         # Remove the list.
         await self._store.async_remove_list(list_id)

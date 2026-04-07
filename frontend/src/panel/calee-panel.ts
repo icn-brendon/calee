@@ -443,6 +443,11 @@ export class CaleePanel extends LitElement {
     return conflicts;
   }
 
+  /** Recompute conflicts from the current in-memory events list. */
+  private _recomputeConflicts(): void {
+    this._conflicts = this._detectConflicts(this._events);
+  }
+
   /**
    * Lazy-load tasks via WebSocket.
    * Called when switching to tasks or shopping view for the first time,
@@ -2303,7 +2308,7 @@ export class CaleePanel extends LitElement {
         </div>
       ` : nothing}
 
-      ${(event as any).is_recurring_instance ? html`
+      ${event.is_recurring_instance ? html`
         <div class="drawer-actions" style="flex-wrap:wrap;">
           <button class="drawer-btn drawer-btn-edit" @click=${() => this._onEditThisOccurrence(event)}>Edit this occurrence</button>
           <button class="drawer-btn drawer-btn-edit" style="background:var(--secondary-text-color,#727272);" @click=${() => this._onEditAllOccurrences(event)}>Edit all</button>
@@ -2439,7 +2444,7 @@ export class CaleePanel extends LitElement {
 
   /** Extract the occurrence date from a recurring instance ID like "{parentId}_{YYYY-MM-DD}". */
   private _getOccurrenceDate(event: PlannerEvent): string {
-    const parentId = (event as any).parent_event_id;
+    const parentId = event.parent_event_id;
     if (parentId && event.id.startsWith(parentId + "_")) {
       return event.id.slice(parentId.length + 1);
     }
@@ -2449,7 +2454,7 @@ export class CaleePanel extends LitElement {
 
   /** Edit this occurrence: create standalone event and add exception to parent. */
   private async _onEditThisOccurrence(event: PlannerEvent): Promise<void> {
-    const parentId = (event as any).parent_event_id || event.id.split("_").slice(0, -1).join("_");
+    const parentId = event.parent_event_id || event.id.split("_").slice(0, -1).join("_");
     const occDate = this._getOccurrenceDate(event);
     this._closeDetailDrawer();
 
@@ -2470,7 +2475,7 @@ export class CaleePanel extends LitElement {
 
   /** Edit all occurrences: open the parent event for editing. */
   private _onEditAllOccurrences(event: PlannerEvent): void {
-    const parentId = (event as any).parent_event_id || event.id.split("_").slice(0, -1).join("_");
+    const parentId = event.parent_event_id || event.id.split("_").slice(0, -1).join("_");
     // Find the parent in raw events (it may not be in expanded list).
     // We'll load it fresh.
     this._closeDetailDrawer();
@@ -2496,7 +2501,7 @@ export class CaleePanel extends LitElement {
 
   /** Delete this occurrence: add exception to parent without creating replacement. */
   private async _onDeleteThisOccurrence(event: PlannerEvent): Promise<void> {
-    const parentId = (event as any).parent_event_id || event.id.split("_").slice(0, -1).join("_");
+    const parentId = event.parent_event_id || event.id.split("_").slice(0, -1).join("_");
     const occDate = this._getOccurrenceDate(event);
     try {
       await this.hass.callWS({
@@ -2506,6 +2511,7 @@ export class CaleePanel extends LitElement {
       });
       // Remove the virtual instance from local state.
       this._events = this._events.filter((ev) => ev.id !== event.id);
+      this._recomputeConflicts();
       this._closeDetailDrawer();
     } catch (err) {
       console.error("Failed to delete occurrence:", err);
@@ -2514,7 +2520,7 @@ export class CaleePanel extends LitElement {
 
   /** Delete all occurrences: soft-delete the parent event. */
   private async _onDeleteAllOccurrences(event: PlannerEvent): Promise<void> {
-    const parentId = (event as any).parent_event_id || event.id.split("_").slice(0, -1).join("_");
+    const parentId = event.parent_event_id || event.id.split("_").slice(0, -1).join("_");
     try {
       await this.hass.callWS({
         type: "calee/delete_event",
@@ -2522,8 +2528,9 @@ export class CaleePanel extends LitElement {
       });
       // Remove all instances from local state.
       this._events = this._events.filter(
-        (ev) => ev.id !== parentId && !((ev as any).parent_event_id === parentId),
+        (ev) => ev.id !== parentId && !(ev.parent_event_id === parentId),
       );
+      this._recomputeConflicts();
       this._closeDetailDrawer();
     } catch (err) {
       console.error("Failed to delete all occurrences:", err);
@@ -2664,7 +2671,7 @@ export class CaleePanel extends LitElement {
     if (event) {
       if (this.narrow) {
         // For recurring instances on mobile, show recurring action dialog
-        if ((event as any).is_recurring_instance) {
+        if (event.is_recurring_instance) {
           this._recurringActionEvent = event;
           this._showRecurringActionDialog = true;
         } else {
@@ -3110,6 +3117,7 @@ export class CaleePanel extends LitElement {
           this._events = [...this._events, created as PlannerEvent];
         }
       }
+      this._recomputeConflicts();
     } catch (err) {
       console.error("Failed to save event:", err);
     }
@@ -3121,7 +3129,7 @@ export class CaleePanel extends LitElement {
     const event = this._events.find((ev) => ev.id === eventId);
 
     // If this is a recurring instance, show recurring action dialog instead.
-    if (event && (event as any).is_recurring_instance) {
+    if (event && event.is_recurring_instance) {
       this._recurringActionEvent = event;
       this._showRecurringActionDialog = true;
       return;
@@ -3133,6 +3141,7 @@ export class CaleePanel extends LitElement {
         event_id: eventId,
       });
       this._events = this._events.filter((ev) => ev.id !== eventId);
+      this._recomputeConflicts();
     } catch (err) {
       console.error("Failed to delete event:", err);
     }

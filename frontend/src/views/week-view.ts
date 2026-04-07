@@ -165,6 +165,7 @@ export class CaleeWeekView extends LitElement {
   @state() private _weekDays: Date[] = [];
   @state() private _allDayByDay: Map<string, PlannerEvent[]> = new Map();
   @state() private _timedByDay: Map<string, PlannerEvent[]> = new Map();
+  @state() private _taskCountByDay: Map<string, number> = new Map();
   @state() private _now: Date = new Date();
 
   @query(".time-grid-scroll") private _scrollContainer!: HTMLElement;
@@ -205,6 +206,10 @@ export class CaleeWeekView extends LitElement {
       changed.has("narrow")
     ) {
       this._categoriseEvents();
+    }
+
+    if (changed.has("tasks")) {
+      this._buildTaskCountMap();
     }
   }
 
@@ -267,6 +272,18 @@ export class CaleeWeekView extends LitElement {
 
     this._allDayByDay = allDay;
     this._timedByDay = timed;
+  }
+
+  /** Precompute task counts per day to avoid O(days x tasks) in render. */
+  private _buildTaskCountMap(): void {
+    const map = new Map<string, number>();
+    for (const t of this.tasks) {
+      if (t.due && !t.completed && !t.deleted_at) {
+        const key = t.due.slice(0, 10);
+        map.set(key, (map.get(key) ?? 0) + 1);
+      }
+    }
+    this._taskCountByDay = map;
   }
 
   // ── Event handlers ───────────────────────────────────────────────────
@@ -339,10 +356,8 @@ export class CaleeWeekView extends LitElement {
       if (isToday) classes.push("today");
       if (isSelected) classes.push("selected");
 
-      // Task count for this day.
-      const taskCount = this.tasks.filter(
-        (t) => t.due && t.due.slice(0, 10) === key && !t.completed && !t.deleted_at,
-      ).length;
+      // Task count for this day (precomputed in willUpdate).
+      const taskCount = this._taskCountByDay.get(key) ?? 0;
 
       return html`<div class=${classes.join(" ")}>${fmtDayHeader(d)}${taskCount > 0 ? html`<span class="day-task-count">${taskCount}</span>` : nothing}</div>`;
     });
