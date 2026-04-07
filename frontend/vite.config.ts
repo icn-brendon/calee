@@ -4,7 +4,7 @@ import { resolve } from "path";
 export default defineConfig({
   build: {
     lib: {
-      entry: resolve(__dirname, "src/panel/calee-panel.ts"),
+      entry: resolve(__dirname, "src/shell/calee-shell.ts"),
       formats: ["es"],
       fileName: () => "planner_panel.js",
     },
