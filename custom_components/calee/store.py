@@ -17,6 +17,7 @@ from .const import (
     DEFAULT_CALENDARS,
     DEFAULT_LISTS,
     DEFAULT_PRESETS,
+    DEFAULT_ROUTINES,
     DEFAULT_TEMPLATES,
     SOFT_DELETE_RETENTION_DAYS,
     STORAGE_KEY,
@@ -32,6 +33,7 @@ from .models import (
     PlannerList,
     PlannerTask,
     RoleAssignment,
+    Routine,
     ShiftTemplate,
     TaskPreset,
 )
@@ -59,6 +61,7 @@ class JsonPlannerStore(AbstractPlannerStore):
         self.lists: dict[str, PlannerList] = {}
         self.tasks: dict[str, PlannerTask] = {}
         self.presets: dict[str, TaskPreset] = {}
+        self.routines: dict[str, Routine] = {}
         self.roles: list[RoleAssignment] = []
         self.audit_log: list[AuditEntry] = []
 
@@ -96,6 +99,9 @@ class JsonPlannerStore(AbstractPlannerStore):
         self.presets = {
             p["id"]: TaskPreset.from_dict(p) for p in raw.get("presets", [])
         }
+        self.routines = {
+            r["id"]: Routine.from_dict(r) for r in raw.get("routines", [])
+        }
         self.roles = [
             RoleAssignment.from_dict(r) for r in raw.get("roles", [])
         ]
@@ -115,6 +121,7 @@ class JsonPlannerStore(AbstractPlannerStore):
             "lists": [lst.to_dict() for lst in self.lists.values()],
             "tasks": [t.to_dict() for t in self.tasks.values()],
             "presets": [p.to_dict() for p in self.presets.values()],
+            "routines": [r.to_dict() for r in self.routines.values()],
             "roles": [r.to_dict() for r in self.roles],
             "audit_log": [a.to_dict() for a in self.audit_log[-_MAX_AUDIT_ENTRIES:]],
         }
@@ -268,6 +275,24 @@ class JsonPlannerStore(AbstractPlannerStore):
         """Hard-delete a preset by id."""
         del self.presets[preset_id]
 
+    # ── Routines ────────────────────────────────────────────────────
+
+    def get_routines(self) -> dict[str, Routine]:
+        """Return all routines keyed by id."""
+        return self.routines
+
+    def get_routine(self, routine_id: str) -> Routine | None:
+        """Return a single routine or *None*."""
+        return self.routines.get(routine_id)
+
+    async def async_put_routine(self, routine: Routine) -> None:
+        """Insert or replace a routine."""
+        self.routines[routine.id] = routine
+
+    async def async_remove_routine(self, routine_id: str) -> None:
+        """Hard-delete a routine by id."""
+        del self.routines[routine_id]
+
     # ── Roles ────────────────────────────────────────────────────────
 
     def get_roles(self) -> list[RoleAssignment]:
@@ -355,6 +380,10 @@ class JsonPlannerStore(AbstractPlannerStore):
                 icon=preset_def.get("icon", ""),
             )
             self.presets[preset.id] = preset
+
+        for routine_def in DEFAULT_ROUTINES:
+            routine = Routine.from_dict(routine_def)
+            self.routines[routine.id] = routine
 
     def _prune_expired_soft_deletes(self) -> None:
         """Remove events/tasks that were soft-deleted more than SOFT_DELETE_RETENTION_DAYS ago."""

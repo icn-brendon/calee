@@ -32,6 +32,39 @@ DEFAULT_TEMPLATES: Final[list[dict[str, str]]] = [
     {"id": "tpl_vshift", "name": "V Shift", "calendar_id": "work_shifts", "start_time": "19:00", "end_time": "07:15", "color": "#1565c0", "emoji": "\U0001f535"},
 ]
 
+# ── Default routines / bundles ─────────────────────────────────────
+DEFAULT_ROUTINES: Final[list[dict]] = [
+    {
+        "id": "routine_night_prep",
+        "name": "Night Shift Prep",
+        "emoji": "\U0001f319",
+        "description": "Prepare for tonight's night shift",
+        "shift_template_id": "tpl_night",
+        "tasks": [
+            {"title": "Pack dinner", "list_id": "inbox", "due_offset_days": 0},
+            {"title": "Set alarm", "list_id": "inbox", "due_offset_days": 0},
+        ],
+        "shopping_items": [
+            {"title": "Energy drinks", "category": "food", "quantity": 2},
+            {"title": "Snacks", "category": "food", "quantity": 1},
+        ],
+    },
+    {
+        "id": "routine_weekly_groceries",
+        "name": "Weekly Groceries",
+        "emoji": "\U0001f6d2",
+        "description": "Add the weekly grocery staples",
+        "tasks": [],
+        "shopping_items": [
+            {"title": "Milk", "category": "groceries", "quantity": 2, "unit": "L"},
+            {"title": "Bread", "category": "groceries", "quantity": 1},
+            {"title": "Eggs", "category": "groceries", "quantity": 1, "unit": "dozen"},
+            {"title": "Fruit", "category": "groceries", "quantity": 1},
+            {"title": "Vegetables", "category": "groceries", "quantity": 1},
+        ],
+    },
+]
+
 # ── Default task presets (fast-add) ────────────────────────────────
 DEFAULT_PRESETS: Final[list[dict[str, str]]] = [
     {"id": "preset_milk", "title": "Milk", "list_id": "shopping", "category": "groceries", "icon": "mdi:cup"},
@@ -108,6 +141,10 @@ SERVICE_UNCOMPLETE_TASK: Final = "uncomplete_task"
 SERVICE_ADD_FROM_PRESET: Final = "add_from_preset"
 SERVICE_SET_CALENDAR_PRIVATE: Final = "set_calendar_private"
 SERVICE_SET_LIST_PRIVATE: Final = "set_list_private"
+SERVICE_CREATE_ROUTINE: Final = "create_routine"
+SERVICE_UPDATE_ROUTINE: Final = "update_routine"
+SERVICE_DELETE_ROUTINE: Final = "delete_routine"
+SERVICE_EXECUTE_ROUTINE: Final = "execute_routine"
 
 # ── Attribute keys ───────────────────────────────────────────────────
 ATTR_CALENDAR_ID: Final = "calendar_id"
@@ -170,6 +207,11 @@ WS_TYPE_UPDATE_SETTINGS: Final = f"{DOMAIN}/update_settings"
 WS_TYPE_SET_CALENDAR_PRIVATE: Final = f"{DOMAIN}/set_calendar_private"
 WS_TYPE_SET_LIST_PRIVATE: Final = f"{DOMAIN}/set_list_private"
 WS_TYPE_EXPAND_RECURRING_EVENTS: Final = f"{DOMAIN}/expand_recurring_events"
+WS_TYPE_ROUTINES: Final = f"{DOMAIN}/routines"
+WS_TYPE_CREATE_ROUTINE: Final = f"{DOMAIN}/create_routine"
+WS_TYPE_UPDATE_ROUTINE: Final = f"{DOMAIN}/update_routine"
+WS_TYPE_DELETE_ROUTINE: Final = f"{DOMAIN}/delete_routine"
+WS_TYPE_EXECUTE_ROUTINE: Final = f"{DOMAIN}/execute_routine"
 
 # ── Diagnostics redaction ────────────────────────────────────────────
 REDACT_KEYS: Final = frozenset(

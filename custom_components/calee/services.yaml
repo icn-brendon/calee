@@ -612,3 +612,74 @@ set_list_private:
       required: true
       selector:
         boolean:
+
+create_routine:
+  name: Create routine
+  description: Create a one-tap routine that creates shifts, tasks, and shopping items.
+  fields:
+    name:
+      name: Name
+      description: Routine name.
+      required: true
+      selector:
+        text:
+    emoji:
+      name: Emoji
+      description: Optional emoji displayed on the routine.
+      selector:
+        text:
+    description:
+      name: Description
+      description: Optional description of what the routine does.
+      selector:
+        text:
+          multiline: true
+    shift_template_id:
+      name: Shift template
+      description: Optional shift template ID to create a shift from.
+      selector:
+        text:
+
+update_routine:
+  name: Update routine
+  description: Update an existing routine.
+  fields:
+    routine_id:
+      name: Routine ID
+      description: The ID of the routine to update.
+      required: true
+      selector:
+        text:
+    name:
+      name: Name
+      description: New name (leave blank to keep current).
+      selector:
+        text:
+
+delete_routine:
+  name: Delete routine
+  description: Delete a routine.
+  fields:
+    routine_id:
+      name: Routine ID
+      description: The ID of the routine to delete.
+      required: true
+      selector:
+        text:
+
+execute_routine:
+  name: Execute routine
+  description: Execute a routine for a given date, creating all configured items.
+  fields:
+    routine_id:
+      name: Routine ID
+      description: The ID of the routine to execute.
+      required: true
+      selector:
+        text:
+    date:
+      name: Date
+      description: The date for the routine (ISO 8601 date, e.g. "2026-04-07").
+      required: true
+      selector:
+        text:

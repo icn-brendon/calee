@@ -192,6 +192,8 @@ class PlannerTask:
     category: str = ""  # grouping category (e.g. "food", "household")
     is_recurring: bool = False  # "always item" — auto-resets when completed
     recur_reset_hour: int = 0  # hour of day (0-23) to auto-uncomplete
+    quantity: float = 1.0  # number of units (e.g. 2x Milk)
+    unit: str = ""  # e.g. "L", "kg", "pcs", "pack"
     price: float | None = None  # optional price for shopping items
     position: int = 0  # sort order within the list
     created_at: str = field(default_factory=_utc_now_iso)
@@ -212,6 +214,8 @@ class PlannerTask:
             "category": self.category,
             "is_recurring": self.is_recurring,
             "recur_reset_hour": self.recur_reset_hour,
+            "quantity": self.quantity,
+            "unit": self.unit,
             "price": self.price,
             "position": self.position,
             "created_at": self.created_at,
@@ -234,6 +238,8 @@ class PlannerTask:
             category=data.get("category", ""),
             is_recurring=data.get("is_recurring", False),
             recur_reset_hour=data.get("recur_reset_hour", 0),
+            quantity=data.get("quantity", 1.0),
+            unit=data.get("unit", ""),
             price=data.get("price"),
             position=data.get("position", 0),
             created_at=data.get("created_at", ""),
@@ -375,4 +381,53 @@ class AuditEntry:
             resource_type=data.get("resource_type", ""),
             resource_id=data.get("resource_id", ""),
             detail=data.get("detail", ""),
+        )
+
+
+# ── Routines / Bundles ──────────────────────────────────────────────
+
+
+@dataclass
+class Routine:
+    """A one-tap action that creates multiple items at once.
+
+    A routine can optionally create a shift from a template, add to-do
+    tasks, and add shopping items --- all in a single action.
+    """
+
+    id: str = field(default_factory=_new_id)
+    name: str = ""
+    emoji: str = ""
+    description: str = ""
+    # What this routine creates:
+    shift_template_id: str | None = None  # optional: create a shift from this template
+    tasks: list[dict] = field(default_factory=list)
+    # [{"title": "Pack lunch", "list_id": "inbox", "due_offset_days": 0}]
+    shopping_items: list[dict] = field(default_factory=list)
+    # [{"title": "Energy bars", "category": "food", "quantity": 2}]
+    created_at: str = field(default_factory=_utc_now_iso)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "emoji": self.emoji,
+            "description": self.description,
+            "shift_template_id": self.shift_template_id,
+            "tasks": self.tasks,
+            "shopping_items": self.shopping_items,
+            "created_at": self.created_at,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> Routine:
+        return cls(
+            id=data["id"],
+            name=data.get("name", ""),
+            emoji=data.get("emoji", ""),
+            description=data.get("description", ""),
+            shift_template_id=data.get("shift_template_id"),
+            tasks=data.get("tasks", []),
+            shopping_items=data.get("shopping_items", []),
+            created_at=data.get("created_at", ""),
         )

@@ -16,6 +16,7 @@ from ..models import (
     PlannerList,
     PlannerTask,
     RoleAssignment,
+    Routine,
     ShiftTemplate,
     TaskPreset,
 )
@@ -211,6 +212,28 @@ class AbstractPlannerStore(ABC):
     @abstractmethod
     def get_audit_log(self, limit: int = 500) -> list[AuditEntry]:
         """Return the most recent *limit* audit entries."""
+        ...
+
+    # ── Routines ─────────────────────────────────────────────────────
+
+    @abstractmethod
+    def get_routines(self) -> dict[str, Routine]:
+        """Return all routines keyed by id."""
+        ...
+
+    @abstractmethod
+    def get_routine(self, routine_id: str) -> Routine | None:
+        """Return a single routine or *None*."""
+        ...
+
+    @abstractmethod
+    async def async_put_routine(self, routine: Routine) -> None:
+        """Insert or replace a routine."""
+        ...
+
+    @abstractmethod
+    async def async_remove_routine(self, routine_id: str) -> None:
+        """Hard-delete a routine by id."""
         ...
 
     # ── Deleted items ───────────────────────────────────────────────

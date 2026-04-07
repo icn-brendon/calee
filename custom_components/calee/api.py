@@ -45,11 +45,14 @@ from .const import (
     SERVICE_ADD_TASK,
     SERVICE_COMPLETE_TASK,
     SERVICE_CREATE_PRESET,
+    SERVICE_CREATE_ROUTINE,
     SERVICE_CREATE_TEMPLATE,
     SERVICE_DELETE_PRESET,
+    SERVICE_DELETE_ROUTINE,
     SERVICE_DELETE_SHIFT,
     SERVICE_DELETE_TASK,
     SERVICE_DELETE_TEMPLATE,
+    SERVICE_EXECUTE_ROUTINE,
     SERVICE_IMPORT_CSV,
     SERVICE_IMPORT_ICS,
     SERVICE_LINK_TASK_TO_EVENT,
@@ -60,6 +63,7 @@ from .const import (
     SERVICE_SNOOZE_REMINDER,
     SERVICE_UNCOMPLETE_TASK,
     SERVICE_UNLINK_TASK_FROM_EVENT,
+    SERVICE_UPDATE_ROUTINE,
     SERVICE_UPDATE_SHIFT,
     SERVICE_UPDATE_TASK,
     SERVICE_UPDATE_TEMPLATE,
@@ -68,7 +72,7 @@ from .const import (
 )
 from .db.base import AbstractPlannerStore
 from .importer import ImportResult, parse_csv, parse_ics
-from .models import PlannerEvent, PlannerTask, ShiftTemplate, TaskPreset, _new_id
+from .models import PlannerEvent, PlannerTask, Routine, ShiftTemplate, TaskPreset, _new_id
 from .permissions import async_require_write
 from .recurrence import next_due_date, parse_recurrence
 
@@ -161,6 +165,18 @@ class PlannerAPI:
         self._hass.services.async_register(
             DOMAIN, SERVICE_SET_LIST_PRIVATE, self._handle_set_list_private
         )
+        self._hass.services.async_register(
+            DOMAIN, SERVICE_CREATE_ROUTINE, self._handle_create_routine
+        )
+        self._hass.services.async_register(
+            DOMAIN, SERVICE_UPDATE_ROUTINE, self._handle_update_routine
+        )
+        self._hass.services.async_register(
+            DOMAIN, SERVICE_DELETE_ROUTINE, self._handle_delete_routine
+        )
+        self._hass.services.async_register(
+            DOMAIN, SERVICE_EXECUTE_ROUTINE, self._handle_execute_routine
+        )
 
     async def async_unregister_services(self) -> None:
         """Remove all calee.* services."""
@@ -190,6 +206,10 @@ class PlannerAPI:
             SERVICE_RESTORE_TASK,
             SERVICE_SET_CALENDAR_PRIVATE,
             SERVICE_SET_LIST_PRIVATE,
+            SERVICE_CREATE_ROUTINE,
+            SERVICE_UPDATE_ROUTINE,
+            SERVICE_DELETE_ROUTINE,
+            SERVICE_EXECUTE_ROUTINE,
         ):
             self._hass.services.async_remove(DOMAIN, service)
 
@@ -440,16 +460,59 @@ class PlannerAPI:
         category: str = "",
         is_recurring: bool = False,
         recur_reset_hour: int = 0,
+        quantity: float = 1.0,
+        unit: str = "",
         price: float | None = None,
         user_id: str | None = None,
     ) -> PlannerTask:
-        """Create a new task in a to-do list."""
-        if self._store.get_list(list_id) is None:
+        """Create a new task in a to-do list.
+
+        For shopping lists, if an active task with the same title already
+        exists the quantity is incremented instead of creating a duplicate.
+        The returned task carries ``_merged = True`` so the caller can
+        distinguish a merge from a fresh creation.
+        """
+        planner_list = self._store.get_list(list_id)
+        if planner_list is None:
             raise HomeAssistantError(f"List '{list_id}' not found")
 
         await async_require_write(
             self._hass, self._store, user_id, "list", list_id
         )
+
+        # ── Duplicate merge (shopping lists only) ───────────────────
+        if planner_list.list_type == "shopping":
+            existing_tasks = self._store.get_active_tasks(list_id=list_id)
+            title_lower = title.strip().lower()
+            for existing in existing_tasks:
+                if (
+                    existing.title.strip().lower() == title_lower
+                    and not existing.completed
+                    and existing.deleted_at is None
+                ):
+                    existing.quantity += quantity
+                    existing.updated_at = datetime.now(UTC).isoformat()
+                    existing.version += 1
+                    # Preserve unit if the incoming item has one and the
+                    # existing one does not.
+                    if unit and not existing.unit:
+                        existing.unit = unit
+                    await self._store.async_put_task(existing)
+                    self._store.record_audit(
+                        user_id=user_id or "",
+                        action=AuditAction.UPDATE,
+                        resource_type="task",
+                        resource_id=existing.id,
+                        detail=(
+                            f"Merged duplicate '{title}' — "
+                            f"quantity now {existing.quantity}"
+                        ),
+                    )
+                    self._fire_change("update", "task", existing.id)
+                    await self._store.async_save()
+                    # Tag the task so callers know this was a merge.
+                    existing._merged = True  # type: ignore[attr-defined]
+                    return existing
 
         task = PlannerTask(
             list_id=list_id,
@@ -461,6 +524,8 @@ class PlannerAPI:
             category=category,
             is_recurring=is_recurring,
             recur_reset_hour=recur_reset_hour,
+            quantity=quantity,
+            unit=unit,
             price=price,
         )
         await self._store.async_put_task(task)
@@ -548,6 +613,8 @@ class PlannerAPI:
         category: str | None = None,
         is_recurring: bool | None = None,
         recur_reset_hour: int | None = None,
+        quantity: float | None = None,
+        unit: str | None = None,
         price: float | None = None,
         user_id: str | None = None,
     ) -> PlannerTask:
@@ -591,6 +658,10 @@ class PlannerAPI:
             task.is_recurring = is_recurring
         if recur_reset_hour is not None:
             task.recur_reset_hour = recur_reset_hour
+        if quantity is not None:
+            task.quantity = quantity
+        if unit is not None:
+            task.unit = unit
         if price is not None:
             task.price = price
 
@@ -1112,6 +1183,198 @@ class PlannerAPI:
             category=preset.category,
             user_id=user_id,
         )
+
+    # ── Routine operations ──────────────────────────────────────────────
+
+    async def async_create_routine(
+        self,
+        name: str,
+        emoji: str = "",
+        description: str = "",
+        shift_template_id: str | None = None,
+        tasks: list[dict] | None = None,
+        shopping_items: list[dict] | None = None,
+        user_id: str | None = None,
+    ) -> Routine:
+        """Create a new routine."""
+        routine = Routine(
+            name=name,
+            emoji=emoji,
+            description=description,
+            shift_template_id=shift_template_id,
+            tasks=tasks or [],
+            shopping_items=shopping_items or [],
+        )
+        await self._store.async_put_routine(routine)
+        self._store.record_audit(
+            user_id=user_id or "",
+            action=AuditAction.CREATE,
+            resource_type="routine",
+            resource_id=routine.id,
+            detail=f"Created routine '{name}'",
+        )
+        self._fire_change("create", "routine", routine.id)
+        await self._store.async_save()
+        return routine
+
+    async def async_update_routine(
+        self,
+        routine_id: str,
+        name: str | None = None,
+        emoji: str | None = None,
+        description: str | None = None,
+        shift_template_id: str | None = ...,  # type: ignore[assignment]
+        tasks: list[dict] | None = None,
+        shopping_items: list[dict] | None = None,
+        user_id: str | None = None,
+    ) -> Routine:
+        """Update an existing routine."""
+        routine = self._store.get_routine(routine_id)
+        if routine is None:
+            raise HomeAssistantError(f"Routine '{routine_id}' not found")
+
+        if name is not None:
+            routine.name = name
+        if emoji is not None:
+            routine.emoji = emoji
+        if description is not None:
+            routine.description = description
+        if shift_template_id is not ...:
+            routine.shift_template_id = shift_template_id
+        if tasks is not None:
+            routine.tasks = tasks
+        if shopping_items is not None:
+            routine.shopping_items = shopping_items
+
+        await self._store.async_put_routine(routine)
+        self._store.record_audit(
+            user_id=user_id or "",
+            action=AuditAction.UPDATE,
+            resource_type="routine",
+            resource_id=routine.id,
+            detail=f"Updated routine '{routine.name}'",
+        )
+        self._fire_change("update", "routine", routine.id)
+        await self._store.async_save()
+        return routine
+
+    async def async_delete_routine(
+        self,
+        routine_id: str,
+        user_id: str | None = None,
+    ) -> Routine:
+        """Delete a routine."""
+        routine = self._store.get_routine(routine_id)
+        if routine is None:
+            raise HomeAssistantError(f"Routine '{routine_id}' not found")
+
+        await self._store.async_remove_routine(routine_id)
+        self._store.record_audit(
+            user_id=user_id or "",
+            action=AuditAction.DELETE,
+            resource_type="routine",
+            resource_id=routine.id,
+            detail=f"Deleted routine '{routine.name}'",
+        )
+        self._fire_change("delete", "routine", routine.id)
+        await self._store.async_save()
+        return routine
+
+    async def async_execute_routine(
+        self,
+        routine_id: str,
+        target_date: str,
+        user_id: str | None = None,
+    ) -> dict:
+        """Execute a routine: create shift, tasks, and shopping items.
+
+        Returns a summary dict with the created resource IDs.
+        """
+        routine = self._store.get_routine(routine_id)
+        if routine is None:
+            raise HomeAssistantError(f"Routine '{routine_id}' not found")
+
+        result: dict = {
+            "routine_id": routine_id,
+            "routine_name": routine.name,
+            "shift_id": None,
+            "task_ids": [],
+            "shopping_item_ids": [],
+        }
+
+        # 1. Create shift from template (if configured).
+        if routine.shift_template_id:
+            try:
+                event = await self.async_add_shift_from_template(
+                    template_id=routine.shift_template_id,
+                    shift_date=target_date,
+                    user_id=user_id,
+                )
+                result["shift_id"] = event.id
+            except HomeAssistantError as exc:
+                _LOGGER.warning(
+                    "Routine '%s': failed to create shift: %s",
+                    routine.name,
+                    exc,
+                )
+
+        # 2. Create tasks.
+        dt = date.fromisoformat(target_date)
+        for task_def in routine.tasks:
+            offset = task_def.get("due_offset_days", 0)
+            due_date = (dt + timedelta(days=offset)).isoformat()
+            try:
+                task = await self.async_add_task(
+                    list_id=task_def.get("list_id", "inbox"),
+                    title=task_def.get("title", ""),
+                    due=due_date,
+                    user_id=user_id,
+                )
+                result["task_ids"].append(task.id)
+            except HomeAssistantError as exc:
+                _LOGGER.warning(
+                    "Routine '%s': failed to create task '%s': %s",
+                    routine.name,
+                    task_def.get("title"),
+                    exc,
+                )
+
+        # 3. Create shopping items (uses duplicate merge automatically).
+        shopping_list = None
+        for lst in self._store.get_lists().values():
+            if lst.list_type == "shopping":
+                shopping_list = lst
+                break
+        shopping_list_id = shopping_list.id if shopping_list else "shopping"
+
+        for item_def in routine.shopping_items:
+            try:
+                task = await self.async_add_task(
+                    list_id=shopping_list_id,
+                    title=item_def.get("title", ""),
+                    category=item_def.get("category", ""),
+                    quantity=item_def.get("quantity", 1.0),
+                    unit=item_def.get("unit", ""),
+                    user_id=user_id,
+                )
+                result["shopping_item_ids"].append(task.id)
+            except HomeAssistantError as exc:
+                _LOGGER.warning(
+                    "Routine '%s': failed to create shopping item '%s': %s",
+                    routine.name,
+                    item_def.get("title"),
+                    exc,
+                )
+
+        self._store.record_audit(
+            user_id=user_id or "",
+            action=AuditAction.CREATE,
+            resource_type="routine",
+            resource_id=routine.id,
+            detail=f"Executed routine '{routine.name}' for {target_date}",
+        )
+
+        return result
 
     # ── Privacy controls ──────────────────────────────────────────────
 
@@ -1650,6 +1913,42 @@ class PlannerAPI:
         await self.async_set_list_private(
             list_id=call.data[ATTR_LIST_ID],
             is_private=call.data["is_private"],
+            user_id=call.context.user_id,
+        )
+
+    async def _handle_create_routine(self, call: ServiceCall) -> None:
+        await self.async_create_routine(
+            name=call.data["name"],
+            emoji=call.data.get("emoji", ""),
+            description=call.data.get("description", ""),
+            shift_template_id=call.data.get("shift_template_id"),
+            tasks=call.data.get("tasks", []),
+            shopping_items=call.data.get("shopping_items", []),
+            user_id=call.context.user_id,
+        )
+
+    async def _handle_update_routine(self, call: ServiceCall) -> None:
+        await self.async_update_routine(
+            routine_id=call.data["routine_id"],
+            name=call.data.get("name"),
+            emoji=call.data.get("emoji"),
+            description=call.data.get("description"),
+            shift_template_id=call.data.get("shift_template_id", ...),
+            tasks=call.data.get("tasks"),
+            shopping_items=call.data.get("shopping_items"),
+            user_id=call.context.user_id,
+        )
+
+    async def _handle_delete_routine(self, call: ServiceCall) -> None:
+        await self.async_delete_routine(
+            routine_id=call.data["routine_id"],
+            user_id=call.context.user_id,
+        )
+
+    async def _handle_execute_routine(self, call: ServiceCall) -> None:
+        await self.async_execute_routine(
+            routine_id=call.data["routine_id"],
+            target_date=call.data["date"],
             user_id=call.context.user_id,
         )
 

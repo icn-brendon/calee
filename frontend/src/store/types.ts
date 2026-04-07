@@ -50,11 +50,15 @@ export interface PlannerTask {
   category: string;
   is_recurring: boolean;
   recur_reset_hour: number;
+  quantity: number;
+  unit: string;
   price: number | null;
   version: number;
   deleted_at: string | null;
   created_at: string;
   updated_at: string;
+  /** Set by the backend when a duplicate was merged instead of created. */
+  merged?: boolean;
 }
 
 // ── List ──────────────────────────────────────────────────────────────
@@ -88,6 +92,32 @@ export interface TaskPreset {
   note: string;
   category: string;
   icon: string;
+}
+
+// ── Routine ──────────────────────────────────────────────────────
+
+export interface RoutineTaskDef {
+  title: string;
+  list_id: string;
+  due_offset_days: number;
+}
+
+export interface RoutineShoppingItemDef {
+  title: string;
+  category: string;
+  quantity: number;
+  unit?: string;
+}
+
+export interface Routine {
+  id: string;
+  name: string;
+  emoji: string;
+  description: string;
+  shift_template_id: string | null;
+  tasks: RoutineTaskDef[];
+  shopping_items: RoutineShoppingItemDef[];
+  created_at: string;
 }
 
 // ── Audit Entry ──────────────────────────────────────────────────────

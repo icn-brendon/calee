@@ -102,6 +102,8 @@ tasks = sa.Table(
     sa.Column("category", sa.String(64), default=""),
     sa.Column("is_recurring", sa.Boolean, default=False),
     sa.Column("recur_reset_hour", sa.Integer, default=0),
+    sa.Column("quantity", sa.Float, default=1.0),
+    sa.Column("unit", sa.String(16), default=""),
     sa.Column("price", sa.Float, nullable=True),
     sa.Column("position", sa.Integer, default=0),
     sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
@@ -110,6 +112,21 @@ tasks = sa.Table(
     sa.Column("deleted_at", sa.DateTime(timezone=True), nullable=True),
     sa.Index("ix_calee_tasks_list", "list_id"),
     sa.Index("ix_calee_tasks_deleted", "deleted_at"),
+)
+
+# ── Routines / Bundles ──────────────────────────────────────────────────
+
+routines = sa.Table(
+    "calee_routines",
+    metadata,
+    sa.Column("id", sa.String(32), primary_key=True),
+    sa.Column("name", sa.String(255), nullable=False, default=""),
+    sa.Column("emoji", sa.String(16), default=""),
+    sa.Column("description", sa.Text, default=""),
+    sa.Column("shift_template_id", sa.String(32), nullable=True),
+    sa.Column("tasks", sa.Text, default="[]"),  # JSON array
+    sa.Column("shopping_items", sa.Text, default="[]"),  # JSON array
+    sa.Column("created_at", sa.String(32), nullable=False),
 )
 
 # ── Role Assignments ────────────────────────────────────────────────────
