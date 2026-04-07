@@ -108,6 +108,7 @@ DEFAULT_CURRENCY: Final = "$"
 DEFAULT_BUDGET: Final = 0
 DEFAULT_WEEK_START: Final = "monday"
 DEFAULT_TIME_FORMAT: Final = "12h"
+DEFAULT_STRICT_PRIVACY: Final = False
 
 # ── Notification options defaults ──────────────────────────────────
 DEFAULT_NOTIFICATIONS_ENABLED: Final = True

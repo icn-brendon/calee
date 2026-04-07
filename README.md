@@ -1,5 +1,9 @@
 # Calee
 
+<p align="center">
+  <img src="custom_components/calee/brand/logo.png" alt="Calee" width="400">
+</p>
+
 Calee is a family planner that runs as a custom integration inside Home Assistant. It brings shift planning, shared calendars, task management, and shopping lists into a single unified interface that your whole household can see and use — right from the HA sidebar.
 
 [![HACS Validation](https://github.com/icn-brendon/calee/actions/workflows/hacs.yml/badge.svg)](https://github.com/icn-brendon/calee/actions/workflows/hacs.yml)

@@ -14,6 +14,7 @@ export interface PlannerCalendar {
   color: string;
   emoji: string;
   timezone: string;
+  is_private: boolean;
   created_at: string;
 }
 
@@ -73,6 +74,7 @@ export interface PlannerList {
   id: string;
   name: string;
   list_type: "standard" | "shopping";
+  is_private: boolean;
   created_at: string;
 }
 
@@ -167,7 +169,8 @@ export type ViewType =
   | "agenda"
   | "tasks"
   | "shopping"
-  | "year";
+  | "year"
+  | "smart";
 
 // ── Subscription event payload ────────────────────────────────────────
 

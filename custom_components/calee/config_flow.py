@@ -37,6 +37,7 @@ from .const import (
     DEFAULT_POSTGRESQL_PORT,
     DEFAULT_REMINDER_CALENDARS,
     DEFAULT_REMINDER_MINUTES,
+    DEFAULT_STRICT_PRIVACY,
     DEFAULT_TIME_FORMAT,
     DEFAULT_WEEK_START,
     DOMAIN,
@@ -281,6 +282,12 @@ class CaleeOptionsFlow(OptionsFlow):
                         "reminder_calendars",
                         default=calendars_str,
                     ): str,
+                    vol.Optional(
+                        "strict_privacy",
+                        default=current.get(
+                            "strict_privacy", DEFAULT_STRICT_PRIVACY
+                        ),
+                    ): bool,
                     vol.Optional(
                         CONF_STORAGE_BACKEND,
                         default=current_backend,

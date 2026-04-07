@@ -60,49 +60,49 @@ export class CaleeNextShift extends LitElement {
   static styles = css`
     :host {
       display: block;
-      padding: 16px;
+      padding: 10px 12px;
       background: var(--card-background-color, #fff);
-      border-radius: 12px;
-      box-shadow: var(--ha-card-box-shadow, 0 2px 6px rgba(0, 0, 0, 0.1));
+      border-radius: 10px;
+      box-shadow: var(--ha-card-box-shadow, 0 1px 4px rgba(0, 0, 0, 0.08));
     }
 
     .empty {
       text-align: center;
-      padding: 24px 16px;
+      padding: 8px;
       color: var(--secondary-text-color, #757575);
-      font-size: 14px;
+      font-size: 12px;
     }
 
     .label {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: var(--secondary-text-color, #757575);
-      margin: 0 0 8px;
+      margin: 0 0 4px;
     }
 
     .title {
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 600;
       color: var(--primary-text-color, #212121);
-      margin: 0 0 4px;
+      margin: 0 0 2px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     .start-time {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--secondary-text-color, #757575);
-      margin: 0 0 12px;
+      margin: 0 0 6px;
     }
 
     .countdown {
-      font-size: 22px;
+      font-size: 16px;
       font-weight: 700;
       color: var(--primary-color, #03a9f4);
-      letter-spacing: -0.5px;
+      letter-spacing: -0.3px;
     }
   `;
 

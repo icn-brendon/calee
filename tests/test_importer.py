@@ -398,12 +398,13 @@ class TestImportCSVFlow:
             user_id="user_abc",
         )
 
-        # Each shift generates one audit entry via upsert_shift.
+        # Each shift generates one audit entry via upsert_shift,
+        # plus one summary entry for the import batch.
         create_entries = [
             e for e in fake_store.audit_log
             if e.get("action") and e["action"].value == "create"
         ]
-        assert len(create_entries) == 3
+        assert len(create_entries) == 4  # 3 shifts + 1 import summary
 
 
 class TestImportICSFlow:
