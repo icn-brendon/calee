@@ -180,8 +180,6 @@ export class CaleePanel extends LitElement {
   @state() private _detailDrawerOpen = false;
   @state() private _detailItem: PlannerEvent | PlannerTask | null = null;
   @state() private _detailItemType: "event" | "task" | null = null;
-  @state() private _detailEditing = false;
-
   // ── Dialog state ────────────────────────────────────────────────────
   @state() private _editEvent: PlannerEvent | null = null;
   @state() private _showEventDialog = false;
@@ -2249,14 +2247,12 @@ export class CaleePanel extends LitElement {
     this._detailItem = item;
     this._detailItemType = type;
     this._detailDrawerOpen = true;
-    this._detailEditing = false;
   }
 
   private _closeDetailDrawer(): void {
     this._detailDrawerOpen = false;
     this._detailItem = null;
     this._detailItemType = null;
-    this._detailEditing = false;
   }
 
   private _onDrawerEditEvent(event: PlannerEvent): void {
@@ -2647,14 +2643,16 @@ export class CaleePanel extends LitElement {
       const newTask = await this.hass.callWS({
         type: "calee/create_task",
         list_id: listId,
-        title: "",
+        title: "New task",
         due: date,
       });
       if (newTask) {
         this._tasks = [...this._tasks, newTask as PlannerTask];
+        // Navigate to tasks view and auto-open editing for the new task
+        window.location.hash = `#/tasks/${(newTask as PlannerTask).id}`;
+      } else {
+        this._navigate("tasks");
       }
-      // Navigate to tasks view so user can fill in the title
-      this._navigate("tasks");
     } catch (err) {
       console.error("Failed to create task:", err);
     }
@@ -2672,12 +2670,12 @@ export class CaleePanel extends LitElement {
       const newTask = await this.hass.callWS({
         type: "calee/create_task",
         list_id: listId,
-        title: "",
+        title: "New item",
       });
       if (newTask) {
         this._tasks = [...this._tasks, newTask as PlannerTask];
       }
-      // Navigate to shopping view so user can fill in the title
+      // Navigate to shopping view so user can edit the new item
       this._navigate("shopping");
     } catch (err) {
       console.error("Failed to create shopping item:", err);

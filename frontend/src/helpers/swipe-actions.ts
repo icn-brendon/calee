@@ -25,7 +25,7 @@ export const swipeStyles = css`
     overflow: hidden;
   }
 
-  .swipe-action-left {
+  .swipe-action-complete {
     position: absolute;
     right: 0;
     top: 0;
@@ -42,7 +42,7 @@ export const swipeStyles = css`
     transition: opacity 0.15s;
   }
 
-  .swipe-action-right {
+  .swipe-action-delete {
     position: absolute;
     left: 0;
     top: 0;
@@ -59,8 +59,8 @@ export const swipeStyles = css`
     transition: opacity 0.15s;
   }
 
-  .swipe-row-wrapper.swiping .swipe-action-left,
-  .swipe-row-wrapper.swiping .swipe-action-right {
+  .swipe-row-wrapper.swiping .swipe-action-complete,
+  .swipe-row-wrapper.swiping .swipe-action-delete {
     opacity: 1;
   }
 

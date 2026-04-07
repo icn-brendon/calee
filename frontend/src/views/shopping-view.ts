@@ -81,7 +81,6 @@ export class CaleeShoppingView extends LitElement {
 
   /* Swipe state (mobile) */
   private _swipe: SwipeState = createSwipeState();
-  @state() private _swipeRenderTick = 0;
   @state() private _confirmSwipeDeleteId: string | null = null;
 
   @query("#quick-add-input") private _inputEl!: HTMLInputElement;
@@ -1149,12 +1148,12 @@ export class CaleeShoppingView extends LitElement {
 
   private _onTouchMove(e: TouchEvent): void {
     handleTouchMove(this._swipe, e);
-    this._swipeRenderTick++;
+    this.requestUpdate();
   }
 
   private _onTouchEnd(_e: TouchEvent): void {
     const result = handleTouchEnd(this._swipe);
-    this._swipeRenderTick++;
+    this.requestUpdate();
     if (!result.action) return;
 
     if (result.action === "complete") {
@@ -1569,13 +1568,11 @@ export class CaleeShoppingView extends LitElement {
   private _renderItem(task: PlannerTask, done: boolean) {
     const delta = getSwipeDelta(this._swipe, task.id);
     const isSwiping = this._swipe.swipingId === task.id;
-    // Force use of _swipeRenderTick to avoid tree-shaking
-    void this._swipeRenderTick;
 
     return html`
       <li class="swipe-row-wrapper ${isSwiping ? "swiping" : ""}">
-        <div class="swipe-action-left" aria-hidden="true">&#10003;</div>
-        <div class="swipe-action-right" aria-hidden="true">&#128465;</div>
+        <div class="swipe-action-complete" aria-hidden="true">&#10003;</div>
+        <div class="swipe-action-delete" aria-hidden="true">&#128465;</div>
 
         <div
           class="swipe-row-inner item ${isSwiping ? "dragging" : ""}"

@@ -108,7 +108,6 @@ export class CaleeTasksView extends LitElement {
 
   /* Swipe state (mobile) */
   private _swipe: SwipeState = createSwipeState();
-  @state() private _swipeRenderTick = 0; // bumped to trigger re-render during swipe
   @state() private _confirmDeleteId: string | null = null;
 
   @query("#quick-add-input") private _inputEl!: HTMLInputElement;
@@ -544,8 +543,8 @@ export class CaleeTasksView extends LitElement {
     .note-input {
       width: 100%;
       font-size: 13px;
-      padding: 0;
-      border: 0 solid var(--task-border);
+      padding: 6px 10px;
+      border: 1px solid var(--task-border);
       border-radius: 6px;
       background: var(--task-bg);
       color: var(--task-text);
@@ -553,19 +552,10 @@ export class CaleeTasksView extends LitElement {
       box-sizing: border-box;
       resize: vertical;
       min-height: 36px;
+      max-height: 120px;
       font-family: inherit;
-      margin-top: 0;
-      overflow: hidden;
-      max-height: 0;
-      opacity: 0;
-      transition: max-height 0.2s ease, opacity 0.2s ease, margin-top 0.2s ease, padding 0.2s ease, border-width 0.2s ease;
-    }
-    .note-input.visible {
-      padding: 6px 10px;
-      border-width: 1px;
       margin-top: 6px;
-      max-height: 80px;
-      opacity: 1;
+      overflow: auto;
     }
     .note-input:focus {
       border-color: var(--task-accent);
@@ -634,9 +624,17 @@ export class CaleeTasksView extends LitElement {
 
   /* ── Lifecycle ──────────────────────────────────────────────────── */
 
+  private _boundHashChange = this._checkHashForTaskId.bind(this);
+
   connectedCallback(): void {
     super.connectedCallback();
+    window.addEventListener("hashchange", this._boundHashChange);
     this._checkHashForTaskId();
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    window.removeEventListener("hashchange", this._boundHashChange);
   }
 
   updated(changed: PropertyValues): void {
@@ -932,12 +930,12 @@ export class CaleeTasksView extends LitElement {
 
   private _onTouchMove(e: TouchEvent): void {
     handleTouchMove(this._swipe, e);
-    this._swipeRenderTick++;
+    this.requestUpdate();
   }
 
   private _onTouchEnd(_e: TouchEvent): void {
     const result = handleTouchEnd(this._swipe);
-    this._swipeRenderTick++;
+    this.requestUpdate();
     if (!result.action) return;
 
     if (result.action === "complete") {
@@ -1047,12 +1045,14 @@ export class CaleeTasksView extends LitElement {
           <button class="more-options-toggle" @click=${this._toggleMoreOptions}>
             ${this._showMoreOptions ? "Less options" : "More options"}
           </button>
-          <textarea
-            class="note-input ${this._showMoreOptions ? "visible" : ""}"
-            placeholder="Add a note..."
-            .value=${this._quickAddNote}
-            @input=${this._onNoteInput}
-          ></textarea>
+          ${this._showMoreOptions ? html`
+            <textarea
+              class="note-input"
+              placeholder="Add a note..."
+              .value=${this._quickAddNote}
+              @input=${this._onNoteInput}
+            ></textarea>
+          ` : nothing}
         ` : nothing}
       </div>
 
@@ -1210,14 +1210,12 @@ export class CaleeTasksView extends LitElement {
     const dueIsToday = task.due ? isToday(task.due) : false;
     const delta = getSwipeDelta(this._swipe, task.id);
     const isSwiping = this._swipe.swipingId === task.id;
-    // Force use of _swipeRenderTick to avoid tree-shaking
-    void this._swipeRenderTick;
 
     return html`
       <li class="swipe-row-wrapper ${isSwiping ? "swiping" : ""}">
         <!-- Swipe reveal backgrounds -->
-        <div class="swipe-action-left" aria-hidden="true">&#10003;</div>
-        <div class="swipe-action-right" aria-hidden="true">&#128465;</div>
+        <div class="swipe-action-complete" aria-hidden="true">&#10003;</div>
+        <div class="swipe-action-delete" aria-hidden="true">&#128465;</div>
 
         <div
           class="swipe-row-inner task-item ${isSwiping ? "dragging" : ""}"
