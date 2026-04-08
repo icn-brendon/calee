@@ -29,6 +29,7 @@ from ..const import (
 )
 from ..models import (
     AuditEntry,
+    NotificationRule,
     PlannerCalendar,
     PlannerEvent,
     PlannerList,
@@ -53,6 +54,9 @@ from .schema import (
 )
 from .schema import (
     metadata,
+)
+from .schema import (
+    notification_rules as notification_rules_table,
 )
 from .schema import (
     presets as presets_table,
@@ -143,6 +147,7 @@ class SqlPlannerStore(AbstractPlannerStore):
         self.tasks: dict[str, PlannerTask] = {}
         self.presets: dict[str, TaskPreset] = {}
         self.routines: dict[str, Routine] = {}
+        self._notification_rules: dict[str, NotificationRule] = {}
         self.roles: list[RoleAssignment] = []
         self.audit_log: list[AuditEntry] = []
 
@@ -488,6 +493,33 @@ class SqlPlannerStore(AbstractPlannerStore):
         self.routines.pop(routine_id, None)
         await self._delete_by_pk(routines_table, routine_id)
 
+    # ── Notification Rules ─────────────────────────────────────────────
+
+    def get_notification_rules(self) -> dict[str, NotificationRule]:
+        return dict(self._notification_rules)
+
+    def get_notification_rule(self, rule_id: str) -> NotificationRule | None:
+        return self._notification_rules.get(rule_id)
+
+    def get_rules_for_scope(
+        self, scope: str, scope_id: str
+    ) -> list[NotificationRule]:
+        return [
+            r
+            for r in self._notification_rules.values()
+            if r.scope == scope and r.scope_id == scope_id
+        ]
+
+    async def async_put_notification_rule(self, rule: NotificationRule) -> None:
+        self._notification_rules[rule.id] = rule
+        await self._upsert(
+            notification_rules_table, _notification_rule_to_sql(rule)
+        )
+
+    async def async_remove_notification_rule(self, rule_id: str) -> None:
+        self._notification_rules.pop(rule_id, None)
+        await self._delete_by_pk(notification_rules_table, rule_id)
+
     # ── Presets ─────────────────────────────────────────────────────────
 
     def get_presets(self) -> dict[str, TaskPreset]:
@@ -783,6 +815,28 @@ class SqlPlannerStore(AbstractPlannerStore):
                 for row in result
             }
 
+            # Notification Rules
+            result = await session.execute(
+                sa.select(notification_rules_table)
+            )
+            self._notification_rules = {
+                row.id: NotificationRule(
+                    id=row.id,
+                    scope=row.scope or "calendar",
+                    scope_id=row.scope_id or "",
+                    enabled=bool(row.enabled),
+                    reminder_minutes=row.reminder_minutes or 60,
+                    notify_services=_parse_json_list_strings(
+                        row.notify_services
+                    ),
+                    include_actions=bool(row.include_actions),
+                    custom_title=row.custom_title or "",
+                    custom_message=row.custom_message or "",
+                    created_at=row.created_at or "",
+                )
+                for row in result
+            }
+
             # Roles
             result = await session.execute(sa.select(roles_table))
             self.roles = [
@@ -816,7 +870,8 @@ class SqlPlannerStore(AbstractPlannerStore):
 
         _LOGGER.debug(
             "Loaded from DB: %d calendars, %d events, %d templates, "
-            "%d lists, %d tasks, %d presets, %d routines, %d roles, %d audit entries",
+            "%d lists, %d tasks, %d presets, %d routines, "
+            "%d notification rules, %d roles, %d audit entries",
             len(self.calendars),
             len(self.events),
             len(self.templates),
@@ -824,6 +879,7 @@ class SqlPlannerStore(AbstractPlannerStore):
             len(self.tasks),
             len(self.presets),
             len(self.routines),
+            len(self._notification_rules),
             len(self.roles),
             len(self.audit_log),
         )
@@ -932,4 +988,11 @@ def _routine_to_sql(routine: Routine) -> dict:
     d = routine.to_dict()
     d["tasks"] = json.dumps(d.get("tasks", []))
     d["shopping_items"] = json.dumps(d.get("shopping_items", []))
+    return d
+
+
+def _notification_rule_to_sql(rule: NotificationRule) -> dict:
+    """Convert a NotificationRule to a SQL-ready dict with JSON-encoded list fields."""
+    d = rule.to_dict()
+    d["notify_services"] = json.dumps(d.get("notify_services", []))
     return d

@@ -159,6 +159,24 @@ roles = sa.Table(
     ),
 )
 
+# ── Notification Rules ─────────────────────────────────────────────────
+
+notification_rules = sa.Table(
+    "calee_notification_rules",
+    metadata,
+    sa.Column("id", sa.String(32), primary_key=True),
+    sa.Column("scope", sa.String(32), default="calendar"),
+    sa.Column("scope_id", sa.String(32), default=""),
+    sa.Column("enabled", sa.Boolean, default=True),
+    sa.Column("reminder_minutes", sa.Integer, default=60),
+    sa.Column("notify_services", sa.Text, default="[]"),  # JSON array
+    sa.Column("include_actions", sa.Boolean, default=True),
+    sa.Column("custom_title", sa.String(255), default=""),
+    sa.Column("custom_message", sa.Text, default=""),
+    sa.Column("created_at", sa.String(32), nullable=False),
+    sa.Index("ix_calee_notification_rules_scope", "scope", "scope_id"),
+)
+
 # ── Audit Log ───────────────────────────────────────────────────────────
 
 audit_log = sa.Table(
