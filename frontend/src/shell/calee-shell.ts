@@ -427,11 +427,13 @@ export class CaleePanel extends LitElement {
     const resourceType: string = event?.resource_type ?? "";
 
     // Map resource types to the minimal reload needed.
+    // Calendar/list deletes also soft-delete child events/tasks,
+    // so reload both the parent and children.
     const reloadMap: Record<string, () => Promise<void>> = {
       event: () => this._loadEvents(),
       task: () => this._loadTasks(),
-      calendar: () => this._reloadCalendars(),
-      list: () => this._reloadLists(),
+      calendar: async () => { await this._reloadCalendars(); await this._loadEvents(); },
+      list: async () => { await this._reloadLists(); await this._loadTasks(); },
       template: () => this._reloadTemplates(),
       preset: () => this._reloadPresets(),
       routine: () => this._reloadRoutines(),
@@ -1569,7 +1571,8 @@ export class CaleePanel extends LitElement {
     const today = new Date().toISOString().slice(0, 10);
     try {
       await this.hass.callWS({ type: "calee/execute_routine", routine_id: routineId, date: today });
-      this._refreshAll();
+      // Routines create events + tasks + shopping items — reload all affected types.
+      await Promise.all([this._loadEvents(), this._loadTasks()]);
     } catch (err) { console.error("Failed to execute routine:", err); }
   }
 
