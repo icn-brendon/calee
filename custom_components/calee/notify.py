@@ -187,6 +187,9 @@ async def async_check_and_send_reminders(
     )
     reminder_calendars = set(_reminder_calendar_ids(entry))
     events = store.get_active_events()
+    if not notifications_enabled and not store.get_notification_rules():
+        return
+    events_by_id = {e.id: e for e in events}
 
     notified: set[str] = hass.data[DOMAIN][entry.entry_id][_KEY_NOTIFIED_EVENTS]
     time_format = entry.options.get("time_format", DEFAULT_TIME_FORMAT)
@@ -200,7 +203,7 @@ async def async_check_and_send_reminders(
             stale_ids.add(eid)
             continue
         # Also prune if the shift's end time is in the past.
-        ev = next((e for e in events if e.id == eid), None)
+        ev = events_by_id.get(eid)
         if ev is not None:
             end_dt = _parse_datetime(ev.end)
             if end_dt is not None and end_dt <= now:
