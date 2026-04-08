@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import logging
 from datetime import date
 from typing import Any
 
@@ -46,9 +45,6 @@ from .helpers import (
     _get_config_entry,
     _get_store,
 )
-
-_LOGGER = logging.getLogger(__name__)
-
 
 # ── Calendars ────────────────────────────────────────────────────────
 
@@ -391,7 +387,7 @@ def ws_handle_notification_rules(
             elif r.scope == "event":
                 evt = store.get_event(r.scope_id)
                 cal_id = evt.calendar_id if evt else None
-            if cal_id is None or can_read(store, user_id, "calendar", cal_id):
+            if cal_id is None or can_read(store, user_id, "calendar", cal_id, strict=strict, is_admin=is_admin):
                 visible.append(r)
         rules = visible
 

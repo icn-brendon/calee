@@ -225,10 +225,13 @@ export class CaleePanel extends LitElement {
         this._store = new mod.PlannerStore(this.hass);
         await this._store.load();
         this._syncFromStore();
+        // PlannerStore has its own subscription — no need for a second one.
+        // It calls refresh() internally on changes; we just re-sync on updates.
       } catch {
         await this._loadViaWebSocket();
+        // No PlannerStore — use our own per-entity subscription.
+        this._subscribeToChanges();
       }
-      this._subscribeToChanges();
     } catch (err) {
       console.error("[Calee] Failed to initialise panel:", err);
     } finally {

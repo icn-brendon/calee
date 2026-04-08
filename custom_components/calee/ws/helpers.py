@@ -2,15 +2,12 @@
 
 from __future__ import annotations
 
-import logging
 from datetime import date, datetime
 from typing import Any
 
 from homeassistant.core import HomeAssistant
 
 from ..const import DOMAIN
-
-_LOGGER = logging.getLogger(__name__)
 
 
 def _get_store(hass: HomeAssistant) -> Any:

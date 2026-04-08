@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import logging
 from typing import Any
 
 import voluptuous as vol
@@ -49,9 +48,6 @@ from ..const import (
     WS_TYPE_UPDATE_TEMPLATE,
 )
 from .helpers import _get_api, _get_config_entry
-
-_LOGGER = logging.getLogger(__name__)
-
 
 # ── Settings ────────────────────────────────────────────────────────
 
