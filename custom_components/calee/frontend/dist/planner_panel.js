@@ -15561,7 +15561,7 @@ let CaleePanel = class extends i {
     this._hashHandler = this._onHashChange.bind(this);
     this._keyHandler = this._handleKeydown.bind(this);
     this._tasksLoaded = false;
-    this._refreshDebounce = null;
+    this._refreshTimers = /* @__PURE__ */ new Map();
   }
   /** Guard against adoptedStyleSheets polyfill crashes in older browsers. */
   createRenderRoot() {
@@ -15598,8 +15598,8 @@ let CaleePanel = class extends i {
         this._syncFromStore();
       } catch {
         await this._loadViaWebSocket();
+        this._subscribeToChanges();
       }
-      this._subscribeToChanges();
     } catch (err) {
       console.error("[Calee] Failed to initialise panel:", err);
     } finally {
@@ -15773,28 +15773,107 @@ let CaleePanel = class extends i {
     if (!this.hass?.connection) return;
     try {
       this._unsubscribe = await this.hass.connection.subscribeMessage(
-        (_event) => {
-          this._refreshAll();
+        (event) => {
+          this._onSubscriptionEvent(event);
         },
         { type: "calee/subscribe" }
       );
     } catch {
     }
   }
-  _refreshAll() {
-    if (this._refreshDebounce) clearTimeout(this._refreshDebounce);
-    this._refreshDebounce = setTimeout(async () => {
-      this._refreshDebounce = null;
-      if (this._store) {
-        await this._store.refresh();
-        this._syncFromStore();
-      } else {
-        await this._loadViaWebSocket();
-      }
-      if (!this._store && (this._currentView === "tasks" || this._currentView === "shopping")) {
+  /**
+   * Handle a subscription event by refreshing only the affected resource type.
+   * This replaces the old _refreshAll() which reloaded everything on every change.
+   */
+  _onSubscriptionEvent(event) {
+    const resourceType = event?.resource_type ?? "";
+    const reloadMap = {
+      event: () => this._loadEvents(),
+      task: () => this._loadTasks(),
+      calendar: async () => {
+        await this._reloadCalendars();
+        await this._loadEvents();
+      },
+      list: async () => {
+        await this._reloadLists();
         await this._loadTasks();
-      }
-    }, 250);
+      },
+      template: () => this._reloadTemplates(),
+      preset: () => this._reloadPresets(),
+      routine: () => this._reloadRoutines(),
+      notification_rule: () => Promise.resolve()
+      // no UI state to refresh
+    };
+    const reloadFn = reloadMap[resourceType];
+    if (reloadFn) {
+      const existing = this._refreshTimers.get(resourceType);
+      if (existing) clearTimeout(existing);
+      this._refreshTimers.set(
+        resourceType,
+        setTimeout(async () => {
+          this._refreshTimers.delete(resourceType);
+          await reloadFn();
+        }, 250)
+      );
+    } else {
+      const existing = this._refreshTimers.get("_full");
+      if (existing) clearTimeout(existing);
+      this._refreshTimers.set(
+        "_full",
+        setTimeout(async () => {
+          this._refreshTimers.delete("_full");
+          await this._loadViaWebSocket();
+        }, 250)
+      );
+    }
+  }
+  /** Reload just calendars from the backend. */
+  async _reloadCalendars() {
+    if (!this.hass) return;
+    try {
+      const calendars = await this.hass.callWS({ type: "calee/calendars" });
+      this._rawCalendars = calendars ?? [];
+      const visMap = new Map(this._calendars.map((c2) => [c2.id, c2.visible]));
+      this._calendars = this._rawCalendars.map((c2) => ({
+        id: c2.id,
+        name: c2.name,
+        color: c2.color ?? "#64b5f6",
+        visible: visMap.get(c2.id) ?? true
+      }));
+    } catch {
+    }
+  }
+  /** Reload just lists from the backend. */
+  async _reloadLists() {
+    if (!this.hass) return;
+    try {
+      this._lists = await this.hass.callWS({ type: "calee/lists" }) ?? [];
+    } catch {
+    }
+  }
+  /** Reload just templates from the backend. */
+  async _reloadTemplates() {
+    if (!this.hass) return;
+    try {
+      this._templates = await this.hass.callWS({ type: "calee/templates" }) ?? [];
+    } catch {
+    }
+  }
+  /** Reload just presets from the backend. */
+  async _reloadPresets() {
+    if (!this.hass) return;
+    try {
+      this._presets = await this.hass.callWS({ type: "calee/presets" }) ?? [];
+    } catch {
+    }
+  }
+  /** Reload just routines from the backend. */
+  async _reloadRoutines() {
+    if (!this.hass) return;
+    try {
+      this._routines = await this.hass.callWS({ type: "calee/routines" }) ?? [];
+    } catch {
+    }
   }
   // ── Calendar Toggle ──────────────────────────────────────────────
   _toggleCalendar(id) {
@@ -16653,7 +16732,7 @@ let CaleePanel = class extends i {
     const today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
     try {
       await this.hass.callWS({ type: "calee/execute_routine", routine_id: routineId, date: today });
-      this._refreshAll();
+      await Promise.all([this._loadEvents(), this._loadTasks()]);
     } catch (err) {
       console.error("Failed to execute routine:", err);
     }
