@@ -190,9 +190,9 @@ async def async_check_and_send_reminders(
         rule.scope == "event" and rule.enabled
         for rule in store.get_notification_rules().values()
     )
-    events = store.get_active_events()
     if not notifications_enabled and not has_enabled_event_rules:
         return
+    events = store.get_active_events()
     events_by_id = {e.id: e for e in events}
 
     notified: set[str] = hass.data[DOMAIN][entry.entry_id][_KEY_NOTIFIED_EVENTS]

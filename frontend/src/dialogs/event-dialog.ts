@@ -590,23 +590,20 @@ export class CaleeEventDialog extends LitElement {
                       </div>
                     </div>
 
-                    ${this._notificationMode === "event"
-                      ? html`
-                          <div class="toggle-row">
-                            <div>
-                              <div class="toggle-label">Rich notification actions</div>
-                              <div class="toggle-desc">Show open and snooze actions when the target device supports them.</div>
-                            </div>
-                            <input
-                              class="toggle"
-                              type="checkbox"
-                              .checked=${this._notificationIncludeActions}
-                              @change=${(e: Event) => {
-                                this._notificationIncludeActions = (e.target as HTMLInputElement).checked;
-                              }}
-                            />
-                          </div>
-                        `
+                    <div class="toggle-row">
+                      <div>
+                        <div class="toggle-label">Rich notification actions</div>
+                        <div class="toggle-desc">Show open and snooze actions when the target device supports them.</div>
+                      </div>
+                      <input
+                        class="toggle"
+                        type="checkbox"
+                        .checked=${this._notificationIncludeActions}
+                        @change=${(e: Event) => {
+                          this._notificationIncludeActions = (e.target as HTMLInputElement).checked;
+                        }}
+                      />
+                    </div>
                   `
                 : this._notificationMode === "disabled"
                   ? html`

@@ -16360,6 +16360,14 @@ let CaleePanel = class extends i {
       includeActions: true
     };
   }
+  _toNotifyServiceValue(target) {
+    if (!target) return "";
+    return target.startsWith("notify.") ? target : `notify.${target}`;
+  }
+  _toStoredNotifyService(target) {
+    if (!target) return "";
+    return target.startsWith("notify.") ? target : `notify.${target}`;
+  }
   /** Guard against adoptedStyleSheets polyfill crashes in older browsers. */
   createRenderRoot() {
     try {
@@ -16699,7 +16707,7 @@ let CaleePanel = class extends i {
       mode: rule.enabled ? "event" : "disabled",
       ruleId: rule.id,
       reminderMinutes: rule.reminder_minutes ?? 60,
-      notifyService: rule.notify_services[0] ?? "",
+      notifyService: this._toNotifyServiceValue(rule.notify_services[0] ?? ""),
       includeActions: rule.include_actions ?? true
     };
   }
@@ -16715,7 +16723,7 @@ let CaleePanel = class extends i {
     if (!this.hass || !notification) return;
     const payload = {
       reminder_minutes: notification.reminderMinutes,
-      notify_services: notification.notifyService ? [notification.notifyService] : [],
+      notify_services: notification.notifyService ? [this._toStoredNotifyService(notification.notifyService)] : [],
       include_actions: notification.includeActions
     };
     if (notification.mode === "global") {

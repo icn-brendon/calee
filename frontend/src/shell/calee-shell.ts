@@ -219,6 +219,16 @@ export class CaleePanel extends LitElement {
     };
   }
 
+  private _toNotifyServiceValue(target: string): string {
+    if (!target) return "";
+    return target.startsWith("notify.") ? target : `notify.${target}`;
+  }
+
+  private _toStoredNotifyService(target: string): string {
+    if (!target) return "";
+    return target.startsWith("notify.") ? target : `notify.${target}`;
+  }
+
   // ── Lifecycle ────────────────────────────────────────────────────
 
   connectedCallback(): void {
@@ -566,7 +576,7 @@ export class CaleePanel extends LitElement {
       mode: rule.enabled ? "event" : "disabled",
       ruleId: rule.id,
       reminderMinutes: rule.reminder_minutes ?? 60,
-      notifyService: rule.notify_services[0] ?? "",
+      notifyService: this._toNotifyServiceValue(rule.notify_services[0] ?? ""),
       includeActions: rule.include_actions ?? true,
     };
   }
@@ -591,7 +601,9 @@ export class CaleePanel extends LitElement {
 
     const payload = {
       reminder_minutes: notification.reminderMinutes,
-      notify_services: notification.notifyService ? [notification.notifyService] : [],
+      notify_services: notification.notifyService
+        ? [this._toStoredNotifyService(notification.notifyService)]
+        : [],
       include_actions: notification.includeActions,
     };
 
