@@ -186,8 +186,12 @@ async def async_check_and_send_reminders(
         "notification_target", DEFAULT_NOTIFICATION_TARGET
     )
     reminder_calendars = set(_reminder_calendar_ids(entry))
+    has_enabled_event_rules = any(
+        rule.scope == "event" and rule.enabled
+        for rule in store.get_notification_rules().values()
+    )
     events = store.get_active_events()
-    if not notifications_enabled and not store.get_notification_rules():
+    if not notifications_enabled and not has_enabled_event_rules:
         return
     events_by_id = {e.id: e for e in events}
 
@@ -224,6 +228,10 @@ async def async_check_and_send_reminders(
         rule = _resolve_event_notification_rule(store, event)
         if rule is not None:
             if not rule.enabled:
+                continue
+            if rule.scope != "event" and (
+                not notifications_enabled or event.calendar_id not in reminder_calendars
+            ):
                 continue
             reminder_minutes = rule.reminder_minutes
             notify_targets = rule.notify_services or [default_target]

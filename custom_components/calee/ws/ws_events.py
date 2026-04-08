@@ -20,7 +20,7 @@ from ..const import (
 )
 from .helpers import _get_api
 
-_NOTIFICATION_RULE_SCHEMA = {
+_NOTIFICATION_RULE_CREATE_SCHEMA = {
     vol.Optional("enabled", default=True): bool,
     vol.Optional("reminder_minutes", default=60): vol.All(
         vol.Coerce(int), vol.Range(min=0, max=1440)
@@ -29,6 +29,17 @@ _NOTIFICATION_RULE_SCHEMA = {
     vol.Optional("include_actions", default=True): bool,
     vol.Optional("custom_title", default=""): str,
     vol.Optional("custom_message", default=""): str,
+}
+
+_NOTIFICATION_RULE_UPDATE_SCHEMA = {
+    vol.Optional("enabled"): bool,
+    vol.Optional("reminder_minutes"): vol.All(
+        vol.Coerce(int), vol.Range(min=0, max=1440)
+    ),
+    vol.Optional("notify_services"): [str],
+    vol.Optional("include_actions"): bool,
+    vol.Optional("custom_title"): str,
+    vol.Optional("custom_message"): str,
 }
 
 # ── Event mutations ─────────────────────────────────────────────────
@@ -44,7 +55,7 @@ _NOTIFICATION_RULE_SCHEMA = {
         vol.Optional("note", default=""): str,
         vol.Optional("recurrence_rule"): str,
         vol.Optional("template_id"): str,
-        vol.Optional("notification_rule"): _NOTIFICATION_RULE_SCHEMA,
+        vol.Optional("notification_rule"): _NOTIFICATION_RULE_CREATE_SCHEMA,
     }
 )
 @websocket_api.async_response
@@ -88,7 +99,7 @@ async def ws_handle_create_event(
         vol.Optional("end"): str,
         vol.Optional("note"): str,
         vol.Optional("recurrence_rule"): str,
-        vol.Optional("notification_rule"): _NOTIFICATION_RULE_SCHEMA,
+        vol.Optional("notification_rule"): _NOTIFICATION_RULE_UPDATE_SCHEMA,
     }
 )
 @websocket_api.async_response
@@ -161,7 +172,7 @@ async def ws_handle_delete_event(
         vol.Required("template_id"): str,
         vol.Required("date"): str,
         vol.Optional("recurrence_rule"): str,
-        vol.Optional("notification_rule"): _NOTIFICATION_RULE_SCHEMA,
+        vol.Optional("notification_rule"): _NOTIFICATION_RULE_CREATE_SCHEMA,
     }
 )
 @websocket_api.async_response
@@ -231,7 +242,7 @@ async def ws_handle_add_event_exception(
         vol.Optional("end"): str,
         vol.Optional("note"): str,
         vol.Optional("calendar_id"): str,
-        vol.Optional("notification_rule"): _NOTIFICATION_RULE_SCHEMA,
+        vol.Optional("notification_rule"): _NOTIFICATION_RULE_UPDATE_SCHEMA,
     }
 )
 @websocket_api.async_response

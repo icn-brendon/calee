@@ -365,6 +365,60 @@ class TestEventNotificationOverrides:
         assert rule.enabled is False
         assert rule.reminder_minutes == 15
 
+    @pytest.mark.asyncio
+    async def test_update_shift_notification_rule_preserves_omitted_fields(
+        self, fake_store: FakeStore
+    ):
+        """Partial notification updates should not reset existing values."""
+        api = _make_api(fake_store)
+        event = await api.async_add_shift(
+            calendar_id="work_shifts",
+            title="Night Shift",
+            start="2026-04-07T22:00:00+00:00",
+            end="2026-04-08T06:00:00+00:00",
+            notification_rule={
+                "enabled": True,
+                "reminder_minutes": 45,
+                "notify_services": ["notify.mobile_app_phone"],
+                "include_actions": False,
+                "custom_title": "Heads up",
+            },
+        )
+
+        await api.async_update_shift(
+            event_id=event.id,
+            version=event.version,
+            notification_rule={
+                "enabled": False,
+            },
+        )
+
+        rule = fake_store.get_rules_for_scope("event", event.id)[0]
+        assert rule.enabled is False
+        assert rule.reminder_minutes == 45
+        assert rule.notify_services == ["mobile_app_phone"]
+        assert rule.include_actions is False
+        assert rule.custom_title == "Heads up"
+
+    @pytest.mark.asyncio
+    async def test_create_shift_keeps_unavailable_notify_service_names(
+        self, fake_store: FakeStore
+    ):
+        """Notify services should be normalized, not dropped, at save time."""
+        api = _make_api(fake_store)
+        event = await api.async_add_shift(
+            calendar_id="work_shifts",
+            title="Phone Test",
+            start="2026-04-07T06:00:00+00:00",
+            end="2026-04-07T14:00:00+00:00",
+            notification_rule={
+                "notify_services": ["notify.mobile_app_future_phone"],
+            },
+        )
+
+        rule = fake_store.get_rules_for_scope("event", event.id)[0]
+        assert rule.notify_services == ["mobile_app_future_phone"]
+
 
 class TestReminderDelivery:
     """Tests for reminder delivery and Companion App actions."""
@@ -463,6 +517,63 @@ class TestReminderDelivery:
             entry_id="entry_1",
             options={
                 "notifications_enabled": True,
+                "reminder_minutes": 60,
+                "notification_target": "mobile_app_phone",
+                "time_format": "12h",
+            },
+        )
+
+        monkeypatch.setattr(
+            "custom_components.calee.notify.resolve_notification_target",
+            lambda _hass, target: target or None,
+        )
+
+        await async_check_and_send_reminders(hass, fake_store, entry)
+
+        notify_calls = [
+            call for call in hass.services.async_call.call_args_list
+            if call.args and call.args[0] == "notify"
+        ]
+        assert notify_calls == []
+
+    @pytest.mark.asyncio
+    async def test_template_rule_respects_global_notifications_toggle(
+        self, fake_store: FakeStore, monkeypatch: pytest.MonkeyPatch
+    ):
+        """Template/calendar defaults should not bypass the global toggle."""
+        now = datetime.now(UTC)
+        event = PlannerEvent(
+            id="evt_13",
+            calendar_id="work_shifts",
+            template_id="tpl_early",
+            title="Template Shift",
+            start=(now + timedelta(minutes=30)).isoformat(),
+            end=(now + timedelta(hours=1, minutes=30)).isoformat(),
+        )
+        await fake_store.async_put_event(event)
+        await fake_store.async_put_notification_rule(
+            NotificationRule(
+                scope="template",
+                scope_id="tpl_early",
+                enabled=True,
+                reminder_minutes=30,
+                notify_services=["mobile_app_phone"],
+            )
+        )
+
+        hass = MagicMock()
+        hass.data = {
+            DOMAIN: {
+                "entry_1": {
+                    _KEY_NOTIFIED_EVENTS: set(),
+                }
+            }
+        }
+        hass.services.async_call = AsyncMock()
+        entry = SimpleNamespace(
+            entry_id="entry_1",
+            options={
+                "notifications_enabled": False,
                 "reminder_minutes": 60,
                 "notification_target": "mobile_app_phone",
                 "time_format": "12h",
