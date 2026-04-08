@@ -18,11 +18,19 @@ import type {
 } from "../store/types.js";
 
 type TaskBucket = "overdue" | "today" | "upcoming" | "later";
+type HomeDestination = "calendar" | "tasks" | "shopping" | "more";
 
 interface DatedItem {
   date: string;
   dayLabel: string;
   items: PlannerEvent[];
+}
+
+interface HeroStat {
+  icon: string;
+  value: string;
+  label: string;
+  destination: HomeDestination;
 }
 
 function todayISO(): string {
@@ -31,6 +39,12 @@ function todayISO(): string {
 
 function startOfDay(iso: string): number {
   return new Date(`${iso}T00:00:00`).getTime();
+}
+
+function addDaysISO(iso: string, days: number): string {
+  const date = new Date(`${iso}T12:00:00`);
+  date.setDate(date.getDate() + days);
+  return date.toISOString().slice(0, 10);
 }
 
 function sameDay(a: string, b: string): boolean {
@@ -109,6 +123,20 @@ function taskPriorityScore(task: PlannerTask): number {
   return 3;
 }
 
+function weatherPlaceholder(dateISO: string): { icon: string; title: string; subtitle: string } {
+  const day = new Date(`${dateISO}T12:00:00`).getDay();
+  const forecast = [
+    { icon: "☀", title: "Clear and calm", subtitle: "No live weather source wired yet." },
+    { icon: "⛅", title: "Partly sunny", subtitle: "Use your HA weather entity to replace this placeholder." },
+    { icon: "🌤", title: "Mild and bright", subtitle: "A weather surface will sit nicely here." },
+    { icon: "☁", title: "Cloud cover", subtitle: "Connect local weather data when ready." },
+    { icon: "🌦", title: "Light showers", subtitle: "This card is a placeholder only." },
+    { icon: "⛈", title: "Storm watch", subtitle: "Swap in your Home Assistant weather entity." },
+    { icon: "☀", title: "Sunny placeholder", subtitle: "Today's weather can live here later." },
+  ];
+  return forecast[day] ?? forecast[0];
+}
+
 @customElement("calee-home-page")
 export class CaleeHomePage extends LitElement {
   @property({ attribute: false }) events: PlannerEvent[] = [];
@@ -123,6 +151,7 @@ export class CaleeHomePage extends LitElement {
   @property({ type: String }) currentDate = todayISO();
   @property({ type: Boolean, reflect: true }) narrow = false;
   @property() weekStart: "monday" | "sunday" = "monday";
+  @property({ type: Boolean }) timelineExpanded = false;
 
   static styles = css`
     :host {
@@ -149,7 +178,7 @@ export class CaleeHomePage extends LitElement {
     .hero {
       display: grid;
       gap: 12px;
-      grid-template-columns: 1.5fr 1fr;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr);
       align-items: stretch;
     }
 
@@ -164,10 +193,9 @@ export class CaleeHomePage extends LitElement {
 
     .hero-main {
       padding: 20px;
-      min-height: 144px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      gap: 14px;
       background:
         linear-gradient(135deg, rgba(3, 169, 244, 0.08), transparent 42%),
         var(--card-background-color, #fff);
@@ -182,9 +210,9 @@ export class CaleeHomePage extends LitElement {
     }
 
     .hero-title {
-      margin: 4px 0 8px;
-      font-size: 28px;
-      line-height: 1.05;
+      margin: 4px 0 6px;
+      font-size: 26px;
+      line-height: 1.08;
       font-weight: 700;
       letter-spacing: -0.6px;
     }
@@ -192,21 +220,68 @@ export class CaleeHomePage extends LitElement {
     .hero-subtitle {
       font-size: 14px;
       color: var(--secondary-text-color, #666);
-      max-width: 60ch;
+      max-width: 54ch;
     }
 
-    .hero-pills {
+    .hero-top {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .weather-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: color-mix(in srgb, var(--secondary-background-color, #f4f4f4) 70%, transparent);
+    }
+
+    .weather-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 12%, transparent);
+      color: var(--primary-color, #03a9f4);
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .weather-main {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .weather-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary-text-color, #212121);
+      margin: 0;
+    }
+
+    .weather-subtitle {
+      margin-top: 2px;
+      font-size: 12px;
+      color: var(--secondary-text-color, #666);
+    }
+
+    .hero-stats {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-top: 14px;
     }
 
-    .pill {
+    .hero-stat {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
+      gap: 8px;
+      padding: 7px 12px;
       border-radius: 999px;
       border: 1px solid var(--divider-color, #e0e0e0);
       background: rgba(255, 255, 255, 0.85);
@@ -214,9 +289,38 @@ export class CaleeHomePage extends LitElement {
       font-size: 12px;
       font-weight: 500;
       white-space: nowrap;
+      cursor: pointer;
+      text-align: left;
+      transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
     }
 
-    .pill strong {
+    .hero-stat:hover {
+      transform: translateY(-1px);
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 8%, transparent);
+      border-color: color-mix(in srgb, var(--primary-color, #03a9f4) 30%, var(--divider-color, #e0e0e0));
+    }
+
+    .hero-stat-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--primary-color, #03a9f4);
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 10%, transparent);
+      flex-shrink: 0;
+    }
+
+    .hero-stat-copy {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .hero-stat strong {
       font-weight: 700;
     }
 
@@ -225,6 +329,66 @@ export class CaleeHomePage extends LitElement {
       display: grid;
       gap: 10px;
       align-content: start;
+    }
+
+    .timeline-card {
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .timeline-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .timeline-title-wrap {
+      min-width: 0;
+    }
+
+    .timeline-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      margin: 0;
+    }
+
+    .timeline-range {
+      margin-top: 3px;
+      font-size: 12px;
+      color: var(--secondary-text-color, #757575);
+    }
+
+    .timeline-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.03));
+      color: var(--primary-text-color, #212121);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .timeline-action:hover {
+      transform: translateY(-1px);
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 8%, transparent);
+    }
+
+    .timeline-action svg,
+    .hero-stat-icon svg,
+    .section-chip-icon svg {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
     }
 
     .summary-card {
@@ -277,9 +441,13 @@ export class CaleeHomePage extends LitElement {
       min-height: 0;
     }
 
+    .panel-card[data-wide="true"] {
+      grid-column: 1 / -1;
+    }
+
     .panel-head {
       display: flex;
-      align-items: baseline;
+      align-items: center;
       justify-content: space-between;
       gap: 12px;
       margin-bottom: 12px;
@@ -293,9 +461,11 @@ export class CaleeHomePage extends LitElement {
     }
 
     .panel-meta {
-      font-size: 12px;
-      color: var(--secondary-text-color, #757575);
-      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     .timeline {
@@ -317,6 +487,54 @@ export class CaleeHomePage extends LitElement {
       letter-spacing: 0.5px;
       color: var(--secondary-text-color, #757575);
       font-weight: 700;
+    }
+
+    .timeline-day-count {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--secondary-text-color, #757575);
+    }
+
+    .section-chip,
+    .section-chip-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.03));
+      color: var(--primary-text-color, #212121);
+      font: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .section-chip:hover,
+    .section-chip-link:hover {
+      transform: translateY(-1px);
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 8%, transparent);
+    }
+
+    .section-chip-icon {
+      width: 18px;
+      height: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 10%, transparent);
+      color: var(--primary-color, #03a9f4);
+      flex-shrink: 0;
+      font-size: 10px;
+    }
+
+    .section-chip-label {
+      color: var(--secondary-text-color, #666);
+      font-weight: 500;
     }
 
     .timeline-item,
@@ -365,6 +583,16 @@ export class CaleeHomePage extends LitElement {
       flex: 1;
     }
 
+    .timeline-main-row,
+    .task-main-row,
+    .shopping-main-row,
+    .routine-main-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
     .timeline-title,
     .task-title,
     .shopping-title,
@@ -388,6 +616,19 @@ export class CaleeHomePage extends LitElement {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .row-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 10%, transparent);
+      color: var(--primary-color, #03a9f4);
+      flex-shrink: 0;
+      font-size: 14px;
     }
 
     .badge {
@@ -558,6 +799,19 @@ export class CaleeHomePage extends LitElement {
     return this.tasks.filter((task) => shoppingIds.has(task.list_id));
   }
 
+  private get _heroStats(): HeroStat[] {
+    return [
+      { icon: "◷", value: `${this._visibleCalendars.length}`, label: "calendars", destination: "calendar" },
+      { icon: "✓", value: `${this._dueTasks.length}`, label: "tasks", destination: "tasks" },
+      { icon: "🛒", value: `${this._shoppingSummary.count}`, label: "items", destination: "shopping" },
+      { icon: "↻", value: `${this._routineCount}`, label: "routines", destination: "more" },
+    ];
+  }
+
+  private get _weatherSurface(): { icon: string; title: string; subtitle: string } {
+    return weatherPlaceholder(this.currentDate);
+  }
+
   private get _standardTasks(): PlannerTask[] {
     const shoppingIds = this._shoppingListIds;
     return this.tasks.filter((task) => !shoppingIds.has(task.list_id) && !task.completed);
@@ -565,15 +819,25 @@ export class CaleeHomePage extends LitElement {
 
   private get _upcomingEvents(): PlannerEvent[] {
     const now = Date.now();
+    const endDate = this.timelineExpanded ? addDaysISO(this.currentDate, 6) : addDaysISO(this.currentDate, 1);
+    const currentStart = startOfDay(this.currentDate);
+    const endStart = startOfDay(endDate);
     return this.events
       .filter((event) => !event.deleted_at)
       .filter((event) => {
         if (this.enabledCalendarIds.size === 0) return true;
         return this.enabledCalendarIds.has(event.calendar_id);
       })
-      .filter((event) => startOfDay(event.start.slice(0, 10)) >= startOfDay(this.currentDate) || new Date(event.start).getTime() >= now)
+      .filter((event) => {
+        const eventDate = event.start.slice(0, 10);
+        const eventStart = new Date(event.start).getTime();
+        const eventDay = startOfDay(eventDate);
+        if (eventDay < currentStart || eventDay > endStart) return false;
+        if (sameDay(eventDate, this.currentDate) && eventStart < now) return false;
+        return true;
+      })
       .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
-      .slice(0, 8);
+      .slice(0, this.timelineExpanded ? 24 : 8);
   }
 
   private get _timelineDays(): DatedItem[] {
@@ -692,61 +956,77 @@ export class CaleeHomePage extends LitElement {
     );
   }
 
+  private _dispatchNavigate(view: HomeDestination): void {
+    this.dispatchEvent(
+      new CustomEvent("nav-change", {
+        detail: { view },
+        bubbles: true,
+        composed: true,
+      }),
+    );
+  }
+
+  private _toggleTimeline(): void {
+    this.timelineExpanded = !this.timelineExpanded;
+  }
+
   render() {
-    const nextShift = this._nextShift;
-    const nextShiftText = nextShift
-      ? `${nextShift.title} · ${formatTime(nextShift.start)}`
-      : "No upcoming shifts";
-    const nextShiftDate = nextShift ? this._dayLabel(nextShift.start.slice(0, 10)) : "Nothing on deck";
     const shopping = this._shoppingSummary;
+    const weather = this._weatherSurface;
+    const timelineLabel = this.timelineExpanded ? "This week" : "Today + tomorrow";
+    const timelineToggleLabel = this.timelineExpanded ? "Show today + tomorrow" : "Expand for the week";
 
     return html`
       <div class="shell">
         <section class="hero" aria-label="Overview summary">
           <div class="hero-main">
-            <div>
+            <div class="hero-top">
               <div class="hero-kicker">Home</div>
-              <h1 class="hero-title">${formatLongDate(this.currentDate)}</h1>
+              <h1 class="hero-title">${formatShortDate(this.currentDate)}</h1>
               <div class="hero-subtitle">
-                A quiet overview of what is next, what needs attention, and where to jump in without digging through the rest of the shell.
+                A short look at today, the next events, and the work worth tapping first.
+              </div>
+              <div class="weather-card">
+                <div class="weather-icon" aria-hidden="true">${weather.icon}</div>
+                <div class="weather-main">
+                  <div class="weather-title">Today's weather</div>
+                  <div class="weather-subtitle">${weather.title} · ${weather.subtitle}</div>
+                </div>
               </div>
             </div>
 
-            <div class="hero-pills">
-              <span class="pill"><strong>${this._visibleCalendars.length}</strong> calendars visible</span>
-              <span class="pill"><strong>${this._dueTasks.length}</strong> tasks in view</span>
-              <span class="pill"><strong>${shopping.count}</strong> shopping items</span>
-              <span class="pill"><strong>${this._routineCount}</strong> routines</span>
+            <div class="hero-stats" aria-label="Quick destinations">
+              ${this._heroStats.map(
+                (stat) => html`
+                  <button class="hero-stat" @click=${() => this._dispatchNavigate(stat.destination)} aria-label=${`Open ${stat.label}`}>
+                    <span class="hero-stat-icon" aria-hidden="true">${stat.icon}</span>
+                    <span class="hero-stat-copy">
+                      <strong>${stat.value}</strong>
+                      <span>${stat.label}</span>
+                    </span>
+                  </button>
+                `,
+              )}
             </div>
           </div>
 
-          <div class="hero-side">
-            <div class="summary-card" clickable role="button" tabindex="0"
-              @click=${() => nextShift && this._dispatchEventSelect(nextShift)}
-              @keydown=${(e: KeyboardEvent) => { if ((e.key === "Enter" || e.key === " ") && nextShift) { e.preventDefault(); this._dispatchEventSelect(nextShift); } }}>
-              <div class="summary-label">Next Shift</div>
-              <div class="summary-value">${nextShiftText}</div>
-              <div class="summary-sub">${nextShiftDate}</div>
+          <div class="hero-side panel-card timeline-card">
+            <div class="timeline-head">
+              <div class="timeline-title-wrap">
+                <h2 class="timeline-title">Upcoming Timeline</h2>
+                <div class="timeline-range">${timelineLabel}</div>
+              </div>
+              <button class="timeline-action" @click=${() => this._toggleTimeline()}>${timelineToggleLabel}</button>
             </div>
-            <div class="summary-card">
-              <div class="summary-label">Due Tasks</div>
-              <div class="summary-value">${this._dueTasks.length} ready for attention</div>
-              <div class="summary-sub">${this._dueTasks[0]?.title ?? "No urgent tasks"}</div>
-            </div>
-            <div class="summary-card">
-              <div class="summary-label">Shopping</div>
-              <div class="summary-value">${formatAmount(shopping.remaining, this.currency)} left</div>
-              <div class="summary-sub">${formatAmount(shopping.spent, this.currency)} planned from budget</div>
-            </div>
-          </div>
-        </section>
 
-        <section class="grid">
-          <article class="panel-card">
-            <div class="panel-head">
-              <h2 class="panel-title">Upcoming Timeline</h2>
-              <div class="panel-meta">${this._upcomingEvents.length} events</div>
+            <div class="panel-meta">
+              <button class="section-chip-link" @click=${() => this._dispatchNavigate("calendar")}>
+                <span class="section-chip-icon" aria-hidden="true">◷</span>
+                <span><strong>${this._upcomingEvents.length}</strong></span>
+                <span class="section-chip-label">events</span>
+              </button>
             </div>
+
             ${this._timelineDays.length > 0
               ? html`
                   <div class="timeline">
@@ -755,7 +1035,7 @@ export class CaleeHomePage extends LitElement {
                         <div class="timeline-day">
                           <div class="timeline-day-label">
                             <span>${day.dayLabel}</span>
-                            <span class="badge">${day.items.length}</span>
+                            <span class="timeline-day-count">${day.items.length}</span>
                           </div>
                           ${day.items.map(
                             (event) => html`
@@ -777,13 +1057,21 @@ export class CaleeHomePage extends LitElement {
                     )}
                   </div>
                 `
-              : html`<div class="section-empty">No upcoming events right now.</div>`}
-          </article>
+              : html`<div class="section-empty">No upcoming events in the current window.</div>`}
+          </div>
+        </section>
 
+        <section class="grid">
           <article class="panel-card">
             <div class="panel-head">
               <h2 class="panel-title">Due Tasks</h2>
-              <div class="panel-meta">${this._dueTasks.length} shown</div>
+              <div class="panel-meta">
+                <button class="section-chip-link" @click=${() => this._dispatchNavigate("tasks")}>
+                  <span class="section-chip-icon" aria-hidden="true">✓</span>
+                  <span><strong>${this._dueTasks.length}</strong></span>
+                  <span class="section-chip-label">shown</span>
+                </button>
+              </div>
             </div>
             ${this._dueTasks.length > 0
               ? html`
@@ -796,12 +1084,12 @@ export class CaleeHomePage extends LitElement {
                           <button class="task-item" @click=${() => this._dispatchTaskClick(task)}>
                             <span class="task-dot" style="background:${bucket === "overdue" ? "var(--error-color, #f44336)" : bucket === "today" ? "var(--warning-color, #ff9800)" : "var(--primary-color, #03a9f4)"}"></span>
                             <div class="task-main">
-                              <div class="task-title">${task.title}</div>
+                              <div class="task-main-row">
+                                <div class="task-title">${task.title}</div>
+                                <span class="badge">${bucket === "overdue" ? "Overdue" : bucket === "today" ? "Today" : bucket === "upcoming" ? "Soon" : "Later"}</span>
+                              </div>
                               <div class="task-sub">${listName}${task.due ? html` · ${task.due.slice(0, 10) === todayISO() ? "Today" : formatShortDate(task.due)}` : nothing}</div>
                             </div>
-                            <span class="badge" data-tone=${bucket === "overdue" ? "danger" : bucket === "today" ? "warn" : "good"}>
-                              ${bucket === "overdue" ? "Overdue" : bucket === "today" ? "Today" : bucket === "upcoming" ? "Soon" : "Later"}
-                            </span>
                           </button>
                         `;
                       },
@@ -814,7 +1102,13 @@ export class CaleeHomePage extends LitElement {
           <article class="panel-card">
             <div class="panel-head">
               <h2 class="panel-title">Shopping Shortcuts</h2>
-              <div class="panel-meta">${formatAmount(shopping.spent, this.currency)} planned</div>
+              <div class="panel-meta">
+                <button class="section-chip-link" @click=${() => this._dispatchNavigate("shopping")}>
+                  <span class="section-chip-icon" aria-hidden="true">🛒</span>
+                  <span><strong>${shopping.count}</strong></span>
+                  <span class="section-chip-label">items</span>
+                </button>
+              </div>
             </div>
             ${this._shoppingShortcuts.length > 0
               ? html`
@@ -822,33 +1116,39 @@ export class CaleeHomePage extends LitElement {
                     <span class="badge">Budget ${formatAmount(this.budget, this.currency)}</span>
                     <span class="badge">Remaining ${formatAmount(shopping.remaining, this.currency)}</span>
                   </div>
-                  <div class="shopping-shortcuts" style="margin-top: 12px;">
+                  <div class="stack" style="margin-top: 12px;">
                     ${this._shoppingShortcuts.map((item) => {
                       if ("icon" in item) {
                         const preset = item as TaskPreset;
                         return html`
-                          <button class="shortcut-chip" @click=${() => this._dispatchPresetAdd(preset)}>
-                            <span>${preset.title}</span>
-                            <span>${preset.category || "preset"}</span>
+                          <button class="shopping-item" @click=${() => this._dispatchPresetAdd(preset)}>
+                            <span class="row-icon" aria-hidden="true">${preset.icon || "🛒"}</span>
+                            <div class="shopping-main">
+                              <div class="shopping-main-row">
+                                <div class="shopping-title">${preset.title}</div>
+                                <span class="badge">${preset.category || "preset"}</span>
+                              </div>
+                              <div class="shopping-sub">${preset.note || "Tap to add"}</div>
+                            </div>
+                            <span class="badge">Add</span>
                           </button>
                         `;
                       }
 
                       const task = item as PlannerTask;
-                      if ("quantity" in task) {
-                        const task = item as PlannerTask;
-                        return html`
-                          <button class="shortcut-chip" @click=${() => this._dispatchTaskClick(task)}>
-                            <span>${task.title}</span>
-                            <span>${task.category || "shopping"}</span>
-                          </button>
-                        `;
-                      }
-
                       return html`
-                        <button class="shortcut-chip" @click=${() => this._dispatchTaskClick(task)}>
-                          <span>${task.title}</span>
-                          <span>${task.category || "shopping"}</span>
+                        <button class="shopping-item" @click=${() => this._dispatchTaskClick(task)}>
+                          <span class="row-icon" aria-hidden="true">🛍</span>
+                          <div class="shopping-main">
+                            <div class="shopping-main-row">
+                              <div class="shopping-title">${task.title}</div>
+                              <span class="badge">${task.category || "shopping"}</span>
+                            </div>
+                            <div class="shopping-sub">
+                              ${task.quantity ? `${task.quantity} ${task.unit || "items"}` : "Tap to edit"}
+                            </div>
+                          </div>
+                          <span class="badge">${task.price != null ? formatAmount(task.price, this.currency) : "Open"}</span>
                         </button>
                       `;
                     })}
@@ -857,10 +1157,16 @@ export class CaleeHomePage extends LitElement {
               : html`<div class="section-empty">No shopping shortcuts yet.</div>`}
           </article>
 
-          <article class="panel-card">
+          <article class="panel-card" data-wide="true">
             <div class="panel-head">
               <h2 class="panel-title">Routines</h2>
-              <div class="panel-meta">${this._routineCount} available</div>
+              <div class="panel-meta">
+                <button class="section-chip-link" @click=${() => this._dispatchNavigate("more")}>
+                  <span class="section-chip-icon" aria-hidden="true">↻</span>
+                  <span><strong>${this._routineCount}</strong></span>
+                  <span class="section-chip-label">available</span>
+                </button>
+              </div>
             </div>
             ${this.routines.length > 0
               ? html`
@@ -870,10 +1176,12 @@ export class CaleeHomePage extends LitElement {
                         <button class="routine-item" @click=${() => this._dispatchRoutineExecute(routine)}>
                           <span class="routine-emoji">${routine.emoji || "⚡"}</span>
                           <div class="routine-main">
-                            <div class="routine-title">${routine.name}</div>
+                            <div class="routine-main-row">
+                              <div class="routine-title">${routine.name}</div>
+                              <span class="badge">${routine.tasks.length} tasks</span>
+                            </div>
                             <div class="routine-sub">${routine.description || "Quick routine"}</div>
                           </div>
-                          <span class="badge">${routine.tasks.length} tasks</span>
                         </button>
                       `,
                     )}
@@ -884,7 +1192,7 @@ export class CaleeHomePage extends LitElement {
         </section>
 
         <div class="footer-note">
-          Week starts ${this.weekStart}. The page keeps interactions shallow: tap an event, task, or routine and let the parent decide how to open it.
+          Week starts ${this.weekStart}. Interactions stay shallow: tap an event, task, routine, or count chip and let the shell decide what opens next.
         </div>
       </div>
     `;
