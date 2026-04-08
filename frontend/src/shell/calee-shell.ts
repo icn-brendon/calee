@@ -563,7 +563,7 @@ export class CaleePanel extends LitElement {
         type: "calee/notification_rules",
         scope: "event",
         scope_id: eventId,
-      })) as NotificationRule[]) ?? []);
+      })) as NotificationRule[]) ?? [];
       return rules[0] ?? null;
     } catch {
       return null;
