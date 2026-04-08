@@ -587,14 +587,14 @@ function e(e2, r2) {
     } });
   };
 }
-var __defProp$q = Object.defineProperty;
-var __getOwnPropDesc$q = Object.getOwnPropertyDescriptor;
-var __decorateClass$q = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$q(target, key) : target;
+var __defProp$u = Object.defineProperty;
+var __getOwnPropDesc$u = Object.getOwnPropertyDescriptor;
+var __decorateClass$u = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$u(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$q(target, key, result);
+  if (kind && result) __defProp$u(target, key, result);
   return result;
 };
 function parseISO$3(iso) {
@@ -1106,56 +1106,56 @@ CaleeMonthView.styles = i$3`
       }
     }
   `;
-__decorateClass$q([
+__decorateClass$u([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "events", 2);
-__decorateClass$q([
+__decorateClass$u([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "calendars", 2);
-__decorateClass$q([
+__decorateClass$u([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "enabledCalendarIds", 2);
-__decorateClass$q([
+__decorateClass$u([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "selectedDate", 2);
-__decorateClass$q([
+__decorateClass$u([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "templates", 2);
-__decorateClass$q([
+__decorateClass$u([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "tasks", 2);
-__decorateClass$q([
+__decorateClass$u([
   n2({ attribute: false })
 ], CaleeMonthView.prototype, "conflicts", 2);
-__decorateClass$q([
+__decorateClass$u([
   n2({ type: Boolean })
 ], CaleeMonthView.prototype, "weekStartsMonday", 2);
-__decorateClass$q([
+__decorateClass$u([
   n2({ type: Boolean, reflect: true })
 ], CaleeMonthView.prototype, "narrow", 2);
-__decorateClass$q([
+__decorateClass$u([
   r()
 ], CaleeMonthView.prototype, "_grid", 2);
-__decorateClass$q([
+__decorateClass$u([
   r()
 ], CaleeMonthView.prototype, "_eventsByDay", 2);
-__decorateClass$q([
+__decorateClass$u([
   r()
 ], CaleeMonthView.prototype, "_taskCountByDay", 2);
-__decorateClass$q([
+__decorateClass$u([
   r()
 ], CaleeMonthView.prototype, "_conflictDays", 2);
-CaleeMonthView = __decorateClass$q([
+CaleeMonthView = __decorateClass$u([
   t("calee-month-view")
 ], CaleeMonthView);
-var __defProp$p = Object.defineProperty;
-var __getOwnPropDesc$p = Object.getOwnPropertyDescriptor;
-var __decorateClass$p = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$p(target, key) : target;
+var __defProp$t = Object.defineProperty;
+var __getOwnPropDesc$t = Object.getOwnPropertyDescriptor;
+var __decorateClass$t = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$t(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$p(target, key, result);
+  if (kind && result) __defProp$t(target, key, result);
   return result;
 };
 function parseISO$2(iso) {
@@ -1799,59 +1799,59 @@ CaleeWeekView.styles = i$3`
       }
     }
   `;
-__decorateClass$p([
+__decorateClass$t([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "events", 2);
-__decorateClass$p([
+__decorateClass$t([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "calendars", 2);
-__decorateClass$p([
+__decorateClass$t([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "enabledCalendarIds", 2);
-__decorateClass$p([
+__decorateClass$t([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "selectedDate", 2);
-__decorateClass$p([
+__decorateClass$t([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "templates", 2);
-__decorateClass$p([
+__decorateClass$t([
   n2({ attribute: false })
 ], CaleeWeekView.prototype, "tasks", 2);
-__decorateClass$p([
+__decorateClass$t([
   n2({ type: Boolean })
 ], CaleeWeekView.prototype, "weekStartsMonday", 2);
-__decorateClass$p([
+__decorateClass$t([
   n2({ type: Boolean, reflect: true })
 ], CaleeWeekView.prototype, "narrow", 2);
-__decorateClass$p([
+__decorateClass$t([
   r()
 ], CaleeWeekView.prototype, "_weekDays", 2);
-__decorateClass$p([
+__decorateClass$t([
   r()
 ], CaleeWeekView.prototype, "_allDayByDay", 2);
-__decorateClass$p([
+__decorateClass$t([
   r()
 ], CaleeWeekView.prototype, "_timedByDay", 2);
-__decorateClass$p([
+__decorateClass$t([
   r()
 ], CaleeWeekView.prototype, "_taskCountByDay", 2);
-__decorateClass$p([
+__decorateClass$t([
   r()
 ], CaleeWeekView.prototype, "_now", 2);
-__decorateClass$p([
+__decorateClass$t([
   e(".time-grid-scroll")
 ], CaleeWeekView.prototype, "_scrollContainer", 2);
-CaleeWeekView = __decorateClass$p([
+CaleeWeekView = __decorateClass$t([
   t("calee-week-view")
 ], CaleeWeekView);
-var __defProp$o = Object.defineProperty;
-var __getOwnPropDesc$o = Object.getOwnPropertyDescriptor;
-var __decorateClass$o = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$o(target, key) : target;
+var __defProp$s = Object.defineProperty;
+var __getOwnPropDesc$s = Object.getOwnPropertyDescriptor;
+var __decorateClass$s = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$s(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$o(target, key, result);
+  if (kind && result) __defProp$s(target, key, result);
   return result;
 };
 function parseISO$1(iso) {
@@ -2419,41 +2419,41 @@ CaleeDayView.styles = i$3`
       }
     }
   `;
-__decorateClass$o([
+__decorateClass$s([
   n2({ attribute: false })
 ], CaleeDayView.prototype, "events", 2);
-__decorateClass$o([
+__decorateClass$s([
   n2({ attribute: false })
 ], CaleeDayView.prototype, "calendars", 2);
-__decorateClass$o([
+__decorateClass$s([
   n2({ attribute: false })
 ], CaleeDayView.prototype, "enabledCalendarIds", 2);
-__decorateClass$o([
+__decorateClass$s([
   n2({ attribute: false })
 ], CaleeDayView.prototype, "selectedDate", 2);
-__decorateClass$o([
+__decorateClass$s([
   r()
 ], CaleeDayView.prototype, "_allDayEvents", 2);
-__decorateClass$o([
+__decorateClass$s([
   r()
 ], CaleeDayView.prototype, "_timedEvents", 2);
-__decorateClass$o([
+__decorateClass$s([
   r()
 ], CaleeDayView.prototype, "_now", 2);
-__decorateClass$o([
+__decorateClass$s([
   e(".time-grid-scroll")
 ], CaleeDayView.prototype, "_scrollContainer", 2);
-CaleeDayView = __decorateClass$o([
+CaleeDayView = __decorateClass$s([
   t("calee-day-view")
 ], CaleeDayView);
-var __defProp$n = Object.defineProperty;
-var __getOwnPropDesc$n = Object.getOwnPropertyDescriptor;
-var __decorateClass$n = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$n(target, key) : target;
+var __defProp$r = Object.defineProperty;
+var __getOwnPropDesc$r = Object.getOwnPropertyDescriptor;
+var __decorateClass$r = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$r(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$n(target, key, result);
+  if (kind && result) __defProp$r(target, key, result);
   return result;
 };
 function parseISO(iso) {
@@ -2737,32 +2737,32 @@ CaleeYearView.styles = i$3`
       }
     }
   `;
-__decorateClass$n([
+__decorateClass$r([
   n2({ attribute: false })
 ], CaleeYearView.prototype, "events", 2);
-__decorateClass$n([
+__decorateClass$r([
   n2({ attribute: false })
 ], CaleeYearView.prototype, "calendars", 2);
-__decorateClass$n([
+__decorateClass$r([
   n2({ attribute: false })
 ], CaleeYearView.prototype, "enabledCalendarIds", 2);
-__decorateClass$n([
+__decorateClass$r([
   n2({ attribute: false })
 ], CaleeYearView.prototype, "selectedDate", 2);
-__decorateClass$n([
+__decorateClass$r([
   r()
 ], CaleeYearView.prototype, "_eventsByDay", 2);
-CaleeYearView = __decorateClass$n([
+CaleeYearView = __decorateClass$r([
   t("calee-year-view")
 ], CaleeYearView);
-var __defProp$m = Object.defineProperty;
-var __getOwnPropDesc$m = Object.getOwnPropertyDescriptor;
-var __decorateClass$m = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$m(target, key) : target;
+var __defProp$q = Object.defineProperty;
+var __getOwnPropDesc$q = Object.getOwnPropertyDescriptor;
+var __decorateClass$q = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$q(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$m(target, key, result);
+  if (kind && result) __defProp$q(target, key, result);
   return result;
 };
 function toLocalDateKey(iso) {
@@ -2961,18 +2961,149 @@ CaleeAgendaView.styles = i$3`
       border-radius: 4px;
     }
   `;
-__decorateClass$m([
+__decorateClass$q([
   n2({ type: Array })
 ], CaleeAgendaView.prototype, "events", 2);
-__decorateClass$m([
+__decorateClass$q([
   n2({ attribute: false })
 ], CaleeAgendaView.prototype, "calendars", 2);
-__decorateClass$m([
+__decorateClass$q([
   r()
 ], CaleeAgendaView.prototype, "_groups", 2);
-CaleeAgendaView = __decorateClass$m([
+CaleeAgendaView = __decorateClass$q([
   t("calee-agenda-view")
 ], CaleeAgendaView);
+function todayISO$3() {
+  return (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+}
+function tomorrowISO() {
+  const d2 = /* @__PURE__ */ new Date();
+  d2.setDate(d2.getDate() + 1);
+  return d2.toISOString().slice(0, 10);
+}
+function nextWeekISO() {
+  const d2 = /* @__PURE__ */ new Date();
+  d2.setDate(d2.getDate() + 7);
+  return d2.toISOString().slice(0, 10);
+}
+function isToday(iso) {
+  return iso.slice(0, 10) === todayISO$3();
+}
+function isTomorrow$1(iso) {
+  return iso.slice(0, 10) === tomorrowISO();
+}
+function isUpcoming(iso) {
+  return iso.slice(0, 10) > todayISO$3();
+}
+function isPast(iso) {
+  return iso.slice(0, 10) < todayISO$3();
+}
+function formatDue(iso) {
+  const dateStr = iso.slice(0, 10);
+  if (dateStr === todayISO$3()) return "Today";
+  if (dateStr === tomorrowISO()) return "Tomorrow";
+  const d2 = /* @__PURE__ */ new Date(dateStr + "T00:00:00");
+  return d2.toLocaleDateString(void 0, { month: "short", day: "numeric" });
+}
+const RECURRENCE_LABELS = {
+  daily: "Daily",
+  weekly: "Weekly",
+  biweekly: "Fortnightly",
+  monthly: "Monthly",
+  weekdays: "Weekdays"
+};
+function formatRecurrence(rule) {
+  return RECURRENCE_LABELS[rule] ?? rule;
+}
+function resolveDue(pill, customDate) {
+  switch (pill) {
+    case "today":
+      return todayISO$3();
+    case "tomorrow":
+      return tomorrowISO();
+    case "nextweek":
+      return nextWeekISO();
+    case "custom":
+      return customDate || void 0;
+    default:
+      return void 0;
+  }
+}
+function datePillFromDue(due) {
+  if (!due) return { pill: "none", customDate: "" };
+  const dateStr = due.slice(0, 10);
+  if (dateStr === todayISO$3()) return { pill: "today", customDate: "" };
+  if (dateStr === tomorrowISO()) return { pill: "tomorrow", customDate: "" };
+  if (dateStr === nextWeekISO()) return { pill: "nextweek", customDate: "" };
+  return { pill: "custom", customDate: dateStr };
+}
+function sortTasks(tasks, sort) {
+  const arr = [...tasks];
+  switch (sort) {
+    case "due":
+      return arr.sort((a2, b2) => {
+        if (!a2.due && !b2.due) return 0;
+        if (!a2.due) return 1;
+        if (!b2.due) return -1;
+        return a2.due.localeCompare(b2.due);
+      });
+    case "title":
+      return arr.sort((a2, b2) => a2.title.localeCompare(b2.title));
+    case "created":
+      return arr.sort((a2, b2) => b2.created_at.localeCompare(a2.created_at));
+    case "manual":
+    default:
+      return arr.sort((a2, b2) => {
+        const listCmp = a2.list_id.localeCompare(b2.list_id);
+        return listCmp !== 0 ? listCmp : a2.position - b2.position;
+      });
+  }
+}
+function groupTasks(tasks, groupBy, lists) {
+  if (groupBy === "none") {
+    return [{ label: "", key: "_all", tasks: [...tasks] }];
+  }
+  const map = /* @__PURE__ */ new Map();
+  for (const t2 of tasks) {
+    let key;
+    switch (groupBy) {
+      case "list":
+        key = t2.list_id;
+        break;
+      case "due": {
+        if (!t2.due) key = "No date";
+        else if (isPast(t2.due)) key = "Overdue";
+        else if (isToday(t2.due)) key = "Today";
+        else if (isTomorrow$1(t2.due)) key = "Tomorrow";
+        else key = "Upcoming";
+        break;
+      }
+      case "category":
+        key = t2.category || "Uncategorised";
+        break;
+      default:
+        key = "_all";
+    }
+    if (!map.has(key)) map.set(key, []);
+    map.get(key).push(t2);
+  }
+  const listNameMap = /* @__PURE__ */ new Map();
+  if (lists) {
+    for (const l2 of lists) listNameMap.set(l2.id, l2.name);
+  }
+  const sections = [];
+  for (const [key, groupTasks2] of map.entries()) {
+    const label = groupBy === "list" ? listNameMap.get(key) ?? key : key;
+    sections.push({ label, key, tasks: groupTasks2 });
+  }
+  if (groupBy === "due") {
+    const order = ["Overdue", "Today", "Tomorrow", "Upcoming", "No date"];
+    sections.sort((a2, b2) => order.indexOf(a2.label) - order.indexOf(b2.label));
+  } else {
+    sections.sort((a2, b2) => a2.label.localeCompare(b2.label));
+  }
+  return sections;
+}
 const SWIPE_THRESHOLD = 80;
 const swipeStyles = i$3`
   .swipe-row-wrapper {
@@ -3084,582 +3215,110 @@ function getSwipeDelta(state, itemId) {
   if (state.swipingId !== itemId) return 0;
   return state.touchCurrentX - state.touchStartX;
 }
-var __defProp$l = Object.defineProperty;
-var __getOwnPropDesc$l = Object.getOwnPropertyDescriptor;
-var __decorateClass$l = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$l(target, key) : target;
+var __defProp$p = Object.defineProperty;
+var __getOwnPropDesc$p = Object.getOwnPropertyDescriptor;
+var __decorateClass$p = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$p(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$l(target, key, result);
+  if (kind && result) __defProp$p(target, key, result);
   return result;
 };
-function todayISO$3() {
-  return (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
-}
-function tomorrowISO() {
-  const d2 = /* @__PURE__ */ new Date();
-  d2.setDate(d2.getDate() + 1);
-  return d2.toISOString().slice(0, 10);
-}
-function nextWeekISO() {
-  const d2 = /* @__PURE__ */ new Date();
-  d2.setDate(d2.getDate() + 7);
-  return d2.toISOString().slice(0, 10);
-}
-function isToday(iso) {
-  return iso.slice(0, 10) === todayISO$3();
-}
-function isUpcoming(iso) {
-  return iso.slice(0, 10) > todayISO$3();
-}
-function isPast(iso) {
-  return iso.slice(0, 10) < todayISO$3();
-}
-function formatDue(iso) {
-  const dateStr = iso.slice(0, 10);
-  if (dateStr === todayISO$3()) return "Today";
-  if (dateStr === tomorrowISO()) return "Tomorrow";
-  const d2 = /* @__PURE__ */ new Date(dateStr + "T00:00:00");
-  return d2.toLocaleDateString(void 0, { month: "short", day: "numeric" });
-}
-const RECURRENCE_LABELS = {
-  daily: "Daily",
-  weekly: "Weekly",
-  biweekly: "Fortnightly",
-  monthly: "Monthly",
-  weekdays: "Weekdays"
-};
-function formatRecurrence(rule) {
-  return RECURRENCE_LABELS[rule] ?? rule;
-}
-let CaleeTasksView = class extends i {
+let CaleeTaskItem = class extends i {
   constructor() {
     super(...arguments);
-    this.tasks = [];
-    this.lists = [];
-    this.presets = [];
-    this.activeView = "inbox";
     this.narrow = false;
-    this._quickAddText = "";
-    this._quickAddFocused = false;
-    this._selectedDatePill = "none";
-    this._selectedRecurrence = "none";
-    this._customDate = "";
-    this._renderLimit = 100;
-    this._editingTaskId = null;
-    this._editTitle = "";
-    this._editDatePill = "none";
-    this._editCustomDate = "";
-    this._editRecurrence = "none";
-    this._showMoreOptions = false;
-    this._quickAddNote = "";
+    this.draggable = false;
     this._swipe = createSwipeState();
-    this._confirmDeleteId = null;
-    this._boundHashChange = this._checkHashForTaskId.bind(this);
   }
-  connectedCallback() {
-    super.connectedCallback();
-    window.addEventListener("hashchange", this._boundHashChange);
-    this._checkHashForTaskId();
-  }
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    window.removeEventListener("hashchange", this._boundHashChange);
-  }
-  updated(changed) {
-    if (changed.has("activeView")) {
-      this._resetQuickAdd();
-    }
-    if (changed.has("tasks")) {
-      this._checkHashForTaskId();
-    }
-  }
-  /** If the URL hash is #/tasks/<taskId>, auto-expand that task for inline editing. */
-  _checkHashForTaskId() {
-    const hash = window.location.hash.replace(/^#\/?/, "");
-    const parts = hash.split("/");
-    if (parts[0] === "tasks" && parts[1] && parts[1].length > 0) {
-      const taskId = parts[1];
-      const task = this.tasks.find((t2) => t2.id === taskId);
-      if (task) {
-        this._startEdit(task);
-        window.location.hash = "#/tasks";
-      }
-    }
-  }
-  /* ── Quick-add defaults per tab ─────────────────────────────────── */
-  get _defaultDatePill() {
-    switch (this.activeView) {
-      case "today":
-        return "today";
-      case "upcoming":
-        return "tomorrow";
-      default:
-        return "none";
-    }
-  }
-  _resetQuickAdd() {
-    this._quickAddText = "";
-    this._selectedDatePill = this._defaultDatePill;
-    this._selectedRecurrence = "none";
-    this._customDate = "";
-    this._quickAddNote = "";
-    this._showMoreOptions = false;
-  }
-  /* ── Resolve due date from pill ─────────────────────────────────── */
-  _resolveDue(pill, customDate) {
-    switch (pill) {
-      case "today":
-        return todayISO$3();
-      case "tomorrow":
-        return tomorrowISO();
-      case "nextweek":
-        return nextWeekISO();
-      case "custom":
-        return customDate || void 0;
-      default:
-        return void 0;
-    }
-  }
-  /* ── Determine date pill from an existing due string ────────────── */
-  _datePillFromDue(due) {
-    if (!due) return { pill: "none", customDate: "" };
-    const dateStr = due.slice(0, 10);
-    if (dateStr === todayISO$3()) return { pill: "today", customDate: "" };
-    if (dateStr === tomorrowISO()) return { pill: "tomorrow", customDate: "" };
-    const nextWk = nextWeekISO();
-    if (dateStr === nextWk) return { pill: "nextweek", customDate: "" };
-    return { pill: "custom", customDate: dateStr };
-  }
-  /* ── Filtered tasks ─────────────────────────────────────────────── */
-  get _filteredTasks() {
-    const active = this.tasks.filter((t2) => !t2.completed && !t2.deleted_at);
-    switch (this.activeView) {
-      case "today":
-        return active.filter((t2) => t2.due && isToday(t2.due));
-      case "upcoming":
-        return active.filter((t2) => t2.due && isUpcoming(t2.due)).sort(
-          (a2, b2) => new Date(a2.due).getTime() - new Date(b2.due).getTime()
-        );
-      case "inbox":
-      default:
-        return active;
-    }
-  }
-  /* ── Events ─────────────────────────────────────────────────────── */
-  /** Presets relevant to the current inbox view. */
-  get _inboxPresets() {
-    return this.presets.filter((p2) => p2.list_id === "inbox");
-  }
-  _onPresetClick(preset) {
-    this.dispatchEvent(
-      new CustomEvent("preset-add", {
-        detail: { presetId: preset.id },
-        bubbles: true,
-        composed: true
-      })
-    );
-  }
-  _showMore() {
-    this._renderLimit += 100;
-  }
-  _switchTab(view) {
-    this._renderLimit = 100;
-    this.activeView = view;
-    this.dispatchEvent(
-      new CustomEvent("view-change", {
-        detail: { view },
-        bubbles: true,
-        composed: true
-      })
-    );
-  }
-  _onComplete(task, e2) {
-    e2.stopPropagation();
-    this.dispatchEvent(
-      new CustomEvent("task-complete", {
-        detail: { taskId: task.id },
-        bubbles: true,
-        composed: true
-      })
-    );
-  }
-  _onQuickAddKeydown(e2) {
-    if (e2.key === "Enter" && this._quickAddText.trim()) {
-      const due = this._resolveDue(this._selectedDatePill, this._customDate);
-      const recurrence = this._selectedRecurrence !== "none" && due ? this._selectedRecurrence : void 0;
-      const detail = {
-        title: this._quickAddText.trim(),
-        due,
-        recurrence_rule: recurrence
-      };
-      if (this._quickAddNote.trim()) {
-        detail.note = this._quickAddNote.trim();
-      }
-      this.dispatchEvent(
-        new CustomEvent("task-quick-add", {
-          detail,
-          bubbles: true,
-          composed: true
-        })
-      );
-      this._quickAddText = "";
-      this._quickAddNote = "";
-      this._showMoreOptions = false;
-      this._inputEl.value = "";
-      this._resetQuickAdd();
-    }
-  }
-  _onInput(e2) {
-    this._quickAddText = e2.target.value;
-  }
-  _onInputFocus() {
-    this._quickAddFocused = true;
-  }
-  _onInputBlur() {
-    setTimeout(() => {
-      this._quickAddFocused = false;
-    }, 200);
-  }
-  _selectDatePill(pill) {
-    this._selectedDatePill = pill;
-    if (pill === "none") {
-      this._selectedRecurrence = "none";
-    }
-  }
-  _selectRecurrence(pill) {
-    this._selectedRecurrence = pill;
-  }
-  _onCustomDateChange(e2) {
-    this._customDate = e2.target.value;
-  }
-  /* ── Task row click — dispatch event for panel detail drawer ───── */
-  _onTaskRowClick(task) {
-    this.dispatchEvent(
-      new CustomEvent("task-click", {
-        detail: { task },
-        bubbles: true,
-        composed: true
-      })
-    );
-    if (this.narrow) {
-      this._startEdit(task);
-    }
-  }
-  /* ── Inline editing ─────────────────────────────────────────────── */
-  _startEdit(task) {
-    this._editingTaskId = task.id;
-    this._editTitle = task.title;
-    const { pill, customDate } = this._datePillFromDue(task.due);
-    this._editDatePill = pill;
-    this._editCustomDate = customDate;
-    this._editRecurrence = task.recurrence_rule || "none";
-  }
-  _cancelEdit() {
-    this._editingTaskId = null;
-  }
-  _saveEdit(task) {
-    const due = this._resolveDue(this._editDatePill, this._editCustomDate);
-    const recurrence = this._editRecurrence !== "none" && due ? this._editRecurrence : "";
-    this.dispatchEvent(
-      new CustomEvent("task-update", {
-        detail: {
-          taskId: task.id,
-          version: task.version,
-          title: this._editTitle.trim() || task.title,
-          due: due ?? "",
-          recurrence_rule: recurrence
-        },
-        bubbles: true,
-        composed: true
-      })
-    );
-    this._editingTaskId = null;
-  }
-  _onEditTitleInput(e2) {
-    this._editTitle = e2.target.value;
-  }
-  _selectEditDatePill(pill) {
-    this._editDatePill = pill;
-    if (pill === "none") {
-      this._editRecurrence = "none";
-    }
-  }
-  _selectEditRecurrence(pill) {
-    this._editRecurrence = pill;
-  }
-  _onEditCustomDateChange(e2) {
-    this._editCustomDate = e2.target.value;
-  }
-  _onEditKeydown(e2, task) {
-    if (e2.key === "Enter") {
-      this._saveEdit(task);
-    } else if (e2.key === "Escape") {
-      this._cancelEdit();
-    }
-  }
-  /* ── Swipe handlers (mobile) ───────────────────────────────────── */
-  _onTouchStart(e2, itemId) {
-    handleTouchStart(this._swipe, e2, itemId);
+  /* ── Swipe (mobile) ────────────────────────────────────────────────── */
+  _onTouchStart(e2) {
+    handleTouchStart(this._swipe, e2, this.task.id);
   }
   _onTouchMove(e2) {
     handleTouchMove(this._swipe, e2);
     this.requestUpdate();
   }
-  _onTouchEnd(_e) {
+  _onTouchEnd() {
     const result = handleTouchEnd(this._swipe);
     this.requestUpdate();
     if (!result.action) return;
     if (result.action === "complete") {
+      this._fireComplete();
+    } else if (result.action === "delete") {
       this.dispatchEvent(
-        new CustomEvent("task-complete", {
-          detail: { taskId: result.itemId },
+        new CustomEvent("task-swipe-delete", {
+          detail: { taskId: this.task.id },
           bubbles: true,
           composed: true
         })
       );
-    } else if (result.action === "delete") {
-      this._confirmDeleteId = result.itemId;
     }
   }
-  _confirmSwipeDelete() {
-    if (!this._confirmDeleteId) return;
+  /* ── Events ────────────────────────────────────────────────────────── */
+  _fireComplete() {
     this.dispatchEvent(
-      new CustomEvent("task-delete", {
-        detail: { taskId: this._confirmDeleteId },
+      new CustomEvent("task-complete", {
+        detail: { taskId: this.task.id },
         bubbles: true,
         composed: true
       })
     );
-    this._confirmDeleteId = null;
   }
-  _cancelSwipeDelete() {
-    this._confirmDeleteId = null;
+  _onCheckClick(e2) {
+    e2.stopPropagation();
+    this._fireComplete();
   }
-  /* ── Progressive disclosure ────────────────────────────────────── */
-  _toggleMoreOptions() {
-    this._showMoreOptions = !this._showMoreOptions;
+  _onClick() {
+    this.dispatchEvent(
+      new CustomEvent("task-click", {
+        detail: { task: this.task },
+        bubbles: true,
+        composed: true
+      })
+    );
   }
-  _onNoteInput(e2) {
-    this._quickAddNote = e2.target.value;
+  _onDragStart(e2) {
+    if (!this.draggable) return;
+    e2.dataTransfer?.setData("text/plain", this.task.id);
+    e2.dataTransfer.effectAllowed = "move";
+    this.dispatchEvent(
+      new CustomEvent("task-drag-start", {
+        detail: { taskId: this.task.id },
+        bubbles: true,
+        composed: true
+      })
+    );
   }
-  /* ── Render ─────────────────────────────────────────────────────── */
+  /* ── Render ────────────────────────────────────────────────────────── */
   render() {
-    const tabs = [
-      { key: "inbox", label: "Inbox" },
-      { key: "today", label: "Today" },
-      { key: "upcoming", label: "Upcoming" }
-    ];
-    const filtered = this._filteredTasks;
-    const showDatePills = this._quickAddFocused || this._quickAddText.length > 0;
-    const hasDue = this._selectedDatePill !== "none";
-    return b`
-      <div class="tabs" role="tablist">
-        ${tabs.map(
-      (t2) => b`
-            <button
-              class="tab"
-              role="tab"
-              aria-selected=${this.activeView === t2.key}
-              @click=${() => this._switchTab(t2.key)}
-            >
-              ${t2.label}
-            </button>
-          `
-    )}
-      </div>
-
-      <div class="quick-add">
-        <div class="quick-add-input-row">
-          <input
-            id="quick-add-input"
-            type="text"
-            placeholder="Add a task..."
-            .value=${this._quickAddText}
-            @input=${this._onInput}
-            @keydown=${this._onQuickAddKeydown}
-            @focus=${this._onInputFocus}
-            @blur=${this._onInputBlur}
-          />
-        </div>
-
-        <!-- Progressive disclosure: date pills shown on focus -->
-        <div class="pills-date-container ${showDatePills ? "visible" : ""}">
-          ${this._renderDatePills(
-      this._selectedDatePill,
-      this._customDate,
-      (p2) => this._selectDatePill(p2),
-      (e2) => this._onCustomDateChange(e2)
-    )}
-        </div>
-
-        <!-- Progressive disclosure: recurrence pills shown after date selected -->
-        <div class="pills-recurrence-container ${showDatePills && hasDue ? "visible" : ""}">
-          ${hasDue ? this._renderRecurrencePills(
-      this._selectedRecurrence,
-      (p2) => this._selectRecurrence(p2)
-    ) : A}
-        </div>
-
-        <!-- Progressive disclosure: "More options" toggle for note -->
-        ${showDatePills ? b`
-          <button class="more-options-toggle" @click=${this._toggleMoreOptions}>
-            ${this._showMoreOptions ? "Less options" : "More options"}
-          </button>
-          ${this._showMoreOptions ? b`
-            <textarea
-              class="note-input"
-              placeholder="Add a note..."
-              .value=${this._quickAddNote}
-              @input=${this._onNoteInput}
-            ></textarea>
-          ` : A}
-        ` : A}
-      </div>
-
-      <!-- Swipe delete confirmation -->
-      ${this._confirmDeleteId ? b`
-            <div
-              class="confirm-delete-overlay"
-              @click=${(e2) => {
-      if (e2.target.classList.contains("confirm-delete-overlay")) {
-        this._cancelSwipeDelete();
-      }
-    }}
-            >
-              <div class="confirm-delete-dialog">
-                <p>Delete this task?</p>
-                <div class="confirm-delete-actions">
-                  <button class="confirm-cancel" @click=${this._cancelSwipeDelete}>Cancel</button>
-                  <button class="confirm-confirm" @click=${this._confirmSwipeDelete}>Delete</button>
-                </div>
-              </div>
-            </div>
-          ` : A}
-
-      ${this.activeView === "inbox" && this._inboxPresets.length > 0 ? b`
-            <div class="presets-section">
-              <div class="presets-label">Quick add</div>
-              <div class="presets-grid">
-                ${this._inboxPresets.map(
-      (p2) => b`
-                    <button
-                      class="preset-chip"
-                      @click=${() => this._onPresetClick(p2)}
-                      title="Add ${p2.title}"
-                    >
-                      ${p2.icon ? b`<ha-icon .icon=${p2.icon}></ha-icon>` : A}
-                      ${p2.title}
-                    </button>
-                  `
-    )}
-              </div>
-            </div>
-          ` : A}
-
-      ${filtered.length === 0 ? b`<div class="empty">No tasks</div>` : b`
-            <ul class="task-list">
-              ${filtered.slice(0, this._renderLimit).map(
-      (t2) => this._editingTaskId === t2.id ? this._renderEditRow(t2) : this._renderTask(t2)
-    )}
-            </ul>
-            ${filtered.length > this._renderLimit ? b`
-                  <button
-                    class="show-more-btn"
-                    @click=${this._showMore}
-                  >
-                    Show more (${filtered.length - this._renderLimit} remaining)
-                  </button>
-                ` : A}
-          `}
-    `;
-  }
-  /* ── Date pills (reusable for quick-add and inline edit) ──────── */
-  _renderDatePills(selected, customDate, onSelect, onCustomChange) {
-    const pills = [
-      { key: "today", label: "Today" },
-      { key: "tomorrow", label: "Tomorrow" },
-      { key: "nextweek", label: "Next week" },
-      { key: "custom", label: "Custom" },
-      { key: "none", label: "No date" }
-    ];
-    return b`
-      <div class="pill-row">
-        <span class="pill-label">Due</span>
-        ${pills.map(
-      (p2) => b`
-            <button
-              class="pill"
-              aria-selected=${selected === p2.key}
-              @click=${() => onSelect(p2.key)}
-            >
-              ${p2.label}
-            </button>
-          `
-    )}
-        ${selected === "custom" ? b`
-              <input
-                type="date"
-                class="custom-date-input"
-                .value=${customDate}
-                @change=${onCustomChange}
-              />
-            ` : A}
-      </div>
-    `;
-  }
-  /* ── Recurrence pills (reusable) ──────────────────────────────── */
-  _renderRecurrencePills(selected, onSelect) {
-    const pills = [
-      { key: "none", label: "None" },
-      { key: "daily", label: "Daily" },
-      { key: "weekly", label: "Weekly" },
-      { key: "biweekly", label: "Fortnightly" },
-      { key: "monthly", label: "Monthly" },
-      { key: "weekdays", label: "Weekdays" }
-    ];
-    return b`
-      <div class="pill-row">
-        <span class="pill-label">Repeat</span>
-        ${pills.map(
-      (p2) => b`
-            <button
-              class="pill recurrence-pill"
-              aria-selected=${selected === p2.key}
-              @click=${() => onSelect(p2.key)}
-            >
-              ${p2.label}
-            </button>
-          `
-    )}
-      </div>
-    `;
-  }
-  /* ── Task item rendering ──────────────────────────────────────── */
-  _renderTask(task) {
+    const task = this.task;
     const overdue = task.due ? isPast(task.due) : false;
     const dueIsToday = task.due ? isToday(task.due) : false;
     const delta = getSwipeDelta(this._swipe, task.id);
     const isSwiping = this._swipe.swipingId === task.id;
     return b`
-      <li class="swipe-row-wrapper ${isSwiping ? "swiping" : ""}">
-        <!-- Swipe reveal backgrounds -->
+      <div class="swipe-row-wrapper ${isSwiping ? "swiping" : ""}">
         <div class="swipe-action-complete" aria-hidden="true">&#10003;</div>
         <div class="swipe-action-delete" aria-hidden="true">&#128465;</div>
 
         <div
           class="swipe-row-inner task-item ${isSwiping ? "dragging" : ""}"
           style="transform: translateX(${delta}px)"
-          @click=${() => this._onTaskRowClick(task)}
-          @touchstart=${(e2) => this._onTouchStart(e2, task.id)}
+          @click=${this._onClick}
+          @touchstart=${(e2) => this._onTouchStart(e2)}
           @touchmove=${(e2) => this._onTouchMove(e2)}
-          @touchend=${(e2) => this._onTouchEnd(e2)}
+          @touchend=${() => this._onTouchEnd()}
+          draggable=${this.draggable ? "true" : "false"}
+          @dragstart=${(e2) => this._onDragStart(e2)}
         >
+          ${this.draggable ? b`<span class="drag-handle" aria-label="Drag to reorder">\u2261</span>` : A}
+
           <button
             class="task-check"
             aria-label="Complete task"
-            @click=${(e2) => this._onComplete(task, e2)}
+            @click=${(e2) => this._onCheckClick(e2)}
           >
             <svg viewBox="0 0 16 16">
               <polyline points="3.5,8 6.5,11 12.5,5" />
@@ -3685,184 +3344,13 @@ let CaleeTasksView = class extends i {
             </div>
           </div>
         </div>
-      </li>
-    `;
-  }
-  /* ── Inline edit row ──────────────────────────────────────────── */
-  _renderEditRow(task) {
-    const editHasDue = this._editDatePill !== "none";
-    return b`
-      <li class="task-edit">
-        <input
-          type="text"
-          class="edit-title-input"
-          .value=${this._editTitle}
-          @input=${this._onEditTitleInput}
-          @keydown=${(e2) => this._onEditKeydown(e2, task)}
-        />
-
-        ${this._renderDatePills(
-      this._editDatePill,
-      this._editCustomDate,
-      (p2) => this._selectEditDatePill(p2),
-      (e2) => this._onEditCustomDateChange(e2)
-    )}
-
-        ${editHasDue ? this._renderRecurrencePills(
-      this._editRecurrence,
-      (p2) => this._selectEditRecurrence(p2)
-    ) : A}
-
-        <div class="edit-actions">
-          <button class="btn btn-primary" @click=${() => this._saveEdit(task)}>
-            Save
-          </button>
-          <button class="btn btn-secondary" @click=${this._cancelEdit}>
-            Cancel
-          </button>
-        </div>
-      </li>
+      </div>
     `;
   }
 };
-CaleeTasksView.styles = [swipeStyles, i$3`
+CaleeTaskItem.styles = [swipeStyles, i$3`
     :host {
       display: block;
-      padding: 16px;
-      --task-bg: var(--card-background-color, #fff);
-      --task-text: var(--primary-text-color, #212121);
-      --task-secondary: var(--secondary-text-color, #757575);
-      --task-border: var(--divider-color, #e0e0e0);
-      --task-accent: var(--primary-color, #03a9f4);
-      --task-error: var(--error-color, #f44336);
-    }
-
-    /* ── Tab bar ─────────────────────────────────────────────────── */
-
-    .tabs {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 16px;
-      border-bottom: 1px solid var(--task-border);
-      padding-bottom: 8px;
-    }
-
-    .tab {
-      font-size: 13px;
-      font-weight: 500;
-      padding: 6px 14px;
-      border-radius: 16px;
-      cursor: pointer;
-      background: transparent;
-      color: var(--task-secondary);
-      border: none;
-      transition: background 0.15s, color 0.15s;
-    }
-    .tab:hover {
-      background: var(--secondary-background-color, #f5f5f5);
-    }
-    .tab[aria-selected="true"] {
-      background: var(--task-accent);
-      color: #fff;
-    }
-
-    /* ── Quick-add ───────────────────────────────────────────────── */
-
-    .quick-add {
-      margin-bottom: 16px;
-    }
-    .quick-add-input-row {
-      display: flex;
-      gap: 8px;
-    }
-    .quick-add input[type="text"] {
-      flex: 1;
-      font-size: 14px;
-      padding: 8px 12px;
-      border: 1px solid var(--task-border);
-      border-radius: 8px;
-      background: var(--task-bg);
-      color: var(--task-text);
-      outline: none;
-      transition: border-color 0.15s;
-    }
-    .quick-add input[type="text"]:focus {
-      border-color: var(--task-accent);
-    }
-    .quick-add input[type="text"]::placeholder {
-      color: var(--task-secondary);
-    }
-
-    /* ── Pill rows (shared) ──────────────────────────────────────── */
-
-    .pill-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
-    }
-
-    .pill-label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-      color: var(--task-secondary);
-      align-self: center;
-      margin-right: 4px;
-    }
-
-    .pill {
-      font-size: 12px;
-      font-weight: 500;
-      padding: 4px 10px;
-      border-radius: 12px;
-      cursor: pointer;
-      background: transparent;
-      color: var(--task-secondary);
-      border: 1px solid var(--task-border);
-      transition: background 0.15s, color 0.15s, border-color 0.15s;
-      white-space: nowrap;
-      user-select: none;
-    }
-    .pill:hover {
-      border-color: var(--task-accent);
-      color: var(--task-text);
-    }
-    .pill[aria-selected="true"] {
-      background: var(--task-accent);
-      color: #fff;
-      border-color: var(--task-accent);
-    }
-
-    .recurrence-pill[aria-selected="true"] {
-      background: color-mix(in srgb, var(--task-accent) 15%, transparent);
-      color: var(--task-accent);
-      border-color: var(--task-accent);
-    }
-
-    .custom-date-input {
-      font-size: 12px;
-      padding: 4px 8px;
-      border-radius: 8px;
-      border: 1px solid var(--task-border);
-      background: var(--task-bg);
-      color: var(--task-text);
-      outline: none;
-      transition: border-color 0.15s;
-    }
-    .custom-date-input:focus {
-      border-color: var(--task-accent);
-    }
-
-    /* (progressive disclosure containers moved below) */
-
-    /* ── Task list ───────────────────────────────────────────────── */
-
-    .task-list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
     }
 
     .task-item {
@@ -3870,7 +3358,7 @@ CaleeTasksView.styles = [swipeStyles, i$3`
       align-items: flex-start;
       gap: 12px;
       padding: 10px 4px;
-      border-bottom: 1px solid var(--task-border);
+      border-bottom: 1px solid var(--divider-color, #e0e0e0);
       transition: background 0.15s;
       cursor: pointer;
     }
@@ -3881,12 +3369,31 @@ CaleeTasksView.styles = [swipeStyles, i$3`
       background: var(--secondary-background-color, #f5f5f5);
     }
 
+    .drag-handle {
+      flex-shrink: 0;
+      width: 16px;
+      height: 20px;
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--secondary-text-color, #757575);
+      opacity: 0.5;
+      margin-top: 2px;
+      font-size: 14px;
+      user-select: none;
+      touch-action: none;
+    }
+    .drag-handle:hover {
+      opacity: 1;
+    }
+
     .task-check {
       flex-shrink: 0;
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      border: 2px solid var(--task-border);
+      border: 2px solid var(--divider-color, #e0e0e0);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -3897,7 +3404,7 @@ CaleeTasksView.styles = [swipeStyles, i$3`
       margin-top: 2px;
     }
     .task-check:hover {
-      border-color: var(--task-accent);
+      border-color: var(--primary-color, #03a9f4);
     }
     .task-check svg {
       width: 12px;
@@ -3909,7 +3416,7 @@ CaleeTasksView.styles = [swipeStyles, i$3`
       stroke-linejoin: round;
     }
     .task-check:hover svg {
-      stroke: var(--task-accent);
+      stroke: var(--primary-color, #03a9f4);
     }
 
     .task-body {
@@ -3919,7 +3426,7 @@ CaleeTasksView.styles = [swipeStyles, i$3`
 
     .task-title {
       font-size: 14px;
-      color: var(--task-text);
+      color: var(--primary-text-color, #212121);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -3939,14 +3446,14 @@ CaleeTasksView.styles = [swipeStyles, i$3`
       padding: 1px 6px;
       border-radius: 4px;
       background: var(--secondary-background-color, #f0f0f0);
-      color: var(--task-secondary);
+      color: var(--secondary-text-color, #757575);
     }
     .due-badge.overdue {
-      background: var(--task-error);
+      background: var(--error-color, #f44336);
       color: #fff;
     }
     .due-badge.today {
-      color: var(--task-accent);
+      color: var(--primary-color, #03a9f4);
       font-weight: 600;
     }
 
@@ -3955,7 +3462,7 @@ CaleeTasksView.styles = [swipeStyles, i$3`
       font-weight: 500;
       padding: 1px 6px;
       border-radius: 4px;
-      color: var(--task-secondary);
+      color: var(--secondary-text-color, #757575);
       display: inline-flex;
       align-items: center;
       gap: 3px;
@@ -3969,21 +3476,759 @@ CaleeTasksView.styles = [swipeStyles, i$3`
       width: 3px;
       height: 3px;
       border-radius: 50%;
-      background: var(--task-secondary);
+      background: var(--secondary-text-color, #757575);
       opacity: 0.5;
     }
 
     .linked-icon {
       width: 14px;
       height: 14px;
-      fill: var(--task-secondary);
+      fill: var(--secondary-text-color, #757575);
       flex-shrink: 0;
+    }
+  `];
+__decorateClass$p([
+  n2({ attribute: false })
+], CaleeTaskItem.prototype, "task", 2);
+__decorateClass$p([
+  n2({ type: Boolean })
+], CaleeTaskItem.prototype, "narrow", 2);
+__decorateClass$p([
+  n2({ type: Boolean })
+], CaleeTaskItem.prototype, "draggable", 2);
+__decorateClass$p([
+  r()
+], CaleeTaskItem.prototype, "_swipe", 2);
+CaleeTaskItem = __decorateClass$p([
+  t("calee-task-item")
+], CaleeTaskItem);
+var __defProp$o = Object.defineProperty;
+var __getOwnPropDesc$o = Object.getOwnPropertyDescriptor;
+var __decorateClass$o = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$o(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$o(target, key, result);
+  return result;
+};
+let CaleeTaskQuickAdd = class extends i {
+  constructor() {
+    super(...arguments);
+    this.activeView = "inbox";
+    this.presets = [];
+    this._text = "";
+    this._focused = false;
+    this._datePill = "none";
+    this._recurrence = "none";
+    this._customDate = "";
+    this._note = "";
+    this._showMore = false;
+  }
+  /* ── Defaults per tab ──────────────────────────────────────────────── */
+  get _defaultDatePill() {
+    switch (this.activeView) {
+      case "today":
+        return "today";
+      case "upcoming":
+        return "tomorrow";
+      default:
+        return "none";
+    }
+  }
+  updated(changed) {
+    if (changed.has("activeView")) {
+      this._reset();
+    }
+  }
+  _reset() {
+    this._text = "";
+    this._datePill = this._defaultDatePill;
+    this._recurrence = "none";
+    this._customDate = "";
+    this._note = "";
+    this._showMore = false;
+  }
+  /* ── Handlers ──────────────────────────────────────────────────────── */
+  _onKeydown(e2) {
+    if (e2.key === "Enter" && this._text.trim()) {
+      const due = resolveDue(this._datePill, this._customDate);
+      const recurrence = this._recurrence !== "none" && due ? this._recurrence : void 0;
+      const detail = {
+        title: this._text.trim(),
+        due,
+        recurrence_rule: recurrence
+      };
+      if (this._note.trim()) {
+        detail.note = this._note.trim();
+      }
+      this.dispatchEvent(new CustomEvent("task-quick-add", { detail, bubbles: true, composed: true }));
+      this._reset();
+      this._input.value = "";
+    }
+  }
+  _onFocus() {
+    this._focused = true;
+  }
+  _onBlur() {
+    setTimeout(() => {
+      this._focused = false;
+    }, 200);
+  }
+  _onInput(e2) {
+    this._text = e2.target.value;
+  }
+  _onPresetClick(preset) {
+    this.dispatchEvent(
+      new CustomEvent("preset-add", { detail: { presetId: preset.id }, bubbles: true, composed: true })
+    );
+  }
+  /* ── Render ────────────────────────────────────────────────────────── */
+  render() {
+    const showPills = this._focused || this._text.length > 0;
+    const hasDue = this._datePill !== "none";
+    return b`
+      <div class="input-row">
+        <input
+          id="qa-input"
+          type="text"
+          placeholder="Add a task..."
+          .value=${this._text}
+          @input=${this._onInput}
+          @keydown=${this._onKeydown}
+          @focus=${this._onFocus}
+          @blur=${this._onBlur}
+        />
+      </div>
+
+      <div class="pill-container ${showPills ? "visible" : ""}">
+        ${this._renderDatePills()}
+      </div>
+
+      <div class="pill-container ${showPills && hasDue ? "visible" : ""}">
+        ${hasDue ? this._renderRecurrencePills() : A}
+      </div>
+
+      ${showPills ? b`
+        <button class="more-toggle" @click=${() => {
+      this._showMore = !this._showMore;
+    }}>
+          ${this._showMore ? "Less options" : "More options"}
+        </button>
+        ${this._showMore ? b`
+          <textarea
+            class="note-input"
+            placeholder="Add a note..."
+            .value=${this._note}
+            @input=${(e2) => {
+      this._note = e2.target.value;
+    }}
+          ></textarea>
+        ` : A}
+      ` : A}
+
+      ${this.activeView === "inbox" && this.presets.length > 0 ? b`
+        <div class="presets-section">
+          <div class="presets-label">Quick add</div>
+          <div class="presets-grid">
+            ${this.presets.map((p2) => b`
+              <button class="preset-chip" @click=${() => this._onPresetClick(p2)} title="Add ${p2.title}">
+                ${p2.icon ? b`<ha-icon .icon=${p2.icon}></ha-icon>` : A}
+                ${p2.title}
+              </button>
+            `)}
+          </div>
+        </div>
+      ` : A}
+    `;
+  }
+  /* ── Date pills ────────────────────────────────────────────────────── */
+  _renderDatePills() {
+    const pills = [
+      { key: "today", label: "Today" },
+      { key: "tomorrow", label: "Tomorrow" },
+      { key: "nextweek", label: "Next week" },
+      { key: "custom", label: "Custom" },
+      { key: "none", label: "No date" }
+    ];
+    return b`
+      <div class="pill-row">
+        <span class="pill-label">Due</span>
+        ${pills.map((p2) => b`
+          <button class="pill" aria-selected=${this._datePill === p2.key}
+            @click=${() => {
+      this._datePill = p2.key;
+      if (p2.key === "none") this._recurrence = "none";
+    }}>
+            ${p2.label}
+          </button>
+        `)}
+        ${this._datePill === "custom" ? b`
+          <input type="date" class="custom-date-input" .value=${this._customDate}
+            @change=${(e2) => {
+      this._customDate = e2.target.value;
+    }} />
+        ` : A}
+      </div>
+    `;
+  }
+  /* ── Recurrence pills ──────────────────────────────────────────────── */
+  _renderRecurrencePills() {
+    const pills = [
+      { key: "none", label: "None" },
+      { key: "daily", label: "Daily" },
+      { key: "weekly", label: "Weekly" },
+      { key: "biweekly", label: "Fortnightly" },
+      { key: "monthly", label: "Monthly" },
+      { key: "weekdays", label: "Weekdays" }
+    ];
+    return b`
+      <div class="pill-row">
+        <span class="pill-label">Repeat</span>
+        ${pills.map((p2) => b`
+          <button class="pill recurrence-pill" aria-selected=${this._recurrence === p2.key}
+            @click=${() => {
+      this._recurrence = p2.key;
+    }}>
+            ${p2.label}
+          </button>
+        `)}
+      </div>
+    `;
+  }
+};
+CaleeTaskQuickAdd.styles = i$3`
+    :host {
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      font-size: 14px;
+      padding: 8px 12px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      border-radius: 8px;
+      background: var(--card-background-color, #fff);
+      color: var(--primary-text-color, #212121);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    input[type="text"]:focus {
+      border-color: var(--primary-color, #03a9f4);
+    }
+    input[type="text"]::placeholder {
+      color: var(--secondary-text-color, #757575);
+    }
+
+    /* ── Pill rows ──────────────────────────────────────────────── */
+
+    .pill-container {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.2s ease, opacity 0.2s ease;
+    }
+    .pill-container.visible {
+      max-height: 60px;
+      opacity: 1;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .pill-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--secondary-text-color, #757575);
+      align-self: center;
+      margin-right: 4px;
+    }
+
+    .pill {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      background: transparent;
+      color: var(--secondary-text-color, #757575);
+      border: 1px solid var(--divider-color, #e0e0e0);
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .pill:hover {
+      border-color: var(--primary-color, #03a9f4);
+      color: var(--primary-text-color, #212121);
+    }
+    .pill[aria-selected="true"] {
+      background: var(--primary-color, #03a9f4);
+      color: #fff;
+      border-color: var(--primary-color, #03a9f4);
+    }
+
+    .recurrence-pill[aria-selected="true"] {
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 15%, transparent);
+      color: var(--primary-color, #03a9f4);
+      border-color: var(--primary-color, #03a9f4);
+    }
+
+    .custom-date-input {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 8px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: var(--card-background-color, #fff);
+      color: var(--primary-text-color, #212121);
+      outline: none;
+    }
+    .custom-date-input:focus {
+      border-color: var(--primary-color, #03a9f4);
+    }
+
+    /* ── More options ────────────────────────────────────────── */
+
+    .more-toggle {
+      font-size: 12px;
+      color: var(--secondary-text-color, #757575);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 0;
+      margin-top: 4px;
+    }
+    .more-toggle:hover {
+      color: var(--primary-color, #03a9f4);
+    }
+
+    .note-input {
+      width: 100%;
+      font-size: 13px;
+      padding: 6px 10px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      border-radius: 6px;
+      background: var(--card-background-color, #fff);
+      color: var(--primary-text-color, #212121);
+      outline: none;
+      box-sizing: border-box;
+      resize: vertical;
+      min-height: 36px;
+      max-height: 120px;
+      font-family: inherit;
+      margin-top: 6px;
+    }
+    .note-input:focus {
+      border-color: var(--primary-color, #03a9f4);
+    }
+
+    /* ── Presets ──────────────────────────────────────────── */
+
+    .presets-section {
+      margin-top: 12px;
+    }
+    .presets-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--secondary-text-color, #757575);
+      margin: 0 0 6px;
+    }
+    .presets-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .preset-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 16px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: var(--card-background-color, #fff);
+      color: var(--primary-text-color, #212121);
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      user-select: none;
+    }
+    .preset-chip:hover {
+      background: var(--secondary-background-color, #f5f5f5);
+      border-color: var(--primary-color, #03a9f4);
+    }
+    .preset-chip:active {
+      background: var(--primary-color, #03a9f4);
+      color: #fff;
+      border-color: var(--primary-color, #03a9f4);
+    }
+    .preset-chip ha-icon {
+      --mdc-icon-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+  `;
+__decorateClass$o([
+  n2({ type: String })
+], CaleeTaskQuickAdd.prototype, "activeView", 2);
+__decorateClass$o([
+  n2({ type: Array })
+], CaleeTaskQuickAdd.prototype, "presets", 2);
+__decorateClass$o([
+  r()
+], CaleeTaskQuickAdd.prototype, "_text", 2);
+__decorateClass$o([
+  r()
+], CaleeTaskQuickAdd.prototype, "_focused", 2);
+__decorateClass$o([
+  r()
+], CaleeTaskQuickAdd.prototype, "_datePill", 2);
+__decorateClass$o([
+  r()
+], CaleeTaskQuickAdd.prototype, "_recurrence", 2);
+__decorateClass$o([
+  r()
+], CaleeTaskQuickAdd.prototype, "_customDate", 2);
+__decorateClass$o([
+  r()
+], CaleeTaskQuickAdd.prototype, "_note", 2);
+__decorateClass$o([
+  r()
+], CaleeTaskQuickAdd.prototype, "_showMore", 2);
+__decorateClass$o([
+  e("#qa-input")
+], CaleeTaskQuickAdd.prototype, "_input", 2);
+CaleeTaskQuickAdd = __decorateClass$o([
+  t("calee-task-quick-add")
+], CaleeTaskQuickAdd);
+var __defProp$n = Object.defineProperty;
+var __getOwnPropDesc$n = Object.getOwnPropertyDescriptor;
+var __decorateClass$n = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$n(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$n(target, key, result);
+  return result;
+};
+let CaleeTasksView = class extends i {
+  constructor() {
+    super(...arguments);
+    this.tasks = [];
+    this.lists = [];
+    this.presets = [];
+    this.activeView = "inbox";
+    this.narrow = false;
+    this.sortBy = "manual";
+    this.groupBy = "none";
+    this._renderLimit = 100;
+    this._confirmDeleteId = null;
+    this._dragOverId = null;
+    this._boundHashChange = this._checkHashForTaskId.bind(this);
+  }
+  connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener("hashchange", this._boundHashChange);
+    this._checkHashForTaskId();
+  }
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener("hashchange", this._boundHashChange);
+  }
+  updated(changed) {
+    if (changed.has("activeView")) {
+      this._renderLimit = 100;
+    }
+    if (changed.has("tasks")) {
+      this._checkHashForTaskId();
+    }
+  }
+  /** If the URL hash is #/tasks/<taskId>, open the edit sheet for that task. */
+  _checkHashForTaskId() {
+    const hash = window.location.hash.replace(/^#\/?/, "");
+    const parts = hash.split("/");
+    if (parts[0] === "tasks" && parts[1] && parts[1].length > 0) {
+      const taskId = parts[1];
+      const task = this.tasks.find((t2) => t2.id === taskId);
+      if (task) {
+        this.dispatchEvent(
+          new CustomEvent("task-edit-open", {
+            detail: { task },
+            bubbles: true,
+            composed: true
+          })
+        );
+        window.location.hash = "#/tasks";
+      }
+    }
+  }
+  /* ── Filtered & sorted tasks ──────────────────────────────────── */
+  get _filteredTasks() {
+    const active = this.tasks.filter((t2) => !t2.completed && !t2.deleted_at);
+    let filtered;
+    switch (this.activeView) {
+      case "today":
+        filtered = active.filter((t2) => t2.due && isToday(t2.due));
+        break;
+      case "upcoming":
+        filtered = active.filter((t2) => t2.due && isUpcoming(t2.due)).sort((a2, b2) => new Date(a2.due).getTime() - new Date(b2.due).getTime());
+        break;
+      case "inbox":
+      default:
+        filtered = active;
+    }
+    return sortTasks(filtered, this.sortBy);
+  }
+  get _sections() {
+    return groupTasks(this._filteredTasks, this.groupBy, this.lists);
+  }
+  /* ── Event forwarding from sub-components ──────────────────────── */
+  _switchTab(view) {
+    this._renderLimit = 100;
+    this.activeView = view;
+    this.dispatchEvent(
+      new CustomEvent("view-change", { detail: { view }, bubbles: true, composed: true })
+    );
+  }
+  _onTaskClick(e2) {
+    const task = e2.detail.task;
+    if (this.narrow) {
+      this.dispatchEvent(
+        new CustomEvent("task-edit-open", {
+          detail: { task },
+          bubbles: true,
+          composed: true
+        })
+      );
+    } else {
+      this.dispatchEvent(
+        new CustomEvent("task-click", {
+          detail: { task },
+          bubbles: true,
+          composed: true
+        })
+      );
+    }
+  }
+  _onSwipeDelete(e2) {
+    this._confirmDeleteId = e2.detail.taskId;
+  }
+  _confirmSwipeDelete() {
+    if (!this._confirmDeleteId) return;
+    this.dispatchEvent(
+      new CustomEvent("task-delete", {
+        detail: { taskId: this._confirmDeleteId },
+        bubbles: true,
+        composed: true
+      })
+    );
+    this._confirmDeleteId = null;
+  }
+  _cancelSwipeDelete() {
+    this._confirmDeleteId = null;
+  }
+  /* ── Drag-reorder ──────────────────────────────────────────────── */
+  _onDragOver(e2, taskId) {
+    e2.preventDefault();
+    e2.dataTransfer.dropEffect = "move";
+    this._dragOverId = taskId;
+  }
+  _onDragLeave() {
+    this._dragOverId = null;
+  }
+  _onDrop(e2, targetTaskId) {
+    e2.preventDefault();
+    const draggedId = e2.dataTransfer?.getData("text/plain");
+    this._dragOverId = null;
+    if (!draggedId || draggedId === targetTaskId) return;
+    const dragged = this.tasks.find((t2) => t2.id === draggedId);
+    const target = this.tasks.find((t2) => t2.id === targetTaskId);
+    if (!dragged || !target || dragged.list_id !== target.list_id) return;
+    this.dispatchEvent(
+      new CustomEvent("task-reorder", {
+        detail: { taskId: draggedId, beforeTaskId: targetTaskId },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  /* ── Render ────────────────────────────────────────────────────── */
+  render() {
+    const tabs = [
+      { key: "inbox", label: "Inbox" },
+      { key: "today", label: "Today" },
+      { key: "upcoming", label: "Upcoming" }
+    ];
+    const sections = this._sections;
+    const totalTasks = sections.reduce((sum, s2) => sum + s2.tasks.length, 0);
+    const isDraggable = this.sortBy === "manual" && this.groupBy === "none";
+    return b`
+      <div class="tabs" role="tablist">
+        ${tabs.map((t2) => b`
+          <button
+            class="tab"
+            role="tab"
+            aria-selected=${this.activeView === t2.key}
+            @click=${() => this._switchTab(t2.key)}
+          >
+            ${t2.label}
+          </button>
+        `)}
+      </div>
+
+      <calee-task-quick-add
+        .activeView=${this.activeView}
+        .presets=${this.presets}
+      ></calee-task-quick-add>
+
+      <!-- Swipe delete confirmation -->
+      ${this._confirmDeleteId ? b`
+        <div class="confirm-delete-overlay"
+          @click=${(e2) => {
+      if (e2.target.classList.contains("confirm-delete-overlay")) {
+        this._cancelSwipeDelete();
+      }
+    }}>
+          <div class="confirm-delete-dialog">
+            <p>Delete this task?</p>
+            <div class="confirm-delete-actions">
+              <button class="confirm-cancel" @click=${this._cancelSwipeDelete}>Cancel</button>
+              <button class="confirm-confirm" @click=${this._confirmSwipeDelete}>Delete</button>
+            </div>
+          </div>
+        </div>
+      ` : A}
+
+      ${totalTasks === 0 ? b`<div class="empty">No tasks</div>` : b`
+            ${sections.map((section) => b`
+              ${section.label ? b`
+                <div class="section-header">
+                  ${section.label}
+                  <span class="section-count">${section.tasks.length}</span>
+                </div>
+              ` : A}
+              <ul class="task-list">
+                ${section.tasks.slice(0, this._renderLimit).map((t2) => b`
+                  <li
+                    class="${this._dragOverId === t2.id ? "drag-over" : ""}"
+                    @dragover=${(e2) => this._onDragOver(e2, t2.id)}
+                    @dragleave=${this._onDragLeave}
+                    @drop=${(e2) => this._onDrop(e2, t2.id)}
+                  >
+                    <calee-task-item
+                      .task=${t2}
+                      ?narrow=${this.narrow}
+                      ?draggable=${isDraggable}
+                      @task-click=${this._onTaskClick}
+                      @task-swipe-delete=${this._onSwipeDelete}
+                    ></calee-task-item>
+                  </li>
+                `)}
+              </ul>
+            `)}
+            ${totalTasks > this._renderLimit ? b`
+              <button class="show-more-btn" @click=${() => {
+      this._renderLimit += 100;
+    }}>
+                Show more (${totalTasks - this._renderLimit} remaining)
+              </button>
+            ` : A}
+          `}
+    `;
+  }
+};
+CaleeTasksView.styles = i$3`
+    :host {
+      display: block;
+      padding: 16px;
+      overflow-y: auto;
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    /* ── Tab bar ─────────────────────────────────────────────────── */
+
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--divider-color, #e0e0e0);
+      padding-bottom: 8px;
+    }
+
+    .tab {
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 16px;
+      cursor: pointer;
+      background: transparent;
+      color: var(--secondary-text-color, #757575);
+      border: none;
+      transition: background 0.15s, color 0.15s;
+    }
+    .tab:hover {
+      background: var(--secondary-background-color, #f5f5f5);
+    }
+    .tab[aria-selected="true"] {
+      background: var(--primary-color, #03a9f4);
+      color: #fff;
+    }
+
+    /* ── Task list ───────────────────────────────────────────────── */
+
+    .task-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ── Section headers ─────────────────────────────────────────── */
+
+    .section-header {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--secondary-text-color, #757575);
+      padding: 12px 4px 6px;
+      border-bottom: 1px solid var(--divider-color, #e0e0e0);
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-header:first-child {
+      margin-top: 0;
+    }
+    .section-count {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--secondary-text-color, #999);
+    }
+
+    /* ── Drag-over indicator ─────────────────────────────────────── */
+
+    .drag-over {
+      border-top: 2px solid var(--primary-color, #03a9f4);
     }
 
     .empty {
       text-align: center;
       padding: 48px 16px;
-      color: var(--task-secondary);
+      color: var(--secondary-text-color, #757575);
       font-size: 14px;
     }
 
@@ -3993,7 +4238,7 @@ CaleeTasksView.styles = [swipeStyles, i$3`
       padding: 12px;
       margin-top: 8px;
       background: var(--secondary-background-color, #f5f5f5);
-      border: 1px solid var(--task-border);
+      border: 1px solid var(--divider-color, #e0e0e0);
       border-radius: 8px;
       color: var(--primary-color, #03a9f4);
       font-size: 14px;
@@ -4003,175 +4248,6 @@ CaleeTasksView.styles = [swipeStyles, i$3`
     .show-more-btn:hover {
       background: var(--primary-color, #03a9f4);
       color: #fff;
-    }
-
-    /* ── Inline edit ─────────────────────────────────────────────── */
-
-    .task-edit {
-      padding: 10px 4px;
-      border-bottom: 1px solid var(--task-border);
-      background: var(--secondary-background-color, #fafafa);
-      border-radius: 8px;
-      margin-bottom: 2px;
-    }
-
-    .edit-title-input {
-      width: 100%;
-      font-size: 14px;
-      padding: 6px 10px;
-      border: 1px solid var(--task-border);
-      border-radius: 6px;
-      background: var(--task-bg);
-      color: var(--task-text);
-      outline: none;
-      box-sizing: border-box;
-    }
-    .edit-title-input:focus {
-      border-color: var(--task-accent);
-    }
-
-    .edit-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .btn {
-      font-size: 12px;
-      font-weight: 500;
-      padding: 5px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-      border: none;
-      transition: background 0.15s, color 0.15s;
-    }
-    .btn-primary {
-      background: var(--task-accent);
-      color: #fff;
-    }
-    .btn-primary:hover {
-      filter: brightness(1.1);
-    }
-    .btn-secondary {
-      background: transparent;
-      color: var(--task-secondary);
-      border: 1px solid var(--task-border);
-    }
-    .btn-secondary:hover {
-      background: var(--secondary-background-color, #f5f5f5);
-    }
-
-    /* ── Preset quick-add ──────────────────────────────────────── */
-
-    .presets-section {
-      margin-bottom: 16px;
-    }
-
-    .presets-label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--task-secondary);
-      margin: 0 0 6px;
-    }
-
-    .presets-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .preset-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: 16px;
-      border: 1px solid var(--task-border);
-      background: var(--task-bg);
-      color: var(--task-text);
-      font-size: 13px;
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s;
-      user-select: none;
-    }
-
-    .preset-chip:hover {
-      background: var(--secondary-background-color, #f5f5f5);
-      border-color: var(--task-accent);
-    }
-
-    .preset-chip:active {
-      background: var(--task-accent);
-      color: #fff;
-      border-color: var(--task-accent);
-    }
-
-    .preset-chip ha-icon,
-    .preset-chip ha-svg-icon {
-      --mdc-icon-size: 16px;
-      width: 16px;
-      height: 16px;
-    }
-
-    /* ── Progressive disclosure ─────────────────────────────── */
-
-    .pills-date-container {
-      overflow: hidden;
-      max-height: 0;
-      opacity: 0;
-      transition: max-height 0.2s ease, opacity 0.2s ease;
-    }
-    .pills-date-container.visible {
-      max-height: 60px;
-      opacity: 1;
-    }
-
-    .pills-recurrence-container {
-      overflow: hidden;
-      max-height: 0;
-      opacity: 0;
-      transition: max-height 0.2s ease, opacity 0.2s ease;
-    }
-    .pills-recurrence-container.visible {
-      max-height: 60px;
-      opacity: 1;
-    }
-
-    .more-options-toggle {
-      font-size: 12px;
-      color: var(--task-secondary);
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 4px 0;
-      margin-top: 4px;
-      transition: color 0.15s;
-    }
-    .more-options-toggle:hover {
-      color: var(--task-accent);
-    }
-
-    .note-input {
-      width: 100%;
-      font-size: 13px;
-      padding: 6px 10px;
-      border: 1px solid var(--task-border);
-      border-radius: 6px;
-      background: var(--task-bg);
-      color: var(--task-text);
-      outline: none;
-      box-sizing: border-box;
-      resize: vertical;
-      min-height: 36px;
-      max-height: 120px;
-      font-family: inherit;
-      margin-top: 6px;
-      overflow: auto;
-    }
-    .note-input:focus {
-      border-color: var(--task-accent);
     }
 
     /* ── Swipe delete confirmation ─────────────────────────── */
@@ -4199,7 +4275,7 @@ CaleeTasksView.styles = [swipeStyles, i$3`
 
     .confirm-delete-dialog p {
       font-size: 14px;
-      color: var(--task-text);
+      color: var(--primary-text-color, #212121);
       margin: 0 0 16px;
     }
 
@@ -4217,94 +4293,59 @@ CaleeTasksView.styles = [swipeStyles, i$3`
       border: none;
       cursor: pointer;
       font-family: inherit;
-      transition: opacity 0.15s;
-    }
-
-    .confirm-delete-actions button:hover {
-      opacity: 0.9;
     }
 
     .confirm-cancel {
       background: var(--secondary-background-color, #f0f0f0);
-      color: var(--task-text);
+      color: var(--primary-text-color, #212121);
     }
 
     .confirm-confirm {
       background: var(--error-color, #f44336);
       color: #fff;
     }
-  `];
-__decorateClass$l([
+  `;
+__decorateClass$n([
   n2({ type: Array })
 ], CaleeTasksView.prototype, "tasks", 2);
-__decorateClass$l([
+__decorateClass$n([
   n2({ type: Array })
 ], CaleeTasksView.prototype, "lists", 2);
-__decorateClass$l([
+__decorateClass$n([
   n2({ type: Array })
 ], CaleeTasksView.prototype, "presets", 2);
-__decorateClass$l([
+__decorateClass$n([
   n2({ type: String })
 ], CaleeTasksView.prototype, "activeView", 2);
-__decorateClass$l([
+__decorateClass$n([
   n2({ type: Boolean, reflect: true })
 ], CaleeTasksView.prototype, "narrow", 2);
-__decorateClass$l([
-  r()
-], CaleeTasksView.prototype, "_quickAddText", 2);
-__decorateClass$l([
-  r()
-], CaleeTasksView.prototype, "_quickAddFocused", 2);
-__decorateClass$l([
-  r()
-], CaleeTasksView.prototype, "_selectedDatePill", 2);
-__decorateClass$l([
-  r()
-], CaleeTasksView.prototype, "_selectedRecurrence", 2);
-__decorateClass$l([
-  r()
-], CaleeTasksView.prototype, "_customDate", 2);
-__decorateClass$l([
+__decorateClass$n([
+  n2({ type: String })
+], CaleeTasksView.prototype, "sortBy", 2);
+__decorateClass$n([
+  n2({ type: String })
+], CaleeTasksView.prototype, "groupBy", 2);
+__decorateClass$n([
   r()
 ], CaleeTasksView.prototype, "_renderLimit", 2);
-__decorateClass$l([
-  r()
-], CaleeTasksView.prototype, "_editingTaskId", 2);
-__decorateClass$l([
-  r()
-], CaleeTasksView.prototype, "_editTitle", 2);
-__decorateClass$l([
-  r()
-], CaleeTasksView.prototype, "_editDatePill", 2);
-__decorateClass$l([
-  r()
-], CaleeTasksView.prototype, "_editCustomDate", 2);
-__decorateClass$l([
-  r()
-], CaleeTasksView.prototype, "_editRecurrence", 2);
-__decorateClass$l([
-  r()
-], CaleeTasksView.prototype, "_showMoreOptions", 2);
-__decorateClass$l([
-  r()
-], CaleeTasksView.prototype, "_quickAddNote", 2);
-__decorateClass$l([
+__decorateClass$n([
   r()
 ], CaleeTasksView.prototype, "_confirmDeleteId", 2);
-__decorateClass$l([
-  e("#quick-add-input")
-], CaleeTasksView.prototype, "_inputEl", 2);
-CaleeTasksView = __decorateClass$l([
+__decorateClass$n([
+  r()
+], CaleeTasksView.prototype, "_dragOverId", 2);
+CaleeTasksView = __decorateClass$n([
   t("calee-tasks-view")
 ], CaleeTasksView);
-var __defProp$k = Object.defineProperty;
-var __getOwnPropDesc$k = Object.getOwnPropertyDescriptor;
-var __decorateClass$k = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$k(target, key) : target;
+var __defProp$m = Object.defineProperty;
+var __getOwnPropDesc$m = Object.getOwnPropertyDescriptor;
+var __decorateClass$m = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$m(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$k(target, key, result);
+  if (kind && result) __defProp$m(target, key, result);
   return result;
 };
 const CATEGORY_META = {
@@ -5988,80 +6029,80 @@ CaleeShoppingView.styles = [swipeStyles, i$3`
       color: #fff;
     }
   `];
-__decorateClass$k([
+__decorateClass$m([
   n2({ type: Array })
 ], CaleeShoppingView.prototype, "tasks", 2);
-__decorateClass$k([
+__decorateClass$m([
   n2({ type: Array })
 ], CaleeShoppingView.prototype, "presets", 2);
-__decorateClass$k([
+__decorateClass$m([
   n2({ type: String })
 ], CaleeShoppingView.prototype, "listId", 2);
-__decorateClass$k([
+__decorateClass$m([
   n2({ type: String })
 ], CaleeShoppingView.prototype, "toastMessage", 2);
-__decorateClass$k([
+__decorateClass$m([
   n2({ type: String })
 ], CaleeShoppingView.prototype, "currency", 2);
-__decorateClass$k([
+__decorateClass$m([
   n2({ type: Number })
 ], CaleeShoppingView.prototype, "budget", 2);
-__decorateClass$k([
+__decorateClass$m([
   r()
 ], CaleeShoppingView.prototype, "_quickAddText", 2);
-__decorateClass$k([
+__decorateClass$m([
   r()
 ], CaleeShoppingView.prototype, "_selectedCategory", 2);
-__decorateClass$k([
+__decorateClass$m([
   r()
 ], CaleeShoppingView.prototype, "_completedOpen", 2);
-__decorateClass$k([
+__decorateClass$m([
   r()
 ], CaleeShoppingView.prototype, "_collapsedSections", 2);
-__decorateClass$k([
+__decorateClass$m([
   r()
 ], CaleeShoppingView.prototype, "_showCustomCategoryInput", 2);
-__decorateClass$k([
+__decorateClass$m([
   r()
 ], CaleeShoppingView.prototype, "_customCategoryText", 2);
-__decorateClass$k([
+__decorateClass$m([
   r()
 ], CaleeShoppingView.prototype, "_showPresetForm", 2);
-__decorateClass$k([
+__decorateClass$m([
   r()
 ], CaleeShoppingView.prototype, "_presetFormCategory", 2);
-__decorateClass$k([
+__decorateClass$m([
   r()
 ], CaleeShoppingView.prototype, "_presetFormTitle", 2);
-__decorateClass$k([
+__decorateClass$m([
   r()
 ], CaleeShoppingView.prototype, "_presetFormEmoji", 2);
-__decorateClass$k([
+__decorateClass$m([
   r()
 ], CaleeShoppingView.prototype, "_confirmDeletePresetId", 2);
-__decorateClass$k([
+__decorateClass$m([
   r()
 ], CaleeShoppingView.prototype, "_pendingRenderLimit", 2);
-__decorateClass$k([
+__decorateClass$m([
   r()
 ], CaleeShoppingView.prototype, "_toastMessage", 2);
-__decorateClass$k([
+__decorateClass$m([
   r()
 ], CaleeShoppingView.prototype, "_confirmSwipeDeleteId", 2);
-__decorateClass$k([
+__decorateClass$m([
   e("#quick-add-input")
 ], CaleeShoppingView.prototype, "_inputEl", 2);
-CaleeShoppingView = __decorateClass$k([
+CaleeShoppingView = __decorateClass$m([
   t("calee-shopping-view")
 ], CaleeShoppingView);
-var __defProp$j = Object.defineProperty;
-var __getOwnPropDesc$j = Object.getOwnPropertyDescriptor;
-var __decorateClass$j = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$j(target, key) : target;
+var __defProp$l = Object.defineProperty;
+var __getOwnPropDesc$l = Object.getOwnPropertyDescriptor;
+var __decorateClass$l = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$l(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$j(target, key, result);
+  if (kind && result) __defProp$l(target, key, result);
   return result;
 };
 let CaleeSmartViews = class extends i {
@@ -6635,50 +6676,50 @@ CaleeSmartViews.styles = i$3`
       padding: 2px 0;
     }
   `;
-__decorateClass$j([
+__decorateClass$l([
   n2({ type: Array })
 ], CaleeSmartViews.prototype, "events", 2);
-__decorateClass$j([
+__decorateClass$l([
   n2({ type: Array })
 ], CaleeSmartViews.prototype, "tasks", 2);
-__decorateClass$j([
+__decorateClass$l([
   n2({ type: Array })
 ], CaleeSmartViews.prototype, "lists", 2);
-__decorateClass$j([
+__decorateClass$l([
   n2({ type: Array })
 ], CaleeSmartViews.prototype, "conflicts", 2);
-__decorateClass$j([
+__decorateClass$l([
   n2({ attribute: false })
 ], CaleeSmartViews.prototype, "calendars", 2);
-__decorateClass$j([
+__decorateClass$l([
   n2({ type: String })
 ], CaleeSmartViews.prototype, "currency", 2);
-__decorateClass$j([
+__decorateClass$l([
   n2({ type: Number })
 ], CaleeSmartViews.prototype, "budget", 2);
-__decorateClass$j([
+__decorateClass$l([
   n2({ type: String })
 ], CaleeSmartViews.prototype, "initialTab", 2);
-__decorateClass$j([
+__decorateClass$l([
   n2({ type: Array })
 ], CaleeSmartViews.prototype, "reminderCalendars", 2);
-__decorateClass$j([
+__decorateClass$l([
   r()
 ], CaleeSmartViews.prototype, "activeTab", 2);
-__decorateClass$j([
+__decorateClass$l([
   n2({ type: Boolean, reflect: true })
 ], CaleeSmartViews.prototype, "narrow", 2);
-CaleeSmartViews = __decorateClass$j([
+CaleeSmartViews = __decorateClass$l([
   t("calee-smart-views")
 ], CaleeSmartViews);
-var __defProp$i = Object.defineProperty;
-var __getOwnPropDesc$i = Object.getOwnPropertyDescriptor;
-var __decorateClass$i = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$i(target, key) : target;
+var __defProp$k = Object.defineProperty;
+var __getOwnPropDesc$k = Object.getOwnPropertyDescriptor;
+var __decorateClass$k = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$k(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$i(target, key, result);
+  if (kind && result) __defProp$k(target, key, result);
   return result;
 };
 function formatStartTime(iso) {
@@ -6800,23 +6841,23 @@ CaleeNextShift.styles = i$3`
       letter-spacing: -0.3px;
     }
   `;
-__decorateClass$i([
+__decorateClass$k([
   n2({ type: Object })
 ], CaleeNextShift.prototype, "nextShift", 2);
-__decorateClass$i([
+__decorateClass$k([
   r()
 ], CaleeNextShift.prototype, "_countdown", 2);
-CaleeNextShift = __decorateClass$i([
+CaleeNextShift = __decorateClass$k([
   t("calee-next-shift")
 ], CaleeNextShift);
-var __defProp$h = Object.defineProperty;
-var __getOwnPropDesc$h = Object.getOwnPropertyDescriptor;
-var __decorateClass$h = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$h(target, key) : target;
+var __defProp$j = Object.defineProperty;
+var __getOwnPropDesc$j = Object.getOwnPropertyDescriptor;
+var __decorateClass$j = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$j(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$h(target, key, result);
+  if (kind && result) __defProp$j(target, key, result);
   return result;
 };
 const RECURRENCE_OPTIONS = [
@@ -7222,50 +7263,50 @@ CaleeEventDialog.styles = i$3`
       }
     }
   `;
-__decorateClass$h([
+__decorateClass$j([
   n2({ type: Object })
 ], CaleeEventDialog.prototype, "event", 2);
-__decorateClass$h([
+__decorateClass$j([
   n2({ type: Array })
 ], CaleeEventDialog.prototype, "calendars", 2);
-__decorateClass$h([
+__decorateClass$j([
   n2({ type: Boolean, reflect: true })
 ], CaleeEventDialog.prototype, "open", 2);
-__decorateClass$h([
+__decorateClass$j([
   n2({ type: Object })
 ], CaleeEventDialog.prototype, "defaults", 2);
-__decorateClass$h([
+__decorateClass$j([
   r()
 ], CaleeEventDialog.prototype, "_title", 2);
-__decorateClass$h([
+__decorateClass$j([
   r()
 ], CaleeEventDialog.prototype, "_calendarId", 2);
-__decorateClass$h([
+__decorateClass$j([
   r()
 ], CaleeEventDialog.prototype, "_start", 2);
-__decorateClass$h([
+__decorateClass$j([
   r()
 ], CaleeEventDialog.prototype, "_end", 2);
-__decorateClass$h([
+__decorateClass$j([
   r()
 ], CaleeEventDialog.prototype, "_note", 2);
-__decorateClass$h([
+__decorateClass$j([
   r()
 ], CaleeEventDialog.prototype, "_recurrenceRule", 2);
-__decorateClass$h([
+__decorateClass$j([
   r()
 ], CaleeEventDialog.prototype, "_templateId", 2);
-CaleeEventDialog = __decorateClass$h([
+CaleeEventDialog = __decorateClass$j([
   t("calee-event-dialog")
 ], CaleeEventDialog);
-var __defProp$g = Object.defineProperty;
-var __getOwnPropDesc$g = Object.getOwnPropertyDescriptor;
-var __decorateClass$g = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$g(target, key) : target;
+var __defProp$i = Object.defineProperty;
+var __getOwnPropDesc$i = Object.getOwnPropertyDescriptor;
+var __decorateClass$i = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$i(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$g(target, key, result);
+  if (kind && result) __defProp$i(target, key, result);
   return result;
 };
 function formatShiftTime(t2) {
@@ -8011,35 +8052,35 @@ CaleeTemplatePicker.styles = i$3`
       }
     }
   `;
-__decorateClass$g([
+__decorateClass$i([
   n2({ type: Array })
 ], CaleeTemplatePicker.prototype, "templates", 2);
-__decorateClass$g([
+__decorateClass$i([
   n2({ type: String })
 ], CaleeTemplatePicker.prototype, "selectedDate", 2);
-__decorateClass$g([
+__decorateClass$i([
   n2({ type: String })
 ], CaleeTemplatePicker.prototype, "selectedTime", 2);
-__decorateClass$g([
+__decorateClass$i([
   n2({ type: Boolean, reflect: true })
 ], CaleeTemplatePicker.prototype, "open", 2);
-__decorateClass$g([
+__decorateClass$i([
   r()
 ], CaleeTemplatePicker.prototype, "_step", 2);
-__decorateClass$g([
+__decorateClass$i([
   r()
 ], CaleeTemplatePicker.prototype, "_datePill", 2);
-CaleeTemplatePicker = __decorateClass$g([
+CaleeTemplatePicker = __decorateClass$i([
   t("calee-template-picker")
 ], CaleeTemplatePicker);
-var __defProp$f = Object.defineProperty;
-var __getOwnPropDesc$f = Object.getOwnPropertyDescriptor;
-var __decorateClass$f = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$f(target, key) : target;
+var __defProp$h = Object.defineProperty;
+var __getOwnPropDesc$h = Object.getOwnPropertyDescriptor;
+var __decorateClass$h = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$h(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$f(target, key, result);
+  if (kind && result) __defProp$h(target, key, result);
   return result;
 };
 const PRESET_COLORS = [
@@ -8774,41 +8815,41 @@ CaleeTemplateManager.styles = i$3`
       }
     }
   `;
-__decorateClass$f([
+__decorateClass$h([
   n2({ type: Array })
 ], CaleeTemplateManager.prototype, "templates", 2);
-__decorateClass$f([
+__decorateClass$h([
   n2({ type: Array })
 ], CaleeTemplateManager.prototype, "calendars", 2);
-__decorateClass$f([
+__decorateClass$h([
   n2({ attribute: false })
 ], CaleeTemplateManager.prototype, "hass", 2);
-__decorateClass$f([
+__decorateClass$h([
   n2({ type: Boolean, reflect: true })
 ], CaleeTemplateManager.prototype, "open", 2);
-__decorateClass$f([
+__decorateClass$h([
   r()
 ], CaleeTemplateManager.prototype, "_editingTemplate", 2);
-__decorateClass$f([
+__decorateClass$h([
   r()
 ], CaleeTemplateManager.prototype, "_isNew", 2);
-__decorateClass$f([
+__decorateClass$h([
   r()
 ], CaleeTemplateManager.prototype, "_confirmDeleteId", 2);
-__decorateClass$f([
+__decorateClass$h([
   r()
 ], CaleeTemplateManager.prototype, "_saving", 2);
-CaleeTemplateManager = __decorateClass$f([
+CaleeTemplateManager = __decorateClass$h([
   t("calee-template-manager")
 ], CaleeTemplateManager);
-var __defProp$e = Object.defineProperty;
-var __getOwnPropDesc$e = Object.getOwnPropertyDescriptor;
-var __decorateClass$e = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$e(target, key) : target;
+var __defProp$g = Object.defineProperty;
+var __getOwnPropDesc$g = Object.getOwnPropertyDescriptor;
+var __decorateClass$g = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$g(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$e(target, key, result);
+  if (kind && result) __defProp$g(target, key, result);
   return result;
 };
 let CaleeSettingsDialog = class extends i {
@@ -9407,53 +9448,53 @@ CaleeSettingsDialog.styles = i$3`
       cursor: not-allowed;
     }
   `;
-__decorateClass$e([
+__decorateClass$g([
   n2({ type: Boolean, reflect: true })
 ], CaleeSettingsDialog.prototype, "open", 2);
-__decorateClass$e([
+__decorateClass$g([
   n2({ attribute: false })
 ], CaleeSettingsDialog.prototype, "hass", 2);
-__decorateClass$e([
+__decorateClass$g([
   r()
 ], CaleeSettingsDialog.prototype, "_timeFormat", 2);
-__decorateClass$e([
+__decorateClass$g([
   r()
 ], CaleeSettingsDialog.prototype, "_weekStartsOn", 2);
-__decorateClass$e([
+__decorateClass$g([
   r()
 ], CaleeSettingsDialog.prototype, "_maxEventAgeDays", 2);
-__decorateClass$e([
+__decorateClass$g([
   r()
 ], CaleeSettingsDialog.prototype, "_currencySymbol", 2);
-__decorateClass$e([
+__decorateClass$g([
   r()
 ], CaleeSettingsDialog.prototype, "_budgetAmount", 2);
-__decorateClass$e([
+__decorateClass$g([
   r()
 ], CaleeSettingsDialog.prototype, "_customCategories", 2);
-__decorateClass$e([
+__decorateClass$g([
   r()
 ], CaleeSettingsDialog.prototype, "_newCategoryText", 2);
-__decorateClass$e([
+__decorateClass$g([
   r()
 ], CaleeSettingsDialog.prototype, "_strictPrivacy", 2);
-__decorateClass$e([
+__decorateClass$g([
   r()
 ], CaleeSettingsDialog.prototype, "_saving", 2);
-__decorateClass$e([
+__decorateClass$g([
   r()
 ], CaleeSettingsDialog.prototype, "_loadingSettings", 2);
-CaleeSettingsDialog = __decorateClass$e([
+CaleeSettingsDialog = __decorateClass$g([
   t("calee-settings-dialog")
 ], CaleeSettingsDialog);
-var __defProp$d = Object.defineProperty;
-var __getOwnPropDesc$d = Object.getOwnPropertyDescriptor;
-var __decorateClass$d = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$d(target, key) : target;
+var __defProp$f = Object.defineProperty;
+var __getOwnPropDesc$f = Object.getOwnPropertyDescriptor;
+var __decorateClass$f = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$f(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$d(target, key, result);
+  if (kind && result) __defProp$f(target, key, result);
   return result;
 };
 function relativeTime$1(isoStr) {
@@ -9778,41 +9819,41 @@ CaleeDeletedItems.styles = i$3`
       }
     }
   `;
-__decorateClass$d([
+__decorateClass$f([
   n2({ attribute: false })
 ], CaleeDeletedItems.prototype, "hass", 2);
-__decorateClass$d([
+__decorateClass$f([
   n2({ type: Boolean, reflect: true })
 ], CaleeDeletedItems.prototype, "open", 2);
-__decorateClass$d([
+__decorateClass$f([
   n2({ attribute: false })
 ], CaleeDeletedItems.prototype, "calendars", 2);
-__decorateClass$d([
+__decorateClass$f([
   n2({ attribute: false })
 ], CaleeDeletedItems.prototype, "lists", 2);
-__decorateClass$d([
+__decorateClass$f([
   r()
 ], CaleeDeletedItems.prototype, "_items", 2);
-__decorateClass$d([
+__decorateClass$f([
   r()
 ], CaleeDeletedItems.prototype, "_loading", 2);
-__decorateClass$d([
+__decorateClass$f([
   r()
 ], CaleeDeletedItems.prototype, "_restoringId", 2);
-__decorateClass$d([
+__decorateClass$f([
   r()
 ], CaleeDeletedItems.prototype, "_toastMessage", 2);
-CaleeDeletedItems = __decorateClass$d([
+CaleeDeletedItems = __decorateClass$f([
   t("calee-deleted-items")
 ], CaleeDeletedItems);
-var __defProp$c = Object.defineProperty;
-var __getOwnPropDesc$c = Object.getOwnPropertyDescriptor;
-var __decorateClass$c = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$c(target, key) : target;
+var __defProp$e = Object.defineProperty;
+var __getOwnPropDesc$e = Object.getOwnPropertyDescriptor;
+var __decorateClass$e = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$e(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$c(target, key, result);
+  if (kind && result) __defProp$e(target, key, result);
   return result;
 };
 function relativeTime(isoStr) {
@@ -10074,29 +10115,29 @@ CaleeActivityFeed.styles = i$3`
       }
     }
   `;
-__decorateClass$c([
+__decorateClass$e([
   n2({ attribute: false })
 ], CaleeActivityFeed.prototype, "hass", 2);
-__decorateClass$c([
+__decorateClass$e([
   n2({ type: Boolean, reflect: true })
 ], CaleeActivityFeed.prototype, "open", 2);
-__decorateClass$c([
+__decorateClass$e([
   r()
 ], CaleeActivityFeed.prototype, "_entries", 2);
-__decorateClass$c([
+__decorateClass$e([
   r()
 ], CaleeActivityFeed.prototype, "_loading", 2);
-CaleeActivityFeed = __decorateClass$c([
+CaleeActivityFeed = __decorateClass$e([
   t("calee-activity-feed")
 ], CaleeActivityFeed);
-var __defProp$b = Object.defineProperty;
-var __getOwnPropDesc$b = Object.getOwnPropertyDescriptor;
-var __decorateClass$b = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$b(target, key) : target;
+var __defProp$d = Object.defineProperty;
+var __getOwnPropDesc$d = Object.getOwnPropertyDescriptor;
+var __decorateClass$d = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$d(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$b(target, key, result);
+  if (kind && result) __defProp$d(target, key, result);
   return result;
 };
 let CaleeRoutineManager = class extends i {
@@ -10822,38 +10863,38 @@ CaleeRoutineManager.styles = i$3`
       font-size: 14px;
     }
   `;
-__decorateClass$b([
+__decorateClass$d([
   n2({ attribute: false })
 ], CaleeRoutineManager.prototype, "hass", 2);
-__decorateClass$b([
+__decorateClass$d([
   n2({ type: Array })
 ], CaleeRoutineManager.prototype, "routines", 2);
-__decorateClass$b([
+__decorateClass$d([
   n2({ type: Array })
 ], CaleeRoutineManager.prototype, "templates", 2);
-__decorateClass$b([
+__decorateClass$d([
   n2({ type: Boolean, reflect: true })
 ], CaleeRoutineManager.prototype, "open", 2);
-__decorateClass$b([
+__decorateClass$d([
   r()
 ], CaleeRoutineManager.prototype, "_editingRoutine", 2);
-__decorateClass$b([
+__decorateClass$d([
   r()
 ], CaleeRoutineManager.prototype, "_isNew", 2);
-__decorateClass$b([
+__decorateClass$d([
   r()
 ], CaleeRoutineManager.prototype, "_confirmDeleteId", 2);
-CaleeRoutineManager = __decorateClass$b([
+CaleeRoutineManager = __decorateClass$d([
   t("calee-routine-manager")
 ], CaleeRoutineManager);
-var __defProp$a = Object.defineProperty;
-var __getOwnPropDesc$a = Object.getOwnPropertyDescriptor;
-var __decorateClass$a = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$a(target, key) : target;
+var __defProp$c = Object.defineProperty;
+var __getOwnPropDesc$c = Object.getOwnPropertyDescriptor;
+var __decorateClass$c = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$c(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$a(target, key, result);
+  if (kind && result) __defProp$c(target, key, result);
   return result;
 };
 const COLOUR_OPTIONS = [
@@ -11330,74 +11371,74 @@ CaleeCalendarManager.styles = i$3`
       cursor: pointer; font-size: 13px; font-weight: 500;
     }
   `;
-__decorateClass$a([
+__decorateClass$c([
   n2({ attribute: false })
 ], CaleeCalendarManager.prototype, "hass", 2);
-__decorateClass$a([
+__decorateClass$c([
   n2({ type: Array })
 ], CaleeCalendarManager.prototype, "calendars", 2);
-__decorateClass$a([
+__decorateClass$c([
   n2({ type: Array })
 ], CaleeCalendarManager.prototype, "lists", 2);
-__decorateClass$a([
+__decorateClass$c([
   n2({ type: Boolean, reflect: true })
 ], CaleeCalendarManager.prototype, "open", 2);
-__decorateClass$a([
+__decorateClass$c([
   r()
 ], CaleeCalendarManager.prototype, "_editingCalendarId", 2);
-__decorateClass$a([
+__decorateClass$c([
   r()
 ], CaleeCalendarManager.prototype, "_editName", 2);
-__decorateClass$a([
+__decorateClass$c([
   r()
 ], CaleeCalendarManager.prototype, "_editColor", 2);
-__decorateClass$a([
+__decorateClass$c([
   r()
 ], CaleeCalendarManager.prototype, "_editEmoji", 2);
-__decorateClass$a([
+__decorateClass$c([
   r()
 ], CaleeCalendarManager.prototype, "_addingCalendar", 2);
-__decorateClass$a([
+__decorateClass$c([
   r()
 ], CaleeCalendarManager.prototype, "_newCalName", 2);
-__decorateClass$a([
+__decorateClass$c([
   r()
 ], CaleeCalendarManager.prototype, "_newCalColor", 2);
-__decorateClass$a([
+__decorateClass$c([
   r()
 ], CaleeCalendarManager.prototype, "_newCalEmoji", 2);
-__decorateClass$a([
+__decorateClass$c([
   r()
 ], CaleeCalendarManager.prototype, "_editingListId", 2);
-__decorateClass$a([
+__decorateClass$c([
   r()
 ], CaleeCalendarManager.prototype, "_editListName", 2);
-__decorateClass$a([
+__decorateClass$c([
   r()
 ], CaleeCalendarManager.prototype, "_addingList", 2);
-__decorateClass$a([
+__decorateClass$c([
   r()
 ], CaleeCalendarManager.prototype, "_newListName", 2);
-__decorateClass$a([
+__decorateClass$c([
   r()
 ], CaleeCalendarManager.prototype, "_newListType", 2);
-__decorateClass$a([
+__decorateClass$c([
   r()
 ], CaleeCalendarManager.prototype, "_confirmDeleteId", 2);
-__decorateClass$a([
+__decorateClass$c([
   r()
 ], CaleeCalendarManager.prototype, "_confirmDeleteType", 2);
-CaleeCalendarManager = __decorateClass$a([
+CaleeCalendarManager = __decorateClass$c([
   t("calee-calendar-manager")
 ], CaleeCalendarManager);
-var __defProp$9 = Object.defineProperty;
-var __getOwnPropDesc$9 = Object.getOwnPropertyDescriptor;
-var __decorateClass$9 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$9(target, key) : target;
+var __defProp$b = Object.defineProperty;
+var __getOwnPropDesc$b = Object.getOwnPropertyDescriptor;
+var __decorateClass$b = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$b(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$9(target, key, result);
+  if (kind && result) __defProp$b(target, key, result);
   return result;
 };
 let CaleeDataCenter = class extends i {
@@ -11823,50 +11864,50 @@ CaleeDataCenter.styles = i$3`
     }
     .close-btn:hover { background: var(--divider-color, #e0e0e0); }
   `;
-__decorateClass$9([
+__decorateClass$b([
   n2({ type: Boolean, reflect: true })
 ], CaleeDataCenter.prototype, "open", 2);
-__decorateClass$9([
+__decorateClass$b([
   n2({ attribute: false })
 ], CaleeDataCenter.prototype, "hass", 2);
-__decorateClass$9([
+__decorateClass$b([
   n2({ type: Array })
 ], CaleeDataCenter.prototype, "events", 2);
-__decorateClass$9([
+__decorateClass$b([
   n2({ type: Array })
 ], CaleeDataCenter.prototype, "tasks", 2);
-__decorateClass$9([
+__decorateClass$b([
   n2({ type: Array })
 ], CaleeDataCenter.prototype, "calendars", 2);
-__decorateClass$9([
+__decorateClass$b([
   n2({ type: Array })
 ], CaleeDataCenter.prototype, "lists", 2);
-__decorateClass$9([
+__decorateClass$b([
   n2({ type: Array })
 ], CaleeDataCenter.prototype, "templates", 2);
-__decorateClass$9([
+__decorateClass$b([
   n2({ type: Array })
 ], CaleeDataCenter.prototype, "routines", 2);
-__decorateClass$9([
+__decorateClass$b([
   r()
 ], CaleeDataCenter.prototype, "_tab", 2);
-__decorateClass$9([
+__decorateClass$b([
   r()
 ], CaleeDataCenter.prototype, "_auditLog", 2);
-__decorateClass$9([
+__decorateClass$b([
   r()
 ], CaleeDataCenter.prototype, "_loadingAudit", 2);
-CaleeDataCenter = __decorateClass$9([
+CaleeDataCenter = __decorateClass$b([
   t("calee-data-center")
 ], CaleeDataCenter);
-var __defProp$8 = Object.defineProperty;
-var __getOwnPropDesc$8 = Object.getOwnPropertyDescriptor;
-var __decorateClass$8 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$8(target, key) : target;
+var __defProp$a = Object.defineProperty;
+var __getOwnPropDesc$a = Object.getOwnPropertyDescriptor;
+var __decorateClass$a = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$a(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$8(target, key, result);
+  if (kind && result) __defProp$a(target, key, result);
   return result;
 };
 let CaleeBottomNav = class extends i {
@@ -11989,20 +12030,20 @@ CaleeBottomNav.styles = i$3`
       height: 28px;
     }
   `;
-__decorateClass$8([
+__decorateClass$a([
   n2()
 ], CaleeBottomNav.prototype, "activeView", 2);
-CaleeBottomNav = __decorateClass$8([
+CaleeBottomNav = __decorateClass$a([
   t("calee-bottom-nav")
 ], CaleeBottomNav);
-var __defProp$7 = Object.defineProperty;
-var __getOwnPropDesc$7 = Object.getOwnPropertyDescriptor;
-var __decorateClass$7 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$7(target, key) : target;
+var __defProp$9 = Object.defineProperty;
+var __getOwnPropDesc$9 = Object.getOwnPropertyDescriptor;
+var __decorateClass$9 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$9(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$7(target, key, result);
+  if (kind && result) __defProp$9(target, key, result);
   return result;
 };
 let CaleeLeftRail = class extends i {
@@ -12444,44 +12485,44 @@ CaleeLeftRail.styles = i$3`
       margin: 8px 6px;
     }
   `;
-__decorateClass$7([
+__decorateClass$9([
   n2()
 ], CaleeLeftRail.prototype, "activeView", 2);
-__decorateClass$7([
+__decorateClass$9([
   n2({ type: Array })
 ], CaleeLeftRail.prototype, "calendars", 2);
-__decorateClass$7([
+__decorateClass$9([
   n2({ type: Array })
 ], CaleeLeftRail.prototype, "rawCalendars", 2);
-__decorateClass$7([
+__decorateClass$9([
   n2({ type: Array })
 ], CaleeLeftRail.prototype, "routines", 2);
-__decorateClass$7([
+__decorateClass$9([
   n2({ type: Array })
 ], CaleeLeftRail.prototype, "conflicts", 2);
-__decorateClass$7([
+__decorateClass$9([
   r()
 ], CaleeLeftRail.prototype, "_expanded", 2);
-__decorateClass$7([
+__decorateClass$9([
   r()
 ], CaleeLeftRail.prototype, "_calendarsOpen", 2);
-__decorateClass$7([
+__decorateClass$9([
   r()
 ], CaleeLeftRail.prototype, "_routinesOpen", 2);
-__decorateClass$7([
+__decorateClass$9([
   r()
 ], CaleeLeftRail.prototype, "_moreOpen", 2);
-CaleeLeftRail = __decorateClass$7([
+CaleeLeftRail = __decorateClass$9([
   t("calee-left-rail")
 ], CaleeLeftRail);
-var __defProp$6 = Object.defineProperty;
-var __getOwnPropDesc$6 = Object.getOwnPropertyDescriptor;
-var __decorateClass$6 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$6(target, key) : target;
+var __defProp$8 = Object.defineProperty;
+var __getOwnPropDesc$8 = Object.getOwnPropertyDescriptor;
+var __decorateClass$8 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$8(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$6(target, key, result);
+  if (kind && result) __defProp$8(target, key, result);
   return result;
 };
 let CaleeDetailDrawer = class extends i {
@@ -12846,41 +12887,41 @@ CaleeDetailDrawer.styles = i$3`
       }
     }
   `;
-__decorateClass$6([
+__decorateClass$8([
   n2({ attribute: false })
 ], CaleeDetailDrawer.prototype, "item", 2);
-__decorateClass$6([
+__decorateClass$8([
   n2()
 ], CaleeDetailDrawer.prototype, "itemType", 2);
-__decorateClass$6([
+__decorateClass$8([
   n2({ type: Boolean })
 ], CaleeDetailDrawer.prototype, "open", 2);
-__decorateClass$6([
+__decorateClass$8([
   n2({ attribute: false })
 ], CaleeDetailDrawer.prototype, "calendars", 2);
-__decorateClass$6([
+__decorateClass$8([
   n2({ attribute: false })
 ], CaleeDetailDrawer.prototype, "lists", 2);
-__decorateClass$6([
+__decorateClass$8([
   n2({ attribute: false })
 ], CaleeDetailDrawer.prototype, "events", 2);
-__decorateClass$6([
+__decorateClass$8([
   n2({ attribute: false })
 ], CaleeDetailDrawer.prototype, "tasks", 2);
-__decorateClass$6([
+__decorateClass$8([
   n2({ attribute: false })
 ], CaleeDetailDrawer.prototype, "conflicts", 2);
-CaleeDetailDrawer = __decorateClass$6([
+CaleeDetailDrawer = __decorateClass$8([
   t("calee-detail-drawer")
 ], CaleeDetailDrawer);
-var __defProp$5 = Object.defineProperty;
-var __getOwnPropDesc$5 = Object.getOwnPropertyDescriptor;
-var __decorateClass$5 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$5(target, key) : target;
+var __defProp$7 = Object.defineProperty;
+var __getOwnPropDesc$7 = Object.getOwnPropertyDescriptor;
+var __decorateClass$7 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$7(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$5(target, key, result);
+  if (kind && result) __defProp$7(target, key, result);
   return result;
 };
 function todayISO$2() {
@@ -13678,53 +13719,53 @@ CaleeHomePage.styles = i$3`
       animation: riseIn 180ms ease-out both;
     }
   `;
-__decorateClass$5([
+__decorateClass$7([
   n2({ attribute: false })
 ], CaleeHomePage.prototype, "events", 2);
-__decorateClass$5([
+__decorateClass$7([
   n2({ attribute: false })
 ], CaleeHomePage.prototype, "tasks", 2);
-__decorateClass$5([
+__decorateClass$7([
   n2({ attribute: false })
 ], CaleeHomePage.prototype, "calendars", 2);
-__decorateClass$5([
+__decorateClass$7([
   n2({ attribute: false })
 ], CaleeHomePage.prototype, "lists", 2);
-__decorateClass$5([
+__decorateClass$7([
   n2({ attribute: false })
 ], CaleeHomePage.prototype, "routines", 2);
-__decorateClass$5([
+__decorateClass$7([
   n2({ attribute: false })
 ], CaleeHomePage.prototype, "presets", 2);
-__decorateClass$5([
+__decorateClass$7([
   n2({ attribute: false })
 ], CaleeHomePage.prototype, "enabledCalendarIds", 2);
-__decorateClass$5([
+__decorateClass$7([
   n2({ type: String })
 ], CaleeHomePage.prototype, "currency", 2);
-__decorateClass$5([
+__decorateClass$7([
   n2({ type: Number })
 ], CaleeHomePage.prototype, "budget", 2);
-__decorateClass$5([
+__decorateClass$7([
   n2({ type: String })
 ], CaleeHomePage.prototype, "currentDate", 2);
-__decorateClass$5([
+__decorateClass$7([
   n2({ type: Boolean, reflect: true })
 ], CaleeHomePage.prototype, "narrow", 2);
-__decorateClass$5([
+__decorateClass$7([
   n2()
 ], CaleeHomePage.prototype, "weekStart", 2);
-CaleeHomePage = __decorateClass$5([
+CaleeHomePage = __decorateClass$7([
   t("calee-home-page")
 ], CaleeHomePage);
-var __defProp$4 = Object.defineProperty;
-var __getOwnPropDesc$4 = Object.getOwnPropertyDescriptor;
-var __decorateClass$4 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$4(target, key) : target;
+var __defProp$6 = Object.defineProperty;
+var __getOwnPropDesc$6 = Object.getOwnPropertyDescriptor;
+var __decorateClass$6 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$6(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$4(target, key, result);
+  if (kind && result) __defProp$6(target, key, result);
   return result;
 };
 function todayISO$1() {
@@ -14108,47 +14149,47 @@ CaleeCalendarPage.styles = i$3`
       }
     }
   `;
-__decorateClass$4([
+__decorateClass$6([
   n2({ attribute: false })
 ], CaleeCalendarPage.prototype, "events", 2);
-__decorateClass$4([
+__decorateClass$6([
   n2({ attribute: false })
 ], CaleeCalendarPage.prototype, "calendars", 2);
-__decorateClass$4([
+__decorateClass$6([
   n2({ attribute: false })
 ], CaleeCalendarPage.prototype, "enabledCalendarIds", 2);
-__decorateClass$4([
+__decorateClass$6([
   n2({ attribute: false })
 ], CaleeCalendarPage.prototype, "templates", 2);
-__decorateClass$4([
+__decorateClass$6([
   n2({ attribute: false })
 ], CaleeCalendarPage.prototype, "tasks", 2);
-__decorateClass$4([
+__decorateClass$6([
   n2({ attribute: false })
 ], CaleeCalendarPage.prototype, "conflicts", 2);
-__decorateClass$4([
+__decorateClass$6([
   n2({ type: Boolean, reflect: true })
 ], CaleeCalendarPage.prototype, "narrow", 2);
-__decorateClass$4([
+__decorateClass$6([
   n2({ type: Boolean, reflect: true })
 ], CaleeCalendarPage.prototype, "weekStartsMonday", 2);
-__decorateClass$4([
+__decorateClass$6([
   n2()
 ], CaleeCalendarPage.prototype, "currentSubview", 2);
-__decorateClass$4([
+__decorateClass$6([
   n2()
 ], CaleeCalendarPage.prototype, "currentDate", 2);
-CaleeCalendarPage = __decorateClass$4([
+CaleeCalendarPage = __decorateClass$6([
   t("calee-calendar-page")
 ], CaleeCalendarPage);
-var __defProp$3 = Object.defineProperty;
-var __getOwnPropDesc$3 = Object.getOwnPropertyDescriptor;
-var __decorateClass$3 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$3(target, key) : target;
+var __defProp$5 = Object.defineProperty;
+var __getOwnPropDesc$5 = Object.getOwnPropertyDescriptor;
+var __decorateClass$5 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$5(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$3(target, key, result);
+  if (kind && result) __defProp$5(target, key, result);
   return result;
 };
 let CaleeTasksPage = class extends i {
@@ -14158,24 +14199,64 @@ let CaleeTasksPage = class extends i {
     this.lists = [];
     this.presets = [];
     this.narrow = false;
+    this._sortBy = "manual";
+    this._groupBy = "none";
+    this._showToolbar = false;
   }
   render() {
     const standardLists = this.lists.filter((l2) => l2.list_type !== "shopping");
-    const standardPresets = this.presets.filter((p2) => {
-      const shoppingIds = new Set(
-        this.lists.filter((l2) => l2.list_type === "shopping").map((l2) => l2.id)
-      );
-      return !shoppingIds.has(p2.list_id);
-    });
+    const shoppingIds = new Set(
+      this.lists.filter((l2) => l2.list_type === "shopping").map((l2) => l2.id)
+    );
+    const standardPresets = this.presets.filter((p2) => !shoppingIds.has(p2.list_id));
     return b`
       <div class="page-header">
         <span class="page-title">Tasks</span>
+        <button
+          class="toolbar-toggle ${this._showToolbar ? "active" : ""}"
+          @click=${() => {
+      this._showToolbar = !this._showToolbar;
+    }}
+          title="Sort & group"
+          aria-label="Toggle sort and group toolbar"
+        >
+          &#x2630;
+        </button>
       </div>
+
+      <div class="toolbar ${this._showToolbar ? "visible" : ""}">
+        <div class="toolbar-section">
+          <span class="toolbar-label">Sort</span>
+          ${["manual", "due", "title", "created"].map((s2) => b`
+            <button class="chip" aria-selected=${this._sortBy === s2}
+              @click=${() => {
+      this._sortBy = s2;
+    }}>
+              ${{ manual: "Manual", due: "Due date", title: "Title", created: "Newest" }[s2]}
+            </button>
+          `)}
+        </div>
+
+        <div class="toolbar-section">
+          <span class="toolbar-label">Group</span>
+          ${["none", "list", "due", "category"].map((g2) => b`
+            <button class="chip" aria-selected=${this._groupBy === g2}
+              @click=${() => {
+      this._groupBy = g2;
+    }}>
+              ${{ none: "None", list: "List", due: "Due date", category: "Category" }[g2]}
+            </button>
+          `)}
+        </div>
+      </div>
+
       <div class="content">
         <calee-tasks-view
           .tasks=${this.tasks}
           .lists=${standardLists}
           .presets=${standardPresets}
+          .sortBy=${this._sortBy}
+          .groupBy=${this._groupBy}
           ?narrow=${this.narrow}
         ></calee-tasks-view>
       </div>
@@ -14205,6 +14286,79 @@ CaleeTasksPage.styles = i$3`
       font-size: 15px;
       font-weight: 600;
       color: var(--primary-text-color, #212121);
+      flex: 1;
+    }
+
+    .toolbar-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--secondary-text-color, #757575);
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+    .toolbar-toggle:hover {
+      background: var(--secondary-background-color, #f5f5f5);
+    }
+    .toolbar-toggle.active {
+      color: var(--primary-color, #03a9f4);
+    }
+
+    /* ── Sort/group toolbar ────────────────────────────────────── */
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 16px;
+      background: var(--secondary-background-color, #fafafa);
+      border-bottom: 1px solid var(--divider-color, #e0e0e0);
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.2s ease, opacity 0.2s ease, padding 0.2s ease;
+    }
+    .toolbar.visible {
+      max-height: 50px;
+      opacity: 1;
+      padding: 8px 16px;
+    }
+
+    .toolbar-section {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .toolbar-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--secondary-text-color, #757575);
+    }
+
+    .chip {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      background: transparent;
+      color: var(--secondary-text-color, #757575);
+      border: 1px solid var(--divider-color, #e0e0e0);
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .chip:hover {
+      border-color: var(--primary-color, #03a9f4);
+    }
+    .chip[aria-selected="true"] {
+      background: var(--primary-color, #03a9f4);
+      color: #fff;
+      border-color: var(--primary-color, #03a9f4);
     }
 
     .content {
@@ -14212,29 +14366,38 @@ CaleeTasksPage.styles = i$3`
       overflow: hidden;
     }
   `;
-__decorateClass$3([
+__decorateClass$5([
   n2({ attribute: false })
 ], CaleeTasksPage.prototype, "tasks", 2);
-__decorateClass$3([
+__decorateClass$5([
   n2({ attribute: false })
 ], CaleeTasksPage.prototype, "lists", 2);
-__decorateClass$3([
+__decorateClass$5([
   n2({ attribute: false })
 ], CaleeTasksPage.prototype, "presets", 2);
-__decorateClass$3([
+__decorateClass$5([
   n2({ type: Boolean })
 ], CaleeTasksPage.prototype, "narrow", 2);
-CaleeTasksPage = __decorateClass$3([
+__decorateClass$5([
+  r()
+], CaleeTasksPage.prototype, "_sortBy", 2);
+__decorateClass$5([
+  r()
+], CaleeTasksPage.prototype, "_groupBy", 2);
+__decorateClass$5([
+  r()
+], CaleeTasksPage.prototype, "_showToolbar", 2);
+CaleeTasksPage = __decorateClass$5([
   t("calee-tasks-page")
 ], CaleeTasksPage);
-var __defProp$2 = Object.defineProperty;
-var __getOwnPropDesc$2 = Object.getOwnPropertyDescriptor;
-var __decorateClass$2 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$2(target, key) : target;
+var __defProp$4 = Object.defineProperty;
+var __getOwnPropDesc$4 = Object.getOwnPropertyDescriptor;
+var __decorateClass$4 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$4(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$2(target, key, result);
+  if (kind && result) __defProp$4(target, key, result);
   return result;
 };
 let CaleeShoppingPage = class extends i {
@@ -14306,35 +14469,35 @@ CaleeShoppingPage.styles = i$3`
       overflow: hidden;
     }
   `;
-__decorateClass$2([
+__decorateClass$4([
   n2({ attribute: false })
 ], CaleeShoppingPage.prototype, "tasks", 2);
-__decorateClass$2([
+__decorateClass$4([
   n2({ attribute: false })
 ], CaleeShoppingPage.prototype, "lists", 2);
-__decorateClass$2([
+__decorateClass$4([
   n2({ attribute: false })
 ], CaleeShoppingPage.prototype, "presets", 2);
-__decorateClass$2([
+__decorateClass$4([
   n2()
 ], CaleeShoppingPage.prototype, "currency", 2);
-__decorateClass$2([
+__decorateClass$4([
   n2({ type: Number })
 ], CaleeShoppingPage.prototype, "budget", 2);
-__decorateClass$2([
+__decorateClass$4([
   n2()
 ], CaleeShoppingPage.prototype, "toastMessage", 2);
-CaleeShoppingPage = __decorateClass$2([
+CaleeShoppingPage = __decorateClass$4([
   t("calee-shopping-page")
 ], CaleeShoppingPage);
-var __defProp$1 = Object.defineProperty;
-var __getOwnPropDesc$1 = Object.getOwnPropertyDescriptor;
-var __decorateClass$1 = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$1(target, key) : target;
+var __defProp$3 = Object.defineProperty;
+var __getOwnPropDesc$3 = Object.getOwnPropertyDescriptor;
+var __decorateClass$3 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$3(target, key) : target;
   for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
     if (decorator = decorators[i2])
       result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp$1(target, key, result);
+  if (kind && result) __defProp$3(target, key, result);
   return result;
 };
 let CaleeMorePage = class extends i {
@@ -14662,48 +14825,652 @@ CaleeMorePage.styles = i$3`
       }
     }
   `;
-__decorateClass$1([
+__decorateClass$3([
   n2({ type: Array })
 ], CaleeMorePage.prototype, "events", 2);
-__decorateClass$1([
+__decorateClass$3([
   n2({ type: Array })
 ], CaleeMorePage.prototype, "tasks", 2);
-__decorateClass$1([
+__decorateClass$3([
   n2({ type: Array })
 ], CaleeMorePage.prototype, "lists", 2);
-__decorateClass$1([
+__decorateClass$3([
   n2({ type: Array })
 ], CaleeMorePage.prototype, "conflicts", 2);
-__decorateClass$1([
+__decorateClass$3([
   n2({ attribute: false })
 ], CaleeMorePage.prototype, "calendars", 2);
-__decorateClass$1([
+__decorateClass$3([
   n2({ attribute: false })
 ], CaleeMorePage.prototype, "enabledCalendarIds", 2);
-__decorateClass$1([
+__decorateClass$3([
   n2({ attribute: false })
 ], CaleeMorePage.prototype, "selectedDate", 2);
-__decorateClass$1([
+__decorateClass$3([
   n2({ type: String })
 ], CaleeMorePage.prototype, "currency", 2);
-__decorateClass$1([
+__decorateClass$3([
   n2({ type: Number })
 ], CaleeMorePage.prototype, "budget", 2);
-__decorateClass$1([
+__decorateClass$3([
   n2({ type: Array })
 ], CaleeMorePage.prototype, "reminderCalendars", 2);
-__decorateClass$1([
+__decorateClass$3([
   n2({ type: Boolean, reflect: true })
 ], CaleeMorePage.prototype, "narrow", 2);
-__decorateClass$1([
+__decorateClass$3([
   n2({ type: String })
 ], CaleeMorePage.prototype, "initialSubView", 2);
-__decorateClass$1([
+__decorateClass$3([
   r()
 ], CaleeMorePage.prototype, "_activeSubView", 2);
-CaleeMorePage = __decorateClass$1([
+CaleeMorePage = __decorateClass$3([
   t("calee-more-page")
 ], CaleeMorePage);
+var __defProp$2 = Object.defineProperty;
+var __getOwnPropDesc$2 = Object.getOwnPropertyDescriptor;
+var __decorateClass$2 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$2(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$2(target, key, result);
+  return result;
+};
+let CaleeTaskEditSheet = class extends i {
+  constructor() {
+    super(...arguments);
+    this.task = null;
+    this.lists = [];
+    this.open = false;
+    this.narrow = false;
+    this._title = "";
+    this._note = "";
+    this._listId = "";
+    this._datePill = "none";
+    this._customDate = "";
+    this._recurrence = "none";
+    this._category = "";
+  }
+  /* ── Lifecycle ─────────────────────────────────────────────────────── */
+  updated(changed) {
+    if (changed.has("task") && this.task) {
+      this._populateFromTask(this.task);
+    }
+  }
+  _populateFromTask(task) {
+    this._title = task.title;
+    this._note = task.note;
+    this._listId = task.list_id;
+    this._category = task.category;
+    const { pill, customDate } = datePillFromDue(task.due);
+    this._datePill = pill;
+    this._customDate = customDate;
+    this._recurrence = task.recurrence_rule || "none";
+  }
+  /* ── Events ────────────────────────────────────────────────────────── */
+  _close() {
+    this.dispatchEvent(new CustomEvent("sheet-close", { bubbles: true, composed: true }));
+  }
+  _save() {
+    if (!this.task) return;
+    const due = resolveDue(this._datePill, this._customDate);
+    const recurrence = this._recurrence !== "none" && due ? this._recurrence : "";
+    this.dispatchEvent(new CustomEvent("task-update", {
+      detail: {
+        taskId: this.task.id,
+        version: this.task.version,
+        title: this._title.trim() || this.task.title,
+        note: this._note.trim(),
+        due: due ?? "",
+        recurrence_rule: recurrence,
+        list_id: this._listId,
+        category: this._category
+      },
+      bubbles: true,
+      composed: true
+    }));
+    this._close();
+  }
+  _delete() {
+    if (!this.task) return;
+    this.dispatchEvent(new CustomEvent("task-delete", {
+      detail: { taskId: this.task.id, title: this.task.title },
+      bubbles: true,
+      composed: true
+    }));
+    this._close();
+  }
+  _onKeydown(e2) {
+    if (e2.key === "Escape") this._close();
+  }
+  /* ── Render ────────────────────────────────────────────────────────── */
+  render() {
+    const isOpen = this.open && this.task;
+    return b`
+      <div class="backdrop ${isOpen ? "open" : ""}" @click=${this._close}></div>
+
+      <div class="sheet ${isOpen ? "open" : ""}" @keydown=${this._onKeydown}>
+        <div class="sheet-handle"></div>
+
+        <div class="sheet-header">
+          <h3>Edit Task</h3>
+          <button class="close-btn" @click=${this._close} aria-label="Close">&times;</button>
+        </div>
+
+        ${isOpen ? b`
+          <div class="sheet-body">
+            <!-- Title -->
+            <div class="field">
+              <label class="field-label">Title</label>
+              <input type="text" .value=${this._title}
+                @input=${(e2) => {
+      this._title = e2.target.value;
+    }} />
+            </div>
+
+            <!-- List -->
+            <div class="field">
+              <label class="field-label">List</label>
+              <select .value=${this._listId}
+                @change=${(e2) => {
+      this._listId = e2.target.value;
+    }}>
+                ${this.lists.map((l2) => b`
+                  <option value=${l2.id} ?selected=${this._listId === l2.id}>${l2.name}</option>
+                `)}
+              </select>
+            </div>
+
+            <!-- Due date pills -->
+            <div class="field">
+              <label class="field-label">Due date</label>
+              <div class="pill-row">
+                ${["today", "tomorrow", "nextweek", "custom", "none"].map((key) => {
+      const labels = {
+        today: "Today",
+        tomorrow: "Tomorrow",
+        nextweek: "Next week",
+        custom: "Custom",
+        none: "No date"
+      };
+      return b`
+                    <button class="pill" aria-selected=${this._datePill === key}
+                      @click=${() => {
+        this._datePill = key;
+        if (key === "none") this._recurrence = "none";
+      }}>
+                      ${labels[key]}
+                    </button>
+                  `;
+    })}
+                ${this._datePill === "custom" ? b`
+                  <input type="date" class="custom-date-input" .value=${this._customDate}
+                    @change=${(e2) => {
+      this._customDate = e2.target.value;
+    }} />
+                ` : A}
+              </div>
+            </div>
+
+            <!-- Recurrence pills (visible when a due date is set) -->
+            ${this._datePill !== "none" ? b`
+              <div class="field">
+                <label class="field-label">Repeat</label>
+                <div class="pill-row">
+                  ${["none", "daily", "weekly", "biweekly", "monthly", "weekdays"].map((key) => {
+      const labels = {
+        none: "None",
+        daily: "Daily",
+        weekly: "Weekly",
+        biweekly: "Fortnightly",
+        monthly: "Monthly",
+        weekdays: "Weekdays"
+      };
+      return b`
+                      <button class="pill recurrence-pill" aria-selected=${this._recurrence === key}
+                        @click=${() => {
+        this._recurrence = key;
+      }}>
+                        ${labels[key]}
+                      </button>
+                    `;
+    })}
+                </div>
+              </div>
+            ` : A}
+
+            <!-- Category -->
+            <div class="field">
+              <label class="field-label">Category</label>
+              <input type="text" .value=${this._category} placeholder="e.g. Work, Home, Errands"
+                @input=${(e2) => {
+      this._category = e2.target.value;
+    }} />
+            </div>
+
+            <!-- Note -->
+            <div class="field">
+              <label class="field-label">Note</label>
+              <textarea .value=${this._note} placeholder="Add a note..."
+                @input=${(e2) => {
+      this._note = e2.target.value;
+    }}></textarea>
+            </div>
+
+            <!-- Linked event info (read-only) -->
+            ${this.task.related_event_id ? b`
+              <div class="field">
+                <label class="field-label">Linked event</label>
+                <div style="font-size: 13px; color: var(--secondary-text-color);">
+                  Event ID: ${this.task.related_event_id}
+                </div>
+              </div>
+            ` : A}
+          </div>
+
+          <div class="sheet-actions">
+            <button class="btn btn-cancel" @click=${this._close}>Cancel</button>
+            <button class="btn btn-delete" @click=${this._delete}>Delete</button>
+            <button class="btn btn-save" @click=${this._save}>Save</button>
+          </div>
+        ` : A}
+      </div>
+    `;
+  }
+};
+CaleeTaskEditSheet.styles = i$3`
+    :host {
+      display: block;
+    }
+
+    /* ── Overlay backdrop ─────────────────────────────────────── */
+    .backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 300;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0.25s;
+    }
+    .backdrop.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* ── Sheet panel ──────────────────────────────────────────── */
+    .sheet {
+      position: fixed;
+      z-index: 301;
+      background: var(--card-background-color, #fff);
+      overflow-y: auto;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Mobile: bottom sheet */
+    :host([narrow]) .sheet {
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-height: 85vh;
+      border-radius: 16px 16px 0 0;
+      transform: translateY(100%);
+      box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+    }
+    :host([narrow]) .sheet.open {
+      transform: translateY(0);
+    }
+
+    /* Desktop: side panel */
+    :host(:not([narrow])) .sheet {
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 380px;
+      border-left: 1px solid var(--divider-color, #e0e0e0);
+      transform: translateX(100%);
+      box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
+    }
+    :host(:not([narrow])) .sheet.open {
+      transform: translateX(0);
+    }
+
+    /* ── Handle (mobile drag indicator) ──────────────────────── */
+    .sheet-handle {
+      width: 36px;
+      height: 4px;
+      background: var(--divider-color, #ccc);
+      border-radius: 2px;
+      margin: 10px auto 4px;
+    }
+    :host(:not([narrow])) .sheet-handle {
+      display: none;
+    }
+
+    /* ── Header ──────────────────────────────────────────────── */
+    .sheet-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px 8px;
+      border-bottom: 1px solid var(--divider-color, #e0e0e0);
+    }
+    .sheet-header h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--primary-text-color, #212121);
+    }
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--secondary-text-color, #757575);
+      padding: 4px;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .close-btn:hover {
+      background: var(--secondary-background-color, #f5f5f5);
+    }
+
+    /* ── Form fields ─────────────────────────────────────────── */
+    .sheet-body {
+      padding: 16px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+    .field-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--secondary-text-color, #757575);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      font-size: 14px;
+      padding: 8px 12px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      border-radius: 8px;
+      background: var(--card-background-color, #fff);
+      color: var(--primary-text-color, #212121);
+      outline: none;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+    input:focus,
+    textarea:focus {
+      border-color: var(--primary-color, #03a9f4);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+      max-height: 160px;
+    }
+
+    select {
+      width: 100%;
+      font-size: 14px;
+      padding: 8px 12px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      border-radius: 8px;
+      background: var(--card-background-color, #fff);
+      color: var(--primary-text-color, #212121);
+      outline: none;
+      appearance: auto;
+    }
+    select:focus {
+      border-color: var(--primary-color, #03a9f4);
+    }
+
+    /* ── Pill rows ────────────────────────────────────────────── */
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .pill {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      background: transparent;
+      color: var(--secondary-text-color, #757575);
+      border: 1px solid var(--divider-color, #e0e0e0);
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .pill:hover {
+      border-color: var(--primary-color, #03a9f4);
+    }
+    .pill[aria-selected="true"] {
+      background: var(--primary-color, #03a9f4);
+      color: #fff;
+      border-color: var(--primary-color, #03a9f4);
+    }
+    .recurrence-pill[aria-selected="true"] {
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 15%, transparent);
+      color: var(--primary-color, #03a9f4);
+      border-color: var(--primary-color, #03a9f4);
+    }
+    .custom-date-input {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 8px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: var(--card-background-color, #fff);
+      color: var(--primary-text-color, #212121);
+      outline: none;
+    }
+
+    /* ── Actions ──────────────────────────────────────────────── */
+    .sheet-actions {
+      display: flex;
+      gap: 8px;
+      padding: 16px;
+      border-top: 1px solid var(--divider-color, #e0e0e0);
+    }
+
+    .btn {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      text-align: center;
+      transition: opacity 0.15s;
+    }
+    .btn:hover {
+      opacity: 0.9;
+    }
+    .btn-save {
+      background: var(--primary-color, #03a9f4);
+      color: #fff;
+    }
+    .btn-delete {
+      background: var(--error-color, #f44336);
+      color: #fff;
+      flex: 0;
+      padding: 10px 16px;
+    }
+    .btn-cancel {
+      background: var(--secondary-background-color, #f0f0f0);
+      color: var(--primary-text-color, #212121);
+      flex: 0;
+      padding: 10px 16px;
+    }
+  `;
+__decorateClass$2([
+  n2({ attribute: false })
+], CaleeTaskEditSheet.prototype, "task", 2);
+__decorateClass$2([
+  n2({ type: Array })
+], CaleeTaskEditSheet.prototype, "lists", 2);
+__decorateClass$2([
+  n2({ type: Boolean })
+], CaleeTaskEditSheet.prototype, "open", 2);
+__decorateClass$2([
+  n2({ type: Boolean, reflect: true })
+], CaleeTaskEditSheet.prototype, "narrow", 2);
+__decorateClass$2([
+  r()
+], CaleeTaskEditSheet.prototype, "_title", 2);
+__decorateClass$2([
+  r()
+], CaleeTaskEditSheet.prototype, "_note", 2);
+__decorateClass$2([
+  r()
+], CaleeTaskEditSheet.prototype, "_listId", 2);
+__decorateClass$2([
+  r()
+], CaleeTaskEditSheet.prototype, "_datePill", 2);
+__decorateClass$2([
+  r()
+], CaleeTaskEditSheet.prototype, "_customDate", 2);
+__decorateClass$2([
+  r()
+], CaleeTaskEditSheet.prototype, "_recurrence", 2);
+__decorateClass$2([
+  r()
+], CaleeTaskEditSheet.prototype, "_category", 2);
+CaleeTaskEditSheet = __decorateClass$2([
+  t("calee-task-edit-sheet")
+], CaleeTaskEditSheet);
+var __defProp$1 = Object.defineProperty;
+var __getOwnPropDesc$1 = Object.getOwnPropertyDescriptor;
+var __decorateClass$1 = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc$1(target, key) : target;
+  for (var i2 = decorators.length - 1, decorator; i2 >= 0; i2--)
+    if (decorator = decorators[i2])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp$1(target, key, result);
+  return result;
+};
+let CaleeUndoSnackbar = class extends i {
+  constructor() {
+    super(...arguments);
+    this.message = "";
+    this.open = false;
+    this._timer = null;
+  }
+  /* ── Show / hide ───────────────────────────────────────────────────── */
+  /** Show the snackbar with a message. Auto-hides after `duration` ms. */
+  show(message, duration = 5e3) {
+    this.message = message;
+    this.open = true;
+    if (this._timer) clearTimeout(this._timer);
+    this._timer = setTimeout(() => this.hide(), duration);
+  }
+  hide() {
+    this.open = false;
+    if (this._timer) {
+      clearTimeout(this._timer);
+      this._timer = null;
+    }
+  }
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    if (this._timer) clearTimeout(this._timer);
+  }
+  /* ── Undo action ───────────────────────────────────────────────────── */
+  _onUndo() {
+    this.dispatchEvent(new CustomEvent("undo", { bubbles: true, composed: true }));
+    this.hide();
+  }
+  /* ── Render ────────────────────────────────────────────────────────── */
+  render() {
+    if (!this.message) return A;
+    return b`
+      <div class="snackbar">
+        <span class="msg">${this.message}</span>
+        <button class="undo-btn" @click=${this._onUndo}>Undo</button>
+      </div>
+    `;
+  }
+};
+CaleeUndoSnackbar.styles = i$3`
+    :host {
+      display: block;
+      position: fixed;
+      bottom: 72px; /* above bottom nav on mobile */
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      z-index: 400;
+      opacity: 0;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                  opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    :host([open]) {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .snackbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--primary-text-color, #333);
+      color: var(--text-primary-color, #fff);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      font-size: 14px;
+      min-width: 240px;
+      max-width: calc(100vw - 32px);
+    }
+
+    .msg {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .undo-btn {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary-color, #03a9f4);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .undo-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  `;
+__decorateClass$1([
+  n2({ type: String })
+], CaleeUndoSnackbar.prototype, "message", 2);
+__decorateClass$1([
+  n2({ type: Boolean, reflect: true })
+], CaleeUndoSnackbar.prototype, "open", 2);
+CaleeUndoSnackbar = __decorateClass$1([
+  t("calee-undo-snackbar")
+], CaleeUndoSnackbar);
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __decorateClass = (decorators, target, key, kind) => {
@@ -14787,6 +15554,9 @@ let CaleePanel = class extends i {
     this._smartSubTab = "before-shift";
     this._conflicts = [];
     this._shoppingToast = "";
+    this._editSheetTask = null;
+    this._editSheetOpen = false;
+    this._undoAction = null;
     this._moreSubView = "year";
     this._hashHandler = this._onHashChange.bind(this);
     this._keyHandler = this._handleKeydown.bind(this);
@@ -15152,6 +15922,8 @@ let CaleePanel = class extends i {
           @task-delete=${this._onTaskDelete}
           @task-quick-add=${this._onTaskQuickAdd}
           @task-update=${this._onTaskUpdate}
+          @task-edit-open=${this._onTaskEditOpen}
+          @task-reorder=${this._onTaskReorder}
           @task-price-update=${this._onTaskPriceUpdate}
           @task-quantity-update=${this._onTaskQuantityUpdate}
           @task-unit-update=${this._onTaskUnitUpdate}
@@ -15182,6 +15954,20 @@ let CaleePanel = class extends i {
           @drawer-recurring-action=${this._onDrawerRecurringAction}
         ></calee-detail-drawer>
       </div>
+
+      <calee-task-edit-sheet
+        .task=${this._editSheetTask}
+        .lists=${this._lists.filter((l2) => l2.list_type !== "shopping")}
+        ?open=${this._editSheetOpen}
+        ?narrow=${this.narrow}
+        @sheet-close=${this._onEditSheetClose}
+        @task-update=${this._onTaskUpdate}
+        @task-delete=${this._onTaskDelete}
+      ></calee-task-edit-sheet>
+
+      <calee-undo-snackbar
+        @undo=${this._onUndoAction}
+      ></calee-undo-snackbar>
 
       <calee-bottom-nav
         .activeView=${this._currentView}
@@ -15488,6 +16274,14 @@ let CaleePanel = class extends i {
       this._openDetailDrawer(e2.detail.task, "task");
     }
   }
+  _onTaskEditOpen(e2) {
+    this._editSheetTask = e2.detail.task;
+    this._editSheetOpen = true;
+  }
+  _onEditSheetClose() {
+    this._editSheetOpen = false;
+    this._editSheetTask = null;
+  }
   _onCellClick(e2) {
     this._templatePickerDate = e2.detail.date;
     this._templatePickerTime = e2.detail.time ?? "";
@@ -15514,12 +16308,60 @@ let CaleePanel = class extends i {
     }
   }
   async _onTaskDelete(e2) {
+    const { taskId, title } = e2.detail;
     try {
-      await this.hass.callWS({ type: "calee/delete_task", task_id: e2.detail.taskId });
-      this._tasks = this._tasks.filter((t2) => t2.id !== e2.detail.taskId);
+      await this.hass.callWS({ type: "calee/delete_task", task_id: taskId });
+      this._tasks = this._tasks.filter((t2) => t2.id !== taskId);
+      this._undoAction = { type: "delete", taskId, title: title ?? "Task" };
+      const snackbar = this.shadowRoot?.querySelector("calee-undo-snackbar");
+      snackbar?.show(`"${title ?? "Task"}" deleted`);
     } catch (err) {
       console.error("Failed to delete task:", err);
     }
+  }
+  async _onTaskReorder(e2) {
+    const { taskId, beforeTaskId } = e2.detail;
+    const task = this._tasks.find((t2) => t2.id === taskId);
+    const beforeTask = this._tasks.find((t2) => t2.id === beforeTaskId);
+    if (!task || !beforeTask || task.list_id !== beforeTask.list_id) return;
+    const listTasks = this._tasks.filter((t2) => t2.list_id === task.list_id);
+    const reorderedList = listTasks.filter((t2) => t2.id !== taskId);
+    const insertIdx = reorderedList.findIndex((t2) => t2.id === beforeTaskId);
+    if (insertIdx < 0) return;
+    reorderedList.splice(insertIdx, 0, { ...task, position: insertIdx });
+    const renumberedList = reorderedList.map((t2, i2) => ({ ...t2, position: i2 }));
+    const renumberedById = new Map(renumberedList.map((t2) => [t2.id, t2]));
+    this._tasks = this._tasks.map(
+      (t2) => t2.list_id === task.list_id ? renumberedById.get(t2.id) ?? t2 : t2
+    );
+    try {
+      await this.hass.callWS({
+        type: "calee/reorder_task",
+        task_id: taskId,
+        before_task_id: beforeTaskId,
+        version: task.version
+      });
+    } catch (err) {
+      console.error("Failed to reorder task:", err);
+      this._loadTasks();
+    }
+  }
+  async _onUndoAction() {
+    if (!this._undoAction) return;
+    if (this._undoAction.type === "delete") {
+      try {
+        const restored = await this.hass.callWS({
+          type: "calee/restore_task",
+          task_id: this._undoAction.taskId
+        });
+        if (restored) {
+          this._tasks = [...this._tasks, restored];
+        }
+      } catch (err) {
+        console.error("Failed to undo delete:", err);
+      }
+    }
+    this._undoAction = null;
   }
   async _onTaskPriceUpdate(e2) {
     const { taskId, price, version } = e2.detail;
@@ -15583,6 +16425,9 @@ let CaleePanel = class extends i {
     if (e2.detail.title !== void 0) wsMsg.title = e2.detail.title;
     if (e2.detail.due !== void 0) wsMsg.due = e2.detail.due;
     if (e2.detail.recurrence_rule !== void 0) wsMsg.recurrence_rule = e2.detail.recurrence_rule;
+    if (e2.detail.note !== void 0) wsMsg.note = e2.detail.note;
+    if (e2.detail.list_id !== void 0) wsMsg.list_id = e2.detail.list_id;
+    if (e2.detail.category !== void 0) wsMsg.category = e2.detail.category;
     try {
       const updated = await this.hass.callWS(wsMsg);
       if (updated) this._tasks = this._tasks.map((t2) => t2.id === e2.detail.taskId ? updated : t2);
@@ -16314,6 +17159,15 @@ __decorateClass([
 __decorateClass([
   r()
 ], CaleePanel.prototype, "_shoppingToast", 2);
+__decorateClass([
+  r()
+], CaleePanel.prototype, "_editSheetTask", 2);
+__decorateClass([
+  r()
+], CaleePanel.prototype, "_editSheetOpen", 2);
+__decorateClass([
+  r()
+], CaleePanel.prototype, "_undoAction", 2);
 __decorateClass([
   r()
 ], CaleePanel.prototype, "_moreSubView", 2);
