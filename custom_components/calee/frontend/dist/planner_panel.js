@@ -13161,7 +13161,7 @@ function addDaysISO$1(iso, days) {
   return date.toISOString().slice(0, 10);
 }
 function friendlyWeatherState(state) {
-  return state.replace(/_/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2").replace(/\b\w/g, (char) => char.toUpperCase());
+  return state.replace(/[_-]/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2").replace(/\b\w/g, (char) => char.toUpperCase());
 }
 function weatherIcon$1(state) {
   const normalized = state.toLowerCase();
@@ -13170,8 +13170,8 @@ function weatherIcon$1(state) {
   if (normalized.includes("snow")) return "❄";
   if (normalized.includes("fog")) return "🌫";
   if (normalized.includes("wind")) return "💨";
-  if (normalized.includes("cloud")) return "☁";
   if (normalized.includes("partly")) return "⛅";
+  if (normalized.includes("cloud")) return "☁";
   if (normalized.includes("sun") || normalized === "clear-night" || normalized === "sunny") return "☀";
   return "⛅";
 }

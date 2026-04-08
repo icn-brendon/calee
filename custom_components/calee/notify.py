@@ -45,17 +45,16 @@ _KEY_MORNING_SENT_DATE: Final = "morning_sent_date"
 
 
 def _reminder_calendar_ids(
-    store: AbstractPlannerStore,
     entry: ConfigEntry,
 ) -> list[str]:
     """Return the calendar IDs that should participate in reminders."""
 
-    configured = entry.options.get("reminder_calendars", DEFAULT_REMINDER_CALENDARS)
+    configured = entry.options.get("reminder_calendars")
+    if configured is None:
+        configured = DEFAULT_REMINDER_CALENDARS
     if isinstance(configured, list):
-        calendar_ids = [calendar_id for calendar_id in configured if calendar_id]
-        if calendar_ids:
-            return calendar_ids
-    return list(store.get_calendars().keys())
+        return [calendar_id for calendar_id in configured if calendar_id]
+    return list(DEFAULT_REMINDER_CALENDARS)
 
 
 async def async_setup_shift_reminders(
@@ -159,7 +158,7 @@ async def async_check_and_send_reminders(
     now = dt_util.now()
 
     # Get events from all configured reminder calendars.
-    reminder_calendars = _reminder_calendar_ids(store, entry)
+    reminder_calendars = _reminder_calendar_ids(entry)
     events = []
     for cal_id in reminder_calendars:
         events.extend(store.get_active_events(calendar_id=cal_id))
@@ -299,7 +298,7 @@ async def async_send_morning_summary(
     fmt = "%I:%M %p" if time_format == "12h" else "%H:%M"
 
     # Today's shifts — compare in local time for correct day attribution.
-    reminder_calendars = _reminder_calendar_ids(store, entry)
+    reminder_calendars = _reminder_calendar_ids(entry)
     all_shifts = []
     for cal_id in reminder_calendars:
         all_shifts.extend(store.get_active_events(calendar_id=cal_id))

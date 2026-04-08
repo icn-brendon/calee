@@ -132,7 +132,7 @@ function taskPriorityScore(task: PlannerTask): number {
 
 function friendlyWeatherState(state: string): string {
   return state
-    .replace(/_/g, " ")
+    .replace(/[_-]/g, " ")
     .replace(/([a-z])([A-Z])/g, "$1 $2")
     .replace(/\b\w/g, (char) => char.toUpperCase());
 }
@@ -144,8 +144,8 @@ function weatherIcon(state: string): string {
   if (normalized.includes("snow")) return "❄";
   if (normalized.includes("fog")) return "🌫";
   if (normalized.includes("wind")) return "💨";
-  if (normalized.includes("cloud")) return "☁";
   if (normalized.includes("partly")) return "⛅";
+  if (normalized.includes("cloud")) return "☁";
   if (normalized.includes("sun") || normalized === "clear-night" || normalized === "sunny") return "☀";
   return "⛅";
 }
