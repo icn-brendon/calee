@@ -225,10 +225,13 @@ export class CaleePanel extends LitElement {
         this._store = new mod.PlannerStore(this.hass);
         await this._store.load();
         this._syncFromStore();
+        // PlannerStore has its own subscription — no need for a second one.
+        // It calls refresh() internally on changes; we just re-sync on updates.
       } catch {
         await this._loadViaWebSocket();
+        // No PlannerStore — use our own per-entity subscription.
+        this._subscribeToChanges();
       }
-      this._subscribeToChanges();
     } catch (err) {
       console.error("[Calee] Failed to initialise panel:", err);
     } finally {
@@ -410,28 +413,107 @@ export class CaleePanel extends LitElement {
     if (!this.hass?.connection) return;
     try {
       this._unsubscribe = await this.hass.connection.subscribeMessage(
-        (_event: any) => { this._refreshAll(); },
+        (event: any) => { this._onSubscriptionEvent(event); },
         { type: "calee/subscribe" },
       );
     } catch { /* subscription may not be available */ }
   }
 
-  private _refreshDebounce: ReturnType<typeof setTimeout> | null = null;
+  /** Per-resource-type debounce timers to avoid redundant reloads. */
+  private _refreshTimers: Map<string, ReturnType<typeof setTimeout>> = new Map();
 
-  private _refreshAll(): void {
-    if (this._refreshDebounce) clearTimeout(this._refreshDebounce);
-    this._refreshDebounce = setTimeout(async () => {
-      this._refreshDebounce = null;
-      if (this._store) {
-        await this._store.refresh();
-        this._syncFromStore();
-      } else {
-        await this._loadViaWebSocket();
-      }
-      if (!this._store && (this._currentView === "tasks" || this._currentView === "shopping")) {
-        await this._loadTasks();
-      }
-    }, 250);
+  /**
+   * Handle a subscription event by refreshing only the affected resource type.
+   * This replaces the old _refreshAll() which reloaded everything on every change.
+   */
+  private _onSubscriptionEvent(event: any): void {
+    const resourceType: string = event?.resource_type ?? "";
+
+    // Map resource types to the minimal reload needed.
+    // Calendar/list deletes also soft-delete child events/tasks,
+    // so reload both the parent and children.
+    const reloadMap: Record<string, () => Promise<void>> = {
+      event: () => this._loadEvents(),
+      task: () => this._loadTasks(),
+      calendar: async () => { await this._reloadCalendars(); await this._loadEvents(); },
+      list: async () => { await this._reloadLists(); await this._loadTasks(); },
+      template: () => this._reloadTemplates(),
+      preset: () => this._reloadPresets(),
+      routine: () => this._reloadRoutines(),
+      notification_rule: () => Promise.resolve(), // no UI state to refresh
+    };
+
+    const reloadFn = reloadMap[resourceType];
+    if (reloadFn) {
+      // Debounce per resource type (250ms).
+      const existing = this._refreshTimers.get(resourceType);
+      if (existing) clearTimeout(existing);
+      this._refreshTimers.set(
+        resourceType,
+        setTimeout(async () => {
+          this._refreshTimers.delete(resourceType);
+          await reloadFn();
+        }, 250),
+      );
+    } else {
+      // Unknown resource type — fall back to full reload (debounced).
+      const existing = this._refreshTimers.get("_full");
+      if (existing) clearTimeout(existing);
+      this._refreshTimers.set(
+        "_full",
+        setTimeout(async () => {
+          this._refreshTimers.delete("_full");
+          await this._loadViaWebSocket();
+        }, 250),
+      );
+    }
+  }
+
+  /** Reload just calendars from the backend. */
+  private async _reloadCalendars(): Promise<void> {
+    if (!this.hass) return;
+    try {
+      const calendars = await this.hass.callWS({ type: "calee/calendars" });
+      this._rawCalendars = calendars ?? [];
+      // Preserve existing visibility toggles.
+      const visMap = new Map(this._calendars.map((c) => [c.id, c.visible]));
+      this._calendars = this._rawCalendars.map((c: any) => ({
+        id: c.id, name: c.name, color: c.color ?? "#64b5f6",
+        visible: visMap.get(c.id) ?? true,
+      }));
+    } catch { /* silently handle */ }
+  }
+
+  /** Reload just lists from the backend. */
+  private async _reloadLists(): Promise<void> {
+    if (!this.hass) return;
+    try {
+      this._lists = (await this.hass.callWS({ type: "calee/lists" })) ?? [];
+    } catch { /* silently handle */ }
+  }
+
+  /** Reload just templates from the backend. */
+  private async _reloadTemplates(): Promise<void> {
+    if (!this.hass) return;
+    try {
+      this._templates = (await this.hass.callWS({ type: "calee/templates" })) ?? [];
+    } catch { /* silently handle */ }
+  }
+
+  /** Reload just presets from the backend. */
+  private async _reloadPresets(): Promise<void> {
+    if (!this.hass) return;
+    try {
+      this._presets = (await this.hass.callWS({ type: "calee/presets" })) ?? [];
+    } catch { /* silently handle */ }
+  }
+
+  /** Reload just routines from the backend. */
+  private async _reloadRoutines(): Promise<void> {
+    if (!this.hass) return;
+    try {
+      this._routines = ((await this.hass.callWS({ type: "calee/routines" })) as Routine[]) ?? [];
+    } catch { /* silently handle */ }
   }
 
   // ── Calendar Toggle ──────────────────────────────────────────────
@@ -1492,7 +1574,8 @@ export class CaleePanel extends LitElement {
     const today = new Date().toISOString().slice(0, 10);
     try {
       await this.hass.callWS({ type: "calee/execute_routine", routine_id: routineId, date: today });
-      this._refreshAll();
+      // Routines create events + tasks + shopping items — reload all affected types.
+      await Promise.all([this._loadEvents(), this._loadTasks()]);
     } catch (err) { console.error("Failed to execute routine:", err); }
   }
 
