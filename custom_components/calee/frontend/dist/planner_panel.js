@@ -7215,10 +7215,10 @@ let CaleeEventDialog = class extends i {
                       />
                     </div>
                   ` : this._notificationMode === "disabled" ? b`
-                    <div class="section-hint" style="margin: 0;">
-                      This saves an event-specific disabled rule so broader reminder settings will skip this event.
-                    </div>
-                  ` : b`
+                      <div class="section-hint" style="margin: 0;">
+                        This saves an event-specific disabled rule so broader reminder settings will skip this event.
+                      </div>
+                    ` : b`
                     <div class="section-hint" style="margin: 0;">
                       No event rule will be saved. The event will follow whichever broader notification settings already apply.
                     </div>
@@ -16351,6 +16351,15 @@ let CaleePanel = class extends i {
     this._tasksLoaded = false;
     this._refreshTimers = /* @__PURE__ */ new Map();
   }
+  /** Guard against adoptedStyleSheets polyfill crashes in older browsers. */
+  createRenderRoot() {
+    try {
+      return super.createRenderRoot();
+    } catch {
+      if (!this.shadowRoot) this.attachShadow({ mode: "open" });
+      return this.shadowRoot;
+    }
+  }
   _defaultEventNotificationDraft() {
     return {
       mode: "global",
@@ -16367,15 +16376,6 @@ let CaleePanel = class extends i {
   _toStoredNotifyService(target) {
     if (!target) return "";
     return target.startsWith("notify.") ? target : `notify.${target}`;
-  }
-  /** Guard against adoptedStyleSheets polyfill crashes in older browsers. */
-  createRenderRoot() {
-    try {
-      return super.createRenderRoot();
-    } catch {
-      if (!this.shadowRoot) this.attachShadow({ mode: "open" });
-      return this.shadowRoot;
-    }
   }
   // ── Lifecycle ────────────────────────────────────────────────────
   connectedCallback() {
