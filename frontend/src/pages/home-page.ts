@@ -40,6 +40,12 @@ interface WeatherSurface {
   subtitle: string;
 }
 
+interface ActiveEventProgress {
+  event: PlannerEvent;
+  progress: number;
+  remainingLabel: string;
+}
+
 function todayISO(): string {
   return new Date().toISOString().slice(0, 10);
 }
@@ -88,6 +94,22 @@ function formatLongDate(iso: string): string {
   });
 }
 
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value));
+}
+
+function shiftLikeText(value: string | null | undefined): boolean {
+  return /(^|[^a-z0-9])shifts?([^a-z0-9]|$)/i.test(value ?? "");
+}
+
+function formatMinutesLabel(totalMinutes: number): string {
+  if (totalMinutes <= 1) return "Ending soon";
+  if (totalMinutes < 60) return `${totalMinutes}m left`;
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return minutes > 0 ? `${hours}h ${minutes}m left` : `${hours}h left`;
+}
+
 function formatAmount(value: number, currency: string): string {
   const amount = Math.max(0, value);
   const rounded = Math.round(amount * 100) / 100;
@@ -101,7 +123,11 @@ function calendarColor(
   calendars: Map<string, PlannerCalendar>,
   calendarId: string,
 ): string {
-  return calendars.get(calendarId)?.color ?? "var(--primary-color, #03a9f4)";
+  const color = calendars.get(calendarId)?.color?.trim() ?? "";
+  if (/^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(color)) return color;
+  if (/^(?:rgb|hsl)a?\(\s*[-\d.%\s,]+\)$/i.test(color)) return color;
+  if (/^[a-z]+$/i.test(color)) return color;
+  return "var(--primary-color, #03a9f4)";
 }
 
 function calendarName(
@@ -200,6 +226,7 @@ export class CaleeHomePage extends LitElement {
   @property({ type: Boolean, reflect: true }) narrow = false;
   @property() weekStart: "monday" | "sunday" = "monday";
   @property({ type: Boolean }) timelineExpanded = false;
+  private _clockTimer: number | null = null;
 
   static styles = css`
     :host {
@@ -323,6 +350,108 @@ export class CaleeHomePage extends LitElement {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
+    }
+
+    .live-events-card {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--success-color, #4caf50) 7%, transparent), transparent 70%),
+        color-mix(in srgb, var(--secondary-background-color, #f4f4f4) 68%, transparent);
+    }
+
+    .live-events-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .live-events-copy {
+      min-width: 0;
+    }
+
+    .live-events-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary-text-color, #212121);
+      margin: 0;
+    }
+
+    .live-events-subtitle {
+      margin-top: 2px;
+      font-size: 12px;
+      color: var(--secondary-text-color, #666);
+    }
+
+    .live-events-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .live-event-button {
+      width: 100%;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      border-radius: 14px;
+      padding: 10px 12px;
+      background: var(--card-background-color, #fff);
+      color: inherit;
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    .live-event-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+      border-color: color-mix(in srgb, var(--primary-color, #03a9f4) 26%, var(--divider-color, #e0e0e0));
+    }
+
+    .live-event-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .live-event-title {
+      min-width: 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary-text-color, #212121);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .live-event-sub {
+      margin-top: 3px;
+      font-size: 12px;
+      color: var(--secondary-text-color, #666);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .live-progress-track {
+      position: relative;
+      width: 100%;
+      height: 8px;
+      margin-top: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 10%, transparent);
+    }
+
+    .live-progress-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: var(--progress-color, var(--primary-color, #03a9f4));
+      transition: width 0.45s ease;
     }
 
     .hero-stat {
@@ -846,6 +975,19 @@ export class CaleeHomePage extends LitElement {
     return new Set(this.lists.filter((list) => list.list_type === "shopping").map((list) => list.id));
   }
 
+  connectedCallback(): void {
+    super.connectedCallback();
+    this._clockTimer = window.setInterval(() => this.requestUpdate(), 60_000);
+  }
+
+  disconnectedCallback(): void {
+    if (this._clockTimer != null) {
+      window.clearInterval(this._clockTimer);
+      this._clockTimer = null;
+    }
+    super.disconnectedCallback();
+  }
+
   private get _shoppingTasks(): PlannerTask[] {
     const shoppingIds = this._shoppingListIds;
     return this.tasks.filter((task) => shoppingIds.has(task.list_id));
@@ -867,6 +1009,41 @@ export class CaleeHomePage extends LitElement {
   private get _standardTasks(): PlannerTask[] {
     const shoppingIds = this._shoppingListIds;
     return this.tasks.filter((task) => !shoppingIds.has(task.list_id) && !task.completed);
+  }
+
+  private _isShiftEvent(event: PlannerEvent): boolean {
+    const calendar = this.calendars.get(event.calendar_id);
+    return event.calendar_id === "work_shifts"
+      || shiftLikeText(calendar?.name)
+      || shiftLikeText(event.calendar_id);
+  }
+
+  private get _activeEventProgress(): ActiveEventProgress[] {
+    const now = Date.now();
+    return this.events
+      .filter((event) => !event.deleted_at)
+      .filter((event) => !event.all_day)
+      .filter((event) => {
+        if (this.enabledCalendarIds.size === 0) return true;
+        return this.enabledCalendarIds.has(event.calendar_id);
+      })
+      .filter((event) => !this._isShiftEvent(event))
+      .map((event) => {
+        const start = new Date(event.start).getTime();
+        const end = new Date(event.end).getTime();
+        if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) return null;
+        if (start > now || end <= now) return null;
+        const progress = clamp(((now - start) / (end - start)) * 100, 0, 100);
+        const remainingMinutes = Math.max(0, Math.ceil((end - now) / 60_000));
+        return {
+          event,
+          progress,
+          remainingLabel: formatMinutesLabel(remainingMinutes),
+        };
+      })
+      .filter((item): item is ActiveEventProgress => item !== null)
+      .sort((a, b) => new Date(a.event.end).getTime() - new Date(b.event.end).getTime())
+      .slice(0, 3);
   }
 
   private get _upcomingEvents(): PlannerEvent[] {
@@ -1025,6 +1202,7 @@ export class CaleeHomePage extends LitElement {
   render() {
     const shopping = this._shoppingSummary;
     const weather = this._weatherSurface;
+    const activeEventProgress = this._activeEventProgress;
     const timelineLabel = this.timelineExpanded ? "This week" : "Today + tomorrow";
     const timelineToggleLabel = this.timelineExpanded ? "Show today + tomorrow" : "Expand for the week";
 
@@ -1045,6 +1223,45 @@ export class CaleeHomePage extends LitElement {
                   <div class="weather-subtitle">${weather.title} · ${weather.subtitle}</div>
                 </div>
               </div>
+
+              ${activeEventProgress.length > 0
+                ? html`
+                    <div class="live-events-card">
+                      <div class="live-events-head">
+                        <div class="live-events-copy">
+                          <div class="live-events-title">Happening now</div>
+                          <div class="live-events-subtitle">Live progress for current non-shift events</div>
+                        </div>
+                        <button class="section-chip-link" @click=${() => this._dispatchNavigate("calendar")}>
+                          <span class="section-chip-icon" aria-hidden="true">◷</span>
+                          <span><strong>${activeEventProgress.length}</strong></span>
+                          <span class="section-chip-label">live</span>
+                        </button>
+                      </div>
+                      <div class="live-events-list">
+                        ${activeEventProgress.map(
+                          ({ event, progress, remainingLabel }) => html`
+                            <button class="live-event-button" @click=${() => this._dispatchEventSelect(event)}>
+                              <div class="live-event-row">
+                                <div class="live-event-title">${event.title}</div>
+                                <span class="badge">${remainingLabel}</span>
+                              </div>
+                              <div class="live-event-sub">
+                                ${calendarName(this.calendars, event.calendar_id)} · ${formatTime(event.start)} - ${formatTime(event.end)}
+                              </div>
+                              <div class="live-progress-track" aria-hidden="true">
+                                <div
+                                  class="live-progress-fill"
+                                  style=${`width:${progress}%; --progress-color:${calendarColor(this.calendars, event.calendar_id)};`}
+                                ></div>
+                              </div>
+                            </button>
+                          `,
+                        )}
+                      </div>
+                    </div>
+                  `
+                : nothing}
             </div>
 
             <div class="hero-stats" aria-label="Quick destinations">
