@@ -75,7 +75,6 @@ from .const import (
 )
 from .db.base import AbstractPlannerStore
 from .importer import ImportResult, parse_csv, parse_ics
-from .notification_utils import validate_notification_target
 from .models import (
     NotificationRule,
     PlannerCalendar,
@@ -88,6 +87,7 @@ from .models import (
     _new_id,
     _utc_now_iso,
 )
+from .notification_utils import validate_notification_target
 from .permissions import async_require_write
 from .recurrence import next_due_date, parse_recurrence
 
