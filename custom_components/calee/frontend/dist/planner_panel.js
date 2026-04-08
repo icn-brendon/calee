@@ -9206,8 +9206,7 @@ let CaleeSettingsDialog = class extends i {
                 <div class="setting-desc">Choose the Home Assistant notify service used for mobile pushes.</div>
               </div>
               <select
-                class="setting-input"
-                style="min-width:180px;text-align:left;"
+                class="setting-select"
                 .value=${this._notificationTarget}
                 @change=${(e2) => {
       this._notificationTarget = e2.target.value;
@@ -9225,12 +9224,12 @@ let CaleeSettingsDialog = class extends i {
                 <div class="setting-label">Reminder calendars</div>
                 <div class="setting-desc">Only these calendars will trigger reminders and morning summaries.</div>
               </div>
-              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+              <div class="choice-list">
                 ${this._calendarOptions.map(
       (calendar) => b`
                     <button
-                      class="shortcut-chip"
-                      style=${`padding:7px 12px;border-radius:999px;border:1px solid var(--divider-color, #e0e0e0);background:${this._reminderCalendars.includes(calendar.id) ? "color-mix(in srgb, var(--primary-color, #03a9f4) 16%, transparent)" : "var(--secondary-background-color, rgba(0, 0, 0, 0.03))"};font:inherit;font-size:12px;`}
+                      class="choice-chip"
+                      ?selected=${this._reminderCalendars.includes(calendar.id)}
                       @click=${() => this._toggleReminderCalendar(calendar.id)}
                     >${calendar.name}</button>
                   `
@@ -9466,6 +9465,44 @@ CaleeSettingsDialog.styles = i$3`
     .setting-input.currency {
       width: 50px;
       text-align: center;
+    }
+
+    .setting-select {
+      min-width: 180px;
+      padding: 8px 12px;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      font-size: 13px;
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
+      color: var(--primary-text-color, #212121);
+      font-family: inherit;
+      outline: none;
+    }
+
+    .choice-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .choice-chip {
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.03));
+      color: var(--primary-text-color, #212121);
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .choice-chip[selected] {
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 16%, transparent);
+      border-color: color-mix(in srgb, var(--primary-color, #03a9f4) 35%, var(--divider-color, #e0e0e0));
+      color: var(--primary-text-color, #212121);
     }
 
     /* Slider */
@@ -13099,6 +13136,11 @@ function todayISO$2() {
 function startOfDay(iso) {
   return (/* @__PURE__ */ new Date(`${iso}T00:00:00`)).getTime();
 }
+function addDaysISO(iso, days) {
+  const date = /* @__PURE__ */ new Date(`${iso}T12:00:00`);
+  date.setDate(date.getDate() + days);
+  return date.toISOString().slice(0, 10);
+}
 function sameDay(a2, b2) {
   return a2.slice(0, 10) === b2.slice(0, 10);
 }
@@ -13118,14 +13160,6 @@ function formatShortDate(iso) {
     weekday: "short",
     month: "short",
     day: "numeric"
-  });
-}
-function formatLongDate(iso) {
-  return (/* @__PURE__ */ new Date(`${iso}T00:00:00`)).toLocaleDateString(void 0, {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric"
   });
 }
 function formatAmount(value, currency) {
@@ -13155,15 +13189,10 @@ function taskPriorityScore(task) {
   if (bucket === "upcoming") return 2;
   return 3;
 }
-function addDaysISO$1(iso, days) {
-  const date = /* @__PURE__ */ new Date(`${iso}T12:00:00`);
-  date.setDate(date.getDate() + days);
-  return date.toISOString().slice(0, 10);
-}
 function friendlyWeatherState(state) {
   return state.replace(/[_-]/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2").replace(/\b\w/g, (char) => char.toUpperCase());
 }
-function weatherIcon$1(state) {
+function weatherIcon(state) {
   const normalized = state.toLowerCase();
   if (normalized.includes("lightning") || normalized.includes("thunder")) return "⛈";
   if (normalized.includes("rain") || normalized.includes("pouring")) return "🌧";
@@ -13175,7 +13204,7 @@ function weatherIcon$1(state) {
   if (normalized.includes("sun") || normalized === "clear-night" || normalized === "sunny") return "☀";
   return "⛅";
 }
-function weatherSurface$1(hass) {
+function weatherSurface(hass) {
   const entities = Object.entries(hass?.states ?? {}).filter(([entityId]) => entityId.startsWith("weather."));
   const first = entities[0]?.[1];
   if (!first) {
@@ -13188,7 +13217,7 @@ function weatherSurface$1(hass) {
   const condition = friendlyWeatherState(first.state || "Unknown");
   const temperature = typeof first.attributes.temperature === "number" ? `${Math.round(first.attributes.temperature)}${String(first.attributes.temperature_unit ?? "°")}` : condition;
   return {
-    icon: weatherIcon$1(first.state || ""),
+    icon: weatherIcon(first.state || ""),
     title: temperature,
     subtitle: `${condition} · Live from Home Assistant`
   };
@@ -13232,7 +13261,7 @@ let CaleeHomePage = class extends i {
     ];
   }
   get _weatherSurface() {
-    return weatherSurface$1(this.hass);
+    return weatherSurface(this.hass);
   }
   get _standardTasks() {
     const shoppingIds = this._shoppingListIds;
@@ -13240,7 +13269,7 @@ let CaleeHomePage = class extends i {
   }
   get _upcomingEvents() {
     const now = Date.now();
-    const endDate = this.timelineExpanded ? addDaysISO$1(this.currentDate, 6) : addDaysISO$1(this.currentDate, 1);
+    const endDate = this.timelineExpanded ? addDaysISO(this.currentDate, 6) : addDaysISO(this.currentDate, 1);
     const currentStart = startOfDay(this.currentDate);
     const endStart = startOfDay(endDate);
     return this.events.filter((event) => !event.deleted_at).filter((event) => {
@@ -13361,49 +13390,54 @@ let CaleeHomePage = class extends i {
     return b`
       <div class="shell">
         <section class="hero" aria-label="Overview summary">
-          <div class="hero-main" style="display:flex;flex-direction:column;gap:14px;justify-content:flex-start;min-height:auto;">
-            <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="hero-main">
+            <div class="hero-top">
               <div class="hero-kicker">Home</div>
-              <h1 class="hero-title" style="margin-bottom:6px;">${formatShortDate(this.currentDate)}</h1>
+              <h1 class="hero-title">${formatShortDate(this.currentDate)}</h1>
               <div class="hero-subtitle">
                 Today at a glance, with the next things worth opening.
               </div>
-              <div class="summary-card" style="display:flex;align-items:center;gap:12px;margin-top:6px;">
-                <div style="width:38px;height:38px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--primary-color, #03a9f4) 12%, transparent);color:var(--primary-color, #03a9f4);font-size:18px;">${weather.icon}</div>
-                <div style="min-width:0;">
-                  <div class="summary-label" style="margin-bottom:2px;">Today's weather</div>
-                  <div class="summary-value" style="font-size:14px;">${weather.title}</div>
-                  <div class="summary-sub">${weather.subtitle}</div>
+              <div class="weather-card">
+                <div class="weather-icon" aria-hidden="true">${weather.icon}</div>
+                <div class="weather-main">
+                  <div class="weather-title">Today's weather</div>
+                  <div class="weather-subtitle">${weather.title} · ${weather.subtitle}</div>
                 </div>
               </div>
             </div>
 
-            <div class="hero-pills" style="margin-top:0;">
+            <div class="hero-stats" aria-label="Quick destinations">
               ${this._heroStats.map(
       (stat) => b`
-                    <button class="shortcut-chip" style="padding:7px 12px;" @click=${() => this._dispatchNavigate(stat.destination)}>
-                      <span>${stat.icon}</span>
-                      <span><strong>${stat.value}</strong> ${stat.label}</span>
-                    </button>
-                  `
+                  <button class="hero-stat" @click=${() => this._dispatchNavigate(stat.destination)} aria-label=${`Open ${stat.label}`}>
+                    <span class="hero-stat-icon" aria-hidden="true">${stat.icon}</span>
+                    <span class="hero-stat-copy">
+                      <strong>${stat.value}</strong>
+                      <span>${stat.label}</span>
+                    </span>
+                  </button>
+                `
     )}
             </div>
           </div>
 
-          <div class="hero-side">
-            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
-              <div>
-                <div class="panel-title">Upcoming Timeline</div>
-                <div class="summary-sub" style="margin-top:3px;">${timelineLabel}</div>
+          <div class="hero-side panel-card timeline-card">
+            <div class="timeline-head">
+              <div class="timeline-title-wrap">
+                <h2 class="timeline-title">Upcoming Timeline</h2>
+                <div class="timeline-range">${timelineLabel}</div>
               </div>
-              <button class="shortcut-chip" style="padding:7px 10px;" @click=${() => this._toggleTimeline()}>${timelineToggleLabel}</button>
+              <button class="timeline-action" @click=${() => this._toggleTimeline()}>${timelineToggleLabel}</button>
             </div>
+
             <div class="panel-meta">
-              <button class="shortcut-chip" style="padding:7px 10px;" @click=${() => this._dispatchNavigate("calendar")}>
-                <span>◷</span>
-                <span><strong>${this._upcomingEvents.length}</strong> events</span>
+              <button class="section-chip-link" @click=${() => this._dispatchNavigate("calendar")}>
+                <span class="section-chip-icon" aria-hidden="true">◷</span>
+                <span><strong>${this._upcomingEvents.length}</strong></span>
+                <span class="section-chip-label">events</span>
               </button>
             </div>
+
             ${this._timelineDays.length > 0 ? b`
                   <div class="timeline">
                     ${this._timelineDays.map(
@@ -13411,7 +13445,7 @@ let CaleeHomePage = class extends i {
                         <div class="timeline-day">
                           <div class="timeline-day-label">
                             <span>${day.dayLabel}</span>
-                            <span class="badge">${day.items.length}</span>
+                            <span class="timeline-day-count">${day.items.length}</span>
                           </div>
                           ${day.items.map(
         (event) => b`
@@ -13437,13 +13471,14 @@ let CaleeHomePage = class extends i {
         </section>
 
         <section class="grid">
-          <article class="panel-card" style="grid-column:1 / -1;">
+          <article class="panel-card" data-wide="true">
             <div class="panel-head">
               <h2 class="panel-title">Due Tasks</h2>
               <div class="panel-meta">
-                <button class="shortcut-chip" style="padding:7px 10px;" @click=${() => this._dispatchNavigate("tasks")}>
-                  <span>✓</span>
-                  <span><strong>${this._dueTasks.length}</strong> shown</span>
+                <button class="section-chip-link" @click=${() => this._dispatchNavigate("tasks")}>
+                  <span class="section-chip-icon" aria-hidden="true">✓</span>
+                  <span><strong>${this._dueTasks.length}</strong></span>
+                  <span class="section-chip-label">shown</span>
                 </button>
               </div>
             </div>
@@ -13457,7 +13492,7 @@ let CaleeHomePage = class extends i {
                           <button class="task-item" @click=${() => this._dispatchTaskClick(task)}>
                             <span class="task-dot" style="background:${bucket === "overdue" ? "var(--error-color, #f44336)" : bucket === "today" ? "var(--warning-color, #ff9800)" : "var(--primary-color, #03a9f4)"}"></span>
                             <div class="task-main">
-                              <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+                              <div class="task-main-row">
                                 <div class="task-title">${task.title}</div>
                                 <span class="badge">${bucket === "overdue" ? "Overdue" : bucket === "today" ? "Today" : bucket === "upcoming" ? "Soon" : "Later"}</span>
                               </div>
@@ -13475,9 +13510,10 @@ let CaleeHomePage = class extends i {
             <div class="panel-head">
               <h2 class="panel-title">Shopping Shortcuts</h2>
               <div class="panel-meta">
-                <button class="shortcut-chip" style="padding:7px 10px;" @click=${() => this._dispatchNavigate("shopping")}>
-                  <span>🛒</span>
-                  <span><strong>${shopping.count}</strong> items</span>
+                <button class="section-chip-link" @click=${() => this._dispatchNavigate("shopping")}>
+                  <span class="section-chip-icon" aria-hidden="true">🛒</span>
+                  <span><strong>${shopping.count}</strong></span>
+                  <span class="section-chip-label">items</span>
                 </button>
               </div>
             </div>
@@ -13486,31 +13522,38 @@ let CaleeHomePage = class extends i {
                     <span class="badge">Budget ${formatAmount(this.budget, this.currency)}</span>
                     <span class="badge">Remaining ${formatAmount(shopping.remaining, this.currency)}</span>
                   </div>
-                  <div class="shopping-shortcuts" style="margin-top: 12px;">
+                  <div class="stack" style="margin-top: 12px;">
                     ${this._shoppingShortcuts.map((item) => {
       if ("icon" in item) {
         const preset = item;
         return b`
-                          <button class="shortcut-chip" @click=${() => this._dispatchPresetAdd(preset)}>
-                            <span>${preset.title}</span>
-                            <span>${preset.category || "preset"}</span>
+                          <button class="shopping-item" @click=${() => this._dispatchPresetAdd(preset)}>
+                            <span class="row-icon" aria-hidden="true">${preset.icon || "🛒"}</span>
+                            <div class="shopping-main">
+                              <div class="shopping-main-row">
+                                <div class="shopping-title">${preset.title}</div>
+                                <span class="badge">${preset.category || "preset"}</span>
+                              </div>
+                              <div class="shopping-sub">${preset.note || "Tap to add"}</div>
+                            </div>
+                            <span class="badge">Add</span>
                           </button>
                         `;
       }
       const task = item;
-      if ("quantity" in task) {
-        const task2 = item;
-        return b`
-                          <button class="shortcut-chip" @click=${() => this._dispatchTaskClick(task2)}>
-                            <span>${task2.title}</span>
-                            <span>${task2.category || "shopping"}</span>
-                          </button>
-                        `;
-      }
       return b`
-                        <button class="shortcut-chip" @click=${() => this._dispatchTaskClick(task)}>
-                          <span>${task.title}</span>
-                          <span>${task.category || "shopping"}</span>
+                        <button class="shopping-item" @click=${() => this._dispatchTaskClick(task)}>
+                          <span class="row-icon" aria-hidden="true">🛍</span>
+                          <div class="shopping-main">
+                            <div class="shopping-main-row">
+                              <div class="shopping-title">${task.title}</div>
+                              <span class="badge">${task.category || "shopping"}</span>
+                            </div>
+                            <div class="shopping-sub">
+                              ${task.quantity ? `${task.quantity} ${task.unit || "items"}` : "Tap to edit"}
+                            </div>
+                          </div>
+                          <span class="badge">${task.price != null ? formatAmount(task.price, this.currency) : "Open"}</span>
                         </button>
                       `;
     })}
@@ -13522,9 +13565,10 @@ let CaleeHomePage = class extends i {
             <div class="panel-head">
               <h2 class="panel-title">Routines</h2>
               <div class="panel-meta">
-                <button class="shortcut-chip" style="padding:7px 10px;" @click=${() => this._dispatchNavigate("more")}>
-                  <span>↻</span>
-                  <span><strong>${this._routineCount}</strong> available</span>
+                <button class="section-chip-link" @click=${() => this._dispatchNavigate("more")}>
+                  <span class="section-chip-icon" aria-hidden="true">↻</span>
+                  <span><strong>${this._routineCount}</strong></span>
+                  <span class="section-chip-label">available</span>
                 </button>
               </div>
             </div>
@@ -13535,10 +13579,12 @@ let CaleeHomePage = class extends i {
                         <button class="routine-item" @click=${() => this._dispatchRoutineExecute(routine)}>
                           <span class="routine-emoji">${routine.emoji || "⚡"}</span>
                           <div class="routine-main">
-                            <div class="routine-title">${routine.name}</div>
+                            <div class="routine-main-row">
+                              <div class="routine-title">${routine.name}</div>
+                              <span class="badge">${routine.tasks.length} tasks</span>
+                            </div>
                             <div class="routine-sub">${routine.description || "Quick routine"}</div>
                           </div>
-                          <span class="badge">${routine.tasks.length} tasks</span>
                         </button>
                       `
     )}
@@ -13579,7 +13625,7 @@ CaleeHomePage.styles = i$3`
     .hero {
       display: grid;
       gap: 12px;
-      grid-template-columns: 1.5fr 1fr;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr);
       align-items: stretch;
     }
 
@@ -13594,10 +13640,9 @@ CaleeHomePage.styles = i$3`
 
     .hero-main {
       padding: 20px;
-      min-height: 144px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      gap: 14px;
       background:
         linear-gradient(135deg, rgba(3, 169, 244, 0.08), transparent 42%),
         var(--card-background-color, #fff);
@@ -13612,9 +13657,9 @@ CaleeHomePage.styles = i$3`
     }
 
     .hero-title {
-      margin: 4px 0 8px;
-      font-size: 28px;
-      line-height: 1.05;
+      margin: 4px 0 6px;
+      font-size: 26px;
+      line-height: 1.08;
       font-weight: 700;
       letter-spacing: -0.6px;
     }
@@ -13622,21 +13667,68 @@ CaleeHomePage.styles = i$3`
     .hero-subtitle {
       font-size: 14px;
       color: var(--secondary-text-color, #666);
-      max-width: 60ch;
+      max-width: 54ch;
     }
 
-    .hero-pills {
+    .hero-top {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .weather-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: color-mix(in srgb, var(--secondary-background-color, #f4f4f4) 70%, transparent);
+    }
+
+    .weather-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 12%, transparent);
+      color: var(--primary-color, #03a9f4);
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .weather-main {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .weather-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary-text-color, #212121);
+      margin: 0;
+    }
+
+    .weather-subtitle {
+      margin-top: 2px;
+      font-size: 12px;
+      color: var(--secondary-text-color, #666);
+    }
+
+    .hero-stats {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-top: 14px;
     }
 
-    .pill {
+    .hero-stat {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
+      gap: 8px;
+      padding: 7px 12px;
       border-radius: 999px;
       border: 1px solid var(--divider-color, #e0e0e0);
       background: rgba(255, 255, 255, 0.85);
@@ -13644,9 +13736,38 @@ CaleeHomePage.styles = i$3`
       font-size: 12px;
       font-weight: 500;
       white-space: nowrap;
+      cursor: pointer;
+      text-align: left;
+      transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
     }
 
-    .pill strong {
+    .hero-stat:hover {
+      transform: translateY(-1px);
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 8%, transparent);
+      border-color: color-mix(in srgb, var(--primary-color, #03a9f4) 30%, var(--divider-color, #e0e0e0));
+    }
+
+    .hero-stat-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--primary-color, #03a9f4);
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 10%, transparent);
+      flex-shrink: 0;
+    }
+
+    .hero-stat-copy {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .hero-stat strong {
       font-weight: 700;
     }
 
@@ -13655,6 +13776,66 @@ CaleeHomePage.styles = i$3`
       display: grid;
       gap: 10px;
       align-content: start;
+    }
+
+    .timeline-card {
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .timeline-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .timeline-title-wrap {
+      min-width: 0;
+    }
+
+    .timeline-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      margin: 0;
+    }
+
+    .timeline-range {
+      margin-top: 3px;
+      font-size: 12px;
+      color: var(--secondary-text-color, #757575);
+    }
+
+    .timeline-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.03));
+      color: var(--primary-text-color, #212121);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .timeline-action:hover {
+      transform: translateY(-1px);
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 8%, transparent);
+    }
+
+    .timeline-action svg,
+    .hero-stat-icon svg,
+    .section-chip-icon svg {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
     }
 
     .summary-card {
@@ -13707,9 +13888,13 @@ CaleeHomePage.styles = i$3`
       min-height: 0;
     }
 
+    .panel-card[data-wide="true"] {
+      grid-column: 1 / -1;
+    }
+
     .panel-head {
       display: flex;
-      align-items: baseline;
+      align-items: center;
       justify-content: space-between;
       gap: 12px;
       margin-bottom: 12px;
@@ -13723,9 +13908,11 @@ CaleeHomePage.styles = i$3`
     }
 
     .panel-meta {
-      font-size: 12px;
-      color: var(--secondary-text-color, #757575);
-      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     .timeline {
@@ -13747,6 +13934,54 @@ CaleeHomePage.styles = i$3`
       letter-spacing: 0.5px;
       color: var(--secondary-text-color, #757575);
       font-weight: 700;
+    }
+
+    .timeline-day-count {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--secondary-text-color, #757575);
+    }
+
+    .section-chip,
+    .section-chip-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.03));
+      color: var(--primary-text-color, #212121);
+      font: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .section-chip:hover,
+    .section-chip-link:hover {
+      transform: translateY(-1px);
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 8%, transparent);
+    }
+
+    .section-chip-icon {
+      width: 18px;
+      height: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 10%, transparent);
+      color: var(--primary-color, #03a9f4);
+      flex-shrink: 0;
+      font-size: 10px;
+    }
+
+    .section-chip-label {
+      color: var(--secondary-text-color, #666);
+      font-weight: 500;
     }
 
     .timeline-item,
@@ -13795,6 +14030,16 @@ CaleeHomePage.styles = i$3`
       flex: 1;
     }
 
+    .timeline-main-row,
+    .task-main-row,
+    .shopping-main-row,
+    .routine-main-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
     .timeline-title,
     .task-title,
     .shopping-title,
@@ -13818,6 +14063,19 @@ CaleeHomePage.styles = i$3`
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .row-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 10%, transparent);
+      color: var(--primary-color, #03a9f4);
+      flex-shrink: 0;
+      font-size: 14px;
     }
 
     .badge {
