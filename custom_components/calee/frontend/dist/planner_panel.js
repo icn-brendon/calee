@@ -1286,7 +1286,7 @@ let CaleeWeekView = class extends i {
     window.clearInterval(this._timerHandle);
   }
   get _dayCount() {
-    return this.narrow ? 3 : 7;
+    return 7;
   }
   willUpdate(changed) {
     if (changed.has("selectedDate") || changed.has("weekStartsMonday") || changed.has("narrow")) {
