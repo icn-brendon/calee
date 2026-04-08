@@ -9,6 +9,7 @@
 import { LitElement, html, css, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import type {
+  HomeAssistant,
   PlannerCalendar,
   PlannerEvent,
   PlannerTask,
@@ -31,6 +32,12 @@ interface HeroStat {
   value: string;
   label: string;
   destination: HomeDestination;
+}
+
+interface WeatherSurface {
+  icon: string;
+  title: string;
+  subtitle: string;
 }
 
 function todayISO(): string {
@@ -123,22 +130,52 @@ function taskPriorityScore(task: PlannerTask): number {
   return 3;
 }
 
-function weatherPlaceholder(dateISO: string): { icon: string; title: string; subtitle: string } {
-  const day = new Date(`${dateISO}T12:00:00`).getDay();
-  const forecast = [
-    { icon: "☀", title: "Clear and calm", subtitle: "No live weather source wired yet." },
-    { icon: "⛅", title: "Partly sunny", subtitle: "Use your HA weather entity to replace this placeholder." },
-    { icon: "🌤", title: "Mild and bright", subtitle: "A weather surface will sit nicely here." },
-    { icon: "☁", title: "Cloud cover", subtitle: "Connect local weather data when ready." },
-    { icon: "🌦", title: "Light showers", subtitle: "This card is a placeholder only." },
-    { icon: "⛈", title: "Storm watch", subtitle: "Swap in your Home Assistant weather entity." },
-    { icon: "☀", title: "Sunny placeholder", subtitle: "Today's weather can live here later." },
-  ];
-  return forecast[day] ?? forecast[0];
+function friendlyWeatherState(state: string): string {
+  return state
+    .replace(/_/g, " ")
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function weatherIcon(state: string): string {
+  const normalized = state.toLowerCase();
+  if (normalized.includes("lightning") || normalized.includes("thunder")) return "⛈";
+  if (normalized.includes("rain") || normalized.includes("pouring")) return "🌧";
+  if (normalized.includes("snow")) return "❄";
+  if (normalized.includes("fog")) return "🌫";
+  if (normalized.includes("wind")) return "💨";
+  if (normalized.includes("cloud")) return "☁";
+  if (normalized.includes("partly")) return "⛅";
+  if (normalized.includes("sun") || normalized === "clear-night" || normalized === "sunny") return "☀";
+  return "⛅";
+}
+
+function weatherSurface(hass: HomeAssistant | null): WeatherSurface {
+  const entities = Object.entries(hass?.states ?? {}).filter(([entityId]) => entityId.startsWith("weather."));
+  const first = entities[0]?.[1];
+  if (!first) {
+    return {
+      icon: "⛅",
+      title: "No weather entity found",
+      subtitle: "Add a Home Assistant weather entity to show today's forecast here.",
+    };
+  }
+
+  const condition = friendlyWeatherState(first.state || "Unknown");
+  const temperature = typeof first.attributes.temperature === "number"
+    ? `${Math.round(first.attributes.temperature)}${String(first.attributes.temperature_unit ?? "°")}`
+    : condition;
+
+  return {
+    icon: weatherIcon(first.state || ""),
+    title: temperature,
+    subtitle: `${condition} · Live from Home Assistant`,
+  };
 }
 
 @customElement("calee-home-page")
 export class CaleeHomePage extends LitElement {
+  @property({ attribute: false }) hass: HomeAssistant | null = null;
   @property({ attribute: false }) events: PlannerEvent[] = [];
   @property({ attribute: false }) tasks: PlannerTask[] = [];
   @property({ attribute: false }) calendars: Map<string, PlannerCalendar> = new Map();
@@ -808,8 +845,8 @@ export class CaleeHomePage extends LitElement {
     ];
   }
 
-  private get _weatherSurface(): { icon: string; title: string; subtitle: string } {
-    return weatherPlaceholder(this.currentDate);
+  private get _weatherSurface(): WeatherSurface {
+    return weatherSurface(this.hass);
   }
 
   private get _standardTasks(): PlannerTask[] {
@@ -984,7 +1021,7 @@ export class CaleeHomePage extends LitElement {
               <div class="hero-kicker">Home</div>
               <h1 class="hero-title">${formatShortDate(this.currentDate)}</h1>
               <div class="hero-subtitle">
-                A short look at today, the next events, and the work worth tapping first.
+                Today at a glance, with the next things worth opening.
               </div>
               <div class="weather-card">
                 <div class="weather-icon" aria-hidden="true">${weather.icon}</div>
@@ -1062,7 +1099,7 @@ export class CaleeHomePage extends LitElement {
         </section>
 
         <section class="grid">
-          <article class="panel-card">
+          <article class="panel-card" data-wide="true">
             <div class="panel-head">
               <h2 class="panel-title">Due Tasks</h2>
               <div class="panel-meta">
@@ -1157,7 +1194,7 @@ export class CaleeHomePage extends LitElement {
               : html`<div class="section-empty">No shopping shortcuts yet.</div>`}
           </article>
 
-          <article class="panel-card" data-wide="true">
+          <article class="panel-card">
             <div class="panel-head">
               <h2 class="panel-title">Routines</h2>
               <div class="panel-meta">

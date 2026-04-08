@@ -27,6 +27,7 @@ from .const import (
     PANEL_URL,
 )
 from .db.base import AbstractPlannerStore
+from .notification_utils import resolve_notification_target
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -41,6 +42,20 @@ ACTION_SNOOZE_60: Final = "CALEE_SNOOZE_60"
 # Keys for per-entry notification state stored in hass.data[DOMAIN][entry_id].
 _KEY_NOTIFIED_EVENTS: Final = "notified_events"
 _KEY_MORNING_SENT_DATE: Final = "morning_sent_date"
+
+
+def _reminder_calendar_ids(
+    store: AbstractPlannerStore,
+    entry: ConfigEntry,
+) -> list[str]:
+    """Return the calendar IDs that should participate in reminders."""
+
+    configured = entry.options.get("reminder_calendars", DEFAULT_REMINDER_CALENDARS)
+    if isinstance(configured, list):
+        calendar_ids = [calendar_id for calendar_id in configured if calendar_id]
+        if calendar_ids:
+            return calendar_ids
+    return list(store.get_calendars().keys())
 
 
 async def async_setup_shift_reminders(
@@ -106,13 +121,14 @@ async def async_setup_shift_reminders(
         edata = hass.data[DOMAIN][entry.entry_id]
         sent_date = edata.get(_KEY_MORNING_SENT_DATE)
         if now.hour == summary_hour and sent_date != now.date():
-            await async_send_morning_summary(hass, store, entry)
-            # Mark sent AFTER successful send so failures can retry.
-            edata[_KEY_MORNING_SENT_DATE] = now.date()
-            # Persist to entry options so it survives restart.
-            new_opts = dict(entry.options)
-            new_opts["_morning_sent_date"] = now.date().isoformat()
-            hass.config_entries.async_update_entry(entry, options=new_opts)
+            sent = await async_send_morning_summary(hass, store, entry)
+            if sent:
+                # Mark sent AFTER successful send so failures can retry.
+                edata[_KEY_MORNING_SENT_DATE] = now.date()
+                # Persist to entry options so it survives restart.
+                new_opts = dict(entry.options)
+                new_opts["_morning_sent_date"] = now.date().isoformat()
+                hass.config_entries.async_update_entry(entry, options=new_opts)
 
     cancel_morning = async_track_time_interval(
         hass, _morning_check, timedelta(minutes=1)
@@ -143,9 +159,7 @@ async def async_check_and_send_reminders(
     now = dt_util.now()
 
     # Get events from all configured reminder calendars.
-    reminder_calendars = entry.options.get(
-        "reminder_calendars", DEFAULT_REMINDER_CALENDARS
-    )
+    reminder_calendars = _reminder_calendar_ids(store, entry)
     events = []
     for cal_id in reminder_calendars:
         events.extend(store.get_active_events(calendar_id=cal_id))
@@ -239,11 +253,11 @@ async def _send_shift_notification(
     )
 
     # Mobile notification via notify service (if configured and available).
-    notify_target = target if target else "notify"
-    if not hass.services.has_service("notify", notify_target):
+    notify_target = resolve_notification_target(hass, target)
+    if notify_target is None:
         _LOGGER.debug(
-            "Notify service 'notify.%s' not available, skipping mobile push for event %s",
-            notify_target,
+            "Notify target %r not available, skipping mobile push for event %s",
+            target,
             event.id,
         )
         return
@@ -277,7 +291,7 @@ async def async_send_morning_summary(
     hass: HomeAssistant,
     store: AbstractPlannerStore,
     entry: ConfigEntry,
-) -> None:
+) -> bool:
     """Send a morning summary notification."""
     today = dt_util.now().date()
     today_iso = today.isoformat()
@@ -285,9 +299,7 @@ async def async_send_morning_summary(
     fmt = "%I:%M %p" if time_format == "12h" else "%H:%M"
 
     # Today's shifts — compare in local time for correct day attribution.
-    reminder_calendars = entry.options.get(
-        "reminder_calendars", DEFAULT_REMINDER_CALENDARS
-    )
+    reminder_calendars = _reminder_calendar_ids(store, entry)
     all_shifts = []
     for cal_id in reminder_calendars:
         all_shifts.extend(store.get_active_events(calendar_id=cal_id))
@@ -315,7 +327,7 @@ async def async_send_morning_summary(
     ]
 
     if not shifts and not tasks_due and not shopping:
-        return  # Nothing to report.
+        return False  # Nothing to report.
 
     lines: list[str] = []
     if shifts:
@@ -349,13 +361,13 @@ async def async_send_morning_summary(
 
     # Also send as mobile notification (if service is available).
     target = entry.options.get("notification_target", DEFAULT_NOTIFICATION_TARGET)
-    notify_target = target if target else "notify"
-    if not hass.services.has_service("notify", notify_target):
+    notify_target = resolve_notification_target(hass, target)
+    if notify_target is None:
         _LOGGER.debug(
-            "Notify service 'notify.%s' not available, skipping morning summary mobile push",
-            notify_target,
+            "Notify target %r not available, skipping morning summary mobile push",
+            target,
         )
-        return
+        return True
 
     try:
         await hass.services.async_call(
@@ -372,6 +384,7 @@ async def async_send_morning_summary(
         )
     except Exception:
         _LOGGER.debug("Could not send morning summary mobile notification")
+    return True
 
 
 @callback

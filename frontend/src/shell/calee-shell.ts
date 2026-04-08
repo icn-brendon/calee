@@ -980,6 +980,7 @@ export class CaleePanel extends LitElement {
     switch (this._currentView) {
       case "home":
         return html`<calee-home-page
+          .hass=${this.hass}
           .events=${this._events}
           .tasks=${this._tasks}
           .calendars=${this._calendarMap}
