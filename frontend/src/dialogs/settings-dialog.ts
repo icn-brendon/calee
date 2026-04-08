@@ -19,6 +19,7 @@
 
 import { LitElement, html, css, nothing, type PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import type { PlannerCalendar } from "../store/types.js";
 
 export interface CaleeSettings {
   timeFormat: "12h" | "24h";
@@ -26,7 +27,17 @@ export interface CaleeSettings {
   maxEventAgeDays: number;
   currencySymbol: string;
   budgetAmount: number | null;
+  notificationsEnabled?: boolean;
+  morningSummaryEnabled?: boolean;
+  morningSummaryHour?: number;
+  notificationTarget?: string;
+  reminderCalendars?: string[];
   customCategories?: string[];
+}
+
+interface NotifyServiceOption {
+  service: string;
+  name: string;
 }
 
 @customElement("calee-settings-dialog")
@@ -42,6 +53,13 @@ export class CaleeSettingsDialog extends LitElement {
   @state() private _customCategories: string[] = [];
   @state() private _newCategoryText = "";
   @state() private _strictPrivacy = false;
+  @state() private _notificationsEnabled = true;
+  @state() private _morningSummaryEnabled = true;
+  @state() private _morningSummaryHour = 7;
+  @state() private _notificationTarget = "";
+  @state() private _reminderCalendars: string[] = [];
+  @state() private _notifyServices: NotifyServiceOption[] = [];
+  @state() private _calendarOptions: PlannerCalendar[] = [];
   @state() private _saving = false;
   @state() private _loadingSettings = false;
 
@@ -189,6 +207,44 @@ export class CaleeSettingsDialog extends LitElement {
     .setting-input.currency {
       width: 50px;
       text-align: center;
+    }
+
+    .setting-select {
+      min-width: 180px;
+      padding: 8px 12px;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      font-size: 13px;
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
+      color: var(--primary-text-color, #212121);
+      font-family: inherit;
+      outline: none;
+    }
+
+    .choice-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .choice-chip {
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.03));
+      color: var(--primary-text-color, #212121);
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .choice-chip[selected] {
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 16%, transparent);
+      border-color: color-mix(in srgb, var(--primary-color, #03a9f4) 35%, var(--divider-color, #e0e0e0));
+      color: var(--primary-text-color, #212121);
     }
 
     /* Slider */
@@ -341,13 +397,24 @@ export class CaleeSettingsDialog extends LitElement {
     if (this.hass) {
       this._loadingSettings = true;
       try {
-        const result = await this.hass.callWS({ type: "calee/get_settings" });
+        const [result, services, calendars] = await Promise.all([
+          this.hass.callWS({ type: "calee/get_settings" }),
+          this.hass.callWS({ type: "calee/notify_services" }).catch(() => []),
+          this.hass.callWS({ type: "calee/calendars" }).catch(() => []),
+        ]);
         this._timeFormat = result.time_format ?? "12h";
         this._weekStartsOn = result.week_start ?? "monday";
         this._maxEventAgeDays = result.max_event_age_days ?? 365;
         this._currencySymbol = result.currency ?? "$";
         this._budgetAmount = result.budget > 0 ? result.budget : null;
         this._strictPrivacy = result.strict_privacy ?? false;
+        this._notificationsEnabled = result.notifications_enabled ?? true;
+        this._morningSummaryEnabled = result.morning_summary_enabled ?? true;
+        this._morningSummaryHour = result.morning_summary_hour ?? 7;
+        this._notificationTarget = this._toNotifyServiceValue(result.notification_target ?? "");
+        this._reminderCalendars = Array.isArray(result.reminder_calendars) ? result.reminder_calendars : [];
+        this._notifyServices = Array.isArray(services) ? services : [];
+        this._calendarOptions = Array.isArray(calendars) ? calendars : [];
       } catch {
         // Fallback defaults if WS fails
         this._timeFormat = "12h";
@@ -356,10 +423,28 @@ export class CaleeSettingsDialog extends LitElement {
         this._currencySymbol = "$";
         this._budgetAmount = null;
         this._strictPrivacy = false;
+        this._notificationsEnabled = true;
+        this._morningSummaryEnabled = true;
+        this._morningSummaryHour = 7;
+        this._notificationTarget = "";
+        this._reminderCalendars = [];
+        this._notifyServices = [];
+        this._calendarOptions = [];
       } finally {
         this._loadingSettings = false;
       }
     }
+  }
+
+  private _toNotifyServiceValue(target: string): string {
+    if (!target) return "";
+    return target.startsWith("notify.") ? target : `notify.${target}`;
+  }
+
+  private _toggleReminderCalendar(calendarId: string): void {
+    this._reminderCalendars = this._reminderCalendars.includes(calendarId)
+      ? this._reminderCalendars.filter((id) => id !== calendarId)
+      : [...this._reminderCalendars, calendarId];
   }
 
   private _close(): void {
@@ -410,6 +495,11 @@ export class CaleeSettingsDialog extends LitElement {
           week_start: this._weekStartsOn,
           time_format: this._timeFormat,
           strict_privacy: this._strictPrivacy,
+          notifications_enabled: this._notificationsEnabled,
+          morning_summary_enabled: this._morningSummaryEnabled,
+          morning_summary_hour: this._morningSummaryHour,
+          notification_target: this._notificationTarget,
+          reminder_calendars: this._reminderCalendars,
         });
       } catch (err) {
         // eslint-disable-next-line no-console
@@ -423,6 +513,11 @@ export class CaleeSettingsDialog extends LitElement {
       maxEventAgeDays: this._maxEventAgeDays,
       currencySymbol: this._currencySymbol,
       budgetAmount: this._budgetAmount,
+      notificationsEnabled: this._notificationsEnabled,
+      morningSummaryEnabled: this._morningSummaryEnabled,
+      morningSummaryHour: this._morningSummaryHour,
+      notificationTarget: this._notificationTarget,
+      reminderCalendars: this._reminderCalendars,
       customCategories: this._customCategories,
     };
 
@@ -555,6 +650,103 @@ export class CaleeSettingsDialog extends LitElement {
                   this._budgetAmount = val ? Number(val) : null;
                 }}
               />
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">Notifications</div>
+
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Event reminders</div>
+                <div class="setting-desc">Enable scheduled reminder notifications for selected calendars.</div>
+              </div>
+              <div class="toggle-group">
+                <button
+                  class="toggle-opt"
+                  ?active=${!this._notificationsEnabled}
+                  @click=${() => { this._notificationsEnabled = false; }}
+                >Off</button>
+                <button
+                  class="toggle-opt"
+                  ?active=${this._notificationsEnabled}
+                  @click=${() => { this._notificationsEnabled = true; }}
+                >On</button>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Morning summary</div>
+                <div class="setting-desc">Send one morning brief with today's planner context.</div>
+              </div>
+              <div class="toggle-group">
+                <button
+                  class="toggle-opt"
+                  ?active=${!this._morningSummaryEnabled}
+                  @click=${() => { this._morningSummaryEnabled = false; }}
+                >Off</button>
+                <button
+                  class="toggle-opt"
+                  ?active=${this._morningSummaryEnabled}
+                  @click=${() => { this._morningSummaryEnabled = true; }}
+                >On</button>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Morning summary hour</div>
+                <div class="setting-desc">24-hour time used for the daily summary check.</div>
+              </div>
+              <input
+                type="number"
+                class="setting-input short"
+                min="0"
+                max="23"
+                .value=${String(this._morningSummaryHour)}
+                @input=${(e: Event) => {
+                  const value = Number((e.target as HTMLInputElement).value);
+                  this._morningSummaryHour = Number.isFinite(value) ? Math.min(23, Math.max(0, value)) : 7;
+                }}
+              />
+            </div>
+
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Notification destination</div>
+                <div class="setting-desc">Choose the Home Assistant notify service used for mobile pushes.</div>
+              </div>
+              <select
+                class="setting-select"
+                .value=${this._notificationTarget}
+                @change=${(e: Event) => {
+                  this._notificationTarget = (e.target as HTMLSelectElement).value;
+                }}
+              >
+                <option value="">Default notify service</option>
+                ${this._notifyServices.map(
+                  (service) => html`<option value=${service.service}>${service.name}</option>`,
+                )}
+              </select>
+            </div>
+
+            <div class="setting-row" style="flex-direction:column;align-items:stretch;">
+              <div>
+                <div class="setting-label">Reminder calendars</div>
+                <div class="setting-desc">Only these calendars will trigger reminders and morning summaries.</div>
+              </div>
+              <div class="choice-list">
+                ${this._calendarOptions.map(
+                  (calendar) => html`
+                    <button
+                      class="choice-chip"
+                      ?selected=${this._reminderCalendars.includes(calendar.id)}
+                      @click=${() => this._toggleReminderCalendar(calendar.id)}
+                    >${calendar.name}</button>
+                  `,
+                )}
+              </div>
             </div>
           </div>
 

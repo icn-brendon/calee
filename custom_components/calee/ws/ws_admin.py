@@ -47,6 +47,7 @@ from ..const import (
     WS_TYPE_UPDATE_SETTINGS,
     WS_TYPE_UPDATE_TEMPLATE,
 )
+from ..notification_utils import validate_notification_target
 from .helpers import _get_api, _get_config_entry
 
 # ── Settings ────────────────────────────────────────────────────────
@@ -92,6 +93,26 @@ async def ws_handle_update_settings(
     for key in _settings_keys:
         if key in msg:
             new_opts[key] = msg[key]
+
+    if "notification_target" in msg:
+        normalized_target = validate_notification_target(
+            hass, msg["notification_target"]
+        )
+        if normalized_target is None:
+            connection.send_error(
+                msg["id"],
+                "invalid_notification_target",
+                "Notification target is not available",
+            )
+            return
+        new_opts["notification_target"] = normalized_target
+
+    if "reminder_calendars" in msg:
+        new_opts["reminder_calendars"] = [
+            calendar_id
+            for calendar_id in msg["reminder_calendars"]
+            if calendar_id
+        ]
 
     hass.config_entries.async_update_entry(entry, options=new_opts)
 

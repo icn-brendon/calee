@@ -42,6 +42,7 @@ from .const import (
     DEFAULT_WEEK_START,
     DOMAIN,
 )
+from .notification_utils import validate_notification_target
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -177,10 +178,13 @@ class CaleeOptionsFlow(OptionsFlow):
         if user_input is not None:
             # Validate notification_target if provided.
             notification_target = user_input.get("notification_target", "")
-            if notification_target and not self.hass.services.has_service(
-                "notify", notification_target
-            ):
+            normalized_target = validate_notification_target(
+                self.hass, notification_target
+            )
+            if normalized_target is None:
                 errors["notification_target"] = "invalid_notify_service"
+            else:
+                user_input["notification_target"] = normalized_target
 
             # Parse reminder_calendars from comma-separated string.
             raw_calendars = user_input.pop("reminder_calendars", "")

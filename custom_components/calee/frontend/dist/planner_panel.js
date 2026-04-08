@@ -8864,6 +8864,13 @@ let CaleeSettingsDialog = class extends i {
     this._customCategories = [];
     this._newCategoryText = "";
     this._strictPrivacy = false;
+    this._notificationsEnabled = true;
+    this._morningSummaryEnabled = true;
+    this._morningSummaryHour = 7;
+    this._notificationTarget = "";
+    this._reminderCalendars = [];
+    this._notifyServices = [];
+    this._calendarOptions = [];
     this._saving = false;
     this._loadingSettings = false;
   }
@@ -8883,13 +8890,24 @@ let CaleeSettingsDialog = class extends i {
     if (this.hass) {
       this._loadingSettings = true;
       try {
-        const result = await this.hass.callWS({ type: "calee/get_settings" });
+        const [result, services, calendars] = await Promise.all([
+          this.hass.callWS({ type: "calee/get_settings" }),
+          this.hass.callWS({ type: "calee/notify_services" }).catch(() => []),
+          this.hass.callWS({ type: "calee/calendars" }).catch(() => [])
+        ]);
         this._timeFormat = result.time_format ?? "12h";
         this._weekStartsOn = result.week_start ?? "monday";
         this._maxEventAgeDays = result.max_event_age_days ?? 365;
         this._currencySymbol = result.currency ?? "$";
         this._budgetAmount = result.budget > 0 ? result.budget : null;
         this._strictPrivacy = result.strict_privacy ?? false;
+        this._notificationsEnabled = result.notifications_enabled ?? true;
+        this._morningSummaryEnabled = result.morning_summary_enabled ?? true;
+        this._morningSummaryHour = result.morning_summary_hour ?? 7;
+        this._notificationTarget = this._toNotifyServiceValue(result.notification_target ?? "");
+        this._reminderCalendars = Array.isArray(result.reminder_calendars) ? result.reminder_calendars : [];
+        this._notifyServices = Array.isArray(services) ? services : [];
+        this._calendarOptions = Array.isArray(calendars) ? calendars : [];
       } catch {
         this._timeFormat = "12h";
         this._weekStartsOn = "monday";
@@ -8897,10 +8915,24 @@ let CaleeSettingsDialog = class extends i {
         this._currencySymbol = "$";
         this._budgetAmount = null;
         this._strictPrivacy = false;
+        this._notificationsEnabled = true;
+        this._morningSummaryEnabled = true;
+        this._morningSummaryHour = 7;
+        this._notificationTarget = "";
+        this._reminderCalendars = [];
+        this._notifyServices = [];
+        this._calendarOptions = [];
       } finally {
         this._loadingSettings = false;
       }
     }
+  }
+  _toNotifyServiceValue(target) {
+    if (!target) return "";
+    return target.startsWith("notify.") ? target : `notify.${target}`;
+  }
+  _toggleReminderCalendar(calendarId) {
+    this._reminderCalendars = this._reminderCalendars.includes(calendarId) ? this._reminderCalendars.filter((id) => id !== calendarId) : [...this._reminderCalendars, calendarId];
   }
   _close() {
     this.dispatchEvent(
@@ -8940,7 +8972,12 @@ let CaleeSettingsDialog = class extends i {
           budget: this._budgetAmount ?? 0,
           week_start: this._weekStartsOn,
           time_format: this._timeFormat,
-          strict_privacy: this._strictPrivacy
+          strict_privacy: this._strictPrivacy,
+          notifications_enabled: this._notificationsEnabled,
+          morning_summary_enabled: this._morningSummaryEnabled,
+          morning_summary_hour: this._morningSummaryHour,
+          notification_target: this._notificationTarget,
+          reminder_calendars: this._reminderCalendars
         });
       } catch (err) {
         console.error("[Calee] Failed to save settings:", err);
@@ -8952,6 +8989,11 @@ let CaleeSettingsDialog = class extends i {
       maxEventAgeDays: this._maxEventAgeDays,
       currencySymbol: this._currencySymbol,
       budgetAmount: this._budgetAmount,
+      notificationsEnabled: this._notificationsEnabled,
+      morningSummaryEnabled: this._morningSummaryEnabled,
+      morningSummaryHour: this._morningSummaryHour,
+      notificationTarget: this._notificationTarget,
+      reminderCalendars: this._reminderCalendars,
       customCategories: this._customCategories
     };
     this.dispatchEvent(
@@ -9088,6 +9130,112 @@ let CaleeSettingsDialog = class extends i {
       this._budgetAmount = val ? Number(val) : null;
     }}
               />
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">Notifications</div>
+
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Event reminders</div>
+                <div class="setting-desc">Enable scheduled reminder notifications for selected calendars.</div>
+              </div>
+              <div class="toggle-group">
+                <button
+                  class="toggle-opt"
+                  ?active=${!this._notificationsEnabled}
+                  @click=${() => {
+      this._notificationsEnabled = false;
+    }}
+                >Off</button>
+                <button
+                  class="toggle-opt"
+                  ?active=${this._notificationsEnabled}
+                  @click=${() => {
+      this._notificationsEnabled = true;
+    }}
+                >On</button>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Morning summary</div>
+                <div class="setting-desc">Send one morning brief with today's planner context.</div>
+              </div>
+              <div class="toggle-group">
+                <button
+                  class="toggle-opt"
+                  ?active=${!this._morningSummaryEnabled}
+                  @click=${() => {
+      this._morningSummaryEnabled = false;
+    }}
+                >Off</button>
+                <button
+                  class="toggle-opt"
+                  ?active=${this._morningSummaryEnabled}
+                  @click=${() => {
+      this._morningSummaryEnabled = true;
+    }}
+                >On</button>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Morning summary hour</div>
+                <div class="setting-desc">24-hour time used for the daily summary check.</div>
+              </div>
+              <input
+                type="number"
+                class="setting-input short"
+                min="0"
+                max="23"
+                .value=${String(this._morningSummaryHour)}
+                @input=${(e2) => {
+      const value = Number(e2.target.value);
+      this._morningSummaryHour = Number.isFinite(value) ? Math.min(23, Math.max(0, value)) : 7;
+    }}
+              />
+            </div>
+
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Notification destination</div>
+                <div class="setting-desc">Choose the Home Assistant notify service used for mobile pushes.</div>
+              </div>
+              <select
+                class="setting-input"
+                style="min-width:180px;text-align:left;"
+                .value=${this._notificationTarget}
+                @change=${(e2) => {
+      this._notificationTarget = e2.target.value;
+    }}
+              >
+                <option value="">Default notify service</option>
+                ${this._notifyServices.map(
+      (service) => b`<option value=${service.service}>${service.name}</option>`
+    )}
+              </select>
+            </div>
+
+            <div class="setting-row" style="flex-direction:column;align-items:stretch;">
+              <div>
+                <div class="setting-label">Reminder calendars</div>
+                <div class="setting-desc">Only these calendars will trigger reminders and morning summaries.</div>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+                ${this._calendarOptions.map(
+      (calendar) => b`
+                    <button
+                      class="shortcut-chip"
+                      style=${`padding:7px 12px;border-radius:999px;border:1px solid var(--divider-color, #e0e0e0);background:${this._reminderCalendars.includes(calendar.id) ? "color-mix(in srgb, var(--primary-color, #03a9f4) 16%, transparent)" : "var(--secondary-background-color, rgba(0, 0, 0, 0.03))"};font:inherit;font-size:12px;`}
+                      @click=${() => this._toggleReminderCalendar(calendar.id)}
+                    >${calendar.name}</button>
+                  `
+    )}
+              </div>
             </div>
           </div>
 
@@ -9478,6 +9626,27 @@ __decorateClass$g([
 __decorateClass$g([
   r()
 ], CaleeSettingsDialog.prototype, "_strictPrivacy", 2);
+__decorateClass$g([
+  r()
+], CaleeSettingsDialog.prototype, "_notificationsEnabled", 2);
+__decorateClass$g([
+  r()
+], CaleeSettingsDialog.prototype, "_morningSummaryEnabled", 2);
+__decorateClass$g([
+  r()
+], CaleeSettingsDialog.prototype, "_morningSummaryHour", 2);
+__decorateClass$g([
+  r()
+], CaleeSettingsDialog.prototype, "_notificationTarget", 2);
+__decorateClass$g([
+  r()
+], CaleeSettingsDialog.prototype, "_reminderCalendars", 2);
+__decorateClass$g([
+  r()
+], CaleeSettingsDialog.prototype, "_notifyServices", 2);
+__decorateClass$g([
+  r()
+], CaleeSettingsDialog.prototype, "_calendarOptions", 2);
 __decorateClass$g([
   r()
 ], CaleeSettingsDialog.prototype, "_saving", 2);
@@ -12986,9 +13155,48 @@ function taskPriorityScore(task) {
   if (bucket === "upcoming") return 2;
   return 3;
 }
+function addDaysISO$1(iso, days) {
+  const date = /* @__PURE__ */ new Date(`${iso}T12:00:00`);
+  date.setDate(date.getDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+function friendlyWeatherState(state) {
+  return state.replace(/[_-]/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2").replace(/\b\w/g, (char) => char.toUpperCase());
+}
+function weatherIcon$1(state) {
+  const normalized = state.toLowerCase();
+  if (normalized.includes("lightning") || normalized.includes("thunder")) return "⛈";
+  if (normalized.includes("rain") || normalized.includes("pouring")) return "🌧";
+  if (normalized.includes("snow")) return "❄";
+  if (normalized.includes("fog")) return "🌫";
+  if (normalized.includes("wind")) return "💨";
+  if (normalized.includes("partly")) return "⛅";
+  if (normalized.includes("cloud")) return "☁";
+  if (normalized.includes("sun") || normalized === "clear-night" || normalized === "sunny") return "☀";
+  return "⛅";
+}
+function weatherSurface$1(hass) {
+  const entities = Object.entries(hass?.states ?? {}).filter(([entityId]) => entityId.startsWith("weather."));
+  const first = entities[0]?.[1];
+  if (!first) {
+    return {
+      icon: "⛅",
+      title: "No weather entity found",
+      subtitle: "Add a Home Assistant weather entity to show today's forecast here."
+    };
+  }
+  const condition = friendlyWeatherState(first.state || "Unknown");
+  const temperature = typeof first.attributes.temperature === "number" ? `${Math.round(first.attributes.temperature)}${String(first.attributes.temperature_unit ?? "°")}` : condition;
+  return {
+    icon: weatherIcon$1(first.state || ""),
+    title: temperature,
+    subtitle: `${condition} · Live from Home Assistant`
+  };
+}
 let CaleeHomePage = class extends i {
   constructor() {
     super(...arguments);
+    this.hass = null;
     this.events = [];
     this.tasks = [];
     this.calendars = /* @__PURE__ */ new Map();
@@ -13001,6 +13209,7 @@ let CaleeHomePage = class extends i {
     this.currentDate = todayISO$2();
     this.narrow = false;
     this.weekStart = "monday";
+    this.timelineExpanded = false;
   }
   get _visibleCalendars() {
     const ids = this.enabledCalendarIds;
@@ -13014,16 +13223,37 @@ let CaleeHomePage = class extends i {
     const shoppingIds = this._shoppingListIds;
     return this.tasks.filter((task) => shoppingIds.has(task.list_id));
   }
+  get _heroStats() {
+    return [
+      { icon: "◷", value: `${this._visibleCalendars.length}`, label: "calendars", destination: "calendar" },
+      { icon: "✓", value: `${this._dueTasks.length}`, label: "tasks", destination: "tasks" },
+      { icon: "🛒", value: `${this._shoppingSummary.count}`, label: "items", destination: "shopping" },
+      { icon: "↻", value: `${this._routineCount}`, label: "routines", destination: "more" }
+    ];
+  }
+  get _weatherSurface() {
+    return weatherSurface$1(this.hass);
+  }
   get _standardTasks() {
     const shoppingIds = this._shoppingListIds;
     return this.tasks.filter((task) => !shoppingIds.has(task.list_id) && !task.completed);
   }
   get _upcomingEvents() {
     const now = Date.now();
+    const endDate = this.timelineExpanded ? addDaysISO$1(this.currentDate, 6) : addDaysISO$1(this.currentDate, 1);
+    const currentStart = startOfDay(this.currentDate);
+    const endStart = startOfDay(endDate);
     return this.events.filter((event) => !event.deleted_at).filter((event) => {
       if (this.enabledCalendarIds.size === 0) return true;
       return this.enabledCalendarIds.has(event.calendar_id);
-    }).filter((event) => startOfDay(event.start.slice(0, 10)) >= startOfDay(this.currentDate) || new Date(event.start).getTime() >= now).sort((a2, b2) => new Date(a2.start).getTime() - new Date(b2.start).getTime()).slice(0, 8);
+    }).filter((event) => {
+      const eventDate = event.start.slice(0, 10);
+      const eventStart = new Date(event.start).getTime();
+      const eventDay = startOfDay(eventDate);
+      if (eventDay < currentStart || eventDay > endStart) return false;
+      if (sameDay(eventDate, this.currentDate) && eventStart < now) return false;
+      return true;
+    }).sort((a2, b2) => new Date(a2.start).getTime() - new Date(b2.start).getTime()).slice(0, this.timelineExpanded ? 24 : 8);
   }
   get _timelineDays() {
     const grouped = /* @__PURE__ */ new Map();
@@ -13111,62 +13341,68 @@ let CaleeHomePage = class extends i {
       })
     );
   }
+  _dispatchNavigate(view) {
+    this.dispatchEvent(
+      new CustomEvent("nav-change", {
+        detail: { view },
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
+  _toggleTimeline() {
+    this.timelineExpanded = !this.timelineExpanded;
+  }
   render() {
-    const nextShift = this._nextShift;
-    const nextShiftText = nextShift ? `${nextShift.title} · ${formatTime(nextShift.start)}` : "No upcoming shifts";
-    const nextShiftDate = nextShift ? this._dayLabel(nextShift.start.slice(0, 10)) : "Nothing on deck";
     const shopping = this._shoppingSummary;
+    const weather = this._weatherSurface;
+    const timelineLabel = this.timelineExpanded ? "This week" : "Today + tomorrow";
+    const timelineToggleLabel = this.timelineExpanded ? "Show today + tomorrow" : "Expand for the week";
     return b`
       <div class="shell">
         <section class="hero" aria-label="Overview summary">
-          <div class="hero-main">
-            <div>
+          <div class="hero-main" style="display:flex;flex-direction:column;gap:14px;justify-content:flex-start;min-height:auto;">
+            <div style="display:flex;flex-direction:column;gap:8px;">
               <div class="hero-kicker">Home</div>
-              <h1 class="hero-title">${formatLongDate(this.currentDate)}</h1>
+              <h1 class="hero-title" style="margin-bottom:6px;">${formatShortDate(this.currentDate)}</h1>
               <div class="hero-subtitle">
-                A quiet overview of what is next, what needs attention, and where to jump in without digging through the rest of the shell.
+                Today at a glance, with the next things worth opening.
+              </div>
+              <div class="summary-card" style="display:flex;align-items:center;gap:12px;margin-top:6px;">
+                <div style="width:38px;height:38px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--primary-color, #03a9f4) 12%, transparent);color:var(--primary-color, #03a9f4);font-size:18px;">${weather.icon}</div>
+                <div style="min-width:0;">
+                  <div class="summary-label" style="margin-bottom:2px;">Today's weather</div>
+                  <div class="summary-value" style="font-size:14px;">${weather.title}</div>
+                  <div class="summary-sub">${weather.subtitle}</div>
+                </div>
               </div>
             </div>
 
-            <div class="hero-pills">
-              <span class="pill"><strong>${this._visibleCalendars.length}</strong> calendars visible</span>
-              <span class="pill"><strong>${this._dueTasks.length}</strong> tasks in view</span>
-              <span class="pill"><strong>${shopping.count}</strong> shopping items</span>
-              <span class="pill"><strong>${this._routineCount}</strong> routines</span>
+            <div class="hero-pills" style="margin-top:0;">
+              ${this._heroStats.map(
+      (stat) => b`
+                    <button class="shortcut-chip" style="padding:7px 12px;" @click=${() => this._dispatchNavigate(stat.destination)}>
+                      <span>${stat.icon}</span>
+                      <span><strong>${stat.value}</strong> ${stat.label}</span>
+                    </button>
+                  `
+    )}
             </div>
           </div>
 
           <div class="hero-side">
-            <div class="summary-card" clickable role="button" tabindex="0"
-              @click=${() => nextShift && this._dispatchEventSelect(nextShift)}
-              @keydown=${(e2) => {
-      if ((e2.key === "Enter" || e2.key === " ") && nextShift) {
-        e2.preventDefault();
-        this._dispatchEventSelect(nextShift);
-      }
-    }}>
-              <div class="summary-label">Next Shift</div>
-              <div class="summary-value">${nextShiftText}</div>
-              <div class="summary-sub">${nextShiftDate}</div>
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+              <div>
+                <div class="panel-title">Upcoming Timeline</div>
+                <div class="summary-sub" style="margin-top:3px;">${timelineLabel}</div>
+              </div>
+              <button class="shortcut-chip" style="padding:7px 10px;" @click=${() => this._toggleTimeline()}>${timelineToggleLabel}</button>
             </div>
-            <div class="summary-card">
-              <div class="summary-label">Due Tasks</div>
-              <div class="summary-value">${this._dueTasks.length} ready for attention</div>
-              <div class="summary-sub">${this._dueTasks[0]?.title ?? "No urgent tasks"}</div>
-            </div>
-            <div class="summary-card">
-              <div class="summary-label">Shopping</div>
-              <div class="summary-value">${formatAmount(shopping.remaining, this.currency)} left</div>
-              <div class="summary-sub">${formatAmount(shopping.spent, this.currency)} planned from budget</div>
-            </div>
-          </div>
-        </section>
-
-        <section class="grid">
-          <article class="panel-card">
-            <div class="panel-head">
-              <h2 class="panel-title">Upcoming Timeline</h2>
-              <div class="panel-meta">${this._upcomingEvents.length} events</div>
+            <div class="panel-meta">
+              <button class="shortcut-chip" style="padding:7px 10px;" @click=${() => this._dispatchNavigate("calendar")}>
+                <span>◷</span>
+                <span><strong>${this._upcomingEvents.length}</strong> events</span>
+              </button>
             </div>
             ${this._timelineDays.length > 0 ? b`
                   <div class="timeline">
@@ -13196,13 +13432,20 @@ let CaleeHomePage = class extends i {
                       `
     )}
                   </div>
-                ` : b`<div class="section-empty">No upcoming events right now.</div>`}
-          </article>
+                ` : b`<div class="section-empty">No upcoming events in the current window.</div>`}
+          </div>
+        </section>
 
-          <article class="panel-card">
+        <section class="grid">
+          <article class="panel-card" style="grid-column:1 / -1;">
             <div class="panel-head">
               <h2 class="panel-title">Due Tasks</h2>
-              <div class="panel-meta">${this._dueTasks.length} shown</div>
+              <div class="panel-meta">
+                <button class="shortcut-chip" style="padding:7px 10px;" @click=${() => this._dispatchNavigate("tasks")}>
+                  <span>✓</span>
+                  <span><strong>${this._dueTasks.length}</strong> shown</span>
+                </button>
+              </div>
             </div>
             ${this._dueTasks.length > 0 ? b`
                   <div class="stack">
@@ -13214,12 +13457,12 @@ let CaleeHomePage = class extends i {
                           <button class="task-item" @click=${() => this._dispatchTaskClick(task)}>
                             <span class="task-dot" style="background:${bucket === "overdue" ? "var(--error-color, #f44336)" : bucket === "today" ? "var(--warning-color, #ff9800)" : "var(--primary-color, #03a9f4)"}"></span>
                             <div class="task-main">
-                              <div class="task-title">${task.title}</div>
+                              <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+                                <div class="task-title">${task.title}</div>
+                                <span class="badge">${bucket === "overdue" ? "Overdue" : bucket === "today" ? "Today" : bucket === "upcoming" ? "Soon" : "Later"}</span>
+                              </div>
                               <div class="task-sub">${listName}${task.due ? b` · ${task.due.slice(0, 10) === todayISO$2() ? "Today" : formatShortDate(task.due)}` : A}</div>
                             </div>
-                            <span class="badge" data-tone=${bucket === "overdue" ? "danger" : bucket === "today" ? "warn" : "good"}>
-                              ${bucket === "overdue" ? "Overdue" : bucket === "today" ? "Today" : bucket === "upcoming" ? "Soon" : "Later"}
-                            </span>
                           </button>
                         `;
       }
@@ -13231,7 +13474,12 @@ let CaleeHomePage = class extends i {
           <article class="panel-card">
             <div class="panel-head">
               <h2 class="panel-title">Shopping Shortcuts</h2>
-              <div class="panel-meta">${formatAmount(shopping.spent, this.currency)} planned</div>
+              <div class="panel-meta">
+                <button class="shortcut-chip" style="padding:7px 10px;" @click=${() => this._dispatchNavigate("shopping")}>
+                  <span>🛒</span>
+                  <span><strong>${shopping.count}</strong> items</span>
+                </button>
+              </div>
             </div>
             ${this._shoppingShortcuts.length > 0 ? b`
                   <div class="shopping-meta">
@@ -13273,7 +13521,12 @@ let CaleeHomePage = class extends i {
           <article class="panel-card">
             <div class="panel-head">
               <h2 class="panel-title">Routines</h2>
-              <div class="panel-meta">${this._routineCount} available</div>
+              <div class="panel-meta">
+                <button class="shortcut-chip" style="padding:7px 10px;" @click=${() => this._dispatchNavigate("more")}>
+                  <span>↻</span>
+                  <span><strong>${this._routineCount}</strong> available</span>
+                </button>
+              </div>
             </div>
             ${this.routines.length > 0 ? b`
                   <div class="routine-grid">
@@ -13295,7 +13548,7 @@ let CaleeHomePage = class extends i {
         </section>
 
         <div class="footer-note">
-          Week starts ${this.weekStart}. The page keeps interactions shallow: tap an event, task, or routine and let the parent decide how to open it.
+          Week starts ${this.weekStart}. Interactions stay shallow: tap an event, task, routine, or count chip and let the shell decide what opens next.
         </div>
       </div>
     `;
@@ -13721,6 +13974,9 @@ CaleeHomePage.styles = i$3`
   `;
 __decorateClass$7([
   n2({ attribute: false })
+], CaleeHomePage.prototype, "hass", 2);
+__decorateClass$7([
+  n2({ attribute: false })
 ], CaleeHomePage.prototype, "events", 2);
 __decorateClass$7([
   n2({ attribute: false })
@@ -13755,6 +14011,9 @@ __decorateClass$7([
 __decorateClass$7([
   n2()
 ], CaleeHomePage.prototype, "weekStart", 2);
+__decorateClass$7([
+  n2({ type: Boolean })
+], CaleeHomePage.prototype, "timelineExpanded", 2);
 CaleeHomePage = __decorateClass$7([
   t("calee-home-page")
 ], CaleeHomePage);
@@ -16148,6 +16407,7 @@ let CaleePanel = class extends i {
     switch (this._currentView) {
       case "home":
         return b`<calee-home-page
+          .hass=${this.hass}
           .events=${this._events}
           .tasks=${this._tasks}
           .calendars=${this._calendarMap}

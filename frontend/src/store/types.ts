@@ -201,6 +201,11 @@ export interface PlannerChangeEvent {
 
 // ── Home Assistant types (minimal surface used by the panel) ──────────
 
+export interface HassEntity {
+  state: string;
+  attributes: Record<string, unknown>;
+}
+
 export interface HomeAssistant {
   callWS: <T>(msg: Record<string, unknown>) => Promise<T>;
   connection: {
@@ -209,6 +214,7 @@ export interface HomeAssistant {
       params: Record<string, unknown>,
     ) => Promise<() => void>;
   };
+  states: Record<string, HassEntity>;
   language: string;
   locale: {
     language: string;
