@@ -1272,6 +1272,7 @@ let CaleeWeekView = class extends i {
     this._todayKey = dateKey$2(/* @__PURE__ */ new Date());
     this._timerHandle = 0;
     this._hasScrolled = false;
+    this._hasAlignedSelectedDay = false;
   }
   // ── Lifecycle ────────────────────────────────────────────────────────
   connectedCallback() {
@@ -1291,6 +1292,7 @@ let CaleeWeekView = class extends i {
   willUpdate(changed) {
     if (changed.has("selectedDate") || changed.has("weekStartsMonday") || changed.has("narrow")) {
       this._weekDays = getWeekDays(this.selectedDate, this.weekStartsMonday, this._dayCount);
+      this._hasAlignedSelectedDay = false;
     }
     if (changed.has("events") || changed.has("enabledCalendarIds") || changed.has("selectedDate") || changed.has("weekStartsMonday") || changed.has("narrow")) {
       this._categoriseEvents();
@@ -1301,8 +1303,12 @@ let CaleeWeekView = class extends i {
   }
   firstUpdated() {
     this._scrollToCurrentTime();
+    this._scrollSelectedDayIntoView();
   }
-  updated(_changed) {
+  updated(changed) {
+    if (changed.has("selectedDate") || changed.has("narrow")) {
+      this._scrollSelectedDayIntoView();
+    }
   }
   _scrollToCurrentTime() {
     if (this._hasScrolled) return;
@@ -1313,6 +1319,19 @@ let CaleeWeekView = class extends i {
       const now = /* @__PURE__ */ new Date();
       const target = Math.max(0, now.getHours() - 2) * hourPx;
       this._scrollContainer.scrollTop = target;
+    });
+  }
+  _scrollSelectedDayIntoView() {
+    if (!this.narrow || this._hasAlignedSelectedDay) return;
+    this._hasAlignedSelectedDay = true;
+    requestAnimationFrame(() => {
+      if (!this._panContainer) return;
+      const selectedIndex = this._weekDays.findIndex((day) => sameDay$1(day, this.selectedDate));
+      if (selectedIndex < 0) return;
+      const labelWidth = 40;
+      const dayWidth = 104;
+      const targetLeft = labelWidth + Math.max(0, selectedIndex - 1) * dayWidth;
+      this._panContainer.scrollLeft = targetLeft;
     });
   }
   _categoriseEvents() {
@@ -1504,19 +1523,22 @@ let CaleeWeekView = class extends i {
     `;
   }
   render() {
-    const cols = this._dayCount;
     const labelW = this.narrow ? "40px" : "56px";
-    const gridCols = `${labelW} repeat(${cols}, 1fr)`;
+    const dayW = this.narrow ? "104px" : "minmax(0, 1fr)";
+    const gridCols = `${labelW} repeat(${this._weekDays.length}, ${dayW})`;
     return b`
       <div class="week-view" style="--grid-cols: ${gridCols}">
-        <!-- Day name headers -->
-        <div class="headers" style="grid-template-columns: ${gridCols}">
-          <div class="corner"></div>
-          ${this._renderDayHeaders()}
-        </div>
+        <div class="week-pan">
+          <div class="week-content">
+            <div class="headers" style="grid-template-columns: ${gridCols}">
+              <div class="corner"></div>
+              ${this._renderDayHeaders()}
+            </div>
 
-        ${this._renderAllDayRow()}
-        ${this._renderTimeGrid()}
+            ${this._renderAllDayRow()}
+            ${this._renderTimeGrid()}
+          </div>
+        </div>
       </div>
     `;
   }
@@ -1535,6 +1557,21 @@ CaleeWeekView.styles = i$3`
       flex-direction: column;
       height: 100%;
       overflow: hidden;
+    }
+
+    .week-pan {
+      flex: 1;
+      min-height: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x pan-y;
+      overscroll-behavior-x: contain;
+    }
+
+    .week-content {
+      min-width: 100%;
+      height: 100%;
     }
 
     /* ── Header ────────────────────────────────────────────────────── */
@@ -1631,7 +1668,10 @@ CaleeWeekView.styles = i$3`
     .time-grid-scroll {
       flex: 1;
       overflow-y: auto;
-      overflow-x: hidden;
+      overflow-x: visible;
+      min-width: 0;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x pan-y;
     }
 
     .time-grid {
@@ -1780,6 +1820,10 @@ CaleeWeekView.styles = i$3`
         --label-width: 40px;
       }
 
+      .week-content {
+        min-width: calc(var(--label-width) + 7 * 104px);
+      }
+
       .day-header {
         font-size: 0.75rem;
         padding: 6px 2px;
@@ -1841,6 +1885,9 @@ __decorateClass$t([
 __decorateClass$t([
   e(".time-grid-scroll")
 ], CaleeWeekView.prototype, "_scrollContainer", 2);
+__decorateClass$t([
+  e(".week-pan")
+], CaleeWeekView.prototype, "_panContainer", 2);
 CaleeWeekView = __decorateClass$t([
   t("calee-week-view")
 ], CaleeWeekView);
