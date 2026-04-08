@@ -6,7 +6,12 @@
 
 import { LitElement, html, css, nothing, type PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import type { PlannerEvent, PlannerCalendar } from "../store/types.js";
+import type {
+  EventNotificationDraft,
+  NotifyServiceOption,
+  PlannerCalendar,
+  PlannerEvent,
+} from "../store/types.js";
 
 /* ── Helpers ─────────────────────────────────────────────────────────── */
 
@@ -33,6 +38,8 @@ export class CaleeEventDialog extends LitElement {
   @property({ type: Array }) calendars: PlannerCalendar[] = [];
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: Object }) defaults: { date?: string; time?: string; calendar_id?: string } = {};
+  @property({ type: Array }) notifyServices: NotifyServiceOption[] = [];
+  @property({ type: Object }) notificationDraft: EventNotificationDraft | null = null;
 
   @state() private _title = "";
   @state() private _calendarId = "";
@@ -41,6 +48,11 @@ export class CaleeEventDialog extends LitElement {
   @state() private _note = "";
   @state() private _recurrenceRule = "";
   @state() private _templateId: string | null = null;
+  @state() private _notificationMode: EventNotificationDraft["mode"] = "global";
+  @state() private _notificationRuleId: string | null = null;
+  @state() private _notificationReminderMinutes = 60;
+  @state() private _notificationService = "";
+  @state() private _notificationIncludeActions = true;
 
   static styles = css`
     :host {
@@ -202,6 +214,80 @@ export class CaleeEventDialog extends LitElement {
       color: var(--primary-color, #03a9f4);
     }
 
+    .section-card {
+      margin-top: 8px;
+      padding: 14px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      border-radius: 12px;
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.02));
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary-text-color, #212121);
+      margin-bottom: 4px;
+    }
+
+    .section-hint {
+      font-size: 12px;
+      color: var(--secondary-text-color, #757575);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .mode-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0 12px;
+    }
+
+    .mode-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: var(--card-background-color, #fff);
+      cursor: pointer;
+      font-size: 12px;
+      font-family: inherit;
+      color: var(--primary-text-color, #212121);
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .mode-pill[active] {
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 15%, transparent);
+      border-color: var(--primary-color, #03a9f4);
+      color: var(--primary-color, #03a9f4);
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid color-mix(in srgb, var(--divider-color, #e0e0e0) 70%, transparent);
+    }
+
+    .toggle-label {
+      font-size: 13px;
+      color: var(--primary-text-color, #212121);
+    }
+
+    .toggle-desc {
+      font-size: 12px;
+      color: var(--secondary-text-color, #757575);
+      margin-top: 2px;
+    }
+
+    .toggle {
+      width: auto;
+      margin: 0;
+      accent-color: var(--primary-color, #03a9f4);
+    }
+
     /* ── Calendar color swatch in dropdown ────────────────────── */
 
     .cal-option {
@@ -231,6 +317,7 @@ export class CaleeEventDialog extends LitElement {
 
   private _populateForm(): void {
     const ev = this.event;
+    const notification = this.notificationDraft;
     if (ev) {
       this._title = ev.title;
       this._calendarId = ev.calendar_id;
@@ -268,6 +355,12 @@ export class CaleeEventDialog extends LitElement {
       this._recurrenceRule = "";
       this._templateId = null;
     }
+
+    this._notificationMode = notification?.mode ?? "global";
+    this._notificationRuleId = notification?.ruleId ?? null;
+    this._notificationReminderMinutes = notification?.reminderMinutes ?? 60;
+    this._notificationService = notification?.notifyService ?? "";
+    this._notificationIncludeActions = notification?.includeActions ?? true;
   }
 
   /* ── Events ─────────────────────────────────────────────────────── */
@@ -287,6 +380,13 @@ export class CaleeEventDialog extends LitElement {
           recurrence_rule: this._recurrenceRule || null,
           template_id: this._templateId,
           version: this.event?.version ?? 0,
+          notification: {
+            mode: this._notificationMode,
+            ruleId: this._notificationRuleId,
+            reminderMinutes: this._notificationReminderMinutes,
+            notifyService: this._notificationService,
+            includeActions: this._notificationIncludeActions,
+          },
         },
         bubbles: true,
         composed: true,
@@ -423,6 +523,99 @@ export class CaleeEventDialog extends LitElement {
                   </button>
                 `,
               )}
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Notifications</label>
+            <div class="section-card">
+              <div class="section-title">Event reminder behavior</div>
+              <div class="section-hint">
+                Choose whether this event should follow your global reminder settings, use its own event rule, or save an event-specific disabled rule.
+              </div>
+              <div class="mode-pills">
+                ${[
+                  { value: "global", label: "Use global" },
+                  { value: "event", label: "Notify this event" },
+                  { value: "disabled", label: "Disable this event" },
+                ].map(
+                  (option) => html`
+                    <button
+                      type="button"
+                      class="mode-pill"
+                      ?active=${this._notificationMode === option.value}
+                      @click=${() => (this._notificationMode = option.value as EventNotificationDraft["mode"])}
+                    >
+                      ${option.label}
+                    </button>
+                  `,
+                )}
+              </div>
+
+              ${this._notificationMode === "event"
+                ? html`
+                    <div class="row">
+                      <div class="field">
+                        <label for="evt-reminder-minutes">Reminder minutes</label>
+                        <input
+                          id="evt-reminder-minutes"
+                          type="number"
+                          min="0"
+                          max="1440"
+                          .value=${String(this._notificationReminderMinutes)}
+                          @input=${(e: Event) => {
+                            const value = Number((e.target as HTMLInputElement).value);
+                            this._notificationReminderMinutes = Number.isFinite(value)
+                              ? Math.max(0, Math.min(1440, value))
+                              : 60;
+                          }}
+                        />
+                      </div>
+                      <div class="field">
+                        <label for="evt-notify-service">Notify service</label>
+                        <select
+                          id="evt-notify-service"
+                          .value=${this._notificationService}
+                          @change=${(e: Event) => {
+                            this._notificationService = (e.target as HTMLSelectElement).value;
+                          }}
+                        >
+                          <option value="">Use default notify routing</option>
+                          ${this.notifyServices.map(
+                            (service) => html`
+                              <option value=${service.service}>${service.name}</option>
+                            `,
+                          )}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="toggle-row">
+                      <div>
+                        <div class="toggle-label">Rich notification actions</div>
+                        <div class="toggle-desc">Show open and snooze actions when the target device supports them.</div>
+                      </div>
+                      <input
+                        class="toggle"
+                        type="checkbox"
+                        .checked=${this._notificationIncludeActions}
+                        @change=${(e: Event) => {
+                          this._notificationIncludeActions = (e.target as HTMLInputElement).checked;
+                        }}
+                      />
+                    </div>
+                  `
+                : this._notificationMode === "disabled"
+                  ? html`
+                      <div class="section-hint" style="margin: 0;">
+                        This saves an event-specific disabled rule so broader reminder settings will skip this event.
+                      </div>
+                    `
+                  : html`
+                    <div class="section-hint" style="margin: 0;">
+                      No event rule will be saved. The event will follow whichever broader notification settings already apply.
+                    </div>
+                  `}
             </div>
           </div>
 

@@ -658,8 +658,8 @@ export class CaleeSettingsDialog extends LitElement {
 
             <div class="setting-row">
               <div>
-                <div class="setting-label">Event reminders</div>
-                <div class="setting-desc">Enable scheduled reminder notifications for selected calendars.</div>
+                <div class="setting-label">Default event reminders</div>
+                <div class="setting-desc">Notify for all selected reminder calendars unless an event-specific notification rule overrides it.</div>
               </div>
               <div class="toggle-group">
                 <button

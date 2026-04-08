@@ -27,6 +27,7 @@ from .const import (
     PANEL_URL,
 )
 from .db.base import AbstractPlannerStore
+from .models import NotificationRule, PlannerEvent
 from .notification_utils import resolve_notification_target
 
 _LOGGER = logging.getLogger(__name__)
@@ -57,6 +58,34 @@ def _reminder_calendar_ids(
     return list(DEFAULT_REMINDER_CALENDARS)
 
 
+def _resolve_event_notification_rule(
+    store: AbstractPlannerStore,
+    event: PlannerEvent,
+) -> NotificationRule | None:
+    """Return the most specific notification rule for an event.
+
+    Unlike ``PlannerAPI.resolve_notification_rule()``, this helper returns
+    disabled rules too so a specific event can explicitly suppress the global
+    reminder fallback.
+    """
+
+    event_rules = store.get_rules_for_scope("event", event.id)
+    if event_rules:
+        return event_rules[0]
+
+    if event.template_id:
+        template_rules = store.get_rules_for_scope("template", event.template_id)
+        if template_rules:
+            return template_rules[0]
+
+    if event.calendar_id:
+        calendar_rules = store.get_rules_for_scope("calendar", event.calendar_id)
+        if calendar_rules:
+            return calendar_rules[0]
+
+    return None
+
+
 async def async_setup_shift_reminders(
     hass: HomeAssistant,
     store: AbstractPlannerStore,
@@ -85,11 +114,6 @@ async def async_setup_shift_reminders(
 
     # Per-minute check for shift reminders.
     async def _minute_tick(_now: object) -> None:
-        notifications_enabled = entry.options.get(
-            "notifications_enabled", DEFAULT_NOTIFICATIONS_ENABLED
-        )
-        if not notifications_enabled:
-            return
         await async_check_and_send_reminders(hass, store, entry)
 
     cancel_reminder = async_track_time_interval(
@@ -151,17 +175,25 @@ async def async_check_and_send_reminders(
     entry: ConfigEntry,
 ) -> None:
     """Check for shifts needing reminders and send notifications."""
-    reminder_minutes = entry.options.get("reminder_minutes", DEFAULT_REMINDER_MINUTES)
-    if reminder_minutes <= 0:
-        return
-
     now = dt_util.now()
-
-    # Get events from all configured reminder calendars.
-    reminder_calendars = _reminder_calendar_ids(entry)
-    events = []
-    for cal_id in reminder_calendars:
-        events.extend(store.get_active_events(calendar_id=cal_id))
+    notifications_enabled = entry.options.get(
+        "notifications_enabled", DEFAULT_NOTIFICATIONS_ENABLED
+    )
+    default_reminder_minutes = entry.options.get(
+        "reminder_minutes", DEFAULT_REMINDER_MINUTES
+    )
+    default_target = entry.options.get(
+        "notification_target", DEFAULT_NOTIFICATION_TARGET
+    )
+    reminder_calendars = set(_reminder_calendar_ids(entry))
+    has_enabled_event_rules = any(
+        rule.scope == "event" and rule.enabled
+        for rule in store.get_notification_rules().values()
+    )
+    if not notifications_enabled and not has_enabled_event_rules:
+        return
+    events = store.get_active_events()
+    events_by_id = {e.id: e for e in events}
 
     notified: set[str] = hass.data[DOMAIN][entry.entry_id][_KEY_NOTIFIED_EVENTS]
     time_format = entry.options.get("time_format", DEFAULT_TIME_FORMAT)
@@ -175,7 +207,7 @@ async def async_check_and_send_reminders(
             stale_ids.add(eid)
             continue
         # Also prune if the shift's end time is in the past.
-        ev = next((e for e in events if e.id == eid), None)
+        ev = events_by_id.get(eid)
         if ev is not None:
             end_dt = _parse_datetime(ev.end)
             if end_dt is not None and end_dt <= now:
@@ -191,6 +223,31 @@ async def async_check_and_send_reminders(
     for event in events:
         start = _parse_datetime(event.start)
         if start is None:
+            continue
+
+        rule = _resolve_event_notification_rule(store, event)
+        if rule is not None:
+            if not rule.enabled:
+                continue
+            if rule.scope != "event" and (
+                not notifications_enabled or event.calendar_id not in reminder_calendars
+            ):
+                continue
+            reminder_minutes = rule.reminder_minutes
+            notify_targets = rule.notify_services or [default_target]
+            include_actions = rule.include_actions
+            custom_title = rule.custom_title
+            custom_message = rule.custom_message
+        else:
+            if not notifications_enabled or event.calendar_id not in reminder_calendars:
+                continue
+            reminder_minutes = default_reminder_minutes
+            notify_targets = [default_target]
+            include_actions = True
+            custom_title = ""
+            custom_message = ""
+
+        if reminder_minutes <= 0:
             continue
 
         # Only consider shifts in the next 24 hours.
@@ -216,11 +273,15 @@ async def async_check_and_send_reminders(
                 continue
 
             minutes_until = int((start - now).total_seconds() / 60)
-            target = entry.options.get(
-                "notification_target", DEFAULT_NOTIFICATION_TARGET
-            )
             await _send_shift_notification(
-                hass, event, start, minutes_until, target,
+                hass,
+                event,
+                start,
+                minutes_until,
+                notify_targets,
+                include_actions=include_actions,
+                custom_title=custom_title,
+                custom_message=custom_message,
                 time_format=time_format,
             )
             notified.add(event.id)
@@ -231,14 +292,18 @@ async def _send_shift_notification(
     event,
     start: datetime,
     minutes_before: int,
-    target: str = "",
+    targets: list[str] | str | None = None,
+    *,
+    include_actions: bool = True,
+    custom_title: str = "",
+    custom_message: str = "",
     time_format: str = "12h",
 ) -> None:
     """Send a shift reminder via HA's persistent notification + mobile."""
     local_start = dt_util.as_local(start)
     fmt = "%I:%M %p" if time_format == "12h" else "%H:%M"
-    title = f"Shift in {minutes_before} minutes"
-    message = f"{event.title} starts at {local_start.strftime(fmt)}"
+    title = custom_title or f"Shift in {minutes_before} minutes"
+    message = custom_message or f"{event.title} starts at {local_start.strftime(fmt)}"
 
     # Persistent notification (shows in HA sidebar) — always available.
     await hass.services.async_call(
@@ -251,39 +316,50 @@ async def _send_shift_notification(
         },
     )
 
+    configured_targets = targets if isinstance(targets, list) else [targets or ""]
+    resolved_targets: list[str] = []
+    for target in configured_targets:
+        resolved = resolve_notification_target(hass, target)
+        if resolved and resolved not in resolved_targets:
+            resolved_targets.append(resolved)
+
     # Mobile notification via notify service (if configured and available).
-    notify_target = resolve_notification_target(hass, target)
-    if notify_target is None:
+    if not resolved_targets:
         _LOGGER.debug(
-            "Notify target %r not available, skipping mobile push for event %s",
-            target,
+            "No notify targets available, skipping mobile push for event %s",
             event.id,
         )
         return
 
+    data: dict[str, object] = {
+        "url": PANEL_URL,
+        "tag": f"calee_shift_{event.id}",
+    }
+    if include_actions:
+        data["actions"] = [
+            {"action": "URI", "title": "Open Planner", "uri": PANEL_URL},
+            {"action": f"CALEE_SNOOZE_15_{event.id}", "title": "Snooze 15min"},
+            {"action": f"CALEE_SNOOZE_60_{event.id}", "title": "Snooze 1hr"},
+        ]
+        data["action_data"] = {"event_id": event.id}
+
     service_data = {
         "title": title,
         "message": message,
-        "data": {
-            "actions": [
-                {"action": f"CALEE_OPEN_{event.id}", "title": "Open Planner", "uri": PANEL_URL},
-                {"action": f"CALEE_SNOOZE_15_{event.id}", "title": "Snooze 15min"},
-                {"action": f"CALEE_SNOOZE_60_{event.id}", "title": "Snooze 1hr"},
-            ],
-            "action_data": {"event_id": event.id},
-            "url": PANEL_URL,
-            "tag": f"calee_shift_{event.id}",
-        },
+        "data": data,
     }
 
-    try:
-        await hass.services.async_call(
-            "notify", notify_target, service_data
-        )
-    except Exception:
-        _LOGGER.debug(
-            "Could not send mobile notification for event %s", event.id
-        )
+    for notify_target in resolved_targets:
+        try:
+            await hass.services.async_call(
+                "notify", notify_target, service_data
+            )
+        except Exception:
+            _LOGGER.debug(
+                "Could not send mobile notification for event %s via %s",
+                event.id,
+                notify_target,
+            )
 
 
 async def async_send_morning_summary(

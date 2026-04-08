@@ -11,7 +11,9 @@ from __future__ import annotations
 
 import json
 import logging
+from dataclasses import replace
 from datetime import UTC, date, datetime, timedelta
+from typing import Any
 
 from homeassistant.core import HomeAssistant, ServiceCall, callback
 from homeassistant.exceptions import HomeAssistantError
@@ -86,6 +88,7 @@ from .models import (
     _new_id,
     _utc_now_iso,
 )
+from .notification_utils import normalize_notification_target
 from .permissions import async_require_write
 from .recurrence import next_due_date, parse_recurrence
 
@@ -245,6 +248,7 @@ class PlannerAPI:
         note: str = "",
         template_id: str | None = None,
         recurrence_rule: str | None = None,
+        notification_rule: dict[str, Any] | None = None,
         user_id: str | None = None,
     ) -> PlannerEvent:
         """Create a new shift event."""
@@ -264,6 +268,11 @@ class PlannerAPI:
                     f"Invalid recurrence rule: {exc}"
                 ) from exc
 
+        prepared_rule = self._prepare_event_notification_rule(
+            event_id="",
+            notification_rule=notification_rule,
+        )
+
         event = PlannerEvent(
             calendar_id=calendar_id,
             title=title,
@@ -275,6 +284,15 @@ class PlannerAPI:
             source="manual",
         )
         await self._store.async_put_event(event)
+        try:
+            await self._save_prepared_event_notification_rule(
+                event=event,
+                prepared_rule=prepared_rule,
+                user_id=user_id,
+            )
+        except Exception:
+            await self._store.async_remove_event(event.id)
+            raise
         self._store.record_audit(
             user_id=user_id or "",
             action=AuditAction.CREATE,
@@ -363,6 +381,7 @@ class PlannerAPI:
         end: str | None = None,
         note: str | None = None,
         recurrence_rule: str | None = None,
+        notification_rule: dict[str, Any] | None = None,
         user_id: str | None = None,
     ) -> PlannerEvent:
         """Update an existing shift (optimistic locking)."""
@@ -378,6 +397,12 @@ class PlannerAPI:
 
         await async_require_write(
             self._hass, self._store, user_id, "calendar", event.calendar_id
+        )
+
+        original_event = replace(event)
+        prepared_rule = self._prepare_event_notification_rule(
+            event_id=event.id,
+            notification_rule=notification_rule,
         )
 
         if title is not None:
@@ -403,6 +428,15 @@ class PlannerAPI:
         event.version += 1
 
         await self._store.async_put_event(event)
+        try:
+            await self._save_prepared_event_notification_rule(
+                event=event,
+                prepared_rule=prepared_rule,
+                user_id=user_id,
+            )
+        except Exception:
+            await self._store.async_put_event(original_event)
+            raise
         self._store.record_audit(
             user_id=user_id or "",
             action=AuditAction.UPDATE,
@@ -950,6 +984,7 @@ class PlannerAPI:
         template_id: str,
         shift_date: str,
         recurrence_rule: str | None = None,
+        notification_rule: dict[str, Any] | None = None,
         user_id: str | None = None,
     ) -> PlannerEvent:
         """Create a shift event from a template for a given date.
@@ -997,7 +1032,20 @@ class PlannerAPI:
             recurrence_rule=recurrence_rule,
             source="template",
         )
+        prepared_rule = self._prepare_event_notification_rule(
+            event_id=event.id,
+            notification_rule=notification_rule,
+        )
         await self._store.async_put_event(event)
+        try:
+            await self._save_prepared_event_notification_rule(
+                event=event,
+                prepared_rule=prepared_rule,
+                user_id=user_id,
+            )
+        except Exception:
+            await self._store.async_remove_event(event.id)
+            raise
         self._store.record_audit(
             user_id=user_id or "",
             action=AuditAction.CREATE,
@@ -2350,6 +2398,7 @@ class PlannerAPI:
         end: str | None = None,
         note: str | None = None,
         calendar_id: str | None = None,
+        notification_rule: dict[str, Any] | None = None,
         user_id: str | None = None,
     ) -> PlannerEvent:
         """Edit a single occurrence: create a standalone event + add exception to parent."""
@@ -2409,7 +2458,20 @@ class PlannerAPI:
             source="occurrence_edit",
             external_id=f"{parent.id}_{occurrence_date}",
         )
+        prepared_rule = self._prepare_event_notification_rule(
+            event_id=standalone.id,
+            notification_rule=notification_rule,
+        )
         await self._store.async_put_event(standalone)
+        try:
+            await self._save_prepared_event_notification_rule(
+                event=standalone,
+                prepared_rule=prepared_rule,
+                user_id=user_id,
+            )
+        except Exception:
+            await self._store.async_remove_event(standalone.id)
+            raise
 
         self._store.record_audit(
             user_id=user_id or "",
@@ -2627,6 +2689,93 @@ class PlannerAPI:
         )
 
     # ── Internal helpers ─────────────────────────────────────────────
+
+    def _normalize_notification_services(
+        self,
+        notify_services: list[str] | None,
+    ) -> list[str]:
+        """Normalize notify service names without checking live availability."""
+        normalized: list[str] = []
+        for service in notify_services or []:
+            resolved = normalize_notification_target(service)
+            if resolved and resolved not in normalized:
+                normalized.append(resolved)
+        return normalized
+
+    def _prepare_event_notification_rule(
+        self,
+        event_id: str,
+        notification_rule: dict[str, Any] | None,
+    ) -> NotificationRule | None:
+        """Validate and normalize an event-scoped notification rule payload."""
+        if notification_rule is None:
+            return None
+
+        existing = self._store.get_rules_for_scope("event", event_id)
+        rule = (
+            replace(existing[0])
+            if existing
+            else NotificationRule(scope="event", scope_id=event_id)
+        )
+
+        reminder_minutes = int(
+            notification_rule.get("reminder_minutes", rule.reminder_minutes)
+        )
+        if reminder_minutes < 0 or reminder_minutes > 1440:
+            raise HomeAssistantError(
+                "notification_rule.reminder_minutes must be between 0 and 1440"
+            )
+
+        rule.enabled = bool(notification_rule.get("enabled", rule.enabled))
+        rule.reminder_minutes = reminder_minutes
+        if "notify_services" in notification_rule:
+            rule.notify_services = self._normalize_notification_services(
+                notification_rule.get("notify_services")
+            )
+        rule.include_actions = bool(
+            notification_rule.get("include_actions", rule.include_actions)
+        )
+        rule.custom_title = str(
+            notification_rule.get("custom_title", rule.custom_title)
+        )
+        rule.custom_message = str(
+            notification_rule.get("custom_message", rule.custom_message)
+        )
+        rule.scope = "event"
+        rule.scope_id = event_id
+
+        return rule
+
+    async def _save_prepared_event_notification_rule(
+        self,
+        event: PlannerEvent,
+        prepared_rule: NotificationRule | None,
+        user_id: str | None = None,
+    ) -> NotificationRule | None:
+        """Persist a previously prepared event notification rule."""
+        if prepared_rule is None:
+            return None
+
+        existing = self._store.get_rules_for_scope("event", event.id)
+        rule = replace(prepared_rule, scope_id=event.id)
+
+        await self._store.async_put_notification_rule(rule)
+        self._store.record_audit(
+            user_id=user_id or "",
+            action=AuditAction.UPDATE if existing else AuditAction.CREATE,
+            resource_type="notification_rule",
+            resource_id=rule.id,
+            detail=(
+                f"{'Updated' if existing else 'Created'} event notification rule "
+                f"for '{event.id}'"
+            ),
+        )
+        self._fire_change(
+            "update" if existing else "create",
+            "notification_rule",
+            rule.id,
+        )
+        return rule
 
     @callback
     def _fire_change(self, action: str, resource_type: str, resource_id: str) -> None:

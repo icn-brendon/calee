@@ -20,6 +20,28 @@ from ..const import (
 )
 from .helpers import _get_api
 
+_NOTIFICATION_RULE_CREATE_SCHEMA = {
+    vol.Optional("enabled", default=True): bool,
+    vol.Optional("reminder_minutes", default=60): vol.All(
+        vol.Coerce(int), vol.Range(min=0, max=1440)
+    ),
+    vol.Optional("notify_services", default=[]): [str],
+    vol.Optional("include_actions", default=True): bool,
+    vol.Optional("custom_title", default=""): str,
+    vol.Optional("custom_message", default=""): str,
+}
+
+_NOTIFICATION_RULE_UPDATE_SCHEMA = {
+    vol.Optional("enabled"): bool,
+    vol.Optional("reminder_minutes"): vol.All(
+        vol.Coerce(int), vol.Range(min=0, max=1440)
+    ),
+    vol.Optional("notify_services"): [str],
+    vol.Optional("include_actions"): bool,
+    vol.Optional("custom_title"): str,
+    vol.Optional("custom_message"): str,
+}
+
 # ── Event mutations ─────────────────────────────────────────────────
 
 
@@ -33,6 +55,7 @@ from .helpers import _get_api
         vol.Optional("note", default=""): str,
         vol.Optional("recurrence_rule"): str,
         vol.Optional("template_id"): str,
+        vol.Optional("notification_rule"): _NOTIFICATION_RULE_CREATE_SCHEMA,
     }
 )
 @websocket_api.async_response
@@ -56,6 +79,7 @@ async def ws_handle_create_event(
             note=msg.get("note", ""),
             recurrence_rule=msg.get("recurrence_rule"),
             template_id=msg.get("template_id"),
+            notification_rule=msg.get("notification_rule"),
             user_id=connection.user.id if connection.user else None,
         )
     except HomeAssistantError as err:
@@ -75,6 +99,7 @@ async def ws_handle_create_event(
         vol.Optional("end"): str,
         vol.Optional("note"): str,
         vol.Optional("recurrence_rule"): str,
+        vol.Optional("notification_rule"): _NOTIFICATION_RULE_UPDATE_SCHEMA,
     }
 )
 @websocket_api.async_response
@@ -98,6 +123,7 @@ async def ws_handle_update_event(
             end=msg.get("end"),
             note=msg.get("note"),
             recurrence_rule=msg.get("recurrence_rule"),
+            notification_rule=msg.get("notification_rule"),
             user_id=connection.user.id if connection.user else None,
         )
     except HomeAssistantError as err:
@@ -146,6 +172,7 @@ async def ws_handle_delete_event(
         vol.Required("template_id"): str,
         vol.Required("date"): str,
         vol.Optional("recurrence_rule"): str,
+        vol.Optional("notification_rule"): _NOTIFICATION_RULE_CREATE_SCHEMA,
     }
 )
 @websocket_api.async_response
@@ -164,6 +191,7 @@ async def ws_handle_add_shift_from_template(
         template_id=msg["template_id"],
         shift_date=msg["date"],
         recurrence_rule=msg.get("recurrence_rule"),
+        notification_rule=msg.get("notification_rule"),
         user_id=connection.user.id if connection.user else None,
     )
     connection.send_result(msg["id"], event.to_dict())
@@ -214,6 +242,7 @@ async def ws_handle_add_event_exception(
         vol.Optional("end"): str,
         vol.Optional("note"): str,
         vol.Optional("calendar_id"): str,
+        vol.Optional("notification_rule"): _NOTIFICATION_RULE_UPDATE_SCHEMA,
     }
 )
 @websocket_api.async_response
@@ -237,6 +266,7 @@ async def ws_handle_edit_event_occurrence(
             end=msg.get("end"),
             note=msg.get("note"),
             calendar_id=msg.get("calendar_id"),
+            notification_rule=msg.get("notification_rule"),
             user_id=connection.user.id if connection.user else None,
         )
     except HomeAssistantError as err:
