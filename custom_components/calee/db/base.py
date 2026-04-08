@@ -11,6 +11,7 @@ from abc import ABC, abstractmethod
 from ..const import AuditAction
 from ..models import (
     AuditEntry,
+    NotificationRule,
     PlannerCalendar,
     PlannerEvent,
     PlannerList,
@@ -244,6 +245,35 @@ class AbstractPlannerStore(ABC):
     @abstractmethod
     async def async_remove_routine(self, routine_id: str) -> None:
         """Hard-delete a routine by id."""
+        ...
+
+    # ── Notification rules ──────────────────────────────────────────
+
+    @abstractmethod
+    def get_notification_rules(self) -> dict[str, NotificationRule]:
+        """Return all notification rules keyed by id."""
+        ...
+
+    @abstractmethod
+    def get_notification_rule(self, rule_id: str) -> NotificationRule | None:
+        """Return a single notification rule by ID, or None."""
+        ...
+
+    @abstractmethod
+    def get_rules_for_scope(
+        self, scope: str, scope_id: str
+    ) -> list[NotificationRule]:
+        """Return all rules matching a given scope and scope_id."""
+        ...
+
+    @abstractmethod
+    async def async_put_notification_rule(self, rule: NotificationRule) -> None:
+        """Insert or replace a notification rule."""
+        ...
+
+    @abstractmethod
+    async def async_remove_notification_rule(self, rule_id: str) -> None:
+        """Hard-delete a notification rule by id."""
         ...
 
     # ── Deleted items ───────────────────────────────────────────────

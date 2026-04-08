@@ -75,6 +75,7 @@ from .const import (
 from .db.base import AbstractPlannerStore
 from .importer import ImportResult, parse_csv, parse_ics
 from .models import (
+    NotificationRule,
     PlannerCalendar,
     PlannerEvent,
     PlannerList,
@@ -1287,6 +1288,179 @@ class PlannerAPI:
             category=preset.category,
             user_id=user_id,
         )
+
+    # ── Notification rule operations ──────────────────────────────────
+
+    def _resolve_rule_calendar_id(self, scope: str, scope_id: str) -> str | None:
+        """Resolve the calendar_id for a notification rule's scope target."""
+        if scope == "calendar":
+            return scope_id
+        if scope == "template":
+            tpl = self._store.get_template(scope_id)
+            return tpl.calendar_id if tpl else None
+        if scope == "event":
+            evt = self._store.get_event(scope_id)
+            return evt.calendar_id if evt else None
+        return None
+
+    async def async_create_notification_rule(
+        self,
+        scope: str,
+        scope_id: str,
+        enabled: bool = True,
+        reminder_minutes: int = 60,
+        notify_services: list[str] | None = None,
+        include_actions: bool = True,
+        custom_title: str = "",
+        custom_message: str = "",
+        user_id: str | None = None,
+    ) -> NotificationRule:
+        """Create a new notification rule.
+
+        Enforces one rule per (scope, scope_id). If a rule already exists
+        for this target, an error is raised — use update instead.
+        """
+        # Permission check via the owning calendar.
+        cal_id = self._resolve_rule_calendar_id(scope, scope_id)
+        if cal_id:
+            await async_require_write(
+                self._hass, self._store, user_id, "calendar", cal_id
+            )
+
+        # Enforce uniqueness: one rule per (scope, scope_id).
+        existing = self._store.get_rules_for_scope(scope, scope_id)
+        if existing:
+            raise HomeAssistantError(
+                f"A notification rule for {scope} '{scope_id}' already exists "
+                f"(id={existing[0].id}). Use update instead."
+            )
+
+        rule = NotificationRule(
+            scope=scope,
+            scope_id=scope_id,
+            enabled=enabled,
+            reminder_minutes=reminder_minutes,
+            notify_services=notify_services or [],
+            include_actions=include_actions,
+            custom_title=custom_title,
+            custom_message=custom_message,
+        )
+        await self._store.async_put_notification_rule(rule)
+        self._store.record_audit(
+            user_id=user_id or "",
+            action=AuditAction.CREATE,
+            resource_type="notification_rule",
+            resource_id=rule.id,
+            detail=f"Created {scope} notification rule for '{scope_id}'",
+        )
+        self._fire_change("create", "notification_rule", rule.id)
+        await self._store.async_save()
+        return rule
+
+    async def async_update_notification_rule(
+        self,
+        rule_id: str,
+        enabled: bool | None = None,
+        reminder_minutes: int | None = None,
+        notify_services: list[str] | None = None,
+        include_actions: bool | None = None,
+        custom_title: str | None = None,
+        custom_message: str | None = None,
+        user_id: str | None = None,
+    ) -> NotificationRule:
+        """Update an existing notification rule."""
+        rule = self._store.get_notification_rule(rule_id)
+        if rule is None:
+            raise HomeAssistantError(f"Notification rule '{rule_id}' not found")
+
+        # Permission check via the owning calendar.
+        cal_id = self._resolve_rule_calendar_id(rule.scope, rule.scope_id)
+        if cal_id:
+            await async_require_write(
+                self._hass, self._store, user_id, "calendar", cal_id
+            )
+
+        if enabled is not None:
+            rule.enabled = enabled
+        if reminder_minutes is not None:
+            rule.reminder_minutes = reminder_minutes
+        if notify_services is not None:
+            rule.notify_services = notify_services
+        if include_actions is not None:
+            rule.include_actions = include_actions
+        if custom_title is not None:
+            rule.custom_title = custom_title
+        if custom_message is not None:
+            rule.custom_message = custom_message
+
+        await self._store.async_put_notification_rule(rule)
+        self._store.record_audit(
+            user_id=user_id or "",
+            action=AuditAction.UPDATE,
+            resource_type="notification_rule",
+            resource_id=rule.id,
+            detail=f"Updated notification rule for '{rule.scope_id}'",
+        )
+        self._fire_change("update", "notification_rule", rule.id)
+        await self._store.async_save()
+        return rule
+
+    async def async_delete_notification_rule(
+        self,
+        rule_id: str,
+        user_id: str | None = None,
+    ) -> None:
+        """Delete a notification rule."""
+        rule = self._store.get_notification_rule(rule_id)
+        if rule is None:
+            raise HomeAssistantError(f"Notification rule '{rule_id}' not found")
+
+        # Permission check via the owning calendar.
+        cal_id = self._resolve_rule_calendar_id(rule.scope, rule.scope_id)
+        if cal_id:
+            await async_require_write(
+                self._hass, self._store, user_id, "calendar", cal_id
+            )
+
+        await self._store.async_remove_notification_rule(rule_id)
+        self._store.record_audit(
+            user_id=user_id or "",
+            action=AuditAction.DELETE,
+            resource_type="notification_rule",
+            resource_id=rule_id,
+            detail=f"Deleted notification rule for '{rule.scope_id}'",
+        )
+        self._fire_change("delete", "notification_rule", rule_id)
+        await self._store.async_save()
+
+    def resolve_notification_rule(
+        self,
+        event: PlannerEvent,
+    ) -> NotificationRule | None:
+        """Resolve the most specific notification rule for an event.
+
+        Priority: event > template > calendar > None (use global defaults).
+        Only returns enabled rules. At most one rule per (scope, scope_id)
+        is enforced at creation time.
+        """
+        # Check for event-specific rule.
+        rules = self._store.get_rules_for_scope("event", event.id)
+        if rules and rules[0].enabled:
+            return rules[0]
+
+        # Check for template-specific rule.
+        if event.template_id:
+            rules = self._store.get_rules_for_scope("template", event.template_id)
+            if rules and rules[0].enabled:
+                return rules[0]
+
+        # Check for calendar-specific rule.
+        if event.calendar_id:
+            rules = self._store.get_rules_for_scope("calendar", event.calendar_id)
+            if rules and rules[0].enabled:
+                return rules[0]
+
+        return None
 
     # ── Routine operations ──────────────────────────────────────────────
 

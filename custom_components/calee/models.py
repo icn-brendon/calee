@@ -440,3 +440,60 @@ class Routine:
             shopping_items=data.get("shopping_items", []),
             created_at=data.get("created_at") or _utc_now_iso(),
         )
+
+
+# ── Notification Rules ────────────────────────────────────────────────
+
+
+@dataclass
+class NotificationRule:
+    """A notification rule that can be attached to a calendar, template, or event.
+
+    Rules cascade: event overrides template overrides calendar overrides global.
+    The ``scope`` field determines the level:
+      - "calendar" → applies to all events in ``scope_id`` calendar
+      - "template" → applies to all events created from ``scope_id`` template
+      - "event"    → applies to a single event with id ``scope_id``
+    """
+
+    id: str = field(default_factory=_new_id)
+    scope: str = "calendar"  # calendar | template | event
+    scope_id: str = ""  # calendar_id, template_id, or event_id
+    enabled: bool = True
+    reminder_minutes: int = 60  # minutes before start
+    notify_services: list[str] = field(default_factory=list)
+    # e.g. ["notify.mobile_app_brendon", "notify.mobile_app_partner"]
+    # empty list = use the integration/global notification defaults
+    include_actions: bool = True  # include Open/Snooze buttons in notification
+    custom_title: str = ""  # override notification title; empty = default
+    custom_message: str = ""  # override message; empty = default
+    created_at: str = field(default_factory=_utc_now_iso)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "id": self.id,
+            "scope": self.scope,
+            "scope_id": self.scope_id,
+            "enabled": self.enabled,
+            "reminder_minutes": self.reminder_minutes,
+            "notify_services": self.notify_services,
+            "include_actions": self.include_actions,
+            "custom_title": self.custom_title,
+            "custom_message": self.custom_message,
+            "created_at": self.created_at,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> NotificationRule:
+        return cls(
+            id=data["id"],
+            scope=data.get("scope", "calendar"),
+            scope_id=data.get("scope_id", ""),
+            enabled=data.get("enabled", True),
+            reminder_minutes=data.get("reminder_minutes", 60),
+            notify_services=data.get("notify_services", []),
+            include_actions=data.get("include_actions", True),
+            custom_title=data.get("custom_title", ""),
+            custom_message=data.get("custom_message", ""),
+            created_at=data.get("created_at") or _utc_now_iso(),
+        )

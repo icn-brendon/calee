@@ -41,6 +41,7 @@ from .const import (
     WS_TYPE_CREATE_CALENDAR,
     WS_TYPE_CREATE_EVENT,
     WS_TYPE_CREATE_LIST,
+    WS_TYPE_CREATE_NOTIFICATION_RULE,
     WS_TYPE_CREATE_PRESET,
     WS_TYPE_CREATE_ROUTINE,
     WS_TYPE_CREATE_TASK,
@@ -48,6 +49,7 @@ from .const import (
     WS_TYPE_DELETE_CALENDAR,
     WS_TYPE_DELETE_EVENT,
     WS_TYPE_DELETE_LIST,
+    WS_TYPE_DELETE_NOTIFICATION_RULE,
     WS_TYPE_DELETE_PRESET,
     WS_TYPE_DELETE_ROUTINE,
     WS_TYPE_DELETE_TASK,
@@ -62,6 +64,8 @@ from .const import (
     WS_TYPE_IMPORT_ICS,
     WS_TYPE_LINK_TASK_TO_EVENT,
     WS_TYPE_LISTS,
+    WS_TYPE_NOTIFICATION_RULES,
+    WS_TYPE_NOTIFY_SERVICES,
     WS_TYPE_PRESETS,
     WS_TYPE_REORDER_TASK,
     WS_TYPE_RESTORE_EVENT,
@@ -77,6 +81,7 @@ from .const import (
     WS_TYPE_UPDATE_CALENDAR,
     WS_TYPE_UPDATE_EVENT,
     WS_TYPE_UPDATE_LIST,
+    WS_TYPE_UPDATE_NOTIFICATION_RULE,
     WS_TYPE_UPDATE_ROUTINE,
     WS_TYPE_UPDATE_SETTINGS,
     WS_TYPE_UPDATE_TASK,
@@ -144,6 +149,11 @@ def async_register_websocket_commands(hass: HomeAssistant) -> None:
     websocket_api.async_register_command(hass, ws_handle_create_list)
     websocket_api.async_register_command(hass, ws_handle_update_list)
     websocket_api.async_register_command(hass, ws_handle_delete_list)
+    websocket_api.async_register_command(hass, ws_handle_notification_rules)
+    websocket_api.async_register_command(hass, ws_handle_create_notification_rule)
+    websocket_api.async_register_command(hass, ws_handle_update_notification_rule)
+    websocket_api.async_register_command(hass, ws_handle_delete_notification_rule)
+    websocket_api.async_register_command(hass, ws_handle_notify_services)
 
     hass.data[_REGISTERED] = True
     _LOGGER.debug("Calee WebSocket commands registered")
@@ -2100,3 +2110,206 @@ async def ws_handle_delete_list(
         return
 
     connection.send_result(msg["id"], {"success": True})
+
+
+# ── Notification rules ──────────────────────────────────────────────
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_TYPE_NOTIFICATION_RULES,
+        vol.Optional("scope"): vol.In(["calendar", "template", "event"]),
+        vol.Optional("scope_id"): str,
+    }
+)
+@callback
+def ws_handle_notification_rules(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Return notification rules, optionally filtered by scope + scope_id."""
+    store = _get_store(hass)
+    if store is None:
+        connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
+        return
+
+    scope = msg.get("scope")
+    scope_id = msg.get("scope_id")
+
+    if scope and scope_id:
+        rules = store.get_rules_for_scope(scope, scope_id)
+    elif scope:
+        # Filter by scope only (e.g. all calendar rules).
+        rules = [
+            r for r in store.get_notification_rules().values()
+            if r.scope == scope
+        ]
+    else:
+        rules = list(store.get_notification_rules().values())
+
+    # Filter by read permissions: only return rules for calendars the
+    # user can read (respects strict privacy and per-calendar roles).
+    is_admin = connection.user.is_admin if connection.user else False
+    strict = is_strict_privacy(hass)
+    if not is_admin and strict:
+        user_id = connection.user.id if connection.user else None
+        visible: list = []
+        for r in rules:
+            cal_id = None
+            if r.scope == "calendar":
+                cal_id = r.scope_id
+            elif r.scope == "template":
+                tpl = store.get_template(r.scope_id)
+                cal_id = tpl.calendar_id if tpl else None
+            elif r.scope == "event":
+                evt = store.get_event(r.scope_id)
+                cal_id = evt.calendar_id if evt else None
+            if cal_id is None or can_read(store, user_id, "calendar", cal_id):
+                visible.append(r)
+        rules = visible
+
+    connection.send_result(msg["id"], [r.to_dict() for r in rules])
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_TYPE_CREATE_NOTIFICATION_RULE,
+        vol.Required("scope"): vol.In(["calendar", "template", "event"]),
+        vol.Required("scope_id"): str,
+        vol.Optional("enabled", default=True): bool,
+        vol.Optional("reminder_minutes", default=60): vol.All(
+            vol.Coerce(int), vol.Range(min=0, max=1440)
+        ),
+        vol.Optional("notify_services", default=[]): [str],
+        vol.Optional("include_actions", default=True): bool,
+        vol.Optional("custom_title", default=""): str,
+        vol.Optional("custom_message", default=""): str,
+    }
+)
+@websocket_api.async_response
+async def ws_handle_create_notification_rule(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Create a new notification rule."""
+    api = _get_api(hass)
+    if api is None:
+        connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
+        return
+
+    try:
+        rule = await api.async_create_notification_rule(
+            scope=msg["scope"],
+            scope_id=msg["scope_id"],
+            enabled=msg.get("enabled", True),
+            reminder_minutes=msg.get("reminder_minutes", 60),
+            notify_services=msg.get("notify_services", []),
+            include_actions=msg.get("include_actions", True),
+            custom_title=msg.get("custom_title", ""),
+            custom_message=msg.get("custom_message", ""),
+            user_id=connection.user.id if connection.user else None,
+        )
+    except HomeAssistantError as err:
+        connection.send_error(msg["id"], "create_failed", str(err))
+        return
+
+    connection.send_result(msg["id"], rule.to_dict())
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_TYPE_UPDATE_NOTIFICATION_RULE,
+        vol.Required("rule_id"): str,
+        vol.Optional("enabled"): bool,
+        vol.Optional("reminder_minutes"): vol.All(
+            vol.Coerce(int), vol.Range(min=0, max=1440)
+        ),
+        vol.Optional("notify_services"): [str],
+        vol.Optional("include_actions"): bool,
+        vol.Optional("custom_title"): str,
+        vol.Optional("custom_message"): str,
+    }
+)
+@websocket_api.async_response
+async def ws_handle_update_notification_rule(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Update an existing notification rule."""
+    api = _get_api(hass)
+    if api is None:
+        connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
+        return
+
+    try:
+        rule = await api.async_update_notification_rule(
+            rule_id=msg["rule_id"],
+            enabled=msg.get("enabled"),
+            reminder_minutes=msg.get("reminder_minutes"),
+            notify_services=msg.get("notify_services"),
+            include_actions=msg.get("include_actions"),
+            custom_title=msg.get("custom_title"),
+            custom_message=msg.get("custom_message"),
+            user_id=connection.user.id if connection.user else None,
+        )
+    except HomeAssistantError as err:
+        connection.send_error(msg["id"], "update_failed", str(err))
+        return
+
+    connection.send_result(msg["id"], rule.to_dict())
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_TYPE_DELETE_NOTIFICATION_RULE,
+        vol.Required("rule_id"): str,
+    }
+)
+@websocket_api.async_response
+async def ws_handle_delete_notification_rule(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Delete a notification rule."""
+    api = _get_api(hass)
+    if api is None:
+        connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
+        return
+
+    try:
+        await api.async_delete_notification_rule(
+            rule_id=msg["rule_id"],
+            user_id=connection.user.id if connection.user else None,
+        )
+    except HomeAssistantError as err:
+        connection.send_error(msg["id"], "delete_failed", str(err))
+        return
+
+    connection.send_result(msg["id"], {"success": True})
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_TYPE_NOTIFY_SERVICES,
+    }
+)
+@callback
+def ws_handle_notify_services(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Return available notify services for the device picker."""
+    services: list[dict[str, str]] = []
+    notify_domain = hass.services.async_services_for_domain("notify")
+    for service_name in sorted(notify_domain):
+        services.append({
+            "service": f"notify.{service_name}",
+            "name": service_name.replace("_", " ").title(),
+        })
+
+    connection.send_result(msg["id"], services)

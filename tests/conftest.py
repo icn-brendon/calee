@@ -13,6 +13,7 @@ from custom_components.calee.const import (
     DEFAULT_TEMPLATES,
 )
 from custom_components.calee.models import (
+    NotificationRule,
     PlannerCalendar,
     PlannerEvent,
     PlannerList,
@@ -35,6 +36,7 @@ class FakeStore:
         self.tasks: dict[str, PlannerTask] = {}
         self.presets: dict[str, TaskPreset] = {}
         self.routines: dict[str, Routine] = {}
+        self.notification_rules: dict[str, NotificationRule] = {}
         self.roles: list[RoleAssignment] = []
         self.audit_log: list = []
         self._seed_defaults()
@@ -142,6 +144,31 @@ class FakeStore:
     async def async_remove_routine(self, routine_id: str) -> None:
         """Remove a routine from the store."""
         self.routines.pop(routine_id, None)
+
+    def get_notification_rules(self) -> dict[str, NotificationRule]:
+        """Return all notification rules."""
+        return self.notification_rules
+
+    def get_notification_rule(self, rule_id: str) -> NotificationRule | None:
+        """Return a single notification rule."""
+        return self.notification_rules.get(rule_id)
+
+    def get_rules_for_scope(
+        self, scope: str, scope_id: str
+    ) -> list[NotificationRule]:
+        """Return rules matching scope and scope_id."""
+        return [
+            r for r in self.notification_rules.values()
+            if r.scope == scope and r.scope_id == scope_id
+        ]
+
+    async def async_put_notification_rule(self, rule: NotificationRule) -> None:
+        """Insert or update a notification rule."""
+        self.notification_rules[rule.id] = rule
+
+    async def async_remove_notification_rule(self, rule_id: str) -> None:
+        """Remove a notification rule."""
+        self.notification_rules.pop(rule_id, None)
 
     def get_roles(self) -> list[RoleAssignment]:
         """Return all role assignments."""
