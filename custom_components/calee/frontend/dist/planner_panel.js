@@ -13222,6 +13222,16 @@ function weatherSurface(hass) {
     subtitle: `${condition} · Live from Home Assistant`
   };
 }
+function renderPresetIcon(icon) {
+  const trimmed = icon.trim();
+  if (!trimmed) {
+    return "🛒";
+  }
+  if (trimmed.startsWith("mdi:")) {
+    return b`<ha-icon .icon=${trimmed}></ha-icon>`;
+  }
+  return trimmed;
+}
 let CaleeHomePage = class extends i {
   constructor() {
     super(...arguments);
@@ -13528,7 +13538,7 @@ let CaleeHomePage = class extends i {
         const preset = item;
         return b`
                           <button class="shopping-item" @click=${() => this._dispatchPresetAdd(preset)}>
-                            <span class="row-icon" aria-hidden="true">${preset.icon || "🛒"}</span>
+                            <span class="row-icon" aria-hidden="true">${renderPresetIcon(preset.icon)}</span>
                             <div class="shopping-main">
                               <div class="shopping-main-row">
                                 <div class="shopping-title">${preset.title}</div>
@@ -14076,6 +14086,10 @@ CaleeHomePage.styles = i$3`
       color: var(--primary-color, #03a9f4);
       flex-shrink: 0;
       font-size: 14px;
+    }
+
+    .row-icon ha-icon {
+      --mdc-icon-size: 18px;
     }
 
     .badge {

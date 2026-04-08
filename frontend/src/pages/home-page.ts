@@ -173,6 +173,17 @@ function weatherSurface(hass: HomeAssistant | null): WeatherSurface {
   };
 }
 
+function renderPresetIcon(icon: string) {
+  const trimmed = icon.trim();
+  if (!trimmed) {
+    return "🛒";
+  }
+  if (trimmed.startsWith("mdi:")) {
+    return html`<ha-icon .icon=${trimmed}></ha-icon>`;
+  }
+  return trimmed;
+}
+
 @customElement("calee-home-page")
 export class CaleeHomePage extends LitElement {
   @property({ attribute: false }) hass: HomeAssistant | null = null;
@@ -668,6 +679,10 @@ export class CaleeHomePage extends LitElement {
       font-size: 14px;
     }
 
+    .row-icon ha-icon {
+      --mdc-icon-size: 18px;
+    }
+
     .badge {
       display: inline-flex;
       align-items: center;
@@ -1159,7 +1174,7 @@ export class CaleeHomePage extends LitElement {
                         const preset = item as TaskPreset;
                         return html`
                           <button class="shopping-item" @click=${() => this._dispatchPresetAdd(preset)}>
-                            <span class="row-icon" aria-hidden="true">${preset.icon || "🛒"}</span>
+                            <span class="row-icon" aria-hidden="true">${renderPresetIcon(preset.icon)}</span>
                             <div class="shopping-main">
                               <div class="shopping-main-row">
                                 <div class="shopping-title">${preset.title}</div>
