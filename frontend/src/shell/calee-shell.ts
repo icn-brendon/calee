@@ -18,7 +18,10 @@ import { LitElement, html, css, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import type { PlannerStore } from "../store/planner-store.js";
 import type {
+  EventNotificationDraft,
   Conflict,
+  NotificationRule,
+  NotifyServiceOption,
   PlannerEvent,
   PlannerCalendar,
   PlannerTask,
@@ -159,6 +162,14 @@ export class CaleePanel extends LitElement {
   @state() private _editEvent: PlannerEvent | null = null;
   @state() private _showEventDialog = false;
   @state() private _eventDialogDefaults: { date?: string; time?: string; calendar_id?: string } = {};
+  @state() private _eventNotificationDraft: EventNotificationDraft = {
+    mode: "global",
+    ruleId: null,
+    reminderMinutes: 60,
+    notifyService: "",
+    includeActions: true,
+  };
+  @state() private _notifyServices: NotifyServiceOption[] = [];
   @state() private _showTemplatePicker = false;
   @state() private _templatePickerDate = "";
   @state() private _templatePickerTime = "";
@@ -197,6 +208,16 @@ export class CaleePanel extends LitElement {
   private _keyHandler = this._handleKeydown.bind(this);
   private _unsubscribe?: () => void;
   private _tasksLoaded = false;
+
+  private _defaultEventNotificationDraft(): EventNotificationDraft {
+    return {
+      mode: "global",
+      ruleId: null,
+      reminderMinutes: 60,
+      notifyService: "",
+      includeActions: true,
+    };
+  }
 
   // ── Lifecycle ────────────────────────────────────────────────────
 
@@ -514,6 +535,104 @@ export class CaleePanel extends LitElement {
     try {
       this._routines = ((await this.hass.callWS({ type: "calee/routines" })) as Routine[]) ?? [];
     } catch { /* silently handle */ }
+  }
+
+  private async _ensureNotifyServicesLoaded(): Promise<void> {
+    if (!this.hass || this._notifyServices.length > 0) return;
+    try {
+      this._notifyServices = ((await this.hass.callWS({ type: "calee/notify_services" })) as NotifyServiceOption[]) ?? [];
+    } catch {
+      this._notifyServices = [];
+    }
+  }
+
+  private async _loadEventNotificationRule(eventId: string): Promise<NotificationRule | null> {
+    if (!this.hass) return null;
+    try {
+      const rules = ((await this.hass.callWS({
+        type: "calee/notification_rules",
+        scope: "event",
+        scope_id: eventId,
+      })) as NotificationRule[]) ?? []);
+      return rules[0] ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+  private _notificationDraftFromRule(rule: NotificationRule | null): EventNotificationDraft {
+    if (!rule) return this._defaultEventNotificationDraft();
+    return {
+      mode: rule.enabled ? "event" : "disabled",
+      ruleId: rule.id,
+      reminderMinutes: rule.reminder_minutes ?? 60,
+      notifyService: rule.notify_services[0] ?? "",
+      includeActions: rule.include_actions ?? true,
+    };
+  }
+
+  private async _openEventDialog(
+    event: PlannerEvent | null,
+    defaults: { date?: string; time?: string; calendar_id?: string } = {},
+  ): Promise<void> {
+    await this._ensureNotifyServicesLoaded();
+    const rule = event?.id ? await this._loadEventNotificationRule(event.id) : null;
+    this._editEvent = event;
+    this._eventDialogDefaults = defaults;
+    this._eventNotificationDraft = this._notificationDraftFromRule(rule);
+    this._showEventDialog = true;
+  }
+
+  private async _syncEventNotificationRule(
+    eventId: string,
+    notification: EventNotificationDraft | undefined,
+  ): Promise<void> {
+    if (!this.hass || !notification) return;
+
+    const payload = {
+      reminder_minutes: notification.reminderMinutes,
+      notify_services: notification.notifyService ? [notification.notifyService] : [],
+      include_actions: notification.includeActions,
+    };
+
+    if (notification.mode === "global") {
+      if (notification.ruleId) {
+        await this.hass.callWS({
+          type: "calee/delete_notification_rule",
+          rule_id: notification.ruleId,
+        });
+      }
+      return;
+    }
+
+    if (notification.ruleId) {
+      await this.hass.callWS({
+        type: "calee/update_notification_rule",
+        rule_id: notification.ruleId,
+        enabled: notification.mode === "event",
+        ...payload,
+      });
+      return;
+    }
+
+    await this.hass.callWS({
+      type: "calee/create_notification_rule",
+      scope: "event",
+      scope_id: eventId,
+      enabled: notification.mode === "event",
+      ...payload,
+    });
+  }
+
+  private async _applyEventNotificationDraft(
+    eventId: string,
+    notification: EventNotificationDraft | undefined,
+  ): Promise<void> {
+    try {
+      await this._syncEventNotificationRule(eventId, notification);
+    } catch (err) {
+      console.error("Failed to save event notification settings:", err);
+    }
   }
 
   // ── Calendar Toggle ──────────────────────────────────────────────
@@ -890,6 +1009,8 @@ export class CaleePanel extends LitElement {
         .event=${this._editEvent}
         .calendars=${this._rawCalendars}
         .defaults=${this._eventDialogDefaults}
+        .notifyServices=${this._notifyServices}
+        .notificationDraft=${this._eventNotificationDraft}
         ?open=${this._showEventDialog}
         @event-save=${this._onEventSave}
         @event-delete=${this._onEventDelete}
@@ -1123,8 +1244,7 @@ export class CaleePanel extends LitElement {
     const { item, itemType } = e.detail;
     this._closeDetailDrawer();
     if (itemType === "event") {
-      this._editEvent = item;
-      this._showEventDialog = true;
+      void this._openEventDialog(item as PlannerEvent);
     } else {
       window.location.hash = `#/tasks/${item.id}`;
     }
@@ -1177,8 +1297,7 @@ export class CaleePanel extends LitElement {
           this._recurringActionEvent = event;
           this._showRecurringActionDialog = true;
         } else {
-          this._editEvent = event;
-          this._showEventDialog = true;
+          void this._openEventDialog(event);
         }
       } else {
         this._openDetailDrawer(event, "event");
@@ -1188,8 +1307,7 @@ export class CaleePanel extends LitElement {
 
   private _onEventSelect(e: CustomEvent<{ event: PlannerEvent }>): void {
     if (this.narrow) {
-      this._editEvent = e.detail.event;
-      this._showEventDialog = true;
+      void this._openEventDialog(e.detail.event);
     } else {
       this._openDetailDrawer(e.detail.event, "event");
     }
@@ -1450,10 +1568,12 @@ export class CaleePanel extends LitElement {
       this._rawCalendars.find((c) => c.id === "personal") ??
       this._rawCalendars.find((c) => c.id !== "work_shifts") ??
       this._rawCalendars[0];
-    this._editEvent = null;
-    this._eventDialogDefaults = { date: e.detail.date, time: e.detail.time, calendar_id: nonWorkCal?.id };
     this._showTemplatePicker = false;
-    this._showEventDialog = true;
+    void this._openEventDialog(null, {
+      date: e.detail.date,
+      time: e.detail.time,
+      calendar_id: nonWorkCal?.id,
+    });
   }
 
   private _onManageTemplates(): void {
@@ -1484,6 +1604,7 @@ export class CaleePanel extends LitElement {
         if (standalone) {
           this._events = this._events.filter((ev) => ev.id !== `${occParentId}_${occDate}`);
           this._events = [...this._events, standalone as PlannerEvent];
+          await this._applyEventNotificationDraft((standalone as PlannerEvent).id, detail.notification);
         }
       } else if (detail.id) {
         const updated = await this.hass.callWS({
@@ -1491,7 +1612,10 @@ export class CaleePanel extends LitElement {
           title: detail.title, start: detail.start, end: detail.end,
           note: detail.note, recurrence_rule: detail.recurrence_rule ?? undefined,
         });
-        if (updated) this._events = this._events.map((ev) => ev.id === detail.id ? (updated as PlannerEvent) : ev);
+        if (updated) {
+          this._events = this._events.map((ev) => ev.id === detail.id ? (updated as PlannerEvent) : ev);
+          await this._applyEventNotificationDraft(detail.id, detail.notification);
+        }
       } else {
         const created = await this.hass.callWS({
           type: "calee/create_event", calendar_id: detail.calendar_id,
@@ -1499,7 +1623,10 @@ export class CaleePanel extends LitElement {
           note: detail.note, recurrence_rule: detail.recurrence_rule ?? undefined,
           template_id: detail.template_id ?? undefined,
         });
-        if (created) this._events = [...this._events, created as PlannerEvent];
+        if (created) {
+          this._events = [...this._events, created as PlannerEvent];
+          await this._applyEventNotificationDraft((created as PlannerEvent).id, detail.notification);
+        }
       }
       this._recomputeConflicts();
     } catch (err) { console.error("Failed to save event:", err); }
@@ -1527,6 +1654,7 @@ export class CaleePanel extends LitElement {
     this._showSettings = false;
     this._editEvent = null;
     this._eventDialogDefaults = {};
+    this._eventNotificationDraft = this._defaultEventNotificationDraft();
     this._templatePickerDate = "";
     this._templatePickerTime = "";
   }
@@ -1607,8 +1735,7 @@ export class CaleePanel extends LitElement {
     const standalone: PlannerEvent = { ...event, id: "", recurrence_rule: null, exceptions: [] };
     (standalone as any)._occurrenceParentId = parentId;
     (standalone as any)._occurrenceDate = occDate;
-    this._editEvent = standalone;
-    this._showEventDialog = true;
+    await this._openEventDialog(standalone);
   }
 
   private _onEditAllOccurrences(event: PlannerEvent): void {
@@ -1621,8 +1748,7 @@ export class CaleePanel extends LitElement {
       const allEvents = (await this.hass.callWS({ type: "calee/events" })) as PlannerEvent[];
       const parent = allEvents.find((e) => e.id === parentId);
       if (parent) {
-        this._editEvent = parent;
-        this._showEventDialog = true;
+        await this._openEventDialog(parent);
       }
     } catch { console.error("Failed to load parent event"); }
   }

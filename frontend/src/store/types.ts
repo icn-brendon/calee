@@ -144,6 +144,21 @@ export interface NotificationRule {
   created_at: string;
 }
 
+export interface NotifyServiceOption {
+  service: string;
+  name: string;
+}
+
+export type EventNotificationMode = "global" | "event" | "disabled";
+
+export interface EventNotificationDraft {
+  mode: EventNotificationMode;
+  ruleId: string | null;
+  reminderMinutes: number;
+  notifyService: string;
+  includeActions: boolean;
+}
+
 // ── Audit Entry ──────────────────────────────────────────────────────
 
 export interface AuditEntry {

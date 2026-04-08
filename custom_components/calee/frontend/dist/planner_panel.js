@@ -6926,6 +6926,8 @@ let CaleeEventDialog = class extends i {
     this.calendars = [];
     this.open = false;
     this.defaults = {};
+    this.notifyServices = [];
+    this.notificationDraft = null;
     this._title = "";
     this._calendarId = "";
     this._start = "";
@@ -6933,6 +6935,11 @@ let CaleeEventDialog = class extends i {
     this._note = "";
     this._recurrenceRule = "";
     this._templateId = null;
+    this._notificationMode = "global";
+    this._notificationRuleId = null;
+    this._notificationReminderMinutes = 60;
+    this._notificationService = "";
+    this._notificationIncludeActions = true;
   }
   /* ── Lifecycle ──────────────────────────────────────────────────── */
   willUpdate(changed) {
@@ -6942,6 +6949,7 @@ let CaleeEventDialog = class extends i {
   }
   _populateForm() {
     const ev = this.event;
+    const notification = this.notificationDraft;
     if (ev) {
       this._title = ev.title;
       this._calendarId = ev.calendar_id;
@@ -6975,6 +6983,11 @@ let CaleeEventDialog = class extends i {
       this._recurrenceRule = "";
       this._templateId = null;
     }
+    this._notificationMode = notification?.mode ?? "global";
+    this._notificationRuleId = notification?.ruleId ?? null;
+    this._notificationReminderMinutes = notification?.reminderMinutes ?? 60;
+    this._notificationService = notification?.notifyService ?? "";
+    this._notificationIncludeActions = notification?.includeActions ?? true;
   }
   /* ── Events ─────────────────────────────────────────────────────── */
   _onSave() {
@@ -6990,7 +7003,14 @@ let CaleeEventDialog = class extends i {
           note: this._note,
           recurrence_rule: this._recurrenceRule || null,
           template_id: this._templateId,
-          version: this.event?.version ?? 0
+          version: this.event?.version ?? 0,
+          notification: {
+            mode: this._notificationMode,
+            ruleId: this._notificationRuleId,
+            reminderMinutes: this._notificationReminderMinutes,
+            notifyService: this._notificationService,
+            includeActions: this._notificationIncludeActions
+          }
         },
         bubbles: true,
         composed: true
@@ -7116,6 +7136,93 @@ let CaleeEventDialog = class extends i {
                   </button>
                 `
     )}
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Notifications</label>
+            <div class="section-card">
+              <div class="section-title">Event reminder behavior</div>
+              <div class="section-hint">
+                Choose whether this event should follow your global reminder settings, use its own event rule, or save an event-specific disabled rule.
+              </div>
+              <div class="mode-pills">
+                ${[
+      { value: "global", label: "Use global" },
+      { value: "event", label: "Notify this event" },
+      { value: "disabled", label: "Disable this event" }
+    ].map(
+      (option) => b`
+                    <button
+                      type="button"
+                      class="mode-pill"
+                      ?active=${this._notificationMode === option.value}
+                      @click=${() => this._notificationMode = option.value}
+                    >
+                      ${option.label}
+                    </button>
+                  `
+    )}
+              </div>
+
+              ${this._notificationMode === "event" ? b`
+                    <div class="row">
+                      <div class="field">
+                        <label for="evt-reminder-minutes">Reminder minutes</label>
+                        <input
+                          id="evt-reminder-minutes"
+                          type="number"
+                          min="0"
+                          max="1440"
+                          .value=${String(this._notificationReminderMinutes)}
+                          @input=${(e2) => {
+      const value = Number(e2.target.value);
+      this._notificationReminderMinutes = Number.isFinite(value) ? Math.max(0, Math.min(1440, value)) : 60;
+    }}
+                        />
+                      </div>
+                      <div class="field">
+                        <label for="evt-notify-service">Notify service</label>
+                        <select
+                          id="evt-notify-service"
+                          .value=${this._notificationService}
+                          @change=${(e2) => {
+      this._notificationService = e2.target.value;
+    }}
+                        >
+                          <option value="">Use default notify routing</option>
+                          ${this.notifyServices.map(
+      (service) => b`
+                              <option value=${service.service}>${service.name}</option>
+                            `
+    )}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="toggle-row">
+                      <div>
+                        <div class="toggle-label">Rich notification actions</div>
+                        <div class="toggle-desc">Show open and snooze actions when the target device supports them.</div>
+                      </div>
+                      <input
+                        class="toggle"
+                        type="checkbox"
+                        .checked=${this._notificationIncludeActions}
+                        @change=${(e2) => {
+      this._notificationIncludeActions = e2.target.checked;
+    }}
+                      />
+                    </div>
+                  ` : this._notificationMode === "disabled" ? b`
+                    <div class="section-hint" style="margin: 0;">
+                      This saves an event-specific disabled rule so broader reminder settings will skip this event.
+                    </div>
+                  ` : b`
+                    <div class="section-hint" style="margin: 0;">
+                      No event rule will be saved. The event will follow whichever broader notification settings already apply.
+                    </div>
+                  `}
             </div>
           </div>
 
@@ -7292,6 +7399,80 @@ CaleeEventDialog.styles = i$3`
       color: var(--primary-color, #03a9f4);
     }
 
+    .section-card {
+      margin-top: 8px;
+      padding: 14px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      border-radius: 12px;
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.02));
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary-text-color, #212121);
+      margin-bottom: 4px;
+    }
+
+    .section-hint {
+      font-size: 12px;
+      color: var(--secondary-text-color, #757575);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .mode-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0 12px;
+    }
+
+    .mode-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--divider-color, #e0e0e0);
+      background: var(--card-background-color, #fff);
+      cursor: pointer;
+      font-size: 12px;
+      font-family: inherit;
+      color: var(--primary-text-color, #212121);
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .mode-pill[active] {
+      background: color-mix(in srgb, var(--primary-color, #03a9f4) 15%, transparent);
+      border-color: var(--primary-color, #03a9f4);
+      color: var(--primary-color, #03a9f4);
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid color-mix(in srgb, var(--divider-color, #e0e0e0) 70%, transparent);
+    }
+
+    .toggle-label {
+      font-size: 13px;
+      color: var(--primary-text-color, #212121);
+    }
+
+    .toggle-desc {
+      font-size: 12px;
+      color: var(--secondary-text-color, #757575);
+      margin-top: 2px;
+    }
+
+    .toggle {
+      width: auto;
+      margin: 0;
+      accent-color: var(--primary-color, #03a9f4);
+    }
+
     /* ── Calendar color swatch in dropdown ────────────────────── */
 
     .cal-option {
@@ -7323,6 +7504,12 @@ __decorateClass$j([
   n2({ type: Object })
 ], CaleeEventDialog.prototype, "defaults", 2);
 __decorateClass$j([
+  n2({ type: Array })
+], CaleeEventDialog.prototype, "notifyServices", 2);
+__decorateClass$j([
+  n2({ type: Object })
+], CaleeEventDialog.prototype, "notificationDraft", 2);
+__decorateClass$j([
   r()
 ], CaleeEventDialog.prototype, "_title", 2);
 __decorateClass$j([
@@ -7343,6 +7530,21 @@ __decorateClass$j([
 __decorateClass$j([
   r()
 ], CaleeEventDialog.prototype, "_templateId", 2);
+__decorateClass$j([
+  r()
+], CaleeEventDialog.prototype, "_notificationMode", 2);
+__decorateClass$j([
+  r()
+], CaleeEventDialog.prototype, "_notificationRuleId", 2);
+__decorateClass$j([
+  r()
+], CaleeEventDialog.prototype, "_notificationReminderMinutes", 2);
+__decorateClass$j([
+  r()
+], CaleeEventDialog.prototype, "_notificationService", 2);
+__decorateClass$j([
+  r()
+], CaleeEventDialog.prototype, "_notificationIncludeActions", 2);
 CaleeEventDialog = __decorateClass$j([
   t("calee-event-dialog")
 ], CaleeEventDialog);
@@ -9185,8 +9387,8 @@ let CaleeSettingsDialog = class extends i {
 
             <div class="setting-row">
               <div>
-                <div class="setting-label">Event reminders</div>
-                <div class="setting-desc">Enable scheduled reminder notifications for selected calendars.</div>
+                <div class="setting-label">Default event reminders</div>
+                <div class="setting-desc">Notify for all selected reminder calendars unless an event-specific notification rule overrides it.</div>
               </div>
               <div class="toggle-group">
                 <button
@@ -16116,6 +16318,14 @@ let CaleePanel = class extends i {
     this._editEvent = null;
     this._showEventDialog = false;
     this._eventDialogDefaults = {};
+    this._eventNotificationDraft = {
+      mode: "global",
+      ruleId: null,
+      reminderMinutes: 60,
+      notifyService: "",
+      includeActions: true
+    };
+    this._notifyServices = [];
     this._showTemplatePicker = false;
     this._templatePickerDate = "";
     this._templatePickerTime = "";
@@ -16140,6 +16350,15 @@ let CaleePanel = class extends i {
     this._keyHandler = this._handleKeydown.bind(this);
     this._tasksLoaded = false;
     this._refreshTimers = /* @__PURE__ */ new Map();
+  }
+  _defaultEventNotificationDraft() {
+    return {
+      mode: "global",
+      ruleId: null,
+      reminderMinutes: 60,
+      notifyService: "",
+      includeActions: true
+    };
   }
   /** Guard against adoptedStyleSheets polyfill crashes in older browsers. */
   createRenderRoot() {
@@ -16453,6 +16672,85 @@ let CaleePanel = class extends i {
     } catch {
     }
   }
+  async _ensureNotifyServicesLoaded() {
+    if (!this.hass || this._notifyServices.length > 0) return;
+    try {
+      this._notifyServices = await this.hass.callWS({ type: "calee/notify_services" }) ?? [];
+    } catch {
+      this._notifyServices = [];
+    }
+  }
+  async _loadEventNotificationRule(eventId) {
+    if (!this.hass) return null;
+    try {
+      const rules = await this.hass.callWS({
+        type: "calee/notification_rules",
+        scope: "event",
+        scope_id: eventId
+      }) ?? [];
+      return rules[0] ?? null;
+    } catch {
+      return null;
+    }
+  }
+  _notificationDraftFromRule(rule) {
+    if (!rule) return this._defaultEventNotificationDraft();
+    return {
+      mode: rule.enabled ? "event" : "disabled",
+      ruleId: rule.id,
+      reminderMinutes: rule.reminder_minutes ?? 60,
+      notifyService: rule.notify_services[0] ?? "",
+      includeActions: rule.include_actions ?? true
+    };
+  }
+  async _openEventDialog(event, defaults = {}) {
+    await this._ensureNotifyServicesLoaded();
+    const rule = event?.id ? await this._loadEventNotificationRule(event.id) : null;
+    this._editEvent = event;
+    this._eventDialogDefaults = defaults;
+    this._eventNotificationDraft = this._notificationDraftFromRule(rule);
+    this._showEventDialog = true;
+  }
+  async _syncEventNotificationRule(eventId, notification) {
+    if (!this.hass || !notification) return;
+    const payload = {
+      reminder_minutes: notification.reminderMinutes,
+      notify_services: notification.notifyService ? [notification.notifyService] : [],
+      include_actions: notification.includeActions
+    };
+    if (notification.mode === "global") {
+      if (notification.ruleId) {
+        await this.hass.callWS({
+          type: "calee/delete_notification_rule",
+          rule_id: notification.ruleId
+        });
+      }
+      return;
+    }
+    if (notification.ruleId) {
+      await this.hass.callWS({
+        type: "calee/update_notification_rule",
+        rule_id: notification.ruleId,
+        enabled: notification.mode === "event",
+        ...payload
+      });
+      return;
+    }
+    await this.hass.callWS({
+      type: "calee/create_notification_rule",
+      scope: "event",
+      scope_id: eventId,
+      enabled: notification.mode === "event",
+      ...payload
+    });
+  }
+  async _applyEventNotificationDraft(eventId, notification) {
+    try {
+      await this._syncEventNotificationRule(eventId, notification);
+    } catch (err) {
+      console.error("Failed to save event notification settings:", err);
+    }
+  }
   // ── Calendar Toggle ──────────────────────────────────────────────
   _toggleCalendar(id) {
     this._calendars = this._calendars.map(
@@ -16638,6 +16936,8 @@ let CaleePanel = class extends i {
         .event=${this._editEvent}
         .calendars=${this._rawCalendars}
         .defaults=${this._eventDialogDefaults}
+        .notifyServices=${this._notifyServices}
+        .notificationDraft=${this._eventNotificationDraft}
         ?open=${this._showEventDialog}
         @event-save=${this._onEventSave}
         @event-delete=${this._onEventDelete}
@@ -16863,8 +17163,7 @@ let CaleePanel = class extends i {
     const { item, itemType } = e2.detail;
     this._closeDetailDrawer();
     if (itemType === "event") {
-      this._editEvent = item;
-      this._showEventDialog = true;
+      void this._openEventDialog(item);
     } else {
       window.location.hash = `#/tasks/${item.id}`;
     }
@@ -16911,8 +17210,7 @@ let CaleePanel = class extends i {
           this._recurringActionEvent = event;
           this._showRecurringActionDialog = true;
         } else {
-          this._editEvent = event;
-          this._showEventDialog = true;
+          void this._openEventDialog(event);
         }
       } else {
         this._openDetailDrawer(event, "event");
@@ -16921,8 +17219,7 @@ let CaleePanel = class extends i {
   }
   _onEventSelect(e2) {
     if (this.narrow) {
-      this._editEvent = e2.detail.event;
-      this._showEventDialog = true;
+      void this._openEventDialog(e2.detail.event);
     } else {
       this._openDetailDrawer(e2.detail.event, "event");
     }
@@ -17176,10 +17473,12 @@ let CaleePanel = class extends i {
   }
   _onCustomEvent(e2) {
     const nonWorkCal = this._rawCalendars.find((c2) => c2.id === "family_shared") ?? this._rawCalendars.find((c2) => c2.id === "personal") ?? this._rawCalendars.find((c2) => c2.id !== "work_shifts") ?? this._rawCalendars[0];
-    this._editEvent = null;
-    this._eventDialogDefaults = { date: e2.detail.date, time: e2.detail.time, calendar_id: nonWorkCal?.id };
     this._showTemplatePicker = false;
-    this._showEventDialog = true;
+    void this._openEventDialog(null, {
+      date: e2.detail.date,
+      time: e2.detail.time,
+      calendar_id: nonWorkCal?.id
+    });
   }
   _onManageTemplates() {
     this._showTemplatePicker = false;
@@ -17214,6 +17513,7 @@ let CaleePanel = class extends i {
         if (standalone) {
           this._events = this._events.filter((ev) => ev.id !== `${occParentId}_${occDate}`);
           this._events = [...this._events, standalone];
+          await this._applyEventNotificationDraft(standalone.id, detail.notification);
         }
       } else if (detail.id) {
         const updated = await this.hass.callWS({
@@ -17226,7 +17526,10 @@ let CaleePanel = class extends i {
           note: detail.note,
           recurrence_rule: detail.recurrence_rule ?? void 0
         });
-        if (updated) this._events = this._events.map((ev) => ev.id === detail.id ? updated : ev);
+        if (updated) {
+          this._events = this._events.map((ev) => ev.id === detail.id ? updated : ev);
+          await this._applyEventNotificationDraft(detail.id, detail.notification);
+        }
       } else {
         const created = await this.hass.callWS({
           type: "calee/create_event",
@@ -17238,7 +17541,10 @@ let CaleePanel = class extends i {
           recurrence_rule: detail.recurrence_rule ?? void 0,
           template_id: detail.template_id ?? void 0
         });
-        if (created) this._events = [...this._events, created];
+        if (created) {
+          this._events = [...this._events, created];
+          await this._applyEventNotificationDraft(created.id, detail.notification);
+        }
       }
       this._recomputeConflicts();
     } catch (err) {
@@ -17268,6 +17574,7 @@ let CaleePanel = class extends i {
     this._showSettings = false;
     this._editEvent = null;
     this._eventDialogDefaults = {};
+    this._eventNotificationDraft = this._defaultEventNotificationDraft();
     this._templatePickerDate = "";
     this._templatePickerTime = "";
   }
@@ -17343,8 +17650,7 @@ let CaleePanel = class extends i {
     const standalone = { ...event, id: "", recurrence_rule: null, exceptions: [] };
     standalone._occurrenceParentId = parentId;
     standalone._occurrenceDate = occDate;
-    this._editEvent = standalone;
-    this._showEventDialog = true;
+    await this._openEventDialog(standalone);
   }
   _onEditAllOccurrences(event) {
     const parentId = event.parent_event_id || event.id.split("_").slice(0, -1).join("_");
@@ -17355,8 +17661,7 @@ let CaleePanel = class extends i {
       const allEvents = await this.hass.callWS({ type: "calee/events" });
       const parent = allEvents.find((e2) => e2.id === parentId);
       if (parent) {
-        this._editEvent = parent;
-        this._showEventDialog = true;
+        await this._openEventDialog(parent);
       }
     } catch {
       console.error("Failed to load parent event");
@@ -17769,6 +18074,12 @@ __decorateClass([
 __decorateClass([
   r()
 ], CaleePanel.prototype, "_eventDialogDefaults", 2);
+__decorateClass([
+  r()
+], CaleePanel.prototype, "_eventNotificationDraft", 2);
+__decorateClass([
+  r()
+], CaleePanel.prototype, "_notifyServices", 2);
 __decorateClass([
   r()
 ], CaleePanel.prototype, "_showTemplatePicker", 2);
