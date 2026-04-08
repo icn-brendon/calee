@@ -60,6 +60,7 @@ export interface PlannerTask {
   quantity: number;
   unit: string;
   price: number | null;
+  position: number;
   version: number;
   deleted_at: string | null;
   created_at: string;

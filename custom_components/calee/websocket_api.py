@@ -63,6 +63,7 @@ from .const import (
     WS_TYPE_LINK_TASK_TO_EVENT,
     WS_TYPE_LISTS,
     WS_TYPE_PRESETS,
+    WS_TYPE_REORDER_TASK,
     WS_TYPE_RESTORE_EVENT,
     WS_TYPE_RESTORE_TASK,
     WS_TYPE_ROUTINES,
@@ -121,6 +122,7 @@ def async_register_websocket_commands(hass: HomeAssistant) -> None:
     websocket_api.async_register_command(hass, ws_handle_add_from_preset)
     websocket_api.async_register_command(hass, ws_handle_restore_event)
     websocket_api.async_register_command(hass, ws_handle_restore_task)
+    websocket_api.async_register_command(hass, ws_handle_reorder_task)
     websocket_api.async_register_command(hass, ws_handle_subscribe)
     websocket_api.async_register_command(hass, ws_handle_get_settings)
     websocket_api.async_register_command(hass, ws_handle_update_settings)
@@ -1281,6 +1283,43 @@ async def ws_handle_restore_task(
         return
 
     connection.send_result(msg["id"], task.to_dict())
+
+
+# ── Reorder task ────────────────────────────────────────────────────
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_TYPE_REORDER_TASK,
+        vol.Required("task_id"): str,
+        vol.Required("before_task_id"): str,
+        vol.Required("version"): vol.Coerce(int),
+    }
+)
+@websocket_api.async_response
+async def ws_handle_reorder_task(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Reorder a task by moving it before another task."""
+    api = _get_api(hass)
+    if api is None:
+        connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
+        return
+
+    try:
+        updated = await api.async_reorder_task(
+            task_id=msg["task_id"],
+            before_task_id=msg["before_task_id"],
+            version=msg["version"],
+            user_id=connection.user.id if connection.user else None,
+        )
+    except HomeAssistantError as err:
+        connection.send_error(msg["id"], "reorder_failed", str(err))
+        return
+
+    connection.send_result(msg["id"], updated.to_dict() if updated else None)
 
 
 # ── Settings ────────────────────────────────────────────────────────

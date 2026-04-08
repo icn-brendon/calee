@@ -74,7 +74,17 @@ from .const import (
 )
 from .db.base import AbstractPlannerStore
 from .importer import ImportResult, parse_csv, parse_ics
-from .models import PlannerCalendar, PlannerEvent, PlannerList, PlannerTask, Routine, ShiftTemplate, TaskPreset, _new_id
+from .models import (
+    PlannerCalendar,
+    PlannerEvent,
+    PlannerList,
+    PlannerTask,
+    Routine,
+    ShiftTemplate,
+    TaskPreset,
+    _new_id,
+    _utc_now_iso,
+)
 from .permissions import async_require_write
 from .recurrence import next_due_date, parse_recurrence
 
@@ -741,6 +751,64 @@ class PlannerAPI:
             detail=f"Restored task '{task.title}'",
         )
         self._fire_change("restore", "task", task.id)
+        await self._store.async_save()
+        return task
+
+    async def async_reorder_task(
+        self,
+        task_id: str,
+        before_task_id: str,
+        version: int,
+        user_id: str | None = None,
+    ) -> PlannerTask:
+        """Move *task_id* so it appears just before *before_task_id*.
+
+        Updates ``position`` fields on all tasks in the same list.
+        """
+        task = self._store.get_task(task_id)
+        if task is None:
+            raise HomeAssistantError(f"Task '{task_id}' not found")
+        if task.version != version:
+            raise HomeAssistantError("Version conflict — please reload and try again")
+
+        before = self._store.get_task(before_task_id)
+        if before is None:
+            raise HomeAssistantError(f"Target task '{before_task_id}' not found")
+
+        await async_require_write(
+            self._hass, self._store, user_id, "list", task.list_id
+        )
+
+        # Gather all active tasks in the same list, ordered by position.
+        siblings = sorted(
+            self._store.get_active_tasks(list_id=task.list_id),
+            key=lambda t: t.position,
+        )
+
+        # Remove the dragged task from the list.
+        siblings = [t for t in siblings if t.id != task_id]
+
+        # Find the insertion index (before the target).
+        insert_idx = next(
+            (i for i, t in enumerate(siblings) if t.id == before_task_id),
+            len(siblings),
+        )
+        siblings.insert(insert_idx, task)
+
+        # Reassign positions.
+        for idx, t in enumerate(siblings):
+            t.position = idx
+            t.updated_at = _utc_now_iso()
+            t.version += 1
+
+        self._store.record_audit(
+            user_id=user_id or "",
+            action=AuditAction.UPDATE,
+            resource_type="task",
+            resource_id=task.id,
+            detail=f"Reordered task '{task.title}' before '{before.title}'",
+        )
+        self._fire_change("update", "task", task.id)
         await self._store.async_save()
         return task
 
