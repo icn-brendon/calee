@@ -113,7 +113,12 @@ export function sortTasks(tasks: readonly import("../store/types.js").PlannerTas
       return arr.sort((a, b) => b.created_at.localeCompare(a.created_at));
     case "manual":
     default:
-      return arr.sort((a, b) => a.position - b.position);
+      // Sort by list_id first (so tasks from different lists don't interleave),
+      // then by position within each list.
+      return arr.sort((a, b) => {
+        const listCmp = a.list_id.localeCompare(b.list_id);
+        return listCmp !== 0 ? listCmp : a.position - b.position;
+      });
   }
 }
 

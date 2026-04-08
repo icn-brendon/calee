@@ -1166,17 +1166,23 @@ export class CaleePanel extends LitElement {
 
   private async _onTaskReorder(e: CustomEvent<{ taskId: string; beforeTaskId: string }>): Promise<void> {
     const { taskId, beforeTaskId } = e.detail;
-    // Compute new position order
-    const targetIdx = this._tasks.findIndex((t) => t.id === beforeTaskId);
-    if (targetIdx < 0) return;
     const task = this._tasks.find((t) => t.id === taskId);
-    if (!task) return;
+    const beforeTask = this._tasks.find((t) => t.id === beforeTaskId);
+    if (!task || !beforeTask || task.list_id !== beforeTask.list_id) return;
 
-    // Optimistic reorder in local state
-    const reordered = this._tasks.filter((t) => t.id !== taskId);
-    const insertIdx = reordered.findIndex((t) => t.id === beforeTaskId);
-    reordered.splice(insertIdx, 0, { ...task, position: insertIdx });
-    this._tasks = reordered.map((t, i) => ({ ...t, position: i }));
+    // Optimistic reorder scoped to the task's list only
+    const listTasks = this._tasks.filter((t) => t.list_id === task.list_id);
+    const reorderedList = listTasks.filter((t) => t.id !== taskId);
+    const insertIdx = reorderedList.findIndex((t) => t.id === beforeTaskId);
+    if (insertIdx < 0) return;
+
+    reorderedList.splice(insertIdx, 0, { ...task, position: insertIdx });
+    const renumberedList = reorderedList.map((t, i) => ({ ...t, position: i }));
+    const renumberedById = new Map(renumberedList.map((t) => [t.id, t]));
+
+    this._tasks = this._tasks.map((t) =>
+      t.list_id === task.list_id ? (renumberedById.get(t.id) ?? t) : t,
+    );
 
     try {
       await this.hass.callWS({

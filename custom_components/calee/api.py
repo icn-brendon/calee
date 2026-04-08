@@ -763,7 +763,9 @@ class PlannerAPI:
     ) -> PlannerTask:
         """Move *task_id* so it appears just before *before_task_id*.
 
-        Updates ``position`` fields on all tasks in the same list.
+        Both tasks must belong to the same list. Only tasks whose
+        position actually changes are persisted, avoiding unnecessary
+        optimistic-lock conflicts on untouched siblings.
         """
         task = self._store.get_task(task_id)
         if task is None:
@@ -774,6 +776,13 @@ class PlannerAPI:
         before = self._store.get_task(before_task_id)
         if before is None:
             raise HomeAssistantError(f"Target task '{before_task_id}' not found")
+
+        # Both tasks must be in the same list.
+        if before.list_id != task.list_id:
+            raise HomeAssistantError(
+                f"Cannot reorder across lists: task is in '{task.list_id}', "
+                f"target is in '{before.list_id}'"
+            )
 
         await async_require_write(
             self._hass, self._store, user_id, "list", task.list_id
@@ -795,11 +804,14 @@ class PlannerAPI:
         )
         siblings.insert(insert_idx, task)
 
-        # Reassign positions.
+        # Reassign positions — only mutate tasks whose position changed.
+        now = _utc_now_iso()
         for idx, t in enumerate(siblings):
-            t.position = idx
-            t.updated_at = _utc_now_iso()
-            t.version += 1
+            if t.position != idx:
+                t.position = idx
+                t.updated_at = now
+                t.version += 1
+                await self._store.async_put_task(t)
 
         self._store.record_audit(
             user_id=user_id or "",

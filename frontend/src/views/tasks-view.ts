@@ -341,6 +341,11 @@ export class CaleeTasksView extends LitElement {
 
     if (!draggedId || draggedId === targetTaskId) return;
 
+    // Guard: only reorder within the same list.
+    const dragged = this.tasks.find((t) => t.id === draggedId);
+    const target = this.tasks.find((t) => t.id === targetTaskId);
+    if (!dragged || !target || dragged.list_id !== target.list_id) return;
+
     this.dispatchEvent(
       new CustomEvent("task-reorder", {
         detail: { taskId: draggedId, beforeTaskId: targetTaskId },
