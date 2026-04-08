@@ -13716,6 +13716,7 @@ let CaleeHomePage = class extends i {
                   <div class="weather-subtitle">${weather.title} · ${weather.subtitle}</div>
                 </div>
               </div>
+
               ${activeEventProgress.length > 0 ? b`
                     <div class="live-events-card">
                       <div class="live-events-head">
