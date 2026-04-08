@@ -58,6 +58,8 @@ import "../pages/calendar-page.js";
 import "../pages/tasks-page.js";
 import "../pages/shopping-page.js";
 import "../pages/more-page.js";
+import "../components/task-edit-sheet.js";
+import "../components/undo-snackbar.js";
 
 // ── Types ──────────────────────────────────────────────────────────
 
@@ -179,6 +181,13 @@ export class CaleePanel extends LitElement {
 
   // ── Shopping toast ─────────────────────────────────────────────────
   @state() private _shoppingToast = "";
+
+  // ── Task edit sheet ───────────────────────────────────────────────
+  @state() private _editSheetTask: PlannerTask | null = null;
+  @state() private _editSheetOpen = false;
+
+  // ── Undo snackbar ─────────────────────────────────────────────────
+  @state() private _undoAction: { type: "delete"; taskId: string; title: string } | null = null;
 
   // ── More sub-view (year, smart, etc.) ──────────────────────────────
   @state() private _moreSubView: MoreSubView = "year";
@@ -738,6 +747,8 @@ export class CaleePanel extends LitElement {
           @task-delete=${this._onTaskDelete}
           @task-quick-add=${this._onTaskQuickAdd}
           @task-update=${this._onTaskUpdate}
+          @task-edit-open=${this._onTaskEditOpen}
+          @task-reorder=${this._onTaskReorder}
           @task-price-update=${this._onTaskPriceUpdate}
           @task-quantity-update=${this._onTaskQuantityUpdate}
           @task-unit-update=${this._onTaskUnitUpdate}
@@ -770,6 +781,20 @@ export class CaleePanel extends LitElement {
           @drawer-recurring-action=${this._onDrawerRecurringAction}
         ></calee-detail-drawer>
       </div>
+
+      <calee-task-edit-sheet
+        .task=${this._editSheetTask}
+        .lists=${this._lists.filter((l) => l.list_type !== "shopping")}
+        ?open=${this._editSheetOpen}
+        ?narrow=${this.narrow}
+        @sheet-close=${this._onEditSheetClose}
+        @task-update=${this._onTaskUpdate}
+        @task-delete=${this._onTaskDelete}
+      ></calee-task-edit-sheet>
+
+      <calee-undo-snackbar
+        @undo=${this._onUndoAction}
+      ></calee-undo-snackbar>
 
       <calee-bottom-nav
         .activeView=${this._currentView}
@@ -1093,6 +1118,16 @@ export class CaleePanel extends LitElement {
     }
   }
 
+  private _onTaskEditOpen(e: CustomEvent<{ task: PlannerTask }>): void {
+    this._editSheetTask = e.detail.task;
+    this._editSheetOpen = true;
+  }
+
+  private _onEditSheetClose(): void {
+    this._editSheetOpen = false;
+    this._editSheetTask = null;
+  }
+
   private _onCellClick(e: CustomEvent<{ date: string; time?: string }>): void {
     this._templatePickerDate = e.detail.date;
     this._templatePickerTime = e.detail.time ?? "";
@@ -1117,11 +1152,68 @@ export class CaleePanel extends LitElement {
     } catch (err) { console.error("Failed to uncomplete task:", err); }
   }
 
-  private async _onTaskDelete(e: CustomEvent<{ taskId: string }>): Promise<void> {
+  private async _onTaskDelete(e: CustomEvent<{ taskId: string; title?: string }>): Promise<void> {
+    const { taskId, title } = e.detail;
     try {
-      await this.hass.callWS({ type: "calee/delete_task", task_id: e.detail.taskId });
-      this._tasks = this._tasks.filter((t) => t.id !== e.detail.taskId);
+      await this.hass.callWS({ type: "calee/delete_task", task_id: taskId });
+      this._tasks = this._tasks.filter((t) => t.id !== taskId);
+      // Show undo snackbar
+      this._undoAction = { type: "delete", taskId, title: title ?? "Task" };
+      const snackbar = this.shadowRoot?.querySelector("calee-undo-snackbar") as any;
+      snackbar?.show(`"${title ?? "Task"}" deleted`);
     } catch (err) { console.error("Failed to delete task:", err); }
+  }
+
+  private async _onTaskReorder(e: CustomEvent<{ taskId: string; beforeTaskId: string }>): Promise<void> {
+    const { taskId, beforeTaskId } = e.detail;
+    const task = this._tasks.find((t) => t.id === taskId);
+    const beforeTask = this._tasks.find((t) => t.id === beforeTaskId);
+    if (!task || !beforeTask || task.list_id !== beforeTask.list_id) return;
+
+    // Optimistic reorder scoped to the task's list only
+    const listTasks = this._tasks.filter((t) => t.list_id === task.list_id);
+    const reorderedList = listTasks.filter((t) => t.id !== taskId);
+    const insertIdx = reorderedList.findIndex((t) => t.id === beforeTaskId);
+    if (insertIdx < 0) return;
+
+    reorderedList.splice(insertIdx, 0, { ...task, position: insertIdx });
+    const renumberedList = reorderedList.map((t, i) => ({ ...t, position: i }));
+    const renumberedById = new Map(renumberedList.map((t) => [t.id, t]));
+
+    this._tasks = this._tasks.map((t) =>
+      t.list_id === task.list_id ? (renumberedById.get(t.id) ?? t) : t,
+    );
+
+    try {
+      await this.hass.callWS({
+        type: "calee/reorder_task",
+        task_id: taskId,
+        before_task_id: beforeTaskId,
+        version: task.version,
+      });
+    } catch (err) {
+      console.error("Failed to reorder task:", err);
+      // Reload tasks on failure
+      this._loadTasks();
+    }
+  }
+
+  private async _onUndoAction(): Promise<void> {
+    if (!this._undoAction) return;
+    if (this._undoAction.type === "delete") {
+      try {
+        const restored = await this.hass.callWS({
+          type: "calee/restore_task",
+          task_id: this._undoAction.taskId,
+        });
+        if (restored) {
+          this._tasks = [...this._tasks, restored as PlannerTask];
+        }
+      } catch (err) {
+        console.error("Failed to undo delete:", err);
+      }
+    }
+    this._undoAction = null;
   }
 
   private async _onTaskPriceUpdate(
@@ -1180,13 +1272,16 @@ export class CaleePanel extends LitElement {
     } catch (err) { console.error("Failed to create task:", err); }
   }
 
-  private async _onTaskUpdate(e: CustomEvent<{ taskId: string; version: number; title?: string; due?: string; recurrence_rule?: string }>): Promise<void> {
+  private async _onTaskUpdate(e: CustomEvent<{ taskId: string; version: number; title?: string; due?: string; recurrence_rule?: string; note?: string; list_id?: string; category?: string }>): Promise<void> {
     const wsMsg: Record<string, unknown> = {
       type: "calee/update_task", task_id: e.detail.taskId, version: e.detail.version,
     };
     if (e.detail.title !== undefined) wsMsg.title = e.detail.title;
     if (e.detail.due !== undefined) wsMsg.due = e.detail.due;
     if (e.detail.recurrence_rule !== undefined) wsMsg.recurrence_rule = e.detail.recurrence_rule;
+    if (e.detail.note !== undefined) wsMsg.note = e.detail.note;
+    if (e.detail.list_id !== undefined) wsMsg.list_id = e.detail.list_id;
+    if (e.detail.category !== undefined) wsMsg.category = e.detail.category;
 
     try {
       const updated = await this.hass.callWS(wsMsg);
