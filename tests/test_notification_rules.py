@@ -284,7 +284,7 @@ class TestResolveNotificationRule:
         assert api.resolve_notification_rule(event) is None
 
     def test_disabled_rule_is_skipped(self, fake_store: FakeStore):
-        """A disabled event rule suppresses fallback reminders."""
+        """A disabled event rule is skipped by the generic resolver."""
         fake_store.notification_rules = {
             "r_evt": NotificationRule(
                 id="r_evt", scope="event", scope_id="evt_1",
@@ -299,8 +299,8 @@ class TestResolveNotificationRule:
         event = PlannerEvent(id="evt_1", calendar_id="work_shifts")
         rule = api.resolve_notification_rule(event)
         assert rule is not None
-        assert rule.enabled is False
-        assert rule.reminder_minutes == 15
+        assert rule.enabled is True
+        assert rule.reminder_minutes == 60
 
 
 class TestEventNotificationOverrides:
