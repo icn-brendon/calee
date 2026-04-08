@@ -28,6 +28,7 @@ from .db.base import AbstractPlannerStore
 from .migrations import migrate
 from .models import (
     AuditEntry,
+    NotificationRule,
     PlannerCalendar,
     PlannerEvent,
     PlannerList,
@@ -62,6 +63,7 @@ class JsonPlannerStore(AbstractPlannerStore):
         self.tasks: dict[str, PlannerTask] = {}
         self.presets: dict[str, TaskPreset] = {}
         self.routines: dict[str, Routine] = {}
+        self.notification_rules: dict[str, NotificationRule] = {}
         self.roles: list[RoleAssignment] = []
         self.audit_log: list[AuditEntry] = []
 
@@ -104,6 +106,10 @@ class JsonPlannerStore(AbstractPlannerStore):
         }
         self.routines = {
             r["id"]: Routine.from_dict(r) for r in raw.get("routines", [])
+        }
+        self.notification_rules = {
+            nr["id"]: NotificationRule.from_dict(nr)
+            for nr in raw.get("notification_rules", [])
         }
         self.roles = [
             RoleAssignment.from_dict(r) for r in raw.get("roles", [])
@@ -158,6 +164,9 @@ class JsonPlannerStore(AbstractPlannerStore):
             "tasks": [t.to_dict() for t in self.tasks.values()],
             "presets": [p.to_dict() for p in self.presets.values()],
             "routines": [r.to_dict() for r in self.routines.values()],
+            "notification_rules": [
+                nr.to_dict() for nr in self.notification_rules.values()
+            ],
             "roles": [r.to_dict() for r in self.roles],
             "audit_log": [a.to_dict() for a in self.audit_log[-_MAX_AUDIT_ENTRIES:]],
             "templates_seeded": getattr(self, "_templates_seeded", False),
@@ -339,6 +348,33 @@ class JsonPlannerStore(AbstractPlannerStore):
     async def async_remove_routine(self, routine_id: str) -> None:
         """Hard-delete a routine by id."""
         del self.routines[routine_id]
+
+    # ── Notification rules ──────────────────────────────────────────
+
+    def get_notification_rules(self) -> dict[str, NotificationRule]:
+        """Return all notification rules keyed by id."""
+        return self.notification_rules
+
+    def get_notification_rule(self, rule_id: str) -> NotificationRule | None:
+        """Return a single notification rule or *None*."""
+        return self.notification_rules.get(rule_id)
+
+    def get_rules_for_scope(
+        self, scope: str, scope_id: str
+    ) -> list[NotificationRule]:
+        """Return all rules matching a given scope and scope_id."""
+        return [
+            r for r in self.notification_rules.values()
+            if r.scope == scope and r.scope_id == scope_id
+        ]
+
+    async def async_put_notification_rule(self, rule: NotificationRule) -> None:
+        """Insert or replace a notification rule."""
+        self.notification_rules[rule.id] = rule
+
+    async def async_remove_notification_rule(self, rule_id: str) -> None:
+        """Hard-delete a notification rule by id."""
+        self.notification_rules.pop(rule_id, None)
 
     # ── Roles ────────────────────────────────────────────────────────
 

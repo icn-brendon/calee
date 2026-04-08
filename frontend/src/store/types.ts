@@ -129,6 +129,21 @@ export interface Routine {
   created_at: string;
 }
 
+// ── Notification Rule ────────────────────────────────────────────────
+
+export interface NotificationRule {
+  id: string;
+  scope: "calendar" | "template" | "event";
+  scope_id: string;
+  enabled: boolean;
+  reminder_minutes: number;
+  notify_services: string[];
+  include_actions: boolean;
+  custom_title: string;
+  custom_message: string;
+  created_at: string;
+}
+
 // ── Audit Entry ──────────────────────────────────────────────────────
 
 export interface AuditEntry {
