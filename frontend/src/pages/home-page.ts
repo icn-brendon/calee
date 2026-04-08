@@ -99,7 +99,7 @@ function clamp(value: number, min: number, max: number): number {
 }
 
 function shiftLikeText(value: string | null | undefined): boolean {
-  return /\bshift\b/i.test(value ?? "");
+  return /(^|[^a-z0-9])shifts?([^a-z0-9]|$)/i.test(value ?? "");
 }
 
 function formatMinutesLabel(totalMinutes: number): string {
@@ -123,7 +123,11 @@ function calendarColor(
   calendars: Map<string, PlannerCalendar>,
   calendarId: string,
 ): string {
-  return calendars.get(calendarId)?.color ?? "var(--primary-color, #03a9f4)";
+  const color = calendars.get(calendarId)?.color?.trim() ?? "";
+  if (/^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(color)) return color;
+  if (/^(?:rgb|hsl)a?\(\s*[-\d.%\s,]+\)$/i.test(color)) return color;
+  if (/^[a-z]+$/i.test(color)) return color;
+  return "var(--primary-color, #03a9f4)";
 }
 
 function calendarName(
@@ -1011,8 +1015,7 @@ export class CaleeHomePage extends LitElement {
     const calendar = this.calendars.get(event.calendar_id);
     return event.calendar_id === "work_shifts"
       || shiftLikeText(calendar?.name)
-      || shiftLikeText(event.calendar_id)
-      || shiftLikeText(event.title);
+      || shiftLikeText(event.calendar_id);
   }
 
   private get _activeEventProgress(): ActiveEventProgress[] {
@@ -1199,6 +1202,7 @@ export class CaleeHomePage extends LitElement {
   render() {
     const shopping = this._shoppingSummary;
     const weather = this._weatherSurface;
+    const activeEventProgress = this._activeEventProgress;
     const timelineLabel = this.timelineExpanded ? "This week" : "Today + tomorrow";
     const timelineToggleLabel = this.timelineExpanded ? "Show today + tomorrow" : "Expand for the week";
 
@@ -1220,7 +1224,7 @@ export class CaleeHomePage extends LitElement {
                 </div>
               </div>
 
-              ${this._activeEventProgress.length > 0
+              ${activeEventProgress.length > 0
                 ? html`
                     <div class="live-events-card">
                       <div class="live-events-head">
@@ -1230,12 +1234,12 @@ export class CaleeHomePage extends LitElement {
                         </div>
                         <button class="section-chip-link" @click=${() => this._dispatchNavigate("calendar")}>
                           <span class="section-chip-icon" aria-hidden="true">◷</span>
-                          <span><strong>${this._activeEventProgress.length}</strong></span>
+                          <span><strong>${activeEventProgress.length}</strong></span>
                           <span class="section-chip-label">live</span>
                         </button>
                       </div>
                       <div class="live-events-list">
-                        ${this._activeEventProgress.map(
+                        ${activeEventProgress.map(
                           ({ event, progress, remainingLabel }) => html`
                             <button class="live-event-button" @click=${() => this._dispatchEventSelect(event)}>
                               <div class="live-event-row">

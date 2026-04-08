@@ -13415,7 +13415,7 @@ function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
 function shiftLikeText(value) {
-  return /\bshift\b/i.test(value ?? "");
+  return /(^|[^a-z0-9])shifts?([^a-z0-9]|$)/i.test(value ?? "");
 }
 function formatMinutesLabel(totalMinutes) {
   if (totalMinutes <= 1) return "Ending soon";
@@ -13431,7 +13431,11 @@ function formatAmount(value, currency) {
   return `${currency}${text}`;
 }
 function calendarColor(calendars, calendarId) {
-  return calendars.get(calendarId)?.color ?? "var(--primary-color, #03a9f4)";
+  const color = calendars.get(calendarId)?.color?.trim() ?? "";
+  if (/^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(color)) return color;
+  if (/^(?:rgb|hsl)a?\(\s*[-\d.%\s,]+\)$/i.test(color)) return color;
+  if (/^[a-z]+$/i.test(color)) return color;
+  return "var(--primary-color, #03a9f4)";
 }
 function calendarName(calendars, calendarId) {
   return calendars.get(calendarId)?.name ?? calendarId;
@@ -13553,7 +13557,7 @@ let CaleeHomePage = class extends i {
   }
   _isShiftEvent(event) {
     const calendar = this.calendars.get(event.calendar_id);
-    return event.calendar_id === "work_shifts" || shiftLikeText(calendar?.name) || shiftLikeText(event.calendar_id) || shiftLikeText(event.title);
+    return event.calendar_id === "work_shifts" || shiftLikeText(calendar?.name) || shiftLikeText(event.calendar_id);
   }
   get _activeEventProgress() {
     const now = Date.now();
@@ -13692,6 +13696,7 @@ let CaleeHomePage = class extends i {
   render() {
     const shopping = this._shoppingSummary;
     const weather = this._weatherSurface;
+    const activeEventProgress = this._activeEventProgress;
     const timelineLabel = this.timelineExpanded ? "This week" : "Today + tomorrow";
     const timelineToggleLabel = this.timelineExpanded ? "Show today + tomorrow" : "Expand for the week";
     return b`
@@ -13711,7 +13716,7 @@ let CaleeHomePage = class extends i {
                   <div class="weather-subtitle">${weather.title} · ${weather.subtitle}</div>
                 </div>
               </div>
-              ${this._activeEventProgress.length > 0 ? b`
+              ${activeEventProgress.length > 0 ? b`
                     <div class="live-events-card">
                       <div class="live-events-head">
                         <div class="live-events-copy">
@@ -13720,12 +13725,12 @@ let CaleeHomePage = class extends i {
                         </div>
                         <button class="section-chip-link" @click=${() => this._dispatchNavigate("calendar")}>
                           <span class="section-chip-icon" aria-hidden="true">◷</span>
-                          <span><strong>${this._activeEventProgress.length}</strong></span>
+                          <span><strong>${activeEventProgress.length}</strong></span>
                           <span class="section-chip-label">live</span>
                         </button>
                       </div>
                       <div class="live-events-list">
-                        ${this._activeEventProgress.map(
+                        ${activeEventProgress.map(
       ({ event, progress, remainingLabel }) => b`
                             <button class="live-event-button" @click=${() => this._dispatchEventSelect(event)}>
                               <div class="live-event-row">
