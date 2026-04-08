@@ -463,7 +463,7 @@ class NotificationRule:
     reminder_minutes: int = 60  # minutes before start
     notify_services: list[str] = field(default_factory=list)
     # e.g. ["notify.mobile_app_brendon", "notify.mobile_app_partner"]
-    # empty list = use global default (persistent_notification + all mobile)
+    # empty list = use the integration/global notification defaults
     include_actions: bool = True  # include Open/Snooze buttons in notification
     custom_title: str = ""  # override notification title; empty = default
     custom_message: str = ""  # override message; empty = default

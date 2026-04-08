@@ -6,6 +6,11 @@ store CRUD for rules.
 
 from __future__ import annotations
 
+from unittest.mock import MagicMock
+
+import pytest
+
+from custom_components.calee.api import PlannerAPI
 from custom_components.calee.models import NotificationRule, PlannerEvent
 
 from .conftest import FakeStore
@@ -192,3 +197,130 @@ class TestRuleCascade:
             rules = fake_store.get_rules_for_scope("calendar", event.calendar_id)
 
         assert rules == []
+
+
+# ── API resolve_notification_rule ─────────────────────────────────────
+
+
+def _make_api(fake_store: FakeStore) -> PlannerAPI:
+    """Create a PlannerAPI with a FakeStore and mocked hass."""
+    hass = MagicMock()
+    return PlannerAPI(hass, fake_store)
+
+
+class TestResolveNotificationRule:
+    """Tests for PlannerAPI.resolve_notification_rule()."""
+
+    def test_event_rule_takes_priority(self, fake_store: FakeStore):
+        """Event-level rule takes priority over template and calendar."""
+        fake_store.notification_rules = {
+            "r_cal": NotificationRule(
+                id="r_cal", scope="calendar", scope_id="work_shifts",
+                reminder_minutes=60,
+            ),
+            "r_tpl": NotificationRule(
+                id="r_tpl", scope="template", scope_id="tpl_early",
+                reminder_minutes=45,
+            ),
+            "r_evt": NotificationRule(
+                id="r_evt", scope="event", scope_id="evt_1",
+                reminder_minutes=15,
+            ),
+        }
+        api = _make_api(fake_store)
+        event = PlannerEvent(
+            id="evt_1", calendar_id="work_shifts", template_id="tpl_early",
+        )
+        rule = api.resolve_notification_rule(event)
+        assert rule is not None
+        assert rule.reminder_minutes == 15
+
+    def test_template_fallback(self, fake_store: FakeStore):
+        """Template rule used when no event rule exists."""
+        fake_store.notification_rules = {
+            "r_cal": NotificationRule(
+                id="r_cal", scope="calendar", scope_id="work_shifts",
+                reminder_minutes=60,
+            ),
+            "r_tpl": NotificationRule(
+                id="r_tpl", scope="template", scope_id="tpl_early",
+                reminder_minutes=45,
+            ),
+        }
+        api = _make_api(fake_store)
+        event = PlannerEvent(
+            id="evt_2", calendar_id="work_shifts", template_id="tpl_early",
+        )
+        rule = api.resolve_notification_rule(event)
+        assert rule is not None
+        assert rule.reminder_minutes == 45
+
+    def test_calendar_fallback(self, fake_store: FakeStore):
+        """Calendar rule used when no event or template rules exist."""
+        fake_store.notification_rules = {
+            "r_cal": NotificationRule(
+                id="r_cal", scope="calendar", scope_id="work_shifts",
+                reminder_minutes=60,
+            ),
+        }
+        api = _make_api(fake_store)
+        event = PlannerEvent(id="evt_3", calendar_id="work_shifts")
+        rule = api.resolve_notification_rule(event)
+        assert rule is not None
+        assert rule.reminder_minutes == 60
+
+    def test_returns_none_when_no_rules(self, fake_store: FakeStore):
+        """Returns None when no rules match."""
+        api = _make_api(fake_store)
+        event = PlannerEvent(id="evt_4", calendar_id="personal")
+        assert api.resolve_notification_rule(event) is None
+
+    def test_disabled_rule_is_skipped(self, fake_store: FakeStore):
+        """A disabled event rule falls through to template/calendar."""
+        fake_store.notification_rules = {
+            "r_evt": NotificationRule(
+                id="r_evt", scope="event", scope_id="evt_1",
+                enabled=False, reminder_minutes=15,
+            ),
+            "r_cal": NotificationRule(
+                id="r_cal", scope="calendar", scope_id="work_shifts",
+                enabled=True, reminder_minutes=60,
+            ),
+        }
+        api = _make_api(fake_store)
+        event = PlannerEvent(id="evt_1", calendar_id="work_shifts")
+        rule = api.resolve_notification_rule(event)
+        assert rule is not None
+        assert rule.reminder_minutes == 60  # falls through to calendar
+
+
+# ── Uniqueness enforcement ────────────────────────────────────────────
+
+
+class TestRuleUniqueness:
+    """Tests for one-rule-per-(scope, scope_id) enforcement."""
+
+    @pytest.mark.asyncio
+    async def test_duplicate_rule_rejected(self, fake_store: FakeStore):
+        """Creating a second rule for the same scope+scope_id fails."""
+        api = _make_api(fake_store)
+        await api.async_create_notification_rule(
+            scope="calendar", scope_id="work_shifts",
+        )
+        with pytest.raises(Exception, match="already exists"):
+            await api.async_create_notification_rule(
+                scope="calendar", scope_id="work_shifts",
+            )
+
+    @pytest.mark.asyncio
+    async def test_different_scopes_allowed(self, fake_store: FakeStore):
+        """Rules for different scopes on the same entity are fine."""
+        api = _make_api(fake_store)
+        await api.async_create_notification_rule(
+            scope="calendar", scope_id="work_shifts",
+        )
+        # Template rule for different scope — should succeed.
+        rule = await api.async_create_notification_rule(
+            scope="template", scope_id="tpl_early",
+        )
+        assert rule.scope == "template"

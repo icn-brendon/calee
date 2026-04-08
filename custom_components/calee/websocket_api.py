@@ -2118,7 +2118,7 @@ async def ws_handle_delete_list(
 @websocket_api.websocket_command(
     {
         vol.Required("type"): WS_TYPE_NOTIFICATION_RULES,
-        vol.Optional("scope"): str,
+        vol.Optional("scope"): vol.In(["calendar", "template", "event"]),
         vol.Optional("scope_id"): str,
     }
 )
@@ -2128,7 +2128,7 @@ def ws_handle_notification_rules(
     connection: websocket_api.ActiveConnection,
     msg: dict[str, Any],
 ) -> None:
-    """Return notification rules, optionally filtered by scope."""
+    """Return notification rules, optionally filtered by scope + scope_id."""
     store = _get_store(hass)
     if store is None:
         connection.send_error(msg["id"], "not_loaded", "Calee not loaded")
@@ -2139,8 +2139,35 @@ def ws_handle_notification_rules(
 
     if scope and scope_id:
         rules = store.get_rules_for_scope(scope, scope_id)
+    elif scope:
+        # Filter by scope only (e.g. all calendar rules).
+        rules = [
+            r for r in store.get_notification_rules().values()
+            if r.scope == scope
+        ]
     else:
         rules = list(store.get_notification_rules().values())
+
+    # Filter by read permissions: only return rules for calendars the
+    # user can read (respects strict privacy and per-calendar roles).
+    is_admin = connection.user.is_admin if connection.user else False
+    strict = is_strict_privacy(hass)
+    if not is_admin and strict:
+        user_id = connection.user.id if connection.user else None
+        visible: list = []
+        for r in rules:
+            cal_id = None
+            if r.scope == "calendar":
+                cal_id = r.scope_id
+            elif r.scope == "template":
+                tpl = store.get_template(r.scope_id)
+                cal_id = tpl.calendar_id if tpl else None
+            elif r.scope == "event":
+                evt = store.get_event(r.scope_id)
+                cal_id = evt.calendar_id if evt else None
+            if cal_id is None or can_read(store, user_id, "calendar", cal_id):
+                visible.append(r)
+        rules = visible
 
     connection.send_result(msg["id"], [r.to_dict() for r in rules])
 
