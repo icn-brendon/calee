@@ -75,11 +75,26 @@
 
 **Symptoms:** Shift reminders or morning summaries are not being sent.
 
-**Cause:** Notifications are planned for a future milestone and may not yet be fully implemented. Check that:
+**Checks:**
 
-1. `notifications_enabled` is `true` in settings.
-2. `notification_target` is set to a valid `notify` service name (or left empty for all).
-3. `reminder_calendars` includes the calendar IDs you want reminders for.
+1. Open the Calee panel → Settings (gear icon) and verify `Notifications enabled` is on.
+2. Check that `Reminder calendars` includes the calendar IDs you want reminders for (e.g. `work_shifts`).
+3. If targeting a specific device, set `Notification target` to a valid `notify` service (e.g. `mobile_app_phone`). Leave empty to use all available services.
+4. For morning summaries, ensure `Morning summary enabled` is on and the hour is set.
+5. Check Home Assistant logs for `calee` entries — the notifier logs when it sends or skips a reminder.
+
+**Note:** Notification rules can also be set per-calendar, per-template, or per-event. Check the notification rules in the panel settings to ensure they are enabled and not overriding the global defaults.
+
+## HACS shows a blank icon for Calee
+
+**Symptoms:** The Calee icon appears correctly in Home Assistant's **Settings → Integrations** page but shows as blank in the HACS dashboard.
+
+**Cause:** This is an upstream HACS issue, not a Calee bug. Calee ships local brand assets under `custom_components/calee/brand/` which Home Assistant 2026.3+ reads correctly. HACS currently uses an older icon resolution path that does not fall back to local brand images for installed custom integrations.
+
+**Workaround:**
+1. Try HACS → Calee → **Redownload** to refresh cached assets.
+2. Hard-refresh your browser (Ctrl+Shift+R / Cmd+Shift+R).
+3. If the icon still doesn't appear in HACS, this is expected until HACS adds local brand image support.
 
 ## Import creates duplicates
 

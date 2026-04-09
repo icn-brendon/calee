@@ -45,7 +45,7 @@ Families juggle a lot — work shifts, school events, appointments, groceries, a
 | Optional MariaDB/PostgreSQL backends | Implemented |
 | Easy shift sharing to family/spouse | Implemented |
 | Unified settings (synced across devices) | Implemented |
-| Actionable notifications (1-hour reminders) | Planned (M4) |
+| Actionable notifications (reminders, snooze, morning summary) | Implemented |
 | iOS widget app | Planned (M5) |
 | Recurring calendar events/shifts | Partial (backend ready, UI pending) |
 
@@ -103,10 +103,12 @@ Copy the `custom_components/calee/` folder into your Home Assistant `config/cust
 - Fast-add input with presets
 - Shopping with categories, budget tracking, and presets
 
-### Milestone 4 — Notifications and mobile shortcuts (planned)
-- 1-hour pre-shift actionable notifications
+### Milestone 4 — Notifications and mobile shortcuts (implemented)
+- Configurable pre-shift reminders with snooze (15 min / 1 hour)
+- Morning summary notifications with today's shifts, tasks, and shopping
+- Per-event, per-template, and per-calendar notification rules with cascade
+- Device picker for targeted notifications
 - Deep links from notifications into Planner
-- Quick-add shift shortcuts via Companion Actions
 
 ### Milestone 5 — iOS widget app (planned, separate repo)
 - Native iOS app with HA auth
