@@ -833,6 +833,8 @@ let CaleeMonthView = class extends i {
 CaleeMonthView.styles = i$3`
     :host {
       display: block;
+      min-width: 0;
+      min-height: 0;
       --cell-min-height: 80px;
     }
 
@@ -841,6 +843,7 @@ CaleeMonthView.styles = i$3`
       flex-direction: column;
       height: 100%;
       width: 100%;
+      min-height: 0;
     }
 
     /* ── Header row ────────────────────────────────────────────────── */
@@ -868,7 +871,9 @@ CaleeMonthView.styles = i$3`
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       flex: 1;
+      min-height: 0;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       width: 100%;
     }
 
@@ -1287,7 +1292,7 @@ let CaleeWeekView = class extends i {
     window.clearInterval(this._timerHandle);
   }
   get _dayCount() {
-    return 7;
+    return this.narrow ? 3 : 7;
   }
   willUpdate(changed) {
     if (changed.has("selectedDate") || changed.has("weekStartsMonday") || changed.has("narrow")) {
@@ -1527,7 +1532,7 @@ let CaleeWeekView = class extends i {
     const dayW = this.narrow ? "104px" : "minmax(0, 1fr)";
     const gridCols = `${labelW} repeat(${this._weekDays.length}, ${dayW})`;
     return b`
-      <div class="week-view" style="--grid-cols: ${gridCols}">
+      <div class="week-view" style="--grid-cols: ${gridCols}; --day-count: ${this._weekDays.length}">
         <div class="week-pan">
           <div class="week-content">
             <div class="headers" style="grid-template-columns: ${gridCols}">
@@ -1821,7 +1826,7 @@ CaleeWeekView.styles = i$3`
       }
 
       .week-content {
-        min-width: calc(var(--label-width) + 7 * 104px);
+        min-width: calc(var(--label-width) + var(--day-count, 3) * 104px);
       }
 
       .day-header {
@@ -14834,15 +14839,19 @@ let CaleeCalendarPage = class extends i {
     this.currentDate = date;
     this._dispatchDateChange();
   }
+  /** Navigation step: 3 days for narrow week, 7 for desktop week. */
+  get _weekStep() {
+    return this.narrow ? 3 : 7;
+  }
   _onPrev() {
     if (this.currentSubview === "agenda") return;
-    const step = this.currentSubview === "day" ? 1 : this.currentSubview === "week" ? 7 : 0;
+    const step = this.currentSubview === "day" ? 1 : this.currentSubview === "week" ? this._weekStep : 0;
     const nextDate = step > 0 ? addDays(this.currentDate, -step) : stepMonth(this.currentDate, -1);
     this._setDate(nextDate);
   }
   _onNext() {
     if (this.currentSubview === "agenda") return;
-    const step = this.currentSubview === "day" ? 1 : this.currentSubview === "week" ? 7 : 0;
+    const step = this.currentSubview === "day" ? 1 : this.currentSubview === "week" ? this._weekStep : 0;
     const nextDate = step > 0 ? addDays(this.currentDate, step) : stepMonth(this.currentDate, 1);
     this._setDate(nextDate);
   }
@@ -14961,6 +14970,7 @@ CaleeCalendarPage.styles = i$3`
       display: flex;
       flex-direction: column;
       height: 100%;
+      min-width: 0;
       min-height: 0;
       overflow: hidden;
       background: var(--primary-background-color, #fafafa);
@@ -14970,6 +14980,7 @@ CaleeCalendarPage.styles = i$3`
       display: flex;
       flex-direction: column;
       flex: 1;
+      min-width: 0;
       min-height: 0;
       overflow: hidden;
     }
@@ -15097,6 +15108,7 @@ CaleeCalendarPage.styles = i$3`
 
     .view-area {
       flex: 1;
+      min-width: 0;
       min-height: 0;
       overflow: hidden;
       display: flex;
@@ -15104,6 +15116,7 @@ CaleeCalendarPage.styles = i$3`
 
     .view-area > * {
       flex: 1;
+      min-width: 0;
       min-height: 0;
     }
 
@@ -18064,12 +18077,16 @@ CaleePanel.styles = i$3`
     .body {
       display: flex;
       flex: 1;
+      min-width: 0;
+      min-height: 0;
       overflow: hidden;
       position: relative;
     }
 
     .main {
       flex: 1;
+      min-width: 0;
+      min-height: 0;
       overflow: hidden;
       position: relative;
       background: var(--card-background-color, #fff);
