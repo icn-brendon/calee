@@ -239,15 +239,20 @@ export class CaleeWeekView extends LitElement {
     });
   }
 
+  /**
+   * On desktop, scroll the selected day column into view when the
+   * week changes. On narrow, horizontal scroll is disabled (3 columns
+   * fill the viewport), so this is a no-op.
+   */
   private _scrollSelectedDayIntoView(): void {
-    if (!this.narrow || this._hasAlignedSelectedDay) return;
+    if (this.narrow || this._hasAlignedSelectedDay) return;
     this._hasAlignedSelectedDay = true;
     requestAnimationFrame(() => {
       if (!this._panContainer) return;
       const selectedIndex = this._weekDays.findIndex((day) => sameDay(day, this.selectedDate));
       if (selectedIndex < 0) return;
-      const labelWidth = 40;
-      const dayWidth = 104;
+      const dayWidth = this._panContainer.scrollWidth / (this._weekDays.length + 1);
+      const labelWidth = dayWidth; // first column is the label
       const targetLeft = labelWidth + Math.max(0, selectedIndex - 1) * dayWidth;
       this._panContainer.scrollLeft = targetLeft;
     });
@@ -472,7 +477,7 @@ export class CaleeWeekView extends LitElement {
 
   render() {
     const labelW = this.narrow ? "40px" : "56px";
-    const dayW = this.narrow ? "104px" : "minmax(0, 1fr)";
+    const dayW = "minmax(0, 1fr)";
     const gridCols = `${labelW} repeat(${this._weekDays.length}, ${dayW})`;
     return html`
       <div class="week-view" style="--grid-cols: ${gridCols}; --day-count: ${this._weekDays.length}">
@@ -506,22 +511,40 @@ export class CaleeWeekView extends LitElement {
       display: flex;
       flex-direction: column;
       height: 100%;
+      min-height: 0;
       overflow: hidden;
     }
 
+    /*
+     * .week-pan handles horizontal overflow on desktop (7-day).
+     * On narrow/mobile, horizontal scroll is disabled because
+     * 3 columns fit the viewport — only vertical scroll is needed.
+     * Separating scroll axes between containers prevents the iOS
+     * WebKit gesture-ownership deadlock.
+     */
     .week-pan {
       flex: 1;
       min-height: 0;
+      display: flex;
+      flex-direction: column;
       overflow-x: auto;
       overflow-y: hidden;
       -webkit-overflow-scrolling: touch;
-      touch-action: pan-x pan-y;
+      touch-action: pan-x;
       overscroll-behavior-x: contain;
+    }
+
+    :host([narrow]) .week-pan {
+      overflow-x: hidden;
+      touch-action: pan-y;
     }
 
     .week-content {
       min-width: 100%;
-      height: 100%;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
     }
 
     /* ── Header ────────────────────────────────────────────────────── */
@@ -617,11 +640,12 @@ export class CaleeWeekView extends LitElement {
 
     .time-grid-scroll {
       flex: 1;
+      min-height: 0;
       overflow-y: auto;
-      overflow-x: visible;
-      min-width: 0;
+      overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
-      touch-action: pan-x pan-y;
+      touch-action: pan-y;
+      overscroll-behavior-y: contain;
     }
 
     .time-grid {
@@ -768,10 +792,6 @@ export class CaleeWeekView extends LitElement {
       :host {
         --hour-height: 48px;
         --label-width: 40px;
-      }
-
-      .week-content {
-        min-width: calc(var(--label-width) + var(--day-count, 3) * 104px);
       }
 
       .day-header {
