@@ -77,11 +77,11 @@
 
 **Checks:**
 
-1. Open the Calee panel → Settings (gear icon) and verify `Notifications enabled` is on.
+1. Open the Calee panel → Settings (gear icon) and verify `Default event reminders` is on.
 2. Check that `Reminder calendars` includes the calendar IDs you want reminders for (e.g. `work_shifts`).
-3. If targeting a specific device, set `Notification target` to a valid `notify` service (e.g. `mobile_app_phone`). Leave empty to use all available services.
-4. For morning summaries, ensure `Morning summary enabled` is on and the hour is set.
-5. Check Home Assistant logs for `calee` entries — the notifier logs when it sends or skips a reminder.
+3. If targeting a specific device, set `Notification destination` to a valid `notify` service (e.g. `mobile_app_phone`). Leave empty to use all available services.
+4. For morning summaries, ensure `Morning summary` is on and the hour is set.
+5. Check Home Assistant logs for `calee` entries. Detailed notifier messages, including send/skip decisions, may only appear after enabling debug logging for Calee.
 
 **Note:** Notification rules can also be set per-calendar, per-template, or per-event. Check the notification rules in the panel settings to ensure they are enabled and not overriding the global defaults.
 
