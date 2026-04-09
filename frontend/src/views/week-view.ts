@@ -472,7 +472,7 @@ export class CaleeWeekView extends LitElement {
 
   render() {
     const labelW = this.narrow ? "40px" : "56px";
-    const dayW = this.narrow ? "104px" : "minmax(0, 1fr)";
+    const dayW = "minmax(0, 1fr)";
     const gridCols = `${labelW} repeat(${this._weekDays.length}, ${dayW})`;
     return html`
       <div class="week-view" style="--grid-cols: ${gridCols}; --day-count: ${this._weekDays.length}">
@@ -506,22 +506,40 @@ export class CaleeWeekView extends LitElement {
       display: flex;
       flex-direction: column;
       height: 100%;
+      min-height: 0;
       overflow: hidden;
     }
 
+    /*
+     * .week-pan handles horizontal overflow on desktop (7-day).
+     * On narrow/mobile, horizontal scroll is disabled because
+     * 3 columns fit the viewport — only vertical scroll is needed.
+     * Separating scroll axes between containers prevents the iOS
+     * WebKit gesture-ownership deadlock.
+     */
     .week-pan {
       flex: 1;
       min-height: 0;
+      display: flex;
+      flex-direction: column;
       overflow-x: auto;
       overflow-y: hidden;
       -webkit-overflow-scrolling: touch;
-      touch-action: pan-x pan-y;
+      touch-action: pan-x;
       overscroll-behavior-x: contain;
+    }
+
+    :host([narrow]) .week-pan {
+      overflow-x: hidden;
+      touch-action: none;
     }
 
     .week-content {
       min-width: 100%;
-      height: 100%;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
     }
 
     /* ── Header ────────────────────────────────────────────────────── */
@@ -617,11 +635,12 @@ export class CaleeWeekView extends LitElement {
 
     .time-grid-scroll {
       flex: 1;
+      min-height: 0;
       overflow-y: auto;
-      overflow-x: visible;
-      min-width: 0;
+      overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
-      touch-action: pan-x pan-y;
+      touch-action: pan-y;
+      overscroll-behavior-y: contain;
     }
 
     .time-grid {
@@ -768,10 +787,6 @@ export class CaleeWeekView extends LitElement {
       :host {
         --hour-height: 48px;
         --label-width: 40px;
-      }
-
-      .week-content {
-        min-width: calc(var(--label-width) + var(--day-count, 3) * 104px);
       }
 
       .day-header {
