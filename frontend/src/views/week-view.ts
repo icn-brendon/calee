@@ -239,15 +239,20 @@ export class CaleeWeekView extends LitElement {
     });
   }
 
+  /**
+   * On desktop, scroll the selected day column into view when the
+   * week changes. On narrow, horizontal scroll is disabled (3 columns
+   * fill the viewport), so this is a no-op.
+   */
   private _scrollSelectedDayIntoView(): void {
-    if (!this.narrow || this._hasAlignedSelectedDay) return;
+    if (this.narrow || this._hasAlignedSelectedDay) return;
     this._hasAlignedSelectedDay = true;
     requestAnimationFrame(() => {
       if (!this._panContainer) return;
       const selectedIndex = this._weekDays.findIndex((day) => sameDay(day, this.selectedDate));
       if (selectedIndex < 0) return;
-      const labelWidth = 40;
-      const dayWidth = 104;
+      const dayWidth = this._panContainer.scrollWidth / (this._weekDays.length + 1);
+      const labelWidth = dayWidth; // first column is the label
       const targetLeft = labelWidth + Math.max(0, selectedIndex - 1) * dayWidth;
       this._panContainer.scrollLeft = targetLeft;
     });
@@ -531,7 +536,7 @@ export class CaleeWeekView extends LitElement {
 
     :host([narrow]) .week-pan {
       overflow-x: hidden;
-      touch-action: none;
+      touch-action: pan-y;
     }
 
     .week-content {
