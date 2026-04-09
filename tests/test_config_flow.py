@@ -165,12 +165,11 @@ class TestOptionsFlow:
     """Tests for the CaleeOptionsFlow."""
 
     @pytest.mark.asyncio
-    async def test_options_update_settings(self):
-        """Options flow updates general settings correctly.
+    async def test_options_update_settings_preserves_notification_keys(self):
+        """Options flow updates general settings and preserves notification keys.
 
-        Notification settings (notifications_enabled, morning_summary_*,
-        notification_target, reminder_calendars) are managed exclusively
-        via the in-panel settings dialog and are not part of the options flow.
+        Notification settings are managed via the in-panel settings dialog
+        and must not be dropped when saving general settings.
         """
         config_entry = MagicMock()
         config_entry.data = {CONF_STORAGE_BACKEND: BACKEND_JSON}
@@ -178,6 +177,12 @@ class TestOptionsFlow:
             "reminder_minutes": 60,
             "budget": 100.0,
             "week_start": "monday",
+            # Notification keys set via panel settings dialog:
+            "notifications_enabled": True,
+            "morning_summary_enabled": True,
+            "morning_summary_hour": 7,
+            "notification_target": "mobile_app_phone",
+            "reminder_calendars": ["work_shifts"],
         }
 
         flow = CaleeOptionsFlow(config_entry)
@@ -197,9 +202,14 @@ class TestOptionsFlow:
         result = await flow.async_step_init(user_input)
 
         assert result["type"] == "create_entry"
+        # General settings updated:
         assert result["data"]["budget"] == 200.0
         assert result["data"]["week_start"] == "sunday"
         assert result["data"]["reminder_minutes"] == 30
+        # Notification keys preserved from existing options:
+        assert result["data"]["notifications_enabled"] is True
+        assert result["data"]["notification_target"] == "mobile_app_phone"
+        assert result["data"]["reminder_calendars"] == ["work_shifts"]
 
     @pytest.mark.asyncio
     async def test_options_shows_form_when_no_input(self):

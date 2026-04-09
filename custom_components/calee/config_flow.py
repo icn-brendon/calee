@@ -175,6 +175,11 @@ class CaleeOptionsFlow(OptionsFlow):
                 CONF_STORAGE_BACKEND, BACKEND_JSON
             )
 
+            # Merge with existing options so notification keys (set via
+            # the panel settings dialog) are preserved across saves.
+            merged = dict(self._config_entry.options)
+            merged.update(user_input)
+
             # If the user picked a different backend, go to the database step.
             if chosen_backend and chosen_backend != current_backend:
                 self._new_backend = chosen_backend
@@ -186,12 +191,12 @@ class CaleeOptionsFlow(OptionsFlow):
                         self._config_entry,
                         data=new_data,
                     )
-                    user_input["_pending_migration"] = current_backend
-                    user_input["_old_db_config"] = old_data
-                    return self.async_create_entry(data=user_input)
+                    merged["_pending_migration"] = current_backend
+                    merged["_old_db_config"] = old_data
+                    return self.async_create_entry(data=merged)
                 return await self.async_step_database()
 
-            return self.async_create_entry(data=user_input)
+            return self.async_create_entry(data=merged)
 
         current = self._config_entry.options
         current_backend = self._config_entry.data.get(
