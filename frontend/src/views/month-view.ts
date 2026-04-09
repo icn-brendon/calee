@@ -336,6 +336,8 @@ export class CaleeMonthView extends LitElement {
   static styles = css`
     :host {
       display: block;
+      min-width: 0;
+      min-height: 0;
       --cell-min-height: 80px;
     }
 
@@ -344,6 +346,7 @@ export class CaleeMonthView extends LitElement {
       flex-direction: column;
       height: 100%;
       width: 100%;
+      min-height: 0;
     }
 
     /* ── Header row ────────────────────────────────────────────────── */
@@ -371,7 +374,9 @@ export class CaleeMonthView extends LitElement {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       flex: 1;
+      min-height: 0;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       width: 100%;
     }
 

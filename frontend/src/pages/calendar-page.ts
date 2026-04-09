@@ -92,6 +92,7 @@ export class CaleeCalendarPage extends LitElement {
       display: flex;
       flex-direction: column;
       height: 100%;
+      min-width: 0;
       min-height: 0;
       overflow: hidden;
       background: var(--primary-background-color, #fafafa);
@@ -101,6 +102,7 @@ export class CaleeCalendarPage extends LitElement {
       display: flex;
       flex-direction: column;
       flex: 1;
+      min-width: 0;
       min-height: 0;
       overflow: hidden;
     }
@@ -228,6 +230,7 @@ export class CaleeCalendarPage extends LitElement {
 
     .view-area {
       flex: 1;
+      min-width: 0;
       min-height: 0;
       overflow: hidden;
       display: flex;
@@ -235,6 +238,7 @@ export class CaleeCalendarPage extends LitElement {
 
     .view-area > * {
       flex: 1;
+      min-width: 0;
       min-height: 0;
     }
 
@@ -295,16 +299,21 @@ export class CaleeCalendarPage extends LitElement {
     this._dispatchDateChange();
   }
 
+  /** Navigation step: 3 days for narrow week, 7 for desktop week. */
+  private get _weekStep(): number {
+    return this.narrow ? 3 : 7;
+  }
+
   private _onPrev(): void {
     if (this.currentSubview === "agenda") return;
-    const step = this.currentSubview === "day" ? 1 : this.currentSubview === "week" ? 7 : 0;
+    const step = this.currentSubview === "day" ? 1 : this.currentSubview === "week" ? this._weekStep : 0;
     const nextDate = step > 0 ? addDays(this.currentDate, -step) : stepMonth(this.currentDate, -1);
     this._setDate(nextDate);
   }
 
   private _onNext(): void {
     if (this.currentSubview === "agenda") return;
-    const step = this.currentSubview === "day" ? 1 : this.currentSubview === "week" ? 7 : 0;
+    const step = this.currentSubview === "day" ? 1 : this.currentSubview === "week" ? this._weekStep : 0;
     const nextDate = step > 0 ? addDays(this.currentDate, step) : stepMonth(this.currentDate, 1);
     this._setDate(nextDate);
   }
