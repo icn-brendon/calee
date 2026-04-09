@@ -2,6 +2,99 @@
 
 All notable changes to Calee are documented here.
 
+## 2026.4.16
+
+### Added
+- **3-day narrow week view** -- iPhone/mobile shows yesterday, today, tomorrow instead of 7 days; full week on tablet/desktop.
+- **HACS icon troubleshooting** -- documented upstream HACS blank icon issue with workaround.
+
+### Changed
+- Notification settings removed from HA config options flow -- the in-panel settings dialog is now the single source of truth.
+- Options flow preserves notification keys when saving general settings (no more silent reset).
+- Calendar-page prev/next navigates by 3 days on mobile, 7 on desktop.
+- Week-view CSS min-width uses actual day count instead of hardcoded 7.
+- Documentation updated: notifications status "Planned" → "Implemented", troubleshooting labels match panel UI, debug logging guidance.
+
+### Fixed
+- Shell/calendar-page/month-view flex chain missing `min-width: 0` / `min-height: 0` causing iOS clipping.
+- Month-view added `-webkit-overflow-scrolling: touch` for iOS momentum scroll.
+
+## 2026.4.15
+
+### Added
+- **Live event progress** on Home page -- shows elapsed time and progress bar for current shift.
+
+## 2026.4.14
+
+### Added
+- **Event notification overrides** -- per-event notification rules with enable/disable toggle in the event dialog.
+
+## 2026.4.13
+
+### Fixed
+- **Mobile week panning** -- touch-action, -webkit-overflow-scrolling, and overscroll-behavior hardening for iOS/Android.
+
+## 2026.4.12
+
+### Added
+- Preset icons rendered on the Home page for quick-add.
+
+## 2026.4.11
+
+### Changed
+- Home overview refreshed with cleaner layout.
+- Notification settings integrated into panel settings dialog.
+- Brand lockup updated with C mark assets.
+
+## 2026.4.10
+
+### Changed
+- **WebSocket API split** -- monolithic `websocket_api.py` (2,315 lines) split into `ws/` package with 4 focused modules: `ws_read.py`, `ws_events.py`, `ws_tasks.py`, `ws_admin.py`.
+- **Per-entity subscription refresh** -- changes to events only reload events, task changes only reload tasks, etc. Eliminates ~60-70% of unnecessary WS calls.
+- Shell skips duplicate subscription when PlannerStore is active.
+- Calendar/list delete cascades reload to child events/tasks.
+
+## 2026.4.9
+
+### Added
+- **Notification rules** -- per-event, per-template, per-calendar notification rules with cascade resolution (event > template > calendar > global).
+- **Device picker** -- `calee/notify_services` WS command lists available HA notify services.
+- NotificationRule model with scope, reminder_minutes, notify_services, custom title/message.
+- Full CRUD: `calee/notification_rules`, `calee/create_notification_rule`, `calee/update_notification_rule`, `calee/delete_notification_rule`.
+- Uniqueness enforced: one rule per (scope, scope_id).
+- Permission checks via calendar ownership on all rule mutations.
+- Rules filtered by `can_read` in strict privacy mode.
+- SqlPlannerStore support with `calee_notification_rules` DB table.
+
+## 2026.4.8
+
+### Changed
+- **Task view split** -- `tasks-view.ts` (1,315 → 446 lines) split into focused components: `task-item`, `task-quick-add`, `task-edit-sheet`, `undo-snackbar`.
+- **Sort & group toolbar** -- tasks-page with sort (Manual/Due/Title/Newest) and group (None/List/Due date/Category) controls.
+- **Task edit sheet** -- bottom sheet on mobile, side panel on desktop replacing inline editing.
+- **Undo snackbar** -- 5-second undo bar on task delete with restore action.
+- **Drag reorder** -- position-based ordering with `calee/reorder_task` WS command; scoped to same list with optimistic locking.
+- Manual sort deterministic across lists (list_id + position).
+- Cross-list reorder rejected with explicit error.
+- Only changed positions persisted (avoids unnecessary version conflicts).
+
+## 2026.4.7
+
+### Changed
+- **Shell cleanup** -- monolithic `calee-panel.ts` (3,685 lines) split into `calee-shell.ts` + page components.
+- **Home view** -- new landing page with next shift hero, 3-day timeline, due tasks, shopping shortcuts.
+- **Bottom navigation** -- mobile-only Home | Calendar | +Add | Tasks | Shopping.
+- **Left rail** -- desktop 56px rail with calendar toggles, routines, settings.
+- **Detail drawer** -- event/task detail panel for desktop.
+- Calendar page with internal Day/Week/Month/Agenda segmented control.
+
+## 2026.4.6
+
+### Changed
+- **Backend hardening** -- SQL store write-through cache, pool arg fixes for SQLite, `_ensure_new_columns` for ALTER TABLE migrations.
+- **Tablet layout** -- responsive breakpoints for tablet-sized screens.
+- **Full test coverage** -- 297+ tests covering store, API, sensors, config flow, permissions, models.
+
 ## 2026.4.5
 
 ### Added
