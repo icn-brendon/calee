@@ -2,6 +2,14 @@
 
 All notable changes to Calee are documented here.
 
+## 2026.4.17
+
+### Fixed
+- **iPhone week view scroll lock** -- root cause was two nested scroll containers (`.week-pan` + `.time-grid-scroll`) both declaring `touch-action: pan-x pan-y`, causing iOS WebKit gesture-ownership deadlock. Fix separates scroll axes: `.week-pan` owns horizontal (desktop only), `.time-grid-scroll` owns vertical. On narrow, `.week-pan` horizontal scroll is disabled entirely since 3 columns fill the viewport.
+- Day columns now use `minmax(0, 1fr)` on all screen sizes so narrow columns fill the viewport width instead of fixed 104px widths with empty horizontal space.
+- `_scrollSelectedDayIntoView` skipped on narrow (no horizontal scroll); desktop uses dynamic column width calculation.
+- `overscroll-behavior-y: contain` on time-grid-scroll prevents iOS pull-to-refresh interference.
+
 ## 2026.4.16
 
 ### Added

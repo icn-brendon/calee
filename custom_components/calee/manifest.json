@@ -9,5 +9,5 @@
   "iot_class": "local_push",
   "issue_tracker": "https://github.com/icn-brendon/calee/issues",
   "requirements": ["sqlalchemy>=2.0", "aiomysql>=0.2.0", "asyncpg>=0.29.0"],
-  "version": "2026.4.16"
+  "version": "2026.4.17"
 }
