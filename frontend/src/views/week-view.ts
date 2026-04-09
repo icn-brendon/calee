@@ -475,7 +475,7 @@ export class CaleeWeekView extends LitElement {
     const dayW = this.narrow ? "104px" : "minmax(0, 1fr)";
     const gridCols = `${labelW} repeat(${this._weekDays.length}, ${dayW})`;
     return html`
-      <div class="week-view" style="--grid-cols: ${gridCols}">
+      <div class="week-view" style="--grid-cols: ${gridCols}; --day-count: ${this._weekDays.length}">
         <div class="week-pan">
           <div class="week-content">
             <div class="headers" style="grid-template-columns: ${gridCols}">
@@ -771,7 +771,7 @@ export class CaleeWeekView extends LitElement {
       }
 
       .week-content {
-        min-width: calc(var(--label-width) + 7 * 104px);
+        min-width: calc(var(--label-width) + var(--day-count, 3) * 104px);
       }
 
       .day-header {
