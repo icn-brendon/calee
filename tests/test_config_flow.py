@@ -165,19 +165,28 @@ class TestOptionsFlow:
     """Tests for the CaleeOptionsFlow."""
 
     @pytest.mark.asyncio
-    async def test_options_update_settings(self):
-        """Options flow updates settings correctly."""
+    async def test_options_update_settings_preserves_notification_keys(self):
+        """Options flow updates general settings and preserves notification keys.
+
+        Notification settings are managed via the in-panel settings dialog
+        and must not be dropped when saving general settings.
+        """
         config_entry = MagicMock()
         config_entry.data = {CONF_STORAGE_BACKEND: BACKEND_JSON}
         config_entry.options = {
             "reminder_minutes": 60,
             "budget": 100.0,
             "week_start": "monday",
+            # Notification keys set via panel settings dialog:
+            "notifications_enabled": True,
+            "morning_summary_enabled": True,
+            "morning_summary_hour": 7,
+            "notification_target": "mobile_app_phone",
+            "reminder_calendars": ["work_shifts"],
         }
 
         flow = CaleeOptionsFlow(config_entry)
         flow.hass = MagicMock()
-        flow.hass.services.has_service = MagicMock(return_value=True)
 
         user_input = {
             "reminder_minutes": 30,
@@ -186,11 +195,6 @@ class TestOptionsFlow:
             "budget": 200.0,
             "week_start": "sunday",
             "time_format": "24h",
-            "notifications_enabled": True,
-            "morning_summary_enabled": False,
-            "morning_summary_hour": 8,
-            "notification_target": "",
-            "reminder_calendars": "work_shifts, family_shared",
             "strict_privacy": True,
             CONF_STORAGE_BACKEND: BACKEND_JSON,
         }
@@ -198,10 +202,14 @@ class TestOptionsFlow:
         result = await flow.async_step_init(user_input)
 
         assert result["type"] == "create_entry"
+        # General settings updated:
         assert result["data"]["budget"] == 200.0
         assert result["data"]["week_start"] == "sunday"
         assert result["data"]["reminder_minutes"] == 30
-        assert result["data"]["reminder_calendars"] == ["work_shifts", "family_shared"]
+        # Notification keys preserved from existing options:
+        assert result["data"]["notifications_enabled"] is True
+        assert result["data"]["notification_target"] == "mobile_app_phone"
+        assert result["data"]["reminder_calendars"] == ["work_shifts"]
 
     @pytest.mark.asyncio
     async def test_options_shows_form_when_no_input(self):

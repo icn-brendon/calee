@@ -30,19 +30,13 @@ from .const import (
     DEFAULT_MARIADB_HOST,
     DEFAULT_MARIADB_PORT,
     DEFAULT_MAX_EVENT_AGE_DAYS,
-    DEFAULT_MORNING_SUMMARY_ENABLED,
-    DEFAULT_MORNING_SUMMARY_HOUR,
-    DEFAULT_NOTIFICATION_TARGET,
-    DEFAULT_NOTIFICATIONS_ENABLED,
     DEFAULT_POSTGRESQL_PORT,
-    DEFAULT_REMINDER_CALENDARS,
     DEFAULT_REMINDER_MINUTES,
     DEFAULT_STRICT_PRIVACY,
     DEFAULT_TIME_FORMAT,
     DEFAULT_WEEK_START,
     DOMAIN,
 )
-from .notification_utils import validate_notification_target
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -176,57 +170,38 @@ class CaleeOptionsFlow(OptionsFlow):
         errors: dict[str, str] = {}
 
         if user_input is not None:
-            # Validate notification_target if provided.
-            notification_target = user_input.get("notification_target", "")
-            normalized_target = validate_notification_target(
-                self.hass, notification_target
+            chosen_backend = user_input.pop(CONF_STORAGE_BACKEND, None)
+            current_backend = self._config_entry.data.get(
+                CONF_STORAGE_BACKEND, BACKEND_JSON
             )
-            if normalized_target is None:
-                errors["notification_target"] = "invalid_notify_service"
-            else:
-                user_input["notification_target"] = normalized_target
 
-            # Parse reminder_calendars from comma-separated string.
-            raw_calendars = user_input.pop("reminder_calendars", "")
-            if raw_calendars:
-                user_input["reminder_calendars"] = [
-                    c.strip() for c in raw_calendars.split(",") if c.strip()
-                ]
-            else:
-                user_input["reminder_calendars"] = list(DEFAULT_REMINDER_CALENDARS)
+            # Merge with existing options so notification keys (set via
+            # the panel settings dialog) are preserved across saves.
+            merged = dict(self._config_entry.options)
+            merged.update(user_input)
 
-            if not errors:
-                chosen_backend = user_input.pop(CONF_STORAGE_BACKEND, None)
-                current_backend = self._config_entry.data.get(
-                    CONF_STORAGE_BACKEND, BACKEND_JSON
-                )
+            # If the user picked a different backend, go to the database step.
+            if chosen_backend and chosen_backend != current_backend:
+                self._new_backend = chosen_backend
+                if chosen_backend == BACKEND_JSON:
+                    # Switching back to JSON — save old DB creds for migration.
+                    old_data = dict(self._config_entry.data)
+                    new_data = {CONF_STORAGE_BACKEND: BACKEND_JSON}
+                    self.hass.config_entries.async_update_entry(
+                        self._config_entry,
+                        data=new_data,
+                    )
+                    merged["_pending_migration"] = current_backend
+                    merged["_old_db_config"] = old_data
+                    return self.async_create_entry(data=merged)
+                return await self.async_step_database()
 
-                # If the user picked a different backend, go to the database step.
-                if chosen_backend and chosen_backend != current_backend:
-                    self._new_backend = chosen_backend
-                    if chosen_backend == BACKEND_JSON:
-                        # Switching back to JSON — save old DB creds for migration.
-                        old_data = dict(self._config_entry.data)
-                        new_data = {CONF_STORAGE_BACKEND: BACKEND_JSON}
-                        self.hass.config_entries.async_update_entry(
-                            self._config_entry,
-                            data=new_data,
-                        )
-                        user_input["_pending_migration"] = current_backend
-                        user_input["_old_db_config"] = old_data
-                        return self.async_create_entry(data=user_input)
-                    return await self.async_step_database()
-
-                return self.async_create_entry(data=user_input)
+            return self.async_create_entry(data=merged)
 
         current = self._config_entry.options
         current_backend = self._config_entry.data.get(
             CONF_STORAGE_BACKEND, BACKEND_JSON
         )
-
-        # Display reminder_calendars as comma-separated string for editing.
-        current_calendars = current.get("reminder_calendars", DEFAULT_REMINDER_CALENDARS)
-        calendars_str = ", ".join(current_calendars) if isinstance(current_calendars, list) else str(current_calendars)
 
         return self.async_show_form(
             step_id="init",
@@ -260,34 +235,6 @@ class CaleeOptionsFlow(OptionsFlow):
                         "time_format",
                         default=current.get("time_format", DEFAULT_TIME_FORMAT),
                     ): vol.In({"12h": "12-hour", "24h": "24-hour"}),
-                    vol.Optional(
-                        "notifications_enabled",
-                        default=current.get(
-                            "notifications_enabled", DEFAULT_NOTIFICATIONS_ENABLED
-                        ),
-                    ): bool,
-                    vol.Optional(
-                        "morning_summary_enabled",
-                        default=current.get(
-                            "morning_summary_enabled", DEFAULT_MORNING_SUMMARY_ENABLED
-                        ),
-                    ): bool,
-                    vol.Optional(
-                        "morning_summary_hour",
-                        default=current.get(
-                            "morning_summary_hour", DEFAULT_MORNING_SUMMARY_HOUR
-                        ),
-                    ): vol.All(vol.Coerce(int), vol.Range(min=0, max=23)),
-                    vol.Optional(
-                        "notification_target",
-                        default=current.get(
-                            "notification_target", DEFAULT_NOTIFICATION_TARGET
-                        ),
-                    ): str,
-                    vol.Optional(
-                        "reminder_calendars",
-                        default=calendars_str,
-                    ): str,
                     vol.Optional(
                         "strict_privacy",
                         default=current.get(
