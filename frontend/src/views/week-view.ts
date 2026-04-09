@@ -192,7 +192,7 @@ export class CaleeWeekView extends LitElement {
   }
 
   private get _dayCount(): number {
-    return 7;
+    return this.narrow ? 3 : 7;
   }
 
   willUpdate(changed: PropertyValues): void {

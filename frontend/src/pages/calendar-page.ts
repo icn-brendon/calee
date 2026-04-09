@@ -92,6 +92,7 @@ export class CaleeCalendarPage extends LitElement {
       display: flex;
       flex-direction: column;
       height: 100%;
+      min-width: 0;
       min-height: 0;
       overflow: hidden;
       background: var(--primary-background-color, #fafafa);
@@ -101,6 +102,7 @@ export class CaleeCalendarPage extends LitElement {
       display: flex;
       flex-direction: column;
       flex: 1;
+      min-width: 0;
       min-height: 0;
       overflow: hidden;
     }
@@ -228,6 +230,7 @@ export class CaleeCalendarPage extends LitElement {
 
     .view-area {
       flex: 1;
+      min-width: 0;
       min-height: 0;
       overflow: hidden;
       display: flex;
@@ -235,6 +238,7 @@ export class CaleeCalendarPage extends LitElement {
 
     .view-area > * {
       flex: 1;
+      min-width: 0;
       min-height: 0;
     }
 

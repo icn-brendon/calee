@@ -792,12 +792,16 @@ export class CaleePanel extends LitElement {
     .body {
       display: flex;
       flex: 1;
+      min-width: 0;
+      min-height: 0;
       overflow: hidden;
       position: relative;
     }
 
     .main {
       flex: 1;
+      min-width: 0;
+      min-height: 0;
       overflow: hidden;
       position: relative;
       background: var(--card-background-color, #fff);
