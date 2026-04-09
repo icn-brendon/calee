@@ -166,7 +166,12 @@ class TestOptionsFlow:
 
     @pytest.mark.asyncio
     async def test_options_update_settings(self):
-        """Options flow updates settings correctly."""
+        """Options flow updates general settings correctly.
+
+        Notification settings (notifications_enabled, morning_summary_*,
+        notification_target, reminder_calendars) are managed exclusively
+        via the in-panel settings dialog and are not part of the options flow.
+        """
         config_entry = MagicMock()
         config_entry.data = {CONF_STORAGE_BACKEND: BACKEND_JSON}
         config_entry.options = {
@@ -177,7 +182,6 @@ class TestOptionsFlow:
 
         flow = CaleeOptionsFlow(config_entry)
         flow.hass = MagicMock()
-        flow.hass.services.has_service = MagicMock(return_value=True)
 
         user_input = {
             "reminder_minutes": 30,
@@ -186,11 +190,6 @@ class TestOptionsFlow:
             "budget": 200.0,
             "week_start": "sunday",
             "time_format": "24h",
-            "notifications_enabled": True,
-            "morning_summary_enabled": False,
-            "morning_summary_hour": 8,
-            "notification_target": "",
-            "reminder_calendars": "work_shifts, family_shared",
             "strict_privacy": True,
             CONF_STORAGE_BACKEND: BACKEND_JSON,
         }
@@ -201,7 +200,6 @@ class TestOptionsFlow:
         assert result["data"]["budget"] == 200.0
         assert result["data"]["week_start"] == "sunday"
         assert result["data"]["reminder_minutes"] == 30
-        assert result["data"]["reminder_calendars"] == ["work_shifts", "family_shared"]
 
     @pytest.mark.asyncio
     async def test_options_shows_form_when_no_input(self):
